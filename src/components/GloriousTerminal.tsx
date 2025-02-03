@@ -51,3 +51,5 @@ const GloriousTerminal: React.FC<GloriousTerminalProps> = ({
            }}/>
   );
 };
+
+export default GloriousTerminal;
