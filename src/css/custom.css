@@ -28,3 +28,12 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+pre.editor-line-text {
+  background-color: #282c34;
+  padding: 0 0 0 50px;
+}
+
+pre.editor-line-text span.cursor {
+  line-height: 24px;
+}
