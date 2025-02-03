@@ -3,7 +3,7 @@ import GDemo from '@glorious/demo';
 import '@glorious/demo/dist/gdemo.min.css';
 
 // Props 타입 정의
-interface GloriousEditorProps {
+interface GloriousTerminalProps {
   code: string;
   command: string;
   response: string;
@@ -12,7 +12,7 @@ interface GloriousEditorProps {
   responseDelay?: number;
 }
 
-const GloriousEditor: React.FC<GloriousEditorProps> = ({
+const GloriousTerminal: React.FC<GloriousTerminalProps> = ({
                                                          code,
                                                          command,
                                                          response,
@@ -51,5 +51,3 @@ const GloriousEditor: React.FC<GloriousEditorProps> = ({
            }}/>
   );
 };
-
-export default GloriousEditor;
