@@ -5,7 +5,7 @@ authors: [ slorber, yangshun ]
 tags: [ hola, docusaurus ]
 ---
 
-import GloriousTerminal from '@site/src/components/GloriousTerminal';
+import BrowserOnly from '@docusaurus/BrowserOnly';
 
 ___
 
@@ -15,6 +15,10 @@ ___
 ---
 아래는 `glorious-demo`를 이용한 에디터 + 터미널 애니메이션 예제입니다.
 
+<BrowserOnly fallback={<p>Loading terminal...</p>}>
+{() => {
+const GloriousTerminal = require('@site/src/components/GloriousTerminal').default;
+return (
 <GloriousTerminal
 code={`
 function greet(){
@@ -26,6 +30,9 @@ greet();
 command="node ./demo"
 response="Hello World!"
 />
+);
+}}
+</BrowserOnly>
 
 <br /><br /><br /><br /><br /><br />
 
