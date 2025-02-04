@@ -13,7 +13,7 @@ const config: Config = {
   url: 'https://johnycho.github.io', // GitHub Pages URL
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/johny-dev/', // 리포지토리 이름
+  baseUrl: '/', // 리포지토리 이름
   deploymentBranch: 'gh-pages', // 배포 브랜치
   trailingSlash: false,
 
