@@ -3,7 +3,7 @@ hello:
   permalink: /hello
   description: Hello tag description
 
-docusaurus:
-  label: Docusaurus
-  permalink: /docusaurus
-  description: Docusaurus tag description
+jpa:
+  label: JPA
+  permalink: /jpa
+  description: JPA tag description
