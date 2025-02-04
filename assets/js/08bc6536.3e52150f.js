@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkjohnycho_dev=self.webpackChunkjohnycho_dev||[]).push([[598],{8549:e=>{e.exports=JSON.parse('{"metadata":{"permalink":"/johny-dev/","page":1,"postsPerPage":10,"totalPages":1,"totalCount":1,"blogDescription":"Blog","blogTitle":"Blog"}}')}}]);
