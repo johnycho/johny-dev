@@ -13,7 +13,7 @@ const config: Config = {
   url: 'https://johnycho.github.io', // GitHub Pages URL
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/johny-dev/', // 리포지토리 이름
+  baseUrl: '/', // 리포지토리 이름
   deploymentBranch: 'gh-pages', // 배포 브랜치
   trailingSlash: false,
 
@@ -29,8 +29,8 @@ const config: Config = {
   // useful metadata like html lang. For example, if your site is Chinese, you
   // may want to replace "en" with "zh-Hans".
   i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+    defaultLocale: 'ko',
+    locales: ['ko'],
   },
 
   presets: [
@@ -45,6 +45,10 @@ const config: Config = {
             'https://github.com/johnycho/johny-dev/edit/main/',
         },
         blog: {
+          routeBasePath: '/', // 블로그를 루트 경로로 변경
+          tagsBasePath: 'tags',
+          archiveBasePath: 'archive',
+          authorsBasePath: 'authors',
           showReadingTime: true,
           feedOptions: {
             type: ['rss', 'atom'],
@@ -69,24 +73,39 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
+    colorMode: {
+      defaultMode: 'dark',
+      disableSwitch: false, // 다크/라이트 모드 전환 허용 (true로 설정하면 버튼이 사라짐)
+      respectPrefersColorScheme: false, // OS 설정과 관계없이 다크 모드 강제 적용
+    },
     navbar: {
-      title: 'My Site',
+      title: '조니 개발 블로그',
       logo: {
-        alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        alt: 'Johny Dev Logo',
+        src: 'https://github.com/johnycho.png',
       },
       items: [
+        // {
+        //   type: 'docSidebar',
+        //   sidebarId: 'tutorialSidebar',
+        //   position: 'left',
+        //   label: 'Tutorial',
+        // },
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
+          to: '/tags',  // 태그 페이지 추가
+          label: 'Tags',
           position: 'left',
-          label: 'Tutorial',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/johnycho/johny-dev',
-          label: 'GitHub',
+          to: "/archive",
+          label: "Archive",
+          position: "left"
+        },
+        {
+          href: 'https://github.com/johnycho',
+          // label: 'GitHub',
           position: 'right',
+          className: 'navbar-github-logo',
         },
       ],
     },
@@ -94,11 +113,11 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Posts',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'Hello',
+              to: '/johny-dev-blog-launched',
             },
           ],
         },
@@ -123,17 +142,13 @@ const config: Config = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
               label: 'GitHub',
               href: 'https://github.com/johnycho',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Johny Cho. All rights reserved.`,
     },
     prism: {
       theme: prismThemes.github,
