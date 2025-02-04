@@ -10,7 +10,7 @@ const config: Config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://johnycho.github.io', // GitHub Pages URL
+  url: 'https://johnycho.dev', // GitHub Pages URL
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/', // 리포지토리 이름
