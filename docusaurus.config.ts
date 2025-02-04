@@ -13,7 +13,7 @@ const config: Config = {
   url: 'https://johnycho.github.io', // GitHub Pages URL
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/', // 리포지토리 이름
+  baseUrl: '/johny-dev/', // 리포지토리 이름
   deploymentBranch: 'gh-pages', // 배포 브랜치
   trailingSlash: false,
 
@@ -37,18 +37,20 @@ const config: Config = {
     [
       'classic',
       {
-        docs: {
-          sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/johnycho/johny-dev/edit/main/',
-        },
+        // docs: {
+        //   sidebarPath: './sidebars.ts',
+        //   // Please change this to your repo.
+        //   // Remove this to remove the "edit this page" links.
+        //   editUrl:
+        //     'https://github.com/johnycho/johny-dev/edit/main/',
+        // },
         blog: {
           routeBasePath: '/', // 블로그를 루트 경로로 변경
           tagsBasePath: 'tags',
           archiveBasePath: 'archive',
           authorsBasePath: 'authors',
+          postsPerPage: 10, // 한 페이지당 표시할 게시글 개수 (기본값: 10)
+          blogSidebarCount: "ALL", // 사이드바에 모든 게시글 표시
           showReadingTime: true,
           feedOptions: {
             type: ['rss', 'atom'],
