@@ -10,7 +10,7 @@
 
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml"><link rel="stylesheet" href="/assets/css/styles.46a6029e.css">
-<script src="/assets/js/runtime~main.cc0b715b.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.7a227e47.js" defer="defer"></script>
 <script src="/assets/js/main.c4e8f9f3.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -19,7 +19,7 @@
 이 옵션은 <code>application.properties</code> 또는 <code>application.yml</code> 파일에서 설정할 수 있으며, 다양한 값에 따라 데이터베이스 스키마에 대해 다른 동작을
 수행합니다.
 ddl-auto 옵션에는 none, validate, update, create, create-drop 등이 존재합니다.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="각-옵션은-어떻게-다른데-">각 옵션은 어떻게 다른데? 🤔<a href="#각-옵션은-어떻게-다른데-" class="hash-link" aria-label="각 옵션은 어떻게 다른데? 🤔에 대한 직접 링크" title="각 옵션은 어떻게 다른데? 🤔에 대한 직접 링크">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-각-옵션은-어떻게-다른데-">✔️ 각 옵션은 어떻게 다른데? 🤔<a href="#️-각-옵션은-어떻게-다른데-" class="hash-link" aria-label="✔️ 각 옵션은 어떻게 다른데? 🤔에 대한 직접 링크" title="✔️ 각 옵션은 어떻게 다른데? 🤔에 대한 직접 링크">​</a></h2>
 <p><code>none</code>으로 설정하면 데이터베이스 스키마와 관련된 어떠한 작업도 수행하지 않습니다. 데이터베이스 스키마를 수동으로 관리하고 싶을 때 유용하며, 프로덕션 환경에서 주로
 사용됩니다.</p>
 <p><code>validate</code>는 애플리케이션이 시작될 때, 엔티티 매핑이 데이터베이스 스키마와 일치하는지 검증하며 스키마 변경은 따로 수행하지 않습니다. 프로덕션 환경에서 엔티티와
@@ -31,8 +31,8 @@ ddl-auto 옵션에는 none, validate, update, create, create-drop 등이 존재�
 데이터베이스 스키마를 반복적으로 생성해야 할 때 유용합니다. 기존 데이터가 모두 삭제되므로 프로덕션 환경에서는 사용하지 않습니다.</p>
 <p><code>create-drop</code>은 <code>create</code>와 유사하지만, 애플리케이션이 종료될 때 스키마를 삭제한다는 점이 다릅니다. 해당 옵션은 테스트 환경에서 일시적인 데이터베이스 스키마가
 필요한 경우 유용하며, 매 테스트 실행 시마다 깨끗한 데이터베이스 상태를 유지하고자 할 때 사용됩니다. 프로덕션 환경에서는 사용하지 않습니다.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="프로덕션-환경에서-스키마-변경은-어떻게-해야할까-">프로덕션 환경에서 스키마 변경은 어떻게 해야할까? 🤓<a href="#프로덕션-환경에서-스키마-변경은-어떻게-해야할까-" class="hash-link" aria-label="프로덕션 환경에서 스키마 변경은 어떻게 해야할까? 🤓에 대한 직접 링크" title="프로덕션 환경에서 스키마 변경은 어떻게 해야할까? 🤓에 대한 직접 링크">​</a></h2>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-프로덕션-환경에서-스키마-변경은-어떻게-해야할까-">✔️ 프로덕션 환경에서 스키마 변경은 어떻게 해야할까? 🤓<a href="#️-프로덕션-환경에서-스키마-변경은-어떻게-해야할까-" class="hash-link" aria-label="✔️ 프로덕션 환경에서 스키마 변경은 어떻게 해야할까? 🤓에 대한 직접 링크" title="✔️ 프로덕션 환경에서 스키마 변경은 어떻게 해야할까? 🤓에 대한 직접 링크">​</a></h2>
 <p>스키마 변경이 필요할 때는 적절한 데이터베이스 마이그레이션 도구(Flyway, Liquibase 등)를 사용하여 제어된 방식으로 스키마를 관리하거나, 사용자가 없는 새벽에 스키마
-변경 작업을 수동으로 진행하는 것이 더욱 안전할 수 있습니다.</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-tags-row"><div class="col"><b>태그:</b><ul class="tags_jXut padding--none margin-left--sm"><li class="tag_QGVx"><a title="JPA tag description" class="tag_zVej tagRegular_sFm0" href="/docs/tags/jpa">JPA</a></li></ul></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="문서 페이지"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/category/spring-data-jpa"><div class="pagination-nav__sublabel">이전</div><div class="pagination-nav__label">Spring Data JPA</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/spring-data-jpa/spring-data-jpa-entity-manager"><div class="pagination-nav__sublabel">다음</div><div class="pagination-nav__label">엔티티 매니저(Entity Manager)</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#각-옵션은-어떻게-다른데-" class="table-of-contents__link toc-highlight">각 옵션은 어떻게 다른데? 🤔</a></li><li><a href="#프로덕션-환경에서-스키마-변경은-어떻게-해야할까-" class="table-of-contents__link toc-highlight">프로덕션 환경에서 스키마 변경은 어떻게 해야할까? 🤓</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 Johny Cho. All rights reserved.</div></div></div></footer></div>
+변경 작업을 수동으로 진행하는 것이 더욱 안전할 수 있습니다.</p></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-tags-row"><div class="col"><b>태그:</b><ul class="tags_jXut padding--none margin-left--sm"><li class="tag_QGVx"><a title="JPA tag description" class="tag_zVej tagRegular_sFm0" href="/docs/tags/jpa">JPA</a></li></ul></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="문서 페이지"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/category/spring-data-jpa"><div class="pagination-nav__sublabel">이전</div><div class="pagination-nav__label">Spring Data JPA</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/spring-data-jpa/spring-data-jpa-entity-manager"><div class="pagination-nav__sublabel">다음</div><div class="pagination-nav__label">엔티티 매니저(Entity Manager)</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#️-각-옵션은-어떻게-다른데-" class="table-of-contents__link toc-highlight">✔️ 각 옵션은 어떻게 다른데? 🤔</a></li><li><a href="#️-프로덕션-환경에서-스키마-변경은-어떻게-해야할까-" class="table-of-contents__link toc-highlight">✔️ 프로덕션 환경에서 스키마 변경은 어떻게 해야할까? 🤓</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 Johny Cho. All rights reserved.</div></div></div></footer></div>
 </body>
 </html>
