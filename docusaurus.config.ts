@@ -80,6 +80,13 @@ const config: Config = {
       disableSwitch: false, // 다크/라이트 모드 전환 허용 (true로 설정하면 버튼이 사라짐)
       respectPrefersColorScheme: false, // OS 설정과 관계없이 다크 모드 강제 적용
     },
+    algolia: {
+      appId: "NAZXBH587R",  // 이메일에서 받은 appId
+      apiKey: "23b7dab8ddab0fec1bce2b3e039e09f9",  // 검색 API 키 (공개용)
+      indexName: "johnycho",  // 인덱스 이름
+      contextualSearch: false,  // 문맥 기반 검색 (선택 사항)
+      searchPagePath: "search", // 검색 페이지 활성화
+    },
     navbar: {
       title: '조니 개발 블로그',
       logo: {
