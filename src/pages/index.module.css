@@ -15,7 +15,7 @@
 
 @media screen and (max-width: 996px) {
   .heroBanner {
-    min-height: 20vh;
+    min-height: 25vh;
     padding: 2rem;
   }
 }
