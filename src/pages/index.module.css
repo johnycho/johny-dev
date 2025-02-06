@@ -4,6 +4,9 @@
  */
 
 .heroBanner {
+  background: url("/img/index-banner.jpg") center/cover no-repeat; /* 배경 이미지 적용 */
+  min-height: 50vh;
+  display: flex;
   padding: 4rem 0;
   text-align: center;
   position: relative;
@@ -12,6 +15,7 @@
 
 @media screen and (max-width: 996px) {
   .heroBanner {
+    min-height: 20vh;
     padding: 2rem;
   }
 }

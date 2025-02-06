@@ -37,18 +37,14 @@ const config: Config = {
     [
       'classic',
       {
-        // docs: {
-        //   sidebarPath: './sidebars.ts',
-        //   // Please change this to your repo.
-        //   // Remove this to remove the "edit this page" links.
-        //   editUrl:
-        //     'https://github.com/johnycho/johny-dev/edit/main/',
-        // },
+        docs: {
+          sidebarPath: './sidebars.ts',
+          // Please change this to your repo.
+          // Remove this to remove the "edit this page" links.
+          editUrl:
+              'https://github.com/johnycho/johny-dev/edit/main/',
+        },
         blog: {
-          routeBasePath: '/', // 블로그를 루트 경로로 변경
-          tagsBasePath: 'tags',
-          archiveBasePath: 'archive',
-          authorsBasePath: 'authors',
           postsPerPage: 10, // 한 페이지당 표시할 게시글 개수 (기본값: 10)
           blogSidebarCount: "ALL", // 사이드바에 모든 게시글 표시
           showReadingTime: true,
@@ -94,21 +90,24 @@ const config: Config = {
         src: 'https://github.com/johnycho.png',
       },
       items: [
-        // {
-        //   type: 'docSidebar',
-        //   sidebarId: 'tutorialSidebar',
-        //   position: 'left',
-        //   label: 'Tutorial',
-        // },
         {
-          to: '/tags',  // 태그 페이지 추가
-          label: 'Tags',
+          to: '/docs/intro',
+          label: 'Docs',
           position: 'left',
+          type: 'dropdown',
+          items: [
+            {type: "docSidebar", sidebarId: "johnyDocsSidebar", label: "All Docs"},
+            {label: "Tags", to: "/docs/tags"},
+          ],
         },
         {
-          to: "/archive",
-          label: "Archive",
-          position: "left"
+          to: "/blog",
+          label: "Blog",
+          position: "left",
+          items: [
+            {label: "Archive", to: "/blog/archive"},
+            {label: "Tags", to: "/blog/tags"},
+          ],
         },
         {
           href: 'https://github.com/johnycho',
@@ -126,7 +125,7 @@ const config: Config = {
           items: [
             {
               label: 'Hello',
-              to: '/johny-dev-blog-launched',
+              to: '/blog/johny-dev-blog-launched',
             },
           ],
         },
