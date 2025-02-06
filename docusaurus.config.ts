@@ -94,6 +94,7 @@ const config: Config = {
       logo: {
         alt: 'Johny Dev Logo',
         src: 'https://github.com/johnycho.png',
+        className: 'custom-navbar-logo' /* 로고 이미지 원형으로 만들기 */
       },
       items: [
         {

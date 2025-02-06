@@ -62,3 +62,8 @@ html[data-theme='dark'] .navbar-github-logo {
   min-height: 10px; /* 최소 높이 설정 */
   padding: 10px 0; /* 위아래 여백 조절 */
 }
+
+.custom-navbar-logo {
+  border-radius: 50%; /* 원형으로 만들기 */
+  object-fit: cover;
+}
