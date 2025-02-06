@@ -11,9 +11,9 @@ function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
-      <div className="container" style={{fontFamily: "'Nanum Pen Script', cursive"}}>
+      <div className="container" style={{fontFamily: "'Nanum Pen Script', cursive", color: "#fff"}}>
         <Heading as="h1" className="hero__title"
-                 style={{fontFamily: "'Nanum Pen Script', cursive"}}>
+                 style={{fontFamily: "'Nanum Pen Script', cursive", color: "#fff"}}>
           {siteConfig.title}
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
