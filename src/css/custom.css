@@ -56,3 +56,9 @@ html[data-theme='dark'] .navbar-github-logo {
 .navbar-github-logo:hover {
   opacity: 0.5; /* ✅ 마우스를 올리면 흐려짐 */
 }
+
+/* footer 조정 */
+.footer {
+  min-height: 10px; /* 최소 높이 설정 */
+  padding: 10px 0; /* 위아래 여백 조절 */
+}
