@@ -41,8 +41,8 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-              'https://github.com/johnycho/johny-dev/edit/main/',
+          // editUrl:
+          //     'https://github.com/johnycho/johny-dev/edit/main/',
         },
         blog: {
           postsPerPage: 10, // 한 페이지당 표시할 게시글 개수 (기본값: 10)
@@ -54,8 +54,8 @@ const config: Config = {
           },
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/johnycho/johny-dev/edit/main/',
+          // editUrl:
+          //   'https://github.com/johnycho/johny-dev/edit/main/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -105,6 +105,7 @@ const config: Config = {
           label: "Blog",
           position: "left",
           items: [
+            {label: "All Posts", to: "/blog"},
             {label: "Archive", to: "/blog/archive"},
             {label: "Tags", to: "/blog/tags"},
           ],
