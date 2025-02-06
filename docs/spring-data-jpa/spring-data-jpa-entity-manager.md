@@ -29,12 +29,8 @@ Member member = new Member("산초");
 ### 영속(Persistent)
 ```java
 em.persist(member);
-em.
-
-merge(detagedMember);
-em.
-
-find(Member .class, 1L);
+em.merge(detagedMember);
+em.find(Member.class, 1L);
 ```
 엔티티 객체가 영속성 컨텍스트에 관리되고 있는 상태입니다. 이 상태에서는 엔티티의 변경 사항이 자동으로 데이터베이스에 반영됩니다.
 
@@ -43,12 +39,8 @@ find(Member .class, 1L);
 ### 준영속(Detached)
 ```java
 em.detach(member);
-em.
-
-clear();
-em.
-
-close();
+em.clear();
+em.close();
 ```
 엔티티 객체가 한 번 영속성 컨텍스트에 의해 관리되었지만, 현재는 영속성 컨텍스트와 분리된 상태입니다. 이 상태에서는 엔티티 객체의 변경 사항이 더 이상 데이터베이스에 반영되지
 않습니다. 영속성 컨텍스트 종료, 트랜잭션 종료 등으로도 준영속 상태로 전환됩니다.
