@@ -33,6 +33,7 @@ jobs:
 
       # API Reference
       # https://www.algolia.com/doc/rest-api/crawler/#tag/actions/operation/startReindex
+      # DOCSEARCH_CRAWLER_CREDENTIALS is a base64-encoded string <user-id>:<api-key>
       - name: Trigger Algolia DocSearch Crawler
         run: |
           curl -X POST -H "Content-Type: application/json" \
