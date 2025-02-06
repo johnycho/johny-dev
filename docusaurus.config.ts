@@ -83,6 +83,12 @@ const config: Config = {
       contextualSearch: false, // 현재 문맥(버전, 언어)에 맞는 검색 결과만 표시
       searchPagePath: "search", // 검색 페이지 활성화
     },
+    docs: {
+      sidebar: {
+        autoCollapseCategories: true, // 다른 카테고리를 열면 자동으로 기존 카테고리 접힘
+        hideable: true, // 접을 수 있는 버튼 표시
+      },
+    },
     navbar: {
       title: '조니 개발 블로그',
       logo: {
