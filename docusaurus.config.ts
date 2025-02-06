@@ -81,10 +81,10 @@ const config: Config = {
       respectPrefersColorScheme: false, // OS 설정과 관계없이 다크 모드 강제 적용
     },
     algolia: {
-      appId: "NAZXBH587R",  // 이메일에서 받은 appId
-      apiKey: "23b7dab8ddab0fec1bce2b3e039e09f9",  // 검색 API 키 (공개용)
-      indexName: "johnycho",  // 인덱스 이름
-      contextualSearch: false,  // 문맥 기반 검색 (선택 사항)
+      appId: "NAZXBH587R", // 이메일에서 받은 appId
+      apiKey: "23b7dab8ddab0fec1bce2b3e039e09f9", // 검색 API 키 (공개용)
+      indexName: "johnycho", // 인덱스 이름
+      contextualSearch: false, // 현재 문맥(버전, 언어)에 맞는 검색 결과만 표시
       searchPagePath: "search", // 검색 페이지 활성화
     },
     navbar: {
