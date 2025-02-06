@@ -30,3 +30,9 @@ jobs:
           github_token: ${{ secrets.GH_ACTIONS_TOKEN }}
           publish_dir: ./build
           cname: johnycho.dev
+
+      - name: Trigger Algolia DocSearch Crawler
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+               -H "Authorization: Bearer ${{ secrets.DOCSEARCH_API_KEY }}" \
+               "https://crawler.algolia.com/api/1/crawlers/41e8b906-04b7-486c-848e-73e08f8fafcc/run"
