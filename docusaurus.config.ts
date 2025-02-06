@@ -90,7 +90,7 @@ const config: Config = {
       },
     },
     navbar: {
-      title: '조니 개발 블로그',
+      title: '조니의 개발 블로그',
       logo: {
         alt: 'Johny Dev Logo',
         src: 'https://github.com/johnycho.png',
