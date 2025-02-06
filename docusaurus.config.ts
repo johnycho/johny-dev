@@ -169,7 +169,7 @@ const config: Config = {
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
-      additionalLanguages: ['java'], // ✅ Java 코드 하이라이트 활성화
+      additionalLanguages: ['java'], // Java 코드 하이라이트 활성화
     },
   } satisfies Preset.ThemeConfig,
 };
