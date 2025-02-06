@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: '조니 블로그',
-  tagline: 'Dinosaurs are cool',
+  title: '조니의 개발 블로그',
+  tagline: 'Developer Archive',
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here

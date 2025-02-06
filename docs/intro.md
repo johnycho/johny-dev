@@ -1,7 +1,7 @@
 ---
 sidebar_position: 1
 slug: intro
-title: 📌 기억을 위해 기록하자 🤔
+title: 📌 기억하려면 기록하자 🤔
 ---
 
 # 조니 기록 저장소

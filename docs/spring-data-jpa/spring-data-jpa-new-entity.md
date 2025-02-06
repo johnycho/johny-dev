@@ -1,12 +1,10 @@
 ---
 slug: spring-data-jpa-new-entity
-title: JPA에서 새로운 Entity 판단 기준
+title: 새로운 Entity 판단 기준
 tags: [ jpa ]
 ---
 
-# Spring Data JPA에서 새로운 Entity인지 판단하는 방법은 무엇일까?
-
-<!-- truncate -->
+# JPA에서 새로운 Entity인지 판단하는 방법은 무엇일까?
 
 ```java
 
