@@ -1,5 +1,5 @@
 ---
-slug: spring-data-jpa-new-entity
+slug: jpa-new-entity
 title: 새로운 Entity 판단 기준
 tags: [ jpa ]
 ---

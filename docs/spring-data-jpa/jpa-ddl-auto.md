@@ -1,5 +1,5 @@
 ---
-slug: spring-data-jpa-ddl-auto
+slug: jpa-ddl-auto
 title: ddl-auto 옵션
 tags: [ jpa ]
 ---

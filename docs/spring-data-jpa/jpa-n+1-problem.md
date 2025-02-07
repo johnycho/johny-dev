@@ -1,5 +1,5 @@
 ---
-slug: spring-data-jpa-n+1-problem
+slug: jpa-n+1-problem
 title: N + 1 문제
 tags: [ jpa ]
 ---

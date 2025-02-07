@@ -1,5 +1,5 @@
 ---
-slug: spring-data-jpa-id-generation-strategy
+slug: jpa-id-generation-strategy
 title: ID 생성 전략
 tags: [ jpa ]
 ---

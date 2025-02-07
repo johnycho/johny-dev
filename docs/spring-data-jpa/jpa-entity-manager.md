@@ -1,5 +1,5 @@
 ---
-slug: spring-data-jpa-entity-manager
+slug: jpa-entity-manager
 title: 엔티티 매니저(Entity Manager)
 tags: [ jpa ]
 ---
