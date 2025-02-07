@@ -1,3 +1,8 @@
+cs:
+  label: Computer Science
+  permalink: /cs
+  description: Computer Science tag description
+
 java:
   label: Java
   permalink: /java
@@ -7,3 +12,13 @@ jpa:
   label: JPA
   permalink: /jpa
   description: JPA tag description
+
+db:
+  label: Database
+  permalink: /db
+  description: Database tag description
+
+mysql:
+  label: MySQL
+  permalink: /mysql
+  description: MySQL tag description
