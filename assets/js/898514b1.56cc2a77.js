@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkjohnycho_dev=self.webpackChunkjohnycho_dev||[]).push([[9067],{9187:e=>{e.exports=JSON.parse('{"tags":[{"label":"JPA","permalink":"/docs/tags/jpa","description":"JPA tag description","count":5}]}')}}]);
