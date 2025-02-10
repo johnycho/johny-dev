@@ -1,7 +1,7 @@
 ---
 slug: jpa-id-generation-strategy
 title: ID 생성 전략
-tags: [ jpa ]
+tags: [ spring, jpa ]
 ---
 
 # JPA의 ID 생성 전략

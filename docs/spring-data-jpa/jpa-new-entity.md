@@ -1,7 +1,7 @@
 ---
 slug: jpa-new-entity
 title: 새로운 Entity 판단 기준
-tags: [ jpa ]
+tags: [ spring, jpa ]
 ---
 
 # JPA에서 새로운 Entity인지 판단하는 방법은 무엇일까?

@@ -3,10 +3,20 @@ cs:
   permalink: /cs
   description: Computer Science tag description
 
+network:
+  label: Network
+  permalink: /network
+  description: Network tag description
+
 java:
   label: Java
   permalink: /java
   description: Java tag description
+
+spring:
+  label: Spring
+  permalink: /spring
+  description: Spring Framework tag description
 
 jpa:
   label: JPA
@@ -22,3 +32,8 @@ mysql:
   label: MySQL
   permalink: /mysql
   description: MySQL tag description
+
+redis:
+  label: Redis
+  permalink: /redis
+  description: Redis tag description

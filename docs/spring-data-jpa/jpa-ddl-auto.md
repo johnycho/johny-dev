@@ -1,7 +1,7 @@
 ---
 slug: jpa-ddl-auto
 title: ddl-auto 옵션
-tags: [ jpa ]
+tags: [ spring, jpa ]
 ---
 
 # JPA의 ddl-auto 옵션은 각각 어떤 동작을 하고 어떤 상황에서 사용해야 할까?

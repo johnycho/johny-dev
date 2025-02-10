@@ -1,7 +1,7 @@
 ---
 slug: jpa-n+1-problem
 title: N + 1 문제
-tags: [ jpa ]
+tags: [ spring, jpa ]
 ---
 
 # JPA의 N + 1 문제란?

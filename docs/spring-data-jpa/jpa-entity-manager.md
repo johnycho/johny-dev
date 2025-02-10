@@ -1,7 +1,7 @@
 ---
 slug: jpa-entity-manager
 title: 엔티티 매니저(Entity Manager)
-tags: [ jpa ]
+tags: [ spring, jpa ]
 ---
 
 # 엔티티 매니저란?
