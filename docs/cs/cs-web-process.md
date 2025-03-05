@@ -1,7 +1,7 @@
 ---
 slug: cs-web-process
 title: 웹 브라우저에 URL 입력하면 일어나는 일
-tags: [ cs ]
+tags: [ cs, network ]
 ---
 
 예를 들어 사용자가 `www.google.com`을 입력하면, 브라우저는 **HTTP 프로토콜**을 사용해 구글 웹 서버와 통신하려고 합니다. HTTP는 **OSI 7계층** 중 **애플리케이션 계층**에서 동작하는 프로토콜입니다.
