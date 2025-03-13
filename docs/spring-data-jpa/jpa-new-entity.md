@@ -52,7 +52,7 @@ null 여부, `Number`의 하위 타입이면 0인지 여부를 확인합니다. 
 
 ## ✔️ 직접 ID를 할당하는 경우에는 어떻게 동작할까? 🤔
 
-키 생성 전략을 사용하지 않고 직접 ID를 할당하는 경우 새로운 entity로 간주되지 않습니다. 이 때는 엔티티에서 `Persistable<T>` 인터페이스를 구현해서
+키 생성 전략을 사용하지 않고 직접 ID를 할당하는 경우 새로운 entity로 간주되지 않습니다. 이 때는 <mark>**엔티티에서 `Persistable<T>` 인터페이스를 구현**</mark>해서
 `JpaMetamodelEntityInformation` 클래스가 아닌 `JpaPersistableEntityInformation`의 `isNew()`가 동작하도록 해야 합니다.
 
 ```java
@@ -96,7 +96,7 @@ public <S extends T> S save(S entity) {
 }
 ```
 
-`SimpleJpaRepository`의 `save()` 메서드에서 `isNew()를 사용하여 persist를 수행할지 merge를 수행할지 결정합니다. 만약 ID를 직접
+`SimpleJpaRepository`의 `save()` 메서드에서 `isNew()`를 사용하여 `persist`를 수행할지 `merge`를 수행할지 결정합니다. 만약 ID를 직접
 지정해주는
-경우에는 신규 entity라고 판단하지 않기 때문에 merge를 수행합니다. 이때 해당 entity는 신규임에도 불구하고 DB를 조회하기 때문에 비효율적입니다. 따라서, 새로운
+경우에는 신규 entity라고 판단하지 않기 때문에 `merge`를 수행합니다. 이때 해당 entity는 신규임에도 불구하고 DB를 조회하기 때문에 비효율적입니다. 따라서, 새로운
 entity인지 판단하는 것은 중요한 부분입니다.
