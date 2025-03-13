@@ -98,5 +98,5 @@ public <S extends T> S save(S entity) {
 
 `SimpleJpaRepository`의 `save()` 메서드에서 `isNew()`를 사용하여 `persist`를 수행할지 `merge`를 수행할지 결정합니다. 만약 ID를 직접
 지정해주는
-경우에는 신규 entity라고 판단하지 않기 때문에 `merge`를 수행합니다. 이때 해당 entity는 신규임에도 불구하고 DB를 조회하기 때문에 비효율적입니다. 따라서, 새로운
+경우에는 신규 entity라고 판단하지 않기 때문에 `merge`를 수행합니다. 이때 <mark>**해당 entity는 신규임에도 불구하고 DB를 조회하기 때문에 비효율적**</mark>입니다. 따라서, 새로운
 entity인지 판단하는 것은 중요한 부분입니다.
