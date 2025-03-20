@@ -14,7 +14,7 @@ tags: [ cs ]
 연결된 종단 간에 데이터를 주고 받을 때 소요되는 최대 시간을 의미 합니다. 이 시간을 넘기게 되면 데이터를 받을 수 없는 것으로 판단하고 에러가 발생 합니다. Read 라는 단어가 의미하는 것처럼 연결되어 있는 종단 간 데이터를 주고 받을 때 사용되는 타임아웃 입니다.
 
 Rest API 클라이언트의 경우라면 TCP 통신 과정에서 Connection Timeout과 Read Timeout이 적용되는 구간은 아래 그림과 같습니다.
-![Network Timeout](img/img-timeout.png)
+![Network Timeout](img/network-timeout.png)
 
 
 ## ✔️ 다음과 같이 특정 서비스의 장애가 전체 서비스에 영향을 주는 경우는 어떻게 해결할 수 있을까? 🤔
