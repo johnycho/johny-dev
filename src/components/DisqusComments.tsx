@@ -6,8 +6,8 @@ export default function DisqusComments() {
 
   useEffect(() => {
     // Disqus가 이미 로드된 경우 재설정
-    if (window.DISQUS) {
-      window.DISQUS.reset({
+    if ((window as any).DISQUS) {
+      (window as any).DISQUS.reset({
         reload: true,
         config: function () {
           this.page.url = window.location.href;

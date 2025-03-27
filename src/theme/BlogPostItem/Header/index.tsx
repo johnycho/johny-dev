@@ -15,7 +15,7 @@ export default function BlogPostItemHeader(): ReactNode {
         <BlogPostItemHeaderTitle />
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <BlogPostItemHeaderInfo />
-          <DisqusCountLink slug={permalink} />
+          <DisqusCountLink key={location.pathname} slug={permalink} />
         </div>
         <BlogPostItemHeaderAuthors />
       </header>

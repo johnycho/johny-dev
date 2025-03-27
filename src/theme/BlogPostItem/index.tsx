@@ -30,7 +30,7 @@ export default function BlogPostItem({children, className}: Props): ReactNode {
         <BlogPostItemHeader />
         <BlogPostItemContent>{children}</BlogPostItemContent>
         <BlogPostItemFooter />
-        {isBlogPostPage && <DisqusComments />}
+        {isBlogPostPage && <DisqusComments key={location.pathname} />}
       </BlogPostItemContainer>
   );
 }
