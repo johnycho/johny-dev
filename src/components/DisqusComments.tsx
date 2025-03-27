@@ -1,6 +1,9 @@
 import React, {useEffect} from 'react';
+import {useLocation} from '@docusaurus/router';
 
 export default function DisqusComments() {
+  const location = useLocation();
+
   useEffect(() => {
     // Disqus가 이미 로드된 경우 재설정
     if (window.DISQUS) {
@@ -20,7 +23,7 @@ export default function DisqusComments() {
       s.async = true;
       (d.head || d.body).appendChild(s);
     }
-  }, []);
+  }, [location.pathname]);
 
   return (
       <>
