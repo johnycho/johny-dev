@@ -7,6 +7,7 @@ export default function DisqusComments() {
   useEffect(() => {
     // Disqus가 이미 로드된 경우 재설정
     if ((window as any).DISQUS) {
+      console.log("이미 로드");
       (window as any).DISQUS.reset({
         reload: true,
         config: function () {
@@ -15,6 +16,7 @@ export default function DisqusComments() {
         },
       });
     } else {
+      console.log("최초 로드");
       // 최초 로드
       const d = document;
       const s = d.createElement('script');
