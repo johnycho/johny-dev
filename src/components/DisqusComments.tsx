@@ -5,34 +5,29 @@ export default function DisqusComments() {
   const location = useLocation();
 
   useEffect(() => {
-    const disqus_config = function (this: any) {
+    const d = document;
+
+    // 기존 스크립트 제거
+    const oldScript = d.getElementById('dsq-embed-scr');
+    if (oldScript) oldScript.remove();
+
+    // 기존 댓글 제거 (다시 그리기 위해)
+    const disqusThread = document.getElementById('disqus_thread');
+    if (disqusThread) disqusThread.innerHTML = '';
+
+    // 반드시 먼저 설정
+    (window as any).disqus_config = function () {
       this.page.url = window.location.href;
       this.page.identifier = window.location.pathname;
     };
 
-    // 기존 스크립트 제거 + 댓글 DOM 초기화
-    const cleanup = () => {
-      const oldScript = document.getElementById('dsq-embed-scr');
-      if (oldScript) oldScript.remove();
-
-      const disqusThread = document.getElementById('disqus_thread');
-      if (disqusThread) disqusThread.innerHTML = '';
-    };
-
-    // Disqus embed script 삽입
-    const loadDisqus = () => {
-      (window as any).disqus_config = disqus_config;
-
-      const s = document.createElement('script');
-      s.src = 'https://johny-dev.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', Date.now().toString());
-      s.setAttribute('id', 'dsq-embed-scr');
-      s.async = true;
-      (document.head || document.body).appendChild(s);
-    };
-
-    cleanup();
-    loadDisqus();
+    // embed.js 삽입
+    const s = d.createElement('script');
+    s.src = 'https://johny-dev.disqus.com/embed.js'; // 본인 shortname
+    s.setAttribute('data-timestamp', Date.now().toString());
+    s.id = 'dsq-embed-scr';
+    s.async = true;
+    (d.head || d.body).appendChild(s);
   }, [location.pathname]);
 
   return (
