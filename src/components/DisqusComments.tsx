@@ -1,39 +1,20 @@
-import React, {useEffect} from 'react';
+import React from 'react';
+import {DiscussionEmbed} from 'disqus-react';
 import {useLocation} from '@docusaurus/router';
 
 export default function DisqusComments() {
   const location = useLocation();
 
-  useEffect(() => {
-    // Disqus가 이미 로드된 경우 재설정
-    if ((window as any).DISQUS) {
-      console.log("이미 로드");
-      (window as any).DISQUS.reset({
-        reload: true,
-        config: function () {
-          this.page.url = window.location.href;
-          this.page.identifier = window.location.pathname;
-        },
-      });
-    } else {
-      console.log("최초 로드");
-      // 최초 로드
-      const d = document;
-      const s = d.createElement('script');
-      s.src = 'https://johny-dev.disqus.com/embed.js'; // ← 여기에 본인의 shortname
-      s.setAttribute('data-timestamp', Date.now().toString());
-      s.async = true;
-      (d.head || d.body).appendChild(s);
-    }
-  }, [location.pathname]);
+  const disqusShortname = 'johny-dev'; // 너의 Disqus shortname
+  const disqusConfig = {
+    url: window.location.href,
+    identifier: location.pathname,
+    title: document.title,
+  };
 
   return (
-      <>
-        <div id="disqus_thread" style={{ marginTop: '2rem' }} />
-        <noscript>
-          Please enable JavaScript to view the{' '}
-          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
-        </noscript>
-      </>
+      <div style={{ marginTop: '2rem' }}>
+        <DiscussionEmbed shortname={disqusShortname} config={disqusConfig} />
+      </div>
   );
 }
