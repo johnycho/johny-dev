@@ -172,6 +172,14 @@ const config: Config = {
       additionalLanguages: ['java'], // Java 코드 하이라이트 활성화
     },
   } satisfies Preset.ThemeConfig,
+
+  scripts: [
+    {
+      src: 'https://johny-dev.disqus.com/count.js',
+      async: true,
+      id: 'dsq-count-scr',
+    },
+  ],
 };
 
 export default config;
