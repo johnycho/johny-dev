@@ -14,6 +14,7 @@ import BlogPostItemContent from '@theme/BlogPostItem/Content';
 import BlogPostItemFooter from '@theme/BlogPostItem/Footer';
 import type {Props} from '@theme/BlogPostItem';
 
+import {useLocation} from '@docusaurus/router';
 import DisqusComments from '@site/src/components/DisqusComments';
 
 // apply a bottom margin in list view
@@ -23,8 +24,10 @@ function useContainerClassName() {
 }
 
 export default function BlogPostItem({children, className}: Props): ReactNode {
+  const location = useLocation();
   const {isBlogPostPage} = useBlogPost();
   const containerClassName = useContainerClassName();
+
   return (
       <BlogPostItemContainer className={clsx(containerClassName, className)}>
         <BlogPostItemHeader />
