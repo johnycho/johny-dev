@@ -1,19 +1,26 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useLocation} from '@docusaurus/router';
 
 export default function DisqusComments() {
   const location = useLocation();
+  const initializedRef = useRef(false);
+
 
   useEffect(() => {
-    // Disqus가 이미 로드된 경우 재설정
-    if ((window as any).DISQUS) {
-      (window as any).DISQUS.reset({
-        reload: true,
-        config: function () {
-          this.page.url = window.location.href;
-          this.page.identifier = window.location.pathname;
-        },
-      });
+    const resetDisqus = () => {
+      if ((window as any).DISQUS) {
+        (window as any).DISQUS.reset({
+          reload: true,
+          config: function () {
+            this.page.url = window.location.href;
+            this.page.identifier = window.location.pathname;
+          },
+        });
+      }
+    };
+
+    if (initializedRef.current) {
+      resetDisqus();
     } else {
       // 최초 로드
       const d = document;
