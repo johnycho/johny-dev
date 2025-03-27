@@ -31,6 +31,9 @@ jobs:
           publish_dir: ./build
           cname: johnycho.dev
 
+      - name: Wait for 120 seconds
+        run: sleep 120
+
       # API Reference
       # https://www.algolia.com/doc/rest-api/crawler/#tag/actions/operation/startReindex
       # DOCSEARCH_CRAWLER_CREDENTIALS is a base64-encoded string <user-id>:<api-key>
