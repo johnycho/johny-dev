@@ -1,5 +1,5 @@
-import React from 'react';
-import {CommentCount} from 'disqus-react';
+import React, {useEffect} from 'react';
+import {useLocation} from '@docusaurus/router';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 
 type Props = {
@@ -7,23 +7,25 @@ type Props = {
 };
 
 export default function DisqusCountLink({slug}: Props) {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && (window as any).DISQUSWIDGETS) {
+      (window as any).DISQUSWIDGETS.getCount({ reset: true });
+    }
+  }, [location.pathname]);
+
   return (
       <BrowserOnly>
-        {() => {
-          const disqusShortname = 'johny-dev'; // 본인 Disqus shortname
-          const disqusConfig = {
-            url: window.location.origin + slug,
-            identifier: slug,
-          };
-
-          return (
-              <a href={`${slug}#disqus_thread`} style={{ marginLeft: '1rem', fontSize: '0.9rem' }}>
-                <CommentCount shortname={disqusShortname} config={disqusConfig}>
-                  댓글
-                </CommentCount>
-              </a>
-          );
-        }}
+        {() => (
+            <a
+                href={`${slug}#disqus_thread`}
+                data-disqus-identifier={slug}
+                style={{ marginLeft: '1rem', fontSize: '0.9rem' }}
+            >
+              댓글
+            </a>
+        )}
       </BrowserOnly>
   );
 }
