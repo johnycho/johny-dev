@@ -1,6 +1,6 @@
 ---
-slug: cs-disk-access-time
-title: 디스크 접근 시간(Disk Access Time)
+slug: cs-uri-url-urn
+title: URI, URL, URN의 차이점
 tags: [ cs, network ]
 ---
 
