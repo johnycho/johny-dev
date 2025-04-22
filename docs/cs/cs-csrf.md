@@ -62,6 +62,4 @@ Referer: https://google.com/search?q=example
 👉 `http://example.com:80` 와 `https://example.com:443`는 다른 Origin 입니다.
 
 ### 5) CORS 설정
-다른 출처(Origin)의 리소스를 요청할 수 있도록 허용하는 HTTP 보안 기능으로, 브라우저의 SOP(Same-Origin Policy) 제한을 우회하기 위한 서버 설정입니다.
-
-[자세한 내용은 CORS 문서 참고](./cs-cors)
+다른 출처(Origin)의 리소스를 요청할 수 있도록 허용하는 HTTP 보안 기능으로, 브라우저의 SOP(Same-Origin Policy) 제한을 우회하기 위한 서버 설정입니다. [자세한 내용은 CORS 문서 참고](./cs-cors)
