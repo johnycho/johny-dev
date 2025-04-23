@@ -148,7 +148,7 @@ Set-Cookie: access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NT
 👉🏻 서버는 Cookie 헤더에서 `JWT` 추출
 
 #### ⚠️ 단점
-CSRF 대응 필요 (→ SameSite + CSRF Token 같이 써야 함)
+<mark>**브라우저 보안 정책상 다른 도메인(origin)으로 요청할 때, 쿠키는 기본적으로 포함되지 않기 때문**</mark>에 CSRF 대응이 필요합니다. (→ SameSite + CSRF Token 같이 써야 함)
 
 ### 3) 쿼리 스트링 방식
 ```http request
