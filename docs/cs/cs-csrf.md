@@ -29,7 +29,7 @@ GET /page HTTP/1.1
 Host: example.com
 Referer: https://google.com/search?q=example
 ```
-👉 서버는 이 요청이 google.com 검색 결과를 클릭해서 온 것임을 알 수 있음
+👉🏻 서버는 이 요청이 google.com 검색 결과를 클릭해서 온 것임을 알 수 있음
 
 ### 2) CSRF 토큰 사용
 템플릿 엔진 기술(JSP, 타임리프, Pug, Ejs 등)을 사용하고 있는 경우라면 CSRF 토큰을 사용해 볼 수 있습니다. 페이지를 생성하기 이전에 사용자 세션에 임의의 CSRF 토큰을 저장합니다. 그리고, 특정 API 요청에 대한 제출 폼을 생성할 때 해당 CSRF 토큰값이 설정된 input 태그를 추가합니다.
@@ -59,7 +59,7 @@ Referer: https://google.com/search?q=example
 | 호스트      | example.com       |
 | 포트        | 80, 443, 8080 등  |
 
-👉 `http://example.com:80` 와 `https://example.com:443`는 다른 Origin 입니다.
+👉🏻 `http://example.com:80` 와 `https://example.com:443`는 다른 Origin 입니다.
 
 ### 5) CORS 설정
 다른 출처(Origin)의 리소스를 요청할 수 있도록 허용하는 HTTP 보안 기능으로, 브라우저의 SOP(Same-Origin Policy) 제한을 우회하기 위한 서버 설정입니다. [자세한 내용은 CORS 문서 참고](./cs-cors)
