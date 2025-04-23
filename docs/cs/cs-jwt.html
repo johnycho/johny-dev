@@ -11,7 +11,7 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.46a6029e.css">
-<script src="/assets/js/runtime~main.d8fd3e5e.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.81b0ea46.js" defer="defer"></script>
 <script src="/assets/js/main.01d7c83c.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -105,7 +105,7 @@
 <p>👉🏻 클라이언트가 다음 요청 시 자동으로 쿠키를 보냄<br>
 <!-- -->👉🏻 서버는 Cookie 헤더에서 <code>JWT</code> 추출</p>
 <h4 class="anchor anchorWithStickyNavbar_LWe7" id="️-단점">⚠️ 단점<a href="#️-단점" class="hash-link" aria-label="⚠️ 단점에 대한 직접 링크" title="⚠️ 단점에 대한 직접 링크">​</a></h4>
-<p>CSRF 대응 필요 (→ SameSite + CSRF Token 같이 써야 함)</p>
+<p><mark><strong>브라우저 보안 정책상 다른 도메인(origin)으로 요청할 때, 쿠키는 기본적으로 포함되지 않기 때문</strong></mark>에 CSRF 대응이 필요합니다. (→ SameSite + CSRF Token 같이 써야 함)</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="3-쿼리-스트링-방식">3) 쿼리 스트링 방식<a href="#3-쿼리-스트링-방식" class="hash-link" aria-label="3) 쿼리 스트링 방식에 대한 직접 링크" title="3) 쿼리 스트링 방식에 대한 직접 링크">​</a></h3>
 <div class="language-http codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-http codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">GET /api/user?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 <p>❗️URL이 로그에 남거나 공유될 수 있고, 링크 클릭 시 Referer 헤더를 통해 외부로 노출될 위험이 있기 때문에 일반적으로 권장되지 않습니다.</p>
