@@ -41,7 +41,7 @@ tags: [ cs ]
 ![Write Around](img/write-around.png)
 
 ## ✔️ Write Behind(Write Back)
-원본 데이터에 대한 변경분이 생긴 경우, 캐시를 먼저 업데이트한 이후 추후에 원본 데이터를 변경합니다. 디스크 쓰기 작업을 비동기 작업으로 수행하여 성능을 개선할 수 있습니다. 원본 데이터와 캐시가 일시적으로 일치하지 않을 수 있있기 때문에 쓰기 작업이 빈번하며 일시적인 캐시 불일치를 허용하는 서비스에서 유용하게 사용될 수 있습니다.
+원본 데이터에 대한 변경분이 생긴 경우, 캐시를 먼저 업데이트한 이후 추후에 원본 데이터를 변경합니다. 디스크 쓰기 작업을 비동기 작업으로 수행하여 성능을 개선할 수 있습니다. 원본 데이터와 캐시가 일시적으로 일치하지 않을 수 있기 때문에 쓰기 작업이 빈번하며 일시적인 캐시 불일치를 허용하는 서비스에서 유용하게 사용될 수 있습니다.
 
 ![Write Back](img/write-back-1.png)
 ![Write Back](img/write-back-2.png)
@@ -72,7 +72,7 @@ public class UserCache {
   }
 
   public User getUser(Long userId) {
-    // 캐시에서 조회. Miss 시 자동으로 DB에서 로딩하여 저장
+    // 캐시에서 조회. Miss시 자동으로 DB에서 로딩하여 저장
     return cache.get(userId);
   }
 }
@@ -97,7 +97,7 @@ public class UserCacheLoader implements CacheLoader<Long, User> {
 
     @Override
     public User load(Long userId) throws Exception {
-        // Ehcache가 이 메서드를 캐시 Miss 시 자동 호출
+        // Ehcache가 이 메서드를 캐시 Miss시 자동 호출
         return userRepository.findById(userId);
     }
 
