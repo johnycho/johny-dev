@@ -1,6 +1,6 @@
 ---
 slug: spring-transactional-aop
-title: @Transactional 어노테이션 AOP 동작 흐름
+title: '@Transactional 어노테이션 AOP 동작 흐름'
 tags: [ spring, jpa ]
 ---
 
