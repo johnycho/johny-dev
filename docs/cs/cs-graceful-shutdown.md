@@ -1,10 +1,10 @@
 ---
 slug: cs-graceful-shutdown
-title: 우아한 종료 (Graceful Shutdown)
+title: Graceful Shutdown (우아한 종료)
 tags: [ cs, spring ]
 ---
 
-## ✔️ 우아한 종료 (Graceful Shutdown)
+## ✔️ `Graceful Shutdown` (우아한 종료)
 애플리케이션이 종료될 때 바로 종료하는 것이 아니라, 현재 처리하고 있는 작업을 마무리하고 리소스를 정리한 이후 종료하는 방식을 의미합니다. 서버 애플리케이션에서 일반적인 `Graceful Shutdown`은 `SIGTERM` 신호를 받았을 때, 새로운 요청은 차단하고 기존 처리 중인 요청을 모두 완료한 뒤에 프로세스를 종료합니다. 만약, 서버 애플리케이션이 요청을 처리하는 중에 즉각적으로 애플리케이션을 종료한다면 트랜잭션 비정상 종료, 데이터 손실, 사용자 경험 저하 문제가 발생할 수 있습니다.
 
 ## ✔️ `SIGTERM`과 `SIGKILL`의 차이점
