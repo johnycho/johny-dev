@@ -11,7 +11,7 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.46a6029e.css">
-<script src="/assets/js/runtime~main.28d0ab2f.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.021743c4.js" defer="defer"></script>
 <script src="/assets/js/main.3f079319.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -20,7 +20,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-1nf-first-normal-form">✔️ 1NF (First Normal Form)<a href="#️-1nf-first-normal-form" class="hash-link" aria-label="✔️ 1NF (First Normal Form)에 대한 직접 링크" title="✔️ 1NF (First Normal Form)에 대한 직접 링크">​</a></h2>
 <p>테이블 컬럼의 값이 원자값(Atomic Value)을 가지도록 정리하는 것을 의미합니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="핵심-요건">핵심 요건<a href="#핵심-요건" class="hash-link" aria-label="핵심 요건에 대한 직접 링크" title="핵심 요건에 대한 직접 링크">​</a></h3>
-<table><thead><tr><th>요건</th><th>설명</th></tr></thead><tbody><tr><td>원자성(Atomicity)</td><td>각 컬럼은 <strong>하나의 값만 가져야 함</strong> (리스트, 배열, 콤마 구분값 불가)</td></tr><tr><td>반복 컬럼 금지</td><td>phone1, phone2 같은 <strong>중복되는 컬럼 그룹은 허용되지 않음</strong></td></tr><tr><td>테이블 구조 평탄화</td><td><strong>테이블 내 셀은 스칼라(단일) 값으로 구성</strong>되어야 함</td></tr><tr><td>행으로 분리</td><td>하나의 엔터티가 여러 값을 가지면 <strong>여러 행으로 나누어 표현</strong>해야 함</td></tr></tbody></table>
+<table><thead><tr><th>요건</th><th>설명</th></tr></thead><tbody><tr><td>원자성(Atomicity)</td><td>각 컬럼은 <strong>하나의 값만 가져야 함</strong> (리스트, 배열, 콤마 구분값 불가)</td></tr><tr><td>반복 컬럼 금지</td><td>phone1, phone2 같은 <strong>중복되는 컬럼 그룹은 허용되지 않음</strong></td></tr><tr><td>테이블 구조 평탄화</td><td><strong>테이블 내 셀은 스칼라(단일) 값으로 구성</strong>되어야 함</td></tr><tr><td>행으로 분리</td><td>하나의 컬럼이 여러 값을 가지면 <strong>여러 행으로 나누어 표현</strong>해야 함</td></tr></tbody></table>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="-1nf-위반">❌ 1NF 위반<a href="#-1nf-위반" class="hash-link" aria-label="❌ 1NF 위반에 대한 직접 링크" title="❌ 1NF 위반에 대한 직접 링크">​</a></h3>
 <table><thead><tr><th><code>학생ID</code></th><th><code>이름</code></th><th><code>전화번호</code></th></tr></thead><tbody><tr><td>1</td><td>홍길동</td><td>010-1234-5678, 010-9876-5432</td></tr><tr><td>2</td><td>김영희</td><td>010-2222-3333</td></tr></tbody></table>
 <p>전화번호 컬럼에 복수 개의 값이 들어 있음 → 비원자적 (1NF 위반)</p>
