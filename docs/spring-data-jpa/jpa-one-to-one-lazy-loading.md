@@ -74,7 +74,7 @@ public class User {
 이 설정은 `Account`가 null이 아님을 보장하므로 프록시 초기화가 가능해집니다.  
 ❗하지만 모든 `Hibernate` 버전에서 지원되는 것은 아닙니다. 적용 여부는 버전 별 동작 확인이 필요합니다.
 
-### ✅ 해결책 2 – @MapsId 이용한 단방향 공유 PK 매핑 (가장 안정적)
+### ✅ 해결책 2 – `@MapsId` 이용한 단방향 공유 PK 매핑 (가장 안정적)
 ```java
 @Entity(name = "users")
 public class User {
