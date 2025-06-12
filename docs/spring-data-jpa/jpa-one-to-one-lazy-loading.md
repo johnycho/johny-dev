@@ -110,3 +110,6 @@ public class Account {
 | `@ManyToOne`   | `FetchType.EAGER` |
 | `@OneToMany`   | `FetchType.LAZY`  |
 | `@ManyToMany`  | `FetchType.LAZY`  |
+
+## 🔗 레퍼런스
+[Thorben Janssen - Hibernate Tip: How to lazily load one-to-one associations](https://thorben-janssen.com/hibernate-tip-lazy-loading-one-to-one/)
