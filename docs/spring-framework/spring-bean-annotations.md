@@ -16,7 +16,7 @@ Spring MVC에서 웹 요청을 처리하는 컨트롤러 클래스에 사용되�
 데이터베이스와의 상호작용을 수행하는 클래스에 사용되며. <mark>데이터 액세스 레이어의 Bean</mark>을 나타냅니다.
 
 ## ✔️ @Controller, @Repository 대신 @Component 사용하면 안되나?
-Spring 6(Spring Boot 3) 이전 버전에서는 `@Component` + `@RequestMapping`으로도 Bean 및 핸들러로 등록되었습니다. 하지만 Spring 6 이후 부터 `@Controller` 외에는 핸들러로 등록하지 않아 웹 요청을 정상적으로 수행할 수 없습니다.
+Spring 6 (Spring Boot 3) 이전 버전에서는 `@Component` + `@RequestMapping`으로도 Bean 및 핸들러로 등록되었습니다. 하지만 Spring 6 이후 부터 `@Controller` 외에는 핸들러로 등록하지 않아 웹 요청을 정상적으로 수행할 수 없습니다.
 ```java
 public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMapping 
                 implements MatchableHandlerMapping, EmbeddedValueResolverAware {
