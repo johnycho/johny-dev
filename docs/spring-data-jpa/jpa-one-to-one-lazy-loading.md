@@ -1,6 +1,6 @@
 ---
 slug: jpa-one-to-one-lazy-loading
-title: @OneToOne 연관관계 Lazy Loading 문제
+title: `@OneToOne` 연관관계 Lazy Loading 문제
 tags: [ spring, jpa ]
 ---
 
