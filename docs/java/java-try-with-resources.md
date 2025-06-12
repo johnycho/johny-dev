@@ -6,7 +6,7 @@ tags: [ java ]
 
 커넥션, 입출력 스트림과 같은 자원을 사용한 후에는 자원을 해제해서 성능 문제, 메모리 누수 등을 방지해야 합니다. `try-with-resources`는 이러한 자원을 자동으로 해제하는 기능으로, java 7부터 도입되었습니다.
 
-✅`try-with-resources`가 정상적으로 동작하려면 `AutoCloseable` 인터페이스를 구현한 객체를 사용해야 하고, `try()` 괄호 내에서 변수를 선언해야 합니다.
+✅ `try-with-resources`가 정상적으로 동작하려면 `AutoCloseable` 인터페이스를 구현한 객체를 사용해야 하고, `try()` 괄호 내에서 변수를 선언해야 합니다.
 ```java
 try (BufferedReader br = new BufferedReader(new FileReader("path"))) {
     return br.readLine();
@@ -52,7 +52,7 @@ try {
 
 또한 여러 개의 자원을 다룰 경우, 먼저 `close()`를 호출한 자원에서 에러가 발생하면 다음에 `close()`를 호출한 자원은 해제되지 않습니다. 이를 해결하려면 추가적인 `try-catch-finally`가 필요하기 때문에 가독성이 떨어지고, 실수할 가능성이 높습니다.
 
-### ✅`try-with-resources`로 `try-catch-finally`의 문제를 해결 가능
+### ✅ `try-with-resources`로 `try-catch-finally`의 문제를 해결 가능
 * `try` 블록이 종료될 때 `close()`를 자동으로 호출해서 자원을 해제합니다.
 * `finally` 블록 없이도 자원을 안전하게 정리하기 때문에 코드가 간결해집니다.
 * `try` 문에서 여러 자원을 선언하면, 선언된 반대 순서로 자동 해제됩니다.
