@@ -67,3 +67,8 @@ html[data-theme='dark'] .navbar-github-logo {
   border-radius: 50%; /* 원형으로 만들기 */
   object-fit: cover;
 }
+
+.nanum-pen-script {
+  font-family: 'Nanum Pen Script', cursive;
+  color: #fff;
+}
