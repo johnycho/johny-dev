@@ -33,6 +33,14 @@ const config: Config = {
     locales: ['ko'],
   },
 
+  stylesheets: [
+    {
+      // 기본 글씨체 변경
+      href: 'https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap',
+      type: 'text/css',
+    },
+  ],
+
   presets: [
     [
       'classic',
