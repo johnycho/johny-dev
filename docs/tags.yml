@@ -3,6 +3,11 @@ cs:
   permalink: /cs
   description: Computer Science tag description
 
+data-structure:
+  label: Data Structure
+  permalink: /data-structure
+  description: Data Structure tag description
+
 network:
   label: Network
   permalink: /network

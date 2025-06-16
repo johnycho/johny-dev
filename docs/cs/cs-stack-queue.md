@@ -1,10 +1,10 @@
 ---
 slug: cs-stack-queue
-title: 스택 자료구조
-tags: [ cs, java ]
+title: 스택(Stack) 자료 구조
+tags: [ cs, data-structure, java ]
 ---
 
-## ✔️ 스택(Stack)
+## ✔️ `스택 (Stack)`
 후입선출(Last In First Out, 나중에 들어간 값이 먼저 나온다)이라는 개념을 가진 선형 자료구조입니다. 스택 자료구조에서 삭제(pop)는 가장 최상단(top)에서만 이루어집니다. 비어있는 스택에서 값을 추출하려고 시도하는 경우를 `스택 언더플로우`라고 하며, 스택이 넘치는 경우를 `스택 오버플로우`라고 합니다. 대표적인 활용 사례는 스택 메모리, 브라우저 뒤로가기 기능, 언두 기능, 수식 괄호 검사 등이 있습니다.
 
 ## ✔️ 자바에서 스택은 어떻게 사용할 수 있을까?
@@ -26,10 +26,10 @@ public class Application {
 // 두 번째 요소
 ```
 
-## ✔️ 큐 (Queue)
+## ✔️ `큐 (Queue)`
 선입선출(First In First Out, 먼저 들어간 값이 먼저 나온다) 자료구조를 구현한 자바의 인터페이스다. 인덱스로 요소에 접근이 불가능하다.
 
-## ✔️ Double-Ended Queue (양방향 큐)
+## ✔️ `Double-Ended Queue (양방향 큐)`
 Queue 인터페이스를 확장한 인터페이스다. 자료의 입출력을 양 끝에서 할 수 있다. 인덱스로 요소에 액세스, 삽입, 제거를 허용하지 않는다.
 
 ```java
@@ -48,6 +48,6 @@ public class Application {
 // 세 번째 요소
 // 첫 번째 요소
 ```
-### Deque 인터페이스 구현체
+### `Deque` 인터페이스 구현체
 - ArrayDeque
 - LinkedList
