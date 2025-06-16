@@ -18,8 +18,8 @@
 
   /** 기본 폰트 변경 */
   --ifm-font-family-base: 'SDMiSaeng', sans-serif;
-  --ifm-font-size-base: 130%;
-  --ifm-code-font-size: 70%;
+  --ifm-font-size-base: 140%;
+  --ifm-code-font-size: 60%;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
