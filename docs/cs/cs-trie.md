@@ -7,7 +7,7 @@ tags: [ cs, data-structure, java ]
 ## ✔️ `트라이 (Trie)` 자료 구조란?
 <mark>**문자열 집합을 효율적으로 저장하고 탐색하기 위해 특화된 트리 자료 구조**</mark>로, `Digital Tree`, `Radix Tree`, `Prefix Tree` 라고도 부릅니다.
 
-`트라이(Trie)`라는 명칭은 <mark>**re**trie**val tree**</mark>에서 나온 단어입니다.
+`트라이(Trie)`라는 명칭은 <mark>re**trie**val tree</mark>에서 나온 단어입니다.
 
 문자열 자동 완성 기능과 같이 문자열을 저장하고 탐색하는데 유용하게 사용됩니다.
 
