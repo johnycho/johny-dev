@@ -35,7 +35,7 @@ const config: Config = {
 
   stylesheets: [
     {
-      // 기본 글씨체 변경
+      // 폰트 추가
       href: 'https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap',
       type: 'text/css',
     },
