@@ -1,5 +1,5 @@
 ---
-slug: cs-stack-queue
+slug: cs-trie
 title: 트라이(Trie) 자료 구조
 tags: [ cs, data-structure, java ]
 ---
