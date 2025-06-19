@@ -1,10 +1,9 @@
 ---
-slug: db-lock
-title: 공유 락과 배타 락
+slug: db-shared-exclusive-lock
+title: 공유 락(Shared Lock)과 배타 락(Exclusive Lock)
 tags: [ db ]
 ---
 
-# 공유 락(Shared Lock)과 배타 락(Exclusive Lock)이 뭘까?
 DBMS에서 트랜잭션을 특별한 제어 없이 병행 수행을 허용한다면 데이터의 일관성과 무결성을 보장하기 어려울 수 있습니다. 이때, 병행 수행되는 트랜잭션들을 제어하기 위해서 락을 사용할 수 있으며 DBMS에서 락은 크게 `공유 락`과 `배타 락`으로 분류할 수 있습니다.
 
 ### 공유 락(Shared Lock)
