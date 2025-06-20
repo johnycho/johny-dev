@@ -8,7 +8,7 @@ tags: [ db, cache ]
 
 ## ✔️ Cache Aside (Look Aside, Lazy Loading)
 `Cache Aside` 방식은 캐시 히트 시 캐시에서 데이터를 불러오며, 캐시 미스 발생 시 원본 데이터베이스에서 조회하여 반환합니다. 애플리케이션은 캐시 미스가 발생하면 해당 데이터를 캐시에 적재합니다.
-보통 가장 많이 사용되는 캐싱 전략입니다. Cache는 Database에 직접 연결되지 않고, application이 주체가 된다.
+<mark>**보통 가장 많이 사용되는 캐싱 전략**</mark>입니다. Cache는 Database에 직접 연결되지 않고, application이 주체가 된다.
 
 ![Cache Aside](img/cache-aside-1.png)
 ![Cache Aside](img/cache-aside-2.png)
