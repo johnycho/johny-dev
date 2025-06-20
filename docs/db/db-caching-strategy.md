@@ -1,7 +1,7 @@
 ---
-slug: cs-caching-strategy
+slug: db-caching-strategy
 title: 캐싱 전략
-tags: [ cs ]
+tags: [ db, cache ]
 ---
 
 캐시는 성능 향상과 부하 감소를 목표로 합니다. 이때 캐시를 사용하는 양상이 서비스에 큰 영향을 끼치기도 합니다. 따라서, 캐싱 전략을 이해하는 것은 중요합니다.

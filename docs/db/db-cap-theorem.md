@@ -1,7 +1,7 @@
 ---
-slug: cs-cap-theorem
+slug: db-cap-theorem
 title: CAP 정리 (= 브루어(Brewer)의 정리)
-tags: [ cs, db ]
+tags: [ cs, db, network ]
 ---
 
 CAP 정리 (= 브루어(Brewer)의 정리)는 분산 데이터베이스 시스템이 CAP 중 2개의 속성만을 제공할 수 있다는 이론입니다. CAP 정리에 따르자면, `일관성(Consistency)`, `가용성(Availability)`, `분할 내성(Partition Tolerance)` 등 <mark>**3가지 속성을 모두 만족하는 분산 데이터베이스 시스템은 존재하지 않습니다.**</mark>

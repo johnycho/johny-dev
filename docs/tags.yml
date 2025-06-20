@@ -33,6 +33,11 @@ db:
   permalink: /db
   description: Database tag description
 
+cache:
+  label: Cache
+  permalink: /cache
+  description: Cache tag description
+
 mysql:
   label: MySQL
   permalink: /mysql
