@@ -69,6 +69,13 @@ const config: Config = {
   ],
 
   themeConfig: {
+    // 네이버 SEO 설정
+    metadata: [
+      {
+        name: 'naver-site-verification',
+        content: 'a65c47dcb20d7111ecf322e7def1006c7e83100d',
+      }
+    ],
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
     colorMode: {
