@@ -11,7 +11,6 @@ JPA에서 ID를 생성하기 위해서는 직접 할당과 자동 할당을 사�
 전략을 설정할 수 있는데, 여기에 올 수 있는 값인 GenerationType는 다음과 같습니다.
 
 ```java
-
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface GeneratedValue {
