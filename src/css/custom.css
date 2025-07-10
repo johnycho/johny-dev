@@ -19,7 +19,7 @@
   /** 기본 폰트 변경 */
   --ifm-font-family-base: 'NanumSquareRound', 'SDMiSaeng', sans-serif;
   --ifm-font-size-base: 100%;
-  --ifm-code-font-size: 100%;
+  --ifm-code-font-size: 70%;
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
