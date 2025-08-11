@@ -1,6 +1,6 @@
 ---
 slug: db-rdb-paging
-title: RDB 페이징 쿼리(Paging Query)
+title: RDB 페이징 쿼리 (Paging Query)
 tags: [ db ]
 ---
 
