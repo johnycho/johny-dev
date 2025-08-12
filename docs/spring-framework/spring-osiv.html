@@ -11,7 +11,7 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.70dfe971.css">
-<script src="/assets/js/runtime~main.3afe5a55.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.eec176c2.js" defer="defer"></script>
 <script src="/assets/js/main.573bfed9.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -41,7 +41,7 @@
 <li><code>OSIV</code> 기능을 사용하면 <mark><strong>상대적으로 오래 DB 커넥션을 점유</strong></mark>하기 때문에 커넥션 고갈로 이어질 수 있습니다.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="️-osiv-기능-비활성화">✔️ <code>OSIV</code> 기능 비활성화<a href="#️-osiv-기능-비활성화" class="hash-link" aria-label="️-osiv-기능-비활성화에 대한 직접 링크" title="️-osiv-기능-비활성화에 대한 직접 링크">​</a></h2>
-<p><code>OSIV</code> 기능이 활성화되어 있는 경우에는 <mark><strong>트랜잭션의 범위를 벗어나도 커넥션을 계속 유지</strong></mark>해요. 만약 <mark><strong>트래픽을 많이 받는 상황이라면, 커넥션 고갈</strong></mark>로 이어질 수 있습니다. <code>OSIV</code> 기능을 비활성화하여 데이터베이스 커넥션을 효율적으로 사용할 수 있습니다.</p>
+<p><code>OSIV</code> 기능이 활성화되어 있는 경우에는 <mark><strong>트랜잭션의 범위를 벗어나도 커넥션을 계속 유지</strong></mark>합니다. 만약 <mark><strong>트래픽을 많이 받는 상황이라면, 커넥션 고갈</strong></mark>로 이어질 수 있습니다. <code>OSIV</code> 기능을 비활성화하여 데이터베이스 커넥션을 효율적으로 사용할 수 있습니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="그러면-무조건-osiv-기능을-비활성화해야-할까">그러면 무조건 OSIV 기능을 비활성화해야 할까?<a href="#그러면-무조건-osiv-기능을-비활성화해야-할까" class="hash-link" aria-label="그러면 무조건 OSIV 기능을 비활성화해야 할까?에 대한 직접 링크" title="그러면 무조건 OSIV 기능을 비활성화해야 할까?에 대한 직접 링크">​</a></h3>
 <p>무조건 비활성화하기 보다는 꺼야하는 근거가 필요합니다. 만약 트랜잭션 범위 밖에서 지연로딩을 반드시 수행해야하는 경우에는 활성화해야 합니다.</p>
 <p>데이터베이스를 복제하여 사용하는 경우, 데이터 소스도 분리해야 하는데, <code>OSIV</code> 기능으로 인해 예기치 않은 데이터베이스로 요청이 전달될 수 있습니다.<br>
