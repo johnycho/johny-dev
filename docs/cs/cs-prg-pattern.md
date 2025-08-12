@@ -1,7 +1,7 @@
 ---
 slug: cs-prg-pattern
 title: PRG(Post/Redirect/Get) 패턴
-tags: [ cs, network ]
+tags: [ cs, network, design-pattern ]
 ---
 
 ## ✔️ PRG 패턴

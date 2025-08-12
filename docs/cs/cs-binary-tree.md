@@ -1,7 +1,7 @@
 ---
 slug: cs-binary-tree
 title: 이진 트리 (Binary Tree)
-tags: [ cs ]
+tags: [ cs, data-structure ]
 ---
 
 `트리(Tree)` 는 방향이 존재하는 그래프의 일종으로 부모 정점 밑에 여러 자식 정점이 연결되고, 자식 정점 각각에 다시 자식 정점이 연결되는 재귀적 형태의 자료구조입니다. 그 중에서 <mark>**각 정점이 최대 2개의 자식 정점을 가지는 트리**</mark>를 `이진 트리(Binary Tree)` 라고 합니다.

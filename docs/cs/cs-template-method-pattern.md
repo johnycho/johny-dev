@@ -1,7 +1,7 @@
 ---
 slug: cs-template-method-pattern
 title: 템플릿 메서드 패턴 (Template Method Pattern)
-tags: [ cs ]
+tags: [ cs, design-pattern ]
 ---
 
 ## ✔️ 템플릿 메서드 패턴 (Template Method Pattern)

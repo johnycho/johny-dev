@@ -1,7 +1,7 @@
 ---
 slug: cs-null-object-pattern
 title: 널 오브젝트 패턴 (Null Object Pattern)
-tags: [ cs ]
+tags: [ cs, design-pattern ]
 ---
 
 ## ✔️ 널 오브젝트 패턴(Null Object Pattern)

@@ -1,7 +1,7 @@
 ---
 slug: cs-cqrs-pattern
 title: CQRS(명령 쿼리 책임 분리) 패턴
-tags: [ cs ]
+tags: [ cs, design-pattern ]
 ---
 
 시스템은 크게 상태 변경과 조회 기능을 제공하는데요. 주문 취소, 결제 기능은 상태 변경에 해당되며, 주문서 조회, 사용자 조회 등이 조회에 해당됩니다.

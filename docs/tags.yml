@@ -3,6 +3,11 @@ cs:
   permalink: /cs
   description: Computer Science tag description
 
+design-pattern:
+  label: Design Pattern
+  permalink: /design-pattern
+  description: Design Pattern tag description
+
 data-structure:
   label: Data Structure
   permalink: /data-structure
