@@ -11,7 +11,7 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.70dfe971.css">
-<script src="/assets/js/runtime~main.eec176c2.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.8d686765.js" defer="defer"></script>
 <script src="/assets/js/main.573bfed9.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -26,7 +26,7 @@
 <p>이렇게 단순하게 요청하는 것을 <strong>Simple Request</strong>라고 합니다. <strong>Simple Request</strong>은 요청 메서드(GET, POST, HEAD), 수동으로 설정한 요청 헤더(Accept, Accept-Language, Content-Language, Content-Type, Range), Content-Type 헤더(application/x-www-form-urlencoded, multipart/form-data, text/plain)인 경우에만 해당합니다.</p>
 <p>브라우저가 사전 요청을 보내는 경우도 있습니다. 이때 사전 요청을 <strong>Preflight Request</strong>라고 합니다. 브라우저가 본 요청을 보내기 이전, <strong>Preflight Request</strong>를 <mark>OPTIONS 메서드</mark>로 요청을 보내어 실제 요청이 안전한지 확인합니다.</p>
 <p><strong>Preflight Request</strong>는 추가로 Access-Control-Request-Method로 실 요청 메서드와, Access-Control-Request-Headers 헤더에 실 요청의 추가 헤더 목록을 담아서 보내야 합니다.</p>
-<p>이에 대한 응답은 대응되는 Access-Control-Allow-Methods와 Access-Control-Headers를 보내야 하고, Preflight Request로 인한 추가 요청을 줄이기 위해 캐시 기간을 Access-Control-Max-Age에 담아서 보내야 합니다.</p>
+<p>이에 대한 응답은 대응되는 Access-Control-Allow-Methods와 Access-Control-Allow-Headers를 보내야 하고, Preflight Request로 인한 추가 요청을 줄이기 위해 캐시 기간을 Access-Control-Max-Age에 담아서 보내야 합니다.</p>
 <p>또한 인증된 요청을 사용하는 방식도 있는데요. 이를 <strong>Credential Request</strong>라고 합니다. 쿠키나 토큰과 같은 인증 정보를 포함한 요청은 더욱 안전하게 처리되어야 합니다. 이때 <strong>Credential Request</strong>를 수행합니다.</p>
 <p><strong>Credential Request</strong>를 요청하는 경우에는 서버에서는 Access-Control-Allow-Credentials를 true로 설정해야 하며 Access-Control-Allow-Origin에 와일드카드를 사용하지 못합니다.</p>
 <hr>
