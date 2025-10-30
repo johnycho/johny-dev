@@ -23,7 +23,7 @@ CSRF를 예방하기 위해 브라우저는 동일 출처 정책(SOP, same-origi
 
 **Preflight Request**는 추가로 Access-Control-Request-Method로 실 요청 메서드와, Access-Control-Request-Headers 헤더에 실 요청의 추가 헤더 목록을 담아서 보내야 합니다.
 
-이에 대한 응답은 대응되는 Access-Control-Allow-Methods와 Access-Control-Headers를 보내야 하고, Preflight Request로 인한 추가 요청을 줄이기 위해 캐시 기간을 Access-Control-Max-Age에 담아서 보내야 합니다.
+이에 대한 응답은 대응되는 Access-Control-Allow-Methods와 Access-Control-Allow-Headers를 보내야 하고, Preflight Request로 인한 추가 요청을 줄이기 위해 캐시 기간을 Access-Control-Max-Age에 담아서 보내야 합니다.
 
 또한 인증된 요청을 사용하는 방식도 있는데요. 이를 **Credential Request**라고 합니다. 쿠키나 토큰과 같은 인증 정보를 포함한 요청은 더욱 안전하게 처리되어야 합니다. 이때 **Credential Request**를 수행합니다.
 
