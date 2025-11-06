@@ -13,7 +13,9 @@
         <link href="https://johnycho.dev/blog/spring-cloud-config-decrypt"/>
         <updated>2025-11-06T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[Spring Cloud Config Server를 쓰다 보면,]]></summary>
-        <content type="html"><![CDATA[<p>Spring Cloud Config Server를 쓰다 보면,
+        <content type="html"><![CDATA[<br>
+<br>
+<p>Spring Cloud Config Server를 쓰다 보면,
 암호화된 설정값 <code>{cipher}...</code>가 복호화에 실패하면서 <code>invalid.my.secret</code> 형태로 노출되고,
 결국 로컬 <code>application.properties</code>의 값이 적용되는 걸 본 적이 있을 겁니다.</p>
 <p>오늘은 그 내부 메커니즘을 코어 코드 레벨에서까지 뜯어보려 합니다.</p>
