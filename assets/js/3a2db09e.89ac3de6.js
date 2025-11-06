@@ -1,1 +1,0 @@
-"use strict";(self.webpackChunkjohnycho_dev=self.webpackChunkjohnycho_dev||[]).push([[8121],{8070:e=>{e.exports=JSON.parse('{"tags":[{"label":"Spring","permalink":"/blog/tags/spring","description":"Spring tag description","count":1},{"label":"Hello","permalink":"/blog/tags/hello","description":"Hello tag description","count":1}]}')}}]);
