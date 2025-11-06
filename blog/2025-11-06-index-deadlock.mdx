@@ -51,9 +51,9 @@ UPDATE user_balance SET balance = balance + 10 WHERE id = 10;
 ### 내부 락 플로우 분석
 <table>
   <tr><th>순서</th><th>A (세컨더리 인덱스 경로)</th><th>B (PK 경로)</th></tr>
-  <tr><td>1</td><td>idx_user 인덱스 탐색 (Record Lock)</td><td>PK = 10 Row Lock</td></tr>
+  <tr><td>1</td><td>`idx_user` 인덱스 탐색 (Record Lock)</td><td>PK = 10 Row Lock</td></tr>
   <tr><td>2</td><td>PK lookup으로 전환하려 함</td><td>이미 B가 PK 락을 선점</td></tr>
-  <tr><td>3</td><td>대기 상태 진입</td><td>A가 idx_user 락을 선점 중</td></tr>
+  <tr><td>3</td><td>대기 상태 진입</td><td>A가 `idx_user` 락을 선점 중</td></tr>
   <tr><td>4</td><td colSpan={2} style={{ textAlign: 'center' }}>서로 상대 락을 기다리며 Deadlock</td></tr>
 </table>
 즉, <mark>락 획득 순서 불일치 (Lock Ordering Inconsistency) 가 데드락의 핵심 원인</mark>입니다.
