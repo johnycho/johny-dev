@@ -61,39 +61,39 @@ UPDATE user_balance SET balance = balance + 10 WHERE id = 10;
 <table>
   <thead>
     <tr>
-      <th style="text-align:center;">순서</th>
-      <th style="text-align:center;">트랜잭션 A</th>
-      <th style="text-align:center;">트랜잭션 B</th>
+      <th>순서</th>
+      <th>트랜잭션 A</th>
+      <th>트랜잭션 B</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align:center;">1</td>
+      <td style={{ textAlign: 'center' }}>1</td>
       <td><code>idx_user</code> 락 획득</td>
       <td></td>
     </tr>
     <tr>
-      <td style="text-align:center;">2</td>
+      <td style={{ textAlign: 'center' }}>2</td>
       <td>PK로 lookup 시도, 하지만 B가 이미 PK 락 보유</td>
       <td></td>
     </tr>
     <tr>
-      <td style="text-align:center;">3</td>
+      <td style={{ textAlign: 'center' }}>3</td>
       <td>대기 상태</td>
       <td>PK 락 보유 중</td>
     </tr>
     <tr>
-      <td style="text-align:center;">4</td>
+      <td style={{ textAlign: 'center' }}>4</td>
       <td></td>
       <td>B는 업데이트 중, PK 락을 가진 상태로 내부적으로 인덱스 정합성 유지 위해 <code>idx_user</code> 갱신 필요</td>
     </tr>
     <tr>
-      <td style="text-align:center;">5</td>
+      <td style={{ textAlign: 'center' }}>5</td>
       <td></td>
       <td>그런데 <code>idx_user</code>는 A가 락을 잡고 있음</td>
     </tr>
     <tr>
-      <td style="text-align:center;">6</td>
+      <td style={{ textAlign: 'center' }}>6</td>
       <td>🚨 교착 발생</td>
       <td>🚨 교착 발생</td>
     </tr>
