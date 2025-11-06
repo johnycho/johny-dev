@@ -1,0 +1,72 @@
+---
+slug: spring-cloud-config-decrypt
+title: Spring Cloud Config의 복호화 실패 처리 과정 — {cipher}...가 invalid.*로 바뀌는 이유
+authors: [ johnycho ]
+tags: [ spring ]
+---
+
+# 🧩 Spring Cloud Config의 복호화 실패 처리 과정 — {cipher}...가 invalid.*로 바뀌는 이유
+Spring Cloud Config Server를 쓰다 보면,
+암호화된 설정값 `{cipher}...`가 복호화에 실패하면서 `invalid.my.secret` 형태로 노출되고,
+결국 로컬 `application.properties`의 값이 적용되는 걸 본 적이 있을 겁니다.
+
+오늘은 그 내부 메커니즘을 코어 코드 레벨에서까지 뜯어보려 합니다.
+
+## 암호화된 설정이 서버에 전달되는 구조
+Config Server는 Git, FileSystem, Vault 등에서 설정 파일을 읽고,
+`EnvironmentRepository.findOne()`을 통해 클라이언트에 `Environment` 객체(JSON)를 반환합니다.
+
+이때 설정값 중 `{cipher}...`로 시작하는 항목이 있으면  
+`EnvironmentController` → `EnvironmentRepository` → `EnvironmentEncryptor.decrypt()`
+단계를 거치며 복호화를 시도합니다.
+```java
+// EnvironmentEncryptorEnvironmentRepository.java
+@Override
+public Environment findOne(String name, String profiles, String label, boolean includeOrigin) {
+    Environment environment = this.delegate.findOne(name, profiles, label, includeOrigin);
+    if (this.environmentEncryptors != null) {
+        for (EnvironmentEncryptor environmentEncryptor : environmentEncryptors) {
+            environment = environmentEncryptor.decrypt(environment);
+        }
+    }
+    if (!this.overrides.isEmpty()) {
+        environment.addFirst(new PropertySource("overrides", getOverridesMap(includeOrigin)));
+    }
+    return environment;
+}
+```
+기본적으로 아래 두 개의 `EnvironmentEncryptor`가 존재합니다.
+* `CipherEnvironmentEncryptor` (기본 RSA/Key 기반 복호화)
+* `VaultEnvironmentEncryptor` (HashiCorp Vault 연동 시)
+
+## 복호화 실패 시 `invalid.*` 키로 무효화 처리
+`CipherEnvironmentEncryptor.decrypt()` 내부를 보면,
+각 `PropertySource`의 키/값을 순회하며 `{cipher}` 접두어가 붙은 항목을 복호화합니다.
+
+복호화 중 예외(`EncryptionOperationNotPossibleException`)가 발생하면 다음과 같이 처리됩니다.
+```java
+// CipherEnvironmentEncryptor.decrypt() 코드 요약
+catch (Exception e){
+    if(this.prefixInvalidProperties) {
+        value = "<n/a>";
+        name = "invalid." + name;
+    }
+    String message = "Cannot decrypt key: " + key + " (" + e.getClass() + ": " + e.getMessage() + ")";
+}
+map.put(name, value);
+```
+즉, 원래 키 `my.secret` 대신 `invalid.my.secret`이 추가됩니다.  
+이때 기존 `my.secret` 키는 존재하지 않으므로, Config Client는 이 값을 무시하게 됩니다.
+
+## 클라이언트에서 `invalid.*` 가 무시되는 이유
+Config Client가 서버로부터 받은 설정을 `Environment`로 머지할 때,
+`PropertySourcesPropertyResolver`가 순서대로 `PropertySource`를 순회하며 값을 찾습니다.
+1.	먼저 `configserver:*` `PropertySource`를 탐색
+2.	`{cipher}` 복호화 실패 → `invalid.my.secret`만 존재
+3.	찾지 못하면 다음 `PropertySource` (로컬 파일 등)로 fall-through
+4.	`application.properties`에서 `my.secret=localValue` 발견 → 반환 ✅
+
+즉, `invalid.*` 키는 <mark>**단지 실패 흔적일 뿐**</mark>, `Environment`에서는 <mark>**참조되지 않습니다.**</mark>
+
+이 동작은 `AbstractEnvironment` 내부에서 merge될 때, 단순히 `PropertySource` 순서대로 붙기 때문에
+특별한 예외처리 없이 <mark>“뒤에 오는 `PropertySource`가 우선권을 가진다”</mark>는 일반 규칙으로 해결됩니다.

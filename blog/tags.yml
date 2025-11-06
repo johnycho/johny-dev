@@ -7,3 +7,8 @@ jpa:
   label: JPA
   permalink: /jpa
   description: JPA tag description
+
+spring:
+  label: Spring
+  permalink: /spring
+  description: Spring tag description
