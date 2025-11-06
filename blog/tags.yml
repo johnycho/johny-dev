@@ -12,3 +12,8 @@ spring:
   label: Spring
   permalink: /spring
   description: Spring tag description
+
+mysql:
+  label: MySQL
+  permalink: /mysql
+  description: MySQL tag description

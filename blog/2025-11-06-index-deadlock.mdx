@@ -1,0 +1,86 @@
+---
+slug: index-deadlock
+title: 세컨더리 인덱스와 PK 인덱스 간 데드락, 왜 발생할까?
+authors: [ johnycho ]
+tags: [ mysql ]
+---
+
+<!-- truncate -->
+<br /><br />
+
+# 세컨더리 인덱스와 PK 인덱스 간 데드락, 왜 발생할까?
+MySQL `InnoDB`에서,  
+`UPDATE`, `DELETE`, `SELECT ... FOR UPDATE` 등으로 <mark>레코드를 잠글 때
+PK 인덱스 뿐 아니라 세컨더리 인덱스까지 락이 걸리면서</mark> 교착 상태(Deadlock)가 발생할 수 있습니다.
+
+`InnoDB`는 보조 인덱스를 통해 접근하더라도 실제 락은 PK 기반으로 걸기 때문에,  
+세컨더리 인덱스와 PK 인덱스가 서로 다른 트랜잭션에서 엇갈려 락을 걸면 데드락이 생깁니다.
+
+## MySQL의 락 동작 메커니즘
+`InnoDB`는 `Row-Level Lock`처럼 보여도 내부적으로는 <mark>**인덱스 레코드 기반의 잠금**</mark> (`Record Lock`)
+
+## 예제 시나리오
+```sql
+CREATE TABLE user_balance (
+  id BIGINT PRIMARY KEY,
+  user_id BIGINT,
+  balance INT,
+  KEY idx_user (user_id)
+) ENGINE=InnoDB;
+```
+
+### 트랜잭션 A
+```sql
+BEGIN;
+SELECT * FROM user_balance WHERE user_id = 100 FOR UPDATE;
+-- → 세컨더리 인덱스(idx_user)로 탐색 후, PK lookup 수행
+-- → (세컨더리 락 → PK 락) 순서로 락 획득
+```
+
+### 트랜잭션 B
+```sql
+BEGIN;
+UPDATE user_balance SET balance = balance + 10 WHERE id = 10;
+-- → PK 인덱스로 직접 접근
+-- → (PK 락) 먼저 획득
+```
+
+이 상태에서 A와 B가 동일한 row를 가리키는 PK를 각자 다른 인덱스 경로로 접근하면,
+서로가 상대의 락을 기다리며 데드락이 발생합니다.
+
+### 내부 락 플로우 분석
+<table>
+  <tr><th>순서</th><th>A (세컨더리 인덱스 경로)</th><th>B (PK 경로)</th></tr>
+  <tr><td>1</td><td>idx_user 인덱스 탐색 (Record Lock)</td><td>PK = 10 Row Lock</td></tr>
+  <tr><td>2</td><td>PK lookup으로 전환하려 함</td><td>이미 B가 PK 락을 선점</td></tr>
+  <tr><td>3</td><td>대기 상태 진입</td><td>A가 idx_user 락을 선점 중</td></tr>
+  <tr><td>4</td><td colspan="2" style="text-align: center">서로 상대 락을 기다리며 Deadlock</td></tr>
+</table>
+즉, <mark>락 획득 순서 불일치 (Lock Ordering Inconsistency) 가 데드락의 핵심 원인</mark>입니다.
+
+| 순서 | 트랜잭션 A                           | 트랜잭션 B |
+|:--:|:---------------------------------|:---|
+| 1  | `idx_user` 락 획득                  |  |
+| 2  | PK로 lookup 시도, 하지만 B가 이미 PK 락 보유 |  |
+| 3  | 대기 상태                            | PK 락 보유 중 |
+| 4  |                                  | B는 업데이트 중, PK 락을 가진 상태로 내부적으로 인덱스 정합성 유지 위해 `idx_user` 갱신 필요 |
+| 5  |                                  | 그런데 `idx_user`는 A가 락을 잡고 있음 |
+| 6  | 🚨 교착 발생                         | 🚨 교착 발생 |
+
+## 트랜잭션 B는 PK로만 접근했는데 왜 세컨더리 인덱스(`idx_user`) 락을 기다릴까?
+`InnoDB`는 UPDATE 시 <mark>PK뿐만 아니라 모든 관련 인덱스의 엔트리도 수정해야 하기 때문</mark>입니다.
+> UPDATE user_balance SET balance = ...   
+> → PK 테이블 페이지 수정뿐만 아니라  
+> → 세컨더리 인덱스(idx_user)의 해당 엔트리도 변경되어야 함 (user_id가 변하지 않더라도 consistency 유지 위해 latch 획득 필요)
+
+이때, 이미 트랜잭션 A가 idx_user에서 잠금을 가지고 있으므로,  
+B는 그 세컨더리 인덱스 엔트리에 대한 latch/lock을 기다리게 됩니다.
+
+B는 `user_id` 인덱스를 직접 조회하지 않았더라도,  
+UPDATE 문이 내부적으로 `idx_user` 인덱스 페이지를 갱신해야 하기 때문에  
+A가 잡은 `idx_user` 락에 막혀 대기하다가 교착(deadlock)이 발생하는 것입니다.
+
+## 데드락 로그 확인 방법
+```sql
+SHOW ENGINE INNODB STATUS\G
+```
