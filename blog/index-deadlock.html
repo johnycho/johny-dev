@@ -11,7 +11,7 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.2c97e5a1.css">
-<script src="/assets/js/runtime~main.ed8f8775.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.dcd7584c.js" defer="defer"></script>
 <script src="/assets/js/main.0c5a58f1.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -33,7 +33,7 @@ PK 인덱스 뿐 아니라 세컨더리 인덱스까지 락이 걸리면서</mar
 <p>이 상태에서 A와 B가 동일한 row를 가리키는 PK를 각자 다른 인덱스 경로로 접근하면,
 서로가 상대의 락을 기다리며 데드락이 발생합니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="내부-락-플로우-분석">내부 락 플로우 분석<a href="#내부-락-플로우-분석" class="hash-link" aria-label="내부 락 플로우 분석에 대한 직접 링크" title="내부 락 플로우 분석에 대한 직접 링크">​</a></h3>
-<table><tr><th>순서</th><th>A (세컨더리 인덱스 경로)</th><th>B (PK 경로)</th></tr><tr><td>1</td><td>idx_user 인덱스 탐색 (Record Lock)</td><td>PK = 10 Row Lock</td></tr><tr><td>2</td><td>PK lookup으로 전환하려 함</td><td>이미 B가 PK 락을 선점</td></tr><tr><td>3</td><td>대기 상태 진입</td><td>A가 idx_user 락을 선점 중</td></tr><tr><td>4</td><td colspan="2" style="text-align:center"><p>서로 상대 락을 기다리며 Deadlock</p></td></tr></table>
+<table><tr><th>순서</th><th>A (세컨더리 인덱스 경로)</th><th>B (PK 경로)</th></tr><tr><td>1</td><td>idx_user 인덱스 탐색 (Record Lock)</td><td>PK = 10 Row Lock</td></tr><tr><td>2</td><td>PK lookup으로 전환하려 함</td><td>이미 B가 PK 락을 선점</td></tr><tr><td>3</td><td>대기 상태 진입</td><td>A가 idx_user 락을 선점 중</td></tr><tr><td>4</td><td colspan="2" style="text-align:center">서로 상대 락을 기다리며 Deadlock</td></tr></table>
 <p>즉, <mark>락 획득 순서 불일치 (Lock Ordering Inconsistency) 가 데드락의 핵심 원인</mark>입니다.</p>
 <table><thead><tr><th style="text-align:center">순서</th><th style="text-align:left">트랜잭션 A</th><th style="text-align:left">트랜잭션 B</th></tr></thead><tbody><tr><td style="text-align:center">1</td><td style="text-align:left"><code>idx_user</code> 락 획득</td><td style="text-align:left"></td></tr><tr><td style="text-align:center">2</td><td style="text-align:left">PK로 lookup 시도, 하지만 B가 이미 PK 락 보유</td><td style="text-align:left"></td></tr><tr><td style="text-align:center">3</td><td style="text-align:left">대기 상태</td><td style="text-align:left">PK 락 보유 중</td></tr><tr><td style="text-align:center">4</td><td style="text-align:left"></td><td style="text-align:left">B는 업데이트 중, PK 락을 가진 상태로 내부적으로 인덱스 정합성 유지 위해 <code>idx_user</code> 갱신 필요</td></tr><tr><td style="text-align:center">5</td><td style="text-align:left"></td><td style="text-align:left">그런데 <code>idx_user</code>는 A가 락을 잡고 있음</td></tr><tr><td style="text-align:center">6</td><td style="text-align:left">🚨 교착 발생</td><td style="text-align:left">🚨 교착 발생</td></tr></tbody></table>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="트랜잭션-b는-pk로만-접근했는데-왜-세컨더리-인덱스idx_user-락을-기다릴까">트랜잭션 B는 PK로만 접근했는데 왜 세컨더리 인덱스(<code>idx_user</code>) 락을 기다릴까?<a href="#트랜잭션-b는-pk로만-접근했는데-왜-세컨더리-인덱스idx_user-락을-기다릴까" class="hash-link" aria-label="트랜잭션-b는-pk로만-접근했는데-왜-세컨더리-인덱스idx_user-락을-기다릴까에 대한 직접 링크" title="트랜잭션-b는-pk로만-접근했는데-왜-세컨더리-인덱스idx_user-락을-기다릴까에 대한 직접 링크">​</a></h2>
