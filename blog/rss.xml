@@ -89,7 +89,7 @@
 <li>자동 연장을 위한 watchdog</li>
 <li>Lua 스크립트를 통한 원자적 락 관리</li>
 </ul>]]></content:encoded>
-            <category>redis</category>
+            <category>Redis</category>
         </item>
         <item>
             <title><![CDATA[Spring Cloud Config의 복호화 실패 처리 과정 — {cipher}...가 invalid.*로 바뀌는 이유]]></title>
