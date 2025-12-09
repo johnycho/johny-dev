@@ -17,3 +17,18 @@ mysql:
   label: MySQL
   permalink: /mysql
   description: MySQL tag description
+
+redis:
+  label: Redis
+  permalink: /redis
+  description: Redis tag description
+
+kafka:
+  label: Kafka
+  permalink: /kafka
+  description: Kafka tag description
+
+open-telemetry:
+  label: OpenTelemetry
+  permalink: /open-telemetry
+  description: OpenTelemetry tag description
