@@ -152,7 +152,7 @@ class OpenTelemetryKafkaTracer {
 }
 ```
 - `OpenTelemetryKafkaExtractor.extract(message)`: 메시지 헤더를 읽어 컨텍스트 추출
-- `context.makeCurrent()`: 추출한 컨텍스트를 현재 스레드에 설정
+- `context.makeCurrent()`: <mark>추출한 컨텍스트를 현재 스레드에 설정</mark>
 - `try-with-resources`: 스코프가 자동으로 닫혀 메모리 누수 방지
 
 ### 3. OpenTelemetryKafkaExtractor
