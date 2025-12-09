@@ -112,7 +112,7 @@ Kafka 메시지 헤더의 `traceparent`를 읽어 OpenTelemetry 컨텍스트를 
 이를 위해 세 가지 핵심 컴포넌트를 구현했습니다:
 1. **MessageConsumer**: 컨슈머 인터페이스에 공통 트레이싱 로직 추가
 2. **OpenTelemetryKafkaTracer**: 컨텍스트 추출 및 스코프 관리
-3. **OpenTelemetryKafkaExtractor**: Kafka 헤더에서 traceparent 추출
+3. **OpenTelemetryKafkaExtractor**: Kafka 헤더에서 `traceparent` 추출
 
 ## 구현 상세
 
@@ -151,7 +151,7 @@ class OpenTelemetryKafkaTracer {
   }
 }
 ```
-- `OpenTelemetryKafkaExtractor.extract(message)`: 메시지 헤더에서 컨텍스트 추출
+- `OpenTelemetryKafkaExtractor.extract(message)`: 메시지 헤더를 읽어 컨텍스트 추출
 - `context.makeCurrent()`: 추출한 컨텍스트를 현재 스레드에 설정
 - `try-with-resources`: 스코프가 자동으로 닫혀 메모리 누수 방지
 
@@ -278,7 +278,7 @@ public class SchedulerMessageConsumer implements MessageConsumer<String> {
 ### 동작 흐름
 1. `@KafkaListener`가 메시지를 수신
 2. `consume(List.of(message))` 호출 → `MessageConsumer`의 기본 구현 실행
-3. `OpenTelemetryKafkaTracer.run()` → 메시지 헤더에서 컨텍스트 추출 및 설정
+3. `OpenTelemetryKafkaTracer.run()` → 메시지 헤더를 읽어 컨텍스트 추출 및 설정
 4. `processMessage()` 실행 → 추출된 컨텍스트 하에서 비즈니스 로직 수행
 5. 모든 스팬이 동일한 traceId로 연결됨
 
