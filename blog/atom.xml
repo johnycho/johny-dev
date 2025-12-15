@@ -2,11 +2,174 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://johnycho.dev/blog</id>
     <title>조니의 개발 블로그 Blog</title>
-    <updated>2025-06-06T00:00:00.000Z</updated>
+    <updated>2025-07-01T00:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://johnycho.dev/blog"/>
     <subtitle>조니의 개발 블로그 Blog</subtitle>
     <icon>https://johnycho.dev/img/favicon.ico</icon>
+    <entry>
+        <title type="html"><![CDATA[Kafka 메시지 전달 보장 (Delivery Semantics)]]></title>
+        <id>https://johnycho.dev/blog/kafka-delivery-semantics</id>
+        <link href="https://johnycho.dev/blog/kafka-delivery-semantics"/>
+        <updated>2025-07-01T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[At-most-once / At-least-once / Exactly-once]]></summary>
+        <content type="html"><![CDATA[<br>
+<br>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="at-most-once--at-least-once--exactly-once"><code>At-most-once</code> / <code>At-least-once</code> / <code>Exactly-once</code><a href="https://johnycho.dev/blog/kafka-delivery-semantics#at-most-once--at-least-once--exactly-once" class="hash-link" aria-label="at-most-once--at-least-once--exactly-once에 대한 직접 링크" title="at-most-once--at-least-once--exactly-once에 대한 직접 링크">​</a></h3>
+<p>분산 시스템과 메시지 큐(Kafka, RabbitMQ 등)를 사용할 때<br>
+<!-- -->가장 중요한 설계 포인트 중 하나는 <strong>“메시지가 몇 번 전달될 수 있는가”</strong> 입니다.</p>
+<p>이를 <strong>메시지 전달 보장(Delivery Semantics)</strong> 이라고 하며, 대표적으로 다음 세 가지가 있습니다.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-at-most-once-최대-한-번-전달">1. <code>At-most-once</code> (최대 한 번 전달)<a href="https://johnycho.dev/blog/kafka-delivery-semantics#1-at-most-once-%EC%B5%9C%EB%8C%80-%ED%95%9C-%EB%B2%88-%EC%A0%84%EB%8B%AC" class="hash-link" aria-label="1-at-most-once-최대-한-번-전달에 대한 직접 링크" title="1-at-most-once-최대-한-번-전달에 대한 직접 링크">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="개념">개념<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EA%B0%9C%EB%85%90" class="hash-link" aria-label="개념에 대한 직접 링크" title="개념에 대한 직접 링크">​</a></h3>
+<blockquote>
+<p>메시지는 <strong>최대 한 번만 처리</strong>되며,<br>
+<!-- -->실패 시 메시지가 <strong>유실될 수 있다</strong>.</p>
+</blockquote>
+<ul>
+<li>중복 ❌</li>
+<li>유실 ⭕</li>
+<li>재시도 ❌</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="특징">특징<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%ED%8A%B9%EC%A7%95" class="hash-link" aria-label="특징에 대한 직접 링크" title="특징에 대한 직접 링크">​</a></h3>
+<table><thead><tr><th>항목</th><th>설명</th></tr></thead><tbody><tr><td>신뢰성</td><td>낮음</td></tr><tr><td>성능</td><td>매우 높음</td></tr><tr><td>구현 난이도</td><td>매우 낮음</td></tr><tr><td>처리 속도</td><td>최상</td></tr></tbody></table>
+<p>메시지를 받자마자 처리 완료로 간주하거나,<br>
+<!-- -->처리 전에 offset을 커밋하는 방식에서 발생합니다.<br>
+<!-- -->이 경우, 처리 중 장애가 발생하면 이미 커밋된 메시지는 다시 소비되지 않아 메시지 유실이 발생할 수 있습니다.</p>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="언제-사용하나">언제 사용하나?<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EC%96%B8%EC%A0%9C-%EC%82%AC%EC%9A%A9%ED%95%98%EB%82%98" class="hash-link" aria-label="언제 사용하나?에 대한 직접 링크" title="언제 사용하나?에 대한 직접 링크">​</a></h3>
+<ul>
+<li>로그 수집</li>
+<li>모니터링 이벤트</li>
+<li>트래픽 분석</li>
+<li>통계성 데이터 (일부 유실 허용)</li>
+</ul>
+<blockquote>
+<p>“정확성보다 속도가 중요한 경우”</p>
+</blockquote>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="예시">예시<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EC%98%88%EC%8B%9C" class="hash-link" aria-label="예시에 대한 직접 링크" title="예시에 대한 직접 링크">​</a></h3>
+<ul>
+<li>접속 로그</li>
+<li>클릭 로그</li>
+<li>메트릭 데이터</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-at-least-once-최소-한-번-전달">2. <code>At-least-once</code> (최소 한 번 전달)<a href="https://johnycho.dev/blog/kafka-delivery-semantics#2-at-least-once-%EC%B5%9C%EC%86%8C-%ED%95%9C-%EB%B2%88-%EC%A0%84%EB%8B%AC" class="hash-link" aria-label="2-at-least-once-최소-한-번-전달에 대한 직접 링크" title="2-at-least-once-최소-한-번-전달에 대한 직접 링크">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="개념-1">개념<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EA%B0%9C%EB%85%90-1" class="hash-link" aria-label="개념에 대한 직접 링크" title="개념에 대한 직접 링크">​</a></h3>
+<blockquote>
+<p>메시지는 <strong>최소 한 번 이상 처리</strong>되며,<br>
+<!-- -->실패 시 <strong>중복 처리</strong>가 발생할 수 있다.</p>
+</blockquote>
+<ul>
+<li>중복 ⭕</li>
+<li>유실 ❌</li>
+<li>재시도 ⭕</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="특징-1">특징<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%ED%8A%B9%EC%A7%95-1" class="hash-link" aria-label="특징에 대한 직접 링크" title="특징에 대한 직접 링크">​</a></h3>
+<table><thead><tr><th>항목</th><th>설명</th></tr></thead><tbody><tr><td>신뢰성</td><td>높음</td></tr><tr><td>성능</td><td>중간</td></tr><tr><td>구현 난이도</td><td>중간</td></tr><tr><td>실무 사용 빈도</td><td>매우 높음</td></tr></tbody></table>
+<p>메시지 처리 후 offset을 커밋하기 때문에<br>
+<!-- -->실패 시 같은 메시지가 다시 처리될 수 있다.</p>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="언제-사용하나-1">언제 사용하나?<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EC%96%B8%EC%A0%9C-%EC%82%AC%EC%9A%A9%ED%95%98%EB%82%98-1" class="hash-link" aria-label="언제 사용하나?에 대한 직접 링크" title="언제 사용하나?에 대한 직접 링크">​</a></h3>
+<ul>
+<li>주문 생성</li>
+<li>결제 처리</li>
+<li>푸시 발송</li>
+<li>비즈니스 이벤트 처리</li>
+</ul>
+<blockquote>
+<p>“유실은 절대 안 되지만, 중복은 애플리케이션에서 처리할 수 있는 경우”</p>
+</blockquote>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="실무-포인트">실무 포인트<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EC%8B%A4%EB%AC%B4-%ED%8F%AC%EC%9D%B8%ED%8A%B8" class="hash-link" aria-label="실무 포인트에 대한 직접 링크" title="실무 포인트에 대한 직접 링크">​</a></h3>
+<p>실무에서는 <code>At-least-once</code>를 기본으로 사용하고,<br>
+<!-- -->Consumer 측에서 <strong>eventId 기반 멱등 처리</strong>나<br>
+<!-- -->DB 유니크 제약을 통해 중복 처리를 방지하는 방식이 가장 일반적입니다.</p>
+<p>즉, 메시징 레벨은 <code>At-least-once</code>로 두고<br>
+<!-- -->비즈니스 로직에서 <code>Exactly-once</code>에 가깝게 만드는 전략을 취합니다.</p>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="예시-1">예시<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EC%98%88%EC%8B%9C-1" class="hash-link" aria-label="예시에 대한 직접 링크" title="예시에 대한 직접 링크">​</a></h3>
+<ul>
+<li>주문 이벤트 처리</li>
+<li>포인트 적립</li>
+<li>이메일 발송 (중복 방지 로직 포함)</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="3-exactly-once-정확히-한-번-전달">3. Exactly-once (정확히 한 번 전달)<a href="https://johnycho.dev/blog/kafka-delivery-semantics#3-exactly-once-%EC%A0%95%ED%99%95%ED%9E%88-%ED%95%9C-%EB%B2%88-%EC%A0%84%EB%8B%AC" class="hash-link" aria-label="3. Exactly-once (정확히 한 번 전달)에 대한 직접 링크" title="3. Exactly-once (정확히 한 번 전달)에 대한 직접 링크">​</a></h2>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="개념-2">개념<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EA%B0%9C%EB%85%90-2" class="hash-link" aria-label="개념에 대한 직접 링크" title="개념에 대한 직접 링크">​</a></h3>
+<blockquote>
+<p>메시지는 <strong>중복 없이 정확히 한 번만 처리</strong>된다.</p>
+</blockquote>
+<ul>
+<li>중복 ❌</li>
+<li>유실 ❌</li>
+<li>높은 비용</li>
+</ul>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="특징-2">특징<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%ED%8A%B9%EC%A7%95-2" class="hash-link" aria-label="특징에 대한 직접 링크" title="특징에 대한 직접 링크">​</a></h3>
+<table><thead><tr><th>항목</th><th>설명</th></tr></thead><tbody><tr><td>신뢰성</td><td>최고</td></tr><tr><td>성능</td><td>낮음</td></tr><tr><td>구현 난이도</td><td>높음</td></tr><tr><td>운영 복잡도</td><td>높음</td></tr></tbody></table>
+<p>Kafka의 경우 <strong>트랜잭션</strong>을 통해,<br>
+<!-- -->메시지 처리와 offset commit을 하나의 원자적 작업으로 묶습니다.</p>
+<blockquote>
+<p>단, <strong>Kafka 내부 범위</strong>에서만 Exactly-once가 보장된다.</p>
+</blockquote>
+<p>Kafka의 <code>Exactly-once</code>는<br>
+<strong>Producer → Kafka → Consumer → Kafka(offset commit)</strong><br>
+<!-- -->까지의 범위에서만 보장됩니다.</p>
+<p>즉, DB나 외부 API까지 포함한<br>
+<!-- -->end-to-end <code>Exactly-once</code>는 Kafka 단독으로 보장되지 않으며,<br>
+<!-- -->이 경우 Outbox 패턴, Idempotent Consumer 설계 등이 필요합니다.</p>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="언제-사용하나-2">언제 사용하나?<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EC%96%B8%EC%A0%9C-%EC%82%AC%EC%9A%A9%ED%95%98%EB%82%98-2" class="hash-link" aria-label="언제 사용하나?에 대한 직접 링크" title="언제 사용하나?에 대한 직접 링크">​</a></h3>
+<ul>
+<li>정확한 집계</li>
+<li>스트림 처리</li>
+<li>금융/정산 파이프라인</li>
+<li>Kafka Streams 기반 처리</li>
+</ul>
+<blockquote>
+<p>“중복이 치명적인 경우”</p>
+</blockquote>
+<hr>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="주의사항">주의사항<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EC%A3%BC%EC%9D%98%EC%82%AC%ED%95%AD" class="hash-link" aria-label="주의사항에 대한 직접 링크" title="주의사항에 대한 직접 링크">​</a></h3>
+<ul>
+<li>DB, 외부 API까지 포함한 end-to-end Exactly-once는 매우 어렵다</li>
+<li>성능 비용과 운영 복잡도를 반드시 고려해야 한다</li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-한눈에-비교">4. 한눈에 비교<a href="https://johnycho.dev/blog/kafka-delivery-semantics#4-%ED%95%9C%EB%88%88%EC%97%90-%EB%B9%84%EA%B5%90" class="hash-link" aria-label="4. 한눈에 비교에 대한 직접 링크" title="4. 한눈에 비교에 대한 직접 링크">​</a></h2>
+<table><thead><tr><th>구분</th><th>At-most-once</th><th>At-least-once</th><th>Exactly-once</th></tr></thead><tbody><tr><td>메시지 유실</td><td>가능</td><td>불가능</td><td>불가능</td></tr><tr><td>메시지 중복</td><td>없음</td><td>가능</td><td>없음</td></tr><tr><td>성능</td><td>⭐⭐⭐</td><td>⭐⭐</td><td>⭐</td></tr><tr><td>구현 난이도</td><td>낮음</td><td>중간</td><td>높음</td></tr><tr><td>실무 사용</td><td>낮음</td><td>⭐⭐⭐⭐</td><td>제한적</td></tr></tbody></table>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-실무에서의-선택-기준">5. 실무에서의 선택 기준<a href="https://johnycho.dev/blog/kafka-delivery-semantics#5-%EC%8B%A4%EB%AC%B4%EC%97%90%EC%84%9C%EC%9D%98-%EC%84%A0%ED%83%9D-%EA%B8%B0%EC%A4%80" class="hash-link" aria-label="5. 실무에서의 선택 기준에 대한 직접 링크" title="5. 실무에서의 선택 기준에 대한 직접 링크">​</a></h2>
+<blockquote>
+<p><strong>“Exactly-once를 먼저 쓰지 말고,<br>
+<!-- -->At-least-once로 시작해 필요한 곳에만 강화하자.”</strong></p>
+</blockquote>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="추천-전략">추천 전략<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EC%B6%94%EC%B2%9C-%EC%A0%84%EB%9E%B5" class="hash-link" aria-label="추천 전략에 대한 직접 링크" title="추천 전략에 대한 직접 링크">​</a></h3>
+<ul>
+<li>기본: <strong>At-least-once</strong></li>
+<li>로그/모니터링: <strong>At-most-once</strong></li>
+<li>집계/스트림: <strong>Exactly-once (제한적)</strong></li>
+</ul>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="마무리">마무리<a href="https://johnycho.dev/blog/kafka-delivery-semantics#%EB%A7%88%EB%AC%B4%EB%A6%AC" class="hash-link" aria-label="마무리에 대한 직접 링크" title="마무리에 대한 직접 링크">​</a></h2>
+<p>메시지 전달 보장은 단순한 설정 문제가 아니라<br>
+<strong>비즈니스 특성과 장애 허용 범위에 대한 설계 결정</strong>입니다.</p>
+<ul>
+<li>유실이 허용되는가?</li>
+<li>중복이 치명적인가?</li>
+<li>성능과 정확성 중 무엇이 더 중요한가?</li>
+</ul>
+<p>이 질문에 답할 수 있다면 적절한 전달 보장을 선택할 수 있습니다.</p>]]></content>
+        <author>
+            <name>Johny Cho</name>
+            <uri>https://github.com/johnycho</uri>
+        </author>
+        <category label="Kafka" term="Kafka"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Kafka Producer/Consumer TraceId 불일치 문제 해결기 (with OpenTelemetry)]]></title>
         <id>https://johnycho.dev/blog/kafka-distributed-tracing</id>
@@ -281,6 +444,8 @@ OpenTelemetry 컨텍스트 추출·적용의 부재가 결합될 때 발생합�
         <updated>2025-02-03T00:00:00.000Z</updated>
         <summary type="html"><![CDATA[_]]></summary>
         <content type="html"><![CDATA[<hr>
+<br>
+<br>
 <h1>테스트 마크 다운 문서를 작성해봅니다..</h1>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="heavy_check_mark️-glorious-demo-with-typescript">✔️<!-- -->️ Glorious Demo with TypeScript<a href="https://johnycho.dev/blog/johny-dev-blog-launched#heavy_check_mark%EF%B8%8F-glorious-demo-with-typescript" class="hash-link" aria-label="heavy_check_mark️-glorious-demo-with-typescript에 대한 직접 링크" title="heavy_check_mark️-glorious-demo-with-typescript에 대한 직접 링크">​</a></h2>
 <hr>
