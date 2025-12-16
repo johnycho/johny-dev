@@ -12,7 +12,7 @@ tags: [ kafka ]
 Outbox 패턴을 활용해 **effectively exactly-once**를 달성하는 구조를 정리해보려고 합니다.
 
 분산 시스템에서  
-**“메시지를 정확히 한 번 처리한다(Exactly-Once)”** 는 요구사항은 매우 흔하지만,
+**“메시지를 정확히 한 번 처리한다(Exactly-Once)”** 는 요구사항은 매우 흔하지만,  
 이를 **end-to-end로 완벽하게 보장하는 것은 현실적으로 거의 불가능**합니다.
 
 Kafka, DB, 외부 API는 각각 독립적인 시스템이며  
