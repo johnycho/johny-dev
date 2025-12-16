@@ -32,3 +32,13 @@ open-telemetry:
   label: OpenTelemetry
   permalink: /open-telemetry
   description: OpenTelemetry tag description
+
+system-design:
+  label: SystemDesign
+  permalink: /system-design
+  description: SystemDesign tag description
+
+architecture:
+  label: Architecture
+  permalink: /architecture
+  description: Architecture tag description
