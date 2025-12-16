@@ -33,9 +33,9 @@
 <ul>
 <li>Redis 서버가 장애를 일으킵니다.</li>
 </ul>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="내결함성이-없는-경우">내결함성이 없는 경우<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EB%82%B4%EA%B2%B0%ED%95%A8%EC%84%B1%EC%9D%B4-%EC%97%86%EB%8A%94-%EA%B2%BD%EC%9A%B0" class="hash-link" aria-label="내결함성이 없는 경우에 대한 직접 링크" title="내결함성이 없는 경우에 대한 직접 링크">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="내결함성이-없는-경우">내결함성이 없는 경우<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EB%82%B4%EA%B2%B0%ED%95%A8%EC%84%B1%EC%9D%B4-%EC%97%86%EB%8A%94-%EA%B2%BD%EC%9A%B0" class="hash-link" aria-label="내결함성이 없는 경우에 대한 직접 링크" title="내결함성이 없는 경우에 대한 직접 링크">​</a></h4>
 <p>Redis 장애로 인해 예외가 발생하고, 주문 조회가 실패합니다.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="내결함성이-적용된-경우">내결함성이 적용된 경우<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EB%82%B4%EA%B2%B0%ED%95%A8%EC%84%B1%EC%9D%B4-%EC%A0%81%EC%9A%A9%EB%90%9C-%EA%B2%BD%EC%9A%B0" class="hash-link" aria-label="내결함성이 적용된 경우에 대한 직접 링크" title="내결함성이 적용된 경우에 대한 직접 링크">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="내결함성이-적용된-경우">내결함성이 적용된 경우<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EB%82%B4%EA%B2%B0%ED%95%A8%EC%84%B1%EC%9D%B4-%EC%A0%81%EC%9A%A9%EB%90%9C-%EA%B2%BD%EC%9A%B0" class="hash-link" aria-label="내결함성이 적용된 경우에 대한 직접 링크" title="내결함성이 적용된 경우에 대한 직접 링크">​</a></h4>
 <p>Redis 장애가 발생해 캐시 조회에 실패하더라도 DB로 대체 조회를 수행하여 주문 조회가 정상적으로 처리됩니다.</p>
 <p><strong>이처럼 장애가 발생했지만 서비스는 중단되지 않습니다.</strong></p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="사례-2-외부-결제-api-호출-실패">사례 2: 외부 결제 API 호출 실패<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EC%82%AC%EB%A1%80-2-%EC%99%B8%EB%B6%80-%EA%B2%B0%EC%A0%9C-api-%ED%98%B8%EC%B6%9C-%EC%8B%A4%ED%8C%A8" class="hash-link" aria-label="사례 2: 외부 결제 API 호출 실패에 대한 직접 링크" title="사례 2: 외부 결제 API 호출 실패에 대한 직접 링크">​</a></h3>
@@ -47,12 +47,11 @@
 <ul>
 <li>일시적인 네트워크 타임아웃이 발생합니다.</li>
 </ul>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="내결함성-적용">내결함성 적용<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EB%82%B4%EA%B2%B0%ED%95%A8%EC%84%B1-%EC%A0%81%EC%9A%A9" class="hash-link" aria-label="내결함성 적용에 대한 직접 링크" title="내결함성 적용에 대한 직접 링크">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="내결함성-적용">내결함성 적용<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EB%82%B4%EA%B2%B0%ED%95%A8%EC%84%B1-%EC%A0%81%EC%9A%A9" class="hash-link" aria-label="내결함성 적용에 대한 직접 링크" title="내결함성 적용에 대한 직접 링크">​</a></h4>
 <p>재시도(Retry)와 회로 차단기(Circuit Breaker) 패턴을 도입하여 1차 호출 실패 시 재시도를 수행하고, 일정 횟수 이상 실패하면 사용자에게 실패를 안내합니다.</p>
 <p>이를 통해 장애가 다른 서비스로 확산되지 않고 시스템 전체의 안정성이 유지됩니다.</p>
 <hr>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="고가용성high-availability이란">고가용성(High Availability)이란?<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EA%B3%A0%EA%B0%80%EC%9A%A9%EC%84%B1high-availability%EC%9D%B4%EB%9E%80" class="hash-link" aria-label="고가용성(High Availability)이란?에 대한 직접 링크" title="고가용성(High Availability)이란?에 대한 직접 링크">​</a></h2>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="정의">정의<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EC%A0%95%EC%9D%98" class="hash-link" aria-label="정의에 대한 직접 링크" title="정의에 대한 직접 링크">​</a></h3>
 <p><strong>고가용성이란 시스템이 가능한 한 오랜 시간 동안 중단 없이 서비스를 제공하는 특성</strong>을 의미합니다.<br>
 <!-- -->즉, 서비스가 얼마나 자주 그리고 얼마나 오래 정상적으로 운영되는지를 나타냅니다.</p>
 <hr>
@@ -67,7 +66,7 @@
 <ul>
 <li>Server B가 다운됩니다.</li>
 </ul>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="고가용성-적용">고가용성 적용<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EA%B3%A0%EA%B0%80%EC%9A%A9%EC%84%B1-%EC%A0%81%EC%9A%A9" class="hash-link" aria-label="고가용성 적용에 대한 직접 링크" title="고가용성 적용에 대한 직접 링크">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="고가용성-적용">고가용성 적용<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EA%B3%A0%EA%B0%80%EC%9A%A9%EC%84%B1-%EC%A0%81%EC%9A%A9" class="hash-link" aria-label="고가용성 적용에 대한 직접 링크" title="고가용성 적용에 대한 직접 링크">​</a></h4>
 <p>헬스체크를 통해 Server B의 장애를 감지하고, 로드밸런서가 해당 서버를 트래픽 분배 대상에서 제외합니다. 이후 트래픽은 Server A와 Server C로 재분배됩니다.</p>
 <p><strong>이로 인해 일부 서버가 장애를 겪었지만, 사용자는 거의 장애를 느끼지 못합니다.</strong></p>
 <hr>
@@ -80,14 +79,12 @@
 <ul>
 <li>배치 실행 중 서버가 다운되면 작업이 실패합니다.</li>
 </ul>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="고가용성-적용-1">고가용성 적용<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EA%B3%A0%EA%B0%80%EC%9A%A9%EC%84%B1-%EC%A0%81%EC%9A%A9-1" class="hash-link" aria-label="고가용성 적용에 대한 직접 링크" title="고가용성 적용에 대한 직접 링크">​</a></h3>
+<h4 class="anchor anchorWithStickyNavbar_LWe7" id="고가용성-적용-1">고가용성 적용<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EA%B3%A0%EA%B0%80%EC%9A%A9%EC%84%B1-%EC%A0%81%EC%9A%A9-1" class="hash-link" aria-label="고가용성 적용에 대한 직접 링크" title="고가용성 적용에 대한 직접 링크">​</a></h4>
 <p>배치 서버를 다중화하고 Quartz Cluster 또는 Kubernetes CronJob과 같은 클러스터링 기술을 도입합니다.</p>
 <p>서버 A에 장애가 발생하면 서버 B가 다음 스케줄을 대신 실행하여 배치 작업이 특정 서버에 종속되지 않도록 합니다.</p>
 <hr>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="내결함성과-고가용성의-차이">내결함성과 고가용성의 차이<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EB%82%B4%EA%B2%B0%ED%95%A8%EC%84%B1%EA%B3%BC-%EA%B3%A0%EA%B0%80%EC%9A%A9%EC%84%B1%EC%9D%98-%EC%B0%A8%EC%9D%B4" class="hash-link" aria-label="내결함성과 고가용성의 차이에 대한 직접 링크" title="내결함성과 고가용성의 차이에 대한 직접 링크">​</a></h2>
 <table><thead><tr><th>구분</th><th>내결함성</th><th>고가용성</th></tr></thead><tbody><tr><td>초점</td><td>장애를 견디는 능력</td><td>장애 후 빠른 복구</td></tr><tr><td>관점</td><td>요청 처리의 지속성</td><td>서비스 중단 시간 최소화</td></tr><tr><td>접근 방식</td><td>설계 중심</td><td>운영 및 인프라 중심</td></tr><tr><td>목표</td><td>기능 유지</td><td>최대한의 업타임 확보</td></tr></tbody></table>
-<hr>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="비유를-통한-이해">비유를 통한 이해<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EB%B9%84%EC%9C%A0%EB%A5%BC-%ED%86%B5%ED%95%9C-%EC%9D%B4%ED%95%B4" class="hash-link" aria-label="비유를 통한 이해에 대한 직접 링크" title="비유를 통한 이해에 대한 직접 링크">​</a></h3>
 <ul>
 <li>내결함성은 타이어가 펑크 나도 예비 타이어로 계속 주행하는 자동차와 같습니다.</li>
 <li>고가용성은 사고가 나면 즉시 다른 차량으로 갈아타는 렌터카 서비스와 같습니다.</li>
