@@ -4,7 +4,10 @@ title: JPA Fetch Join과 페이징을 함께 사용할 때 주의점
 tags: [ spring, jpa ]
 ---
 
-`~ToMany` 관계에서 `Fetch Join`과 페이징을 함께 사용하면 `OutOfMemoryError`가 발생할 수 있다는 점을 주의해야 합니다. 예를 들어, 아래와 같이 Product(1)-ProductCategory(N) 관계가 있을 때, `ProductJpaRepository`의 `findProductWithSlice`처럼 `Fetch Join`과 페이징을 함께 사용하는 경우에 `OOM`이 발생할 수 있습니다.
+`~ToMany` 관계에서 `Fetch Join`과 페이징을 함께 사용하면 `OutOfMemoryError`가 발생할 수 있다는 점을 주의해야 합니다.
+
+예를 들어, 아래와 같이 Product(1)-ProductCategory(N) 관계가 있을 때,  
+`ProductJpaRepository`의 `findProductWithSlice`처럼 `Fetch Join`과 페이징을 함께 사용하는 경우에 `OOM`이 발생할 수 있습니다.
 
 ```java
 @Entity
