@@ -22,7 +22,7 @@ tags: [ spring, jpa ]
 
 ## ✔️ N + 1 문제는 어떻게 해결할 수 있을까? 🤔
 
-N + 1 문제를 해결하기 위해서는 fetch join, `@EntityGraph`를 사용해 볼 수 있습니다. `fetch join`은 연관 관계에 있는 엔티티를 한번에 즉시 로딩하는
+N + 1 문제를 해결하기 위해서는 `fetch join`, `@EntityGraph`를 사용해 볼 수 있습니다. `fetch join`은 연관 관계에 있는 엔티티를 한번에 즉시 로딩하는
 구문입니다. `@EntityGraph`도 비슷한 효과를 만들어내며, 쿼리 메서드에 해당 어노테이션을 추가해 사용할 수 있습니다.
 
 ```sql

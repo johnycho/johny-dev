@@ -22,7 +22,7 @@ public abstract class Student {
     }
 }
 
-class BackendStuduent extends Student {
+class BackendStudent extends Student {
 
     @Override
     public void study() {
