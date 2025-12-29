@@ -11,7 +11,7 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.2c97e5a1.css">
-<script src="/assets/js/runtime~main.05637f88.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.5406fe53.js" defer="defer"></script>
 <script src="/assets/js/main.1b994735.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -104,7 +104,7 @@
 </ul>
 <hr>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="6-pause-time을-어떻게-관리할까">6. Pause Time을 어떻게 관리할까?<a href="#6-pause-time을-어떻게-관리할까" class="hash-link" aria-label="6. Pause Time을 어떻게 관리할까?에 대한 직접 링크" title="6. Pause Time을 어떻게 관리할까?에 대한 직접 링크">​</a></h2>
-<p>G1GC의 중요한 목표는</p>
+<p><code>G1GC</code>의 중요한 목표는</p>
 <blockquote>
 <p>“GC로 인한 멈춤 시간을 <strong>예측 가능하게 만들자</strong>”</p>
 </blockquote>
@@ -115,6 +115,38 @@
 <li><code>G1GC</code>는 이 목표에 맞춰</li>
 <li>한 번에 수집할 Region 개수를 자동으로 조절</li>
 </ul>
-<p>👉 한 번에 다 치우지 않고 조금씩 나눠서 치움</p><div>Loading comments...</div></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-tags-row"><div class="col"><b>태그:</b><ul class="tags_jXut padding--none margin-left--sm"><li class="tag_QGVx"><a title="Java tag description" class="tag_zVej tagRegular_sFm0" href="/docs/tags/java">Java</a></li></ul></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="문서 페이지"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/java/java-gc-algorithm"><div class="pagination-nav__sublabel">이전</div><div class="pagination-nav__label">GC 알고리즘</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/java/java-gc-target"><div class="pagination-nav__sublabel">다음</div><div class="pagination-nav__label">JVM에서 GC 대상 객체를 판단하는 기준</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#g1gc-한-줄-요약" class="table-of-contents__link toc-highlight">G1GC 한 줄 요약</a></li><li><a href="#1-g1gc는-힙을-이렇게-나눈다" class="table-of-contents__link toc-highlight">1. G1GC는 힙을 이렇게 나눈다</a></li><li><a href="#2-객체는-어디에-생성될까-eden-region" class="table-of-contents__link toc-highlight">2. 객체는 어디에 생성될까? (Eden Region)</a><ul><li><a href="#eden이-가득-차면" class="table-of-contents__link toc-highlight">Eden이 가득 차면?</a></li></ul></li><li><a href="#3-객체가-오래-살아남으면-old-region" class="table-of-contents__link toc-highlight">3. 객체가 오래 살아남으면? (Old Region)</a></li><li><a href="#4-concurrent-marking-조사-단계" class="table-of-contents__link toc-highlight">4. <code>Concurrent Marking</code> (조사 단계)</a><ul><li><a href="#이-단계에서-하는-일" class="table-of-contents__link toc-highlight">이 단계에서 하는 일</a></li></ul></li><li><a href="#5-mixed-gc--g1gc의-핵심-" class="table-of-contents__link toc-highlight">5. <code>Mixed GC</code> – <code>G1GC</code>의 핵심 ⭐</a><ul><li><a href="#mixed-gc란" class="table-of-contents__link toc-highlight"><code>Mixed GC</code>란?</a></li><li><a href="#왜-garbage-first인가" class="table-of-contents__link toc-highlight">왜 “Garbage-First”인가?</a></li></ul></li><li><a href="#6-pause-time을-어떻게-관리할까" class="table-of-contents__link toc-highlight">6. Pause Time을 어떻게 관리할까?</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 Johny Cho. All rights reserved.</div></div></div></footer></div>
+<p>👉 한 번에 다 치우지 않고 조금씩 나눠서 치움</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="7-full-gc는-언제-발생할까-가능하면-피한다">7. Full GC는 언제 발생할까? (가능하면 피한다)<a href="#7-full-gc는-언제-발생할까-가능하면-피한다" class="hash-link" aria-label="7. Full GC는 언제 발생할까? (가능하면 피한다)에 대한 직접 링크" title="7. Full GC는 언제 발생할까? (가능하면 피한다)에 대한 직접 링크">​</a></h2>
+<p><code>G1GC</code>도 다음 상황에서는 Full GC가 발생할 수 있습니다.</p>
+<ul>
+<li>객체를 옮길 빈 Region이 부족할 때</li>
+<li>Old 영역 증가 속도를 GC가 따라가지 못할 때</li>
+<li>매우 큰 객체(Humongous Object)가 많을 때</li>
+</ul>
+<p>👉 운영 환경에서 Full GC는 반드시 원인 분석 대상입니다.</p>
+<hr>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="8-g1gc-전체-흐름-요약">8. G1GC 전체 흐름 요약<a href="#8-g1gc-전체-흐름-요약" class="hash-link" aria-label="8. G1GC 전체 흐름 요약에 대한 직접 링크" title="8. G1GC 전체 흐름 요약에 대한 직접 링크">​</a></h2>
+<blockquote>
+<p>객체 생성 → Eden<br>
+<!-- -->Eden 가득 → Young GC<br>
+<!-- -->오래 생존 → Old<br>
+<!-- -->Old 커짐 → Concurrent Marking<br>
+<!-- -->쓰레기 많은 곳 → Mixed GC<br>
+<!-- -->(Full GC는 최대한 회피)</p>
+</blockquote>
+<hr>
+<p>G1GC는 힙을 잘게 나눠<br>
+<!-- -->쓰레기가 많은 영역부터 조금씩 치우며<br>
+<!-- -->멈춤 시간을 관리하는 GC입니다.</p>
+<p>G1GC는 “한 번에 다 치우는 GC”가 아니라<br>
+<!-- -->“조금씩, 예측 가능하게 치우는 GC”입니다.</p>
+<p>그래서:</p>
+<ul>
+<li>대용량 힙</li>
+<li>서버 애플리케이션</li>
+<li>Java 17·21 환경</li>
+</ul>
+<p>에서 기본 GC로 사용되고 있습니다.</p><div>Loading comments...</div></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-tags-row"><div class="col"><b>태그:</b><ul class="tags_jXut padding--none margin-left--sm"><li class="tag_QGVx"><a title="Java tag description" class="tag_zVej tagRegular_sFm0" href="/docs/tags/java">Java</a></li></ul></div></div></footer></article><nav class="pagination-nav docusaurus-mt-lg" aria-label="문서 페이지"><a class="pagination-nav__link pagination-nav__link--prev" href="/docs/java/java-gc-algorithm"><div class="pagination-nav__sublabel">이전</div><div class="pagination-nav__label">GC 알고리즘</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/docs/java/java-gc-target"><div class="pagination-nav__sublabel">다음</div><div class="pagination-nav__label">JVM에서 GC 대상 객체를 판단하는 기준</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#g1gc-한-줄-요약" class="table-of-contents__link toc-highlight">G1GC 한 줄 요약</a></li><li><a href="#1-g1gc는-힙을-이렇게-나눈다" class="table-of-contents__link toc-highlight">1. G1GC는 힙을 이렇게 나눈다</a></li><li><a href="#2-객체는-어디에-생성될까-eden-region" class="table-of-contents__link toc-highlight">2. 객체는 어디에 생성될까? (Eden Region)</a><ul><li><a href="#eden이-가득-차면" class="table-of-contents__link toc-highlight">Eden이 가득 차면?</a></li></ul></li><li><a href="#3-객체가-오래-살아남으면-old-region" class="table-of-contents__link toc-highlight">3. 객체가 오래 살아남으면? (Old Region)</a></li><li><a href="#4-concurrent-marking-조사-단계" class="table-of-contents__link toc-highlight">4. <code>Concurrent Marking</code> (조사 단계)</a><ul><li><a href="#이-단계에서-하는-일" class="table-of-contents__link toc-highlight">이 단계에서 하는 일</a></li></ul></li><li><a href="#5-mixed-gc--g1gc의-핵심-" class="table-of-contents__link toc-highlight">5. <code>Mixed GC</code> – <code>G1GC</code>의 핵심 ⭐</a><ul><li><a href="#mixed-gc란" class="table-of-contents__link toc-highlight"><code>Mixed GC</code>란?</a></li><li><a href="#왜-garbage-first인가" class="table-of-contents__link toc-highlight">왜 “Garbage-First”인가?</a></li></ul></li><li><a href="#6-pause-time을-어떻게-관리할까" class="table-of-contents__link toc-highlight">6. Pause Time을 어떻게 관리할까?</a></li><li><a href="#7-full-gc는-언제-발생할까-가능하면-피한다" class="table-of-contents__link toc-highlight">7. Full GC는 언제 발생할까? (가능하면 피한다)</a></li><li><a href="#8-g1gc-전체-흐름-요약" class="table-of-contents__link toc-highlight">8. G1GC 전체 흐름 요약</a></li></ul></div></div></div></div></main></div></div></div><footer class="footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2025 Johny Cho. All rights reserved.</div></div></div></footer></div>
 </body>
 </html>
