@@ -136,7 +136,13 @@ Old Region 중에서도, 다음 기준에 해당하는 리전을 **우선적으�
 - 힙 사이징
 ```shell
 -Xms4g -Xmx4g
+
+# -Xms: JVM 시작 시 힙 크기 (initial heap size)
+# -Xmx: JVM이 사용할 수 있는 최대 힙 크기 (max heap size)
 ```
+운영에서는 보통 Xms = Xmx로 고정(리사이징 비용/변동 최소화)  
+Xms와 Xmx를 같게 두면 JVM이 힙 크기를 늘렸다 줄였다(resize) 하느라 쓰는 비용과 성능 변동을 막을 수 있다.
+
 - GC 로그 (무조건)
 ```shell
 -Xlog:gc*,safepoint:file=/var/log/gc.log:time,uptime,level,tags
