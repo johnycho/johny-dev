@@ -131,6 +131,52 @@ Old Region 중에서도, 다음 기준에 해당하는 리전을 **우선적으�
 
 ---
 
+## 9. 실무에서 많이 넣는 GC 튜닝 옵션(설정값)
+### 실무 공통
+- 힙 사이징
+```shell
+-Xms4g -Xmx4g
+```
+- GC 로그 (무조건)
+```shell
+-Xlog:gc*,safepoint:file=/var/log/gc.log:time,uptime,level,tags
+```
+
+- OOM 진단
+```shell
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/var/log/heapdump.hprof
+-XX:ErrorFile=/var/log/hs_err_pid%p.log
+```
+
+### `G1GC`에서 자주 만지는 튜닝 옵션
+- 목표 pause 시간(soft goal)
+```shell
+-XX:MaxGCPauseMillis=200
+```
+너무 낮추면 CPU/처리량 희생 가능
+
+- 마킹 시작 시점(`IHOP`)
+```shell
+-XX:InitiatingHeapOccupancyPercent=45
+```
+Old가 빨리 차서 Mixed/FullGC 위험이면 더 낮춰서 일찍 마킹 유도
+
+- 스레드 수(환경 따라)
+```shell
+-XX:ParallelGCThreads=8
+-XX:ConcGCThreads=2
+```
+CPU 코어/컨테이너 제한 있을 때 조정 (과다하면 앱 CPU 잠식)
+
+- 큰 객체/Region 관련(가끔)
+```shell
+-XX:G1HeapRegionSize=8m
+```
+기본 자동이 대부분 정답이라 특수 케이스에서만 조정
+
+---
+
 G1GC는 힙을 잘게 나눠  
 쓰레기가 많은 영역부터 조금씩 치우며  
 멈춤 시간을 관리하는 GC입니다.
