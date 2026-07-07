@@ -1,0 +1,42 @@
+/* 블로그(인사이트) 목록 계열 페이지 공통 레이아웃 */
+.page {
+  flex: 1 0 auto;
+  padding: clamp(2.4rem, 4.5vw, 4rem) 0 clamp(3rem, 6vw, 5rem);
+}
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+.head {
+  text-align: center;
+  margin-bottom: clamp(1.6rem, 3vw, 2.4rem);
+}
+.eyebrow {
+  margin: 0 0 0.6rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--site-accent);
+}
+.heading {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.6vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ifm-heading-color);
+}
+.sub {
+  margin: 0.9rem auto 0;
+  max-width: 52ch;
+  color: var(--site-muted);
+  font-size: clamp(0.95rem, 1.6vw, 1.05rem);
+  line-height: 1.6;
+}
+@media (max-width: 600px) {
+  .head { margin-bottom: 1.4rem; }
+  .eyebrow { font-size: 0.72rem; }
+  .heading { font-size: 1.4rem; }
+  .sub { font-size: 0.88rem; margin-top: 0.6rem; }
+}

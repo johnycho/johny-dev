@@ -53,7 +53,7 @@ const config: Config = {
         blog: {
           postsPerPage: 10, // 한 페이지당 표시할 게시글 개수 (기본값: 10)
           blogSidebarCount: "ALL", // 사이드바에 모든 게시글 표시
-          showReadingTime: true,
+          showReadingTime: false,
           feedOptions: {
             type: ['rss', 'atom'],
             xslt: true,
@@ -75,6 +75,10 @@ const config: Config = {
   ],
 
   themeConfig: {
+    // Mermaid: 다크 모드에선 dark 테마로 렌더 (라이트는 default)
+    mermaid: {
+      theme: { light: 'default', dark: 'default' },
+    },
     // 네이버 SEO 설정
     metadata: [
       {
@@ -112,23 +116,22 @@ const config: Config = {
       items: [
         {
           to: '/docs/intro',
-          label: 'Docs',
+          label: '레퍼런스',
           position: 'left',
           type: 'dropdown',
           items: [
-            {type: "docSidebar", sidebarId: "johnyDocsSidebar", label: "All Docs"},
-            {label: "Tags", to: "/docs/tags"},
+            {label: "Computer Science", to: "/docs/category/computer-science"},
+            {label: "Java", to: "/docs/category/java"},
+            {label: "Spring Framework", to: "/docs/category/spring-framework"},
+            {label: "Spring Data JPA", to: "/docs/category/spring-data-jpa"},
+            {label: "Database", to: "/docs/category/database"},
           ],
         },
         {
           to: "/blog",
-          label: "Blog",
+          label: "인사이트",
           position: "left",
-          items: [
-            {label: "All Posts", to: "/blog"},
-            {label: "Archive", to: "/blog/archive"},
-            {label: "Tags", to: "/blog/tags"},
-          ],
+          className: "navbar-noactive",
         },
         {
           href: 'https://github.com/johnycho',

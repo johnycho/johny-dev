@@ -16,10 +16,10 @@ import type {Props} from '@theme/BlogPostItem';
 
 import DisqusComments from '@site/src/components/DisqusComments';
 
-// apply a bottom margin in list view
+// apply card styling + bottom margin in list view
 function useContainerClassName() {
   const {isBlogPostPage} = useBlogPost();
-  return !isBlogPostPage ? 'margin-bottom--xl' : undefined;
+  return !isBlogPostPage ? 'blog-list-card margin-bottom--xl' : undefined;
 }
 
 export default function BlogPostItem({children, className}: Props): ReactNode {

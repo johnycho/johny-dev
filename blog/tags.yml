@@ -1,8 +1,3 @@
-hello:
-  label: Hello
-  permalink: /hello
-  description: Hello tag description
-
 jpa:
   label: JPA
   permalink: /jpa
@@ -28,17 +23,17 @@ kafka:
   permalink: /kafka
   description: Kafka tag description
 
-open-telemetry:
-  label: OpenTelemetry
-  permalink: /open-telemetry
-  description: OpenTelemetry tag description
+monitoring:
+  label: 모니터링
+  permalink: /monitoring
+  description: 모니터링·관측성(로그·트레이스·메트릭) 관련 글
 
 system-design:
-  label: SystemDesign
+  label: 시스템 설계
   permalink: /system-design
-  description: SystemDesign tag description
+  description: 시스템 설계 관련 글
 
 architecture:
-  label: Architecture
+  label: 아키텍처
   permalink: /architecture
-  description: Architecture tag description
+  description: 아키텍처 관련 글
