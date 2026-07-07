@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkjohnycho_dev=self.webpackChunkjohnycho_dev||[]).push([[4229],{64229:(e,c,h)=>{h.d(c,{createCynefinServices:()=>n.t});var n=h(63486);h(51400)}}]);
