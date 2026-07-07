@@ -1,0 +1,169 @@
+---
+slug: spring-batch-custom-itemreader
+title: 상태를 바꾸면서 읽는 배치, 결국 ItemReader를 직접 만든 이야기
+authors: [ johnycho ]
+tags: [ spring ]
+---
+
+<!-- truncate -->
+<br /><br />
+
+"오래된 대기 작업을 처리중으로 넘기는 배치." 요구사항 한 줄만 보면 `JdbcPagingItemReader` 하나 붙이고 끝날 일 같았습니다. 그런데 이 배치에는 함정이 하나 숨어 있었습니다. <mark>배치가 읽는 조건(`status = 'READY'`)을, 배치가 직접 바꿔 버린다는 것</mark>(`READY → IN_PROGRESS`)입니다.
+
+여기에 "대량 처리", "동시성", "기존 쿼리 재사용"이 얹히자 내장 Reader들이 하나씩 어긋났고, 결국 30줄짜리 Reader를 직접 만들게 됐습니다. 그 판단 과정을 정리합니다.
+
+> 도메인은 회사 내용이라 일반화했습니다. 작업 큐 `task` 테이블, 상태 `READY → IN_PROGRESS → DONE` 정도로 보면 됩니다.
+>
+> **결론부터**: 내장 DB Reader는 크게 **커서형**과 **페이징형** 두 계열인데, 커서형은 `FOR UPDATE` 락이 청크 트랜잭션에 묶이지 않고, 페이징형은 읽는 조건이 바뀌는 탓에 스킵이 납니다. 키셋 커서와 청크에 묶인 락을 동시에 만족하는 내장 Reader가 없어서, 결국 직접 만들었습니다.
+
+## 요구사항
+
+`task(id, status, created_at)`에서 **등록된 지 N분이 지난 `READY` 작업을 `IN_PROGRESS`로 전이**하는 배치입니다. 조건은 세 가지였습니다.
+
+1. 대상이 수만 건이라 청크 단위로 나눠 처리해야 한다.
+2. 배치가 도는 중에도 다른 요청이 같은 행을 건드릴 수 있어(예: 사용자가 직접 취소) 동시성을 지켜야 한다.
+3. 이미 QueryDSL로 만들어 둔 조회·갱신 쿼리를 재사용하고 싶다.
+
+Spring Batch의 chunk step은 `read → process → write`를 청크 크기만큼 모아 한 트랜잭션으로 커밋합니다. "대상 id를 읽는" 역할이 ItemReader이고, 후보는 `JdbcPagingItemReader`·`JdbcCursorItemReader`·`JpaPagingItemReader`, 그리고 리포지토리 메서드를 부르는 `RepositoryItemReader`였습니다. 이제 이 셋이 어디서 걸리는지 순서대로 보겠습니다.
+
+## 함정 1. 읽는 조건을 쓰기에서 바꾼다
+
+앞서 말한 반전이 여기서 문제가 됩니다. `READY`를 읽어 `IN_PROGRESS`로 전이하니, <mark>조회할 때 거는 필터를 Writer가 바꿔 버립니다.</mark> 이 상태에서 OFFSET 페이징으로 읽으면 사고가 납니다.
+
+```
+1페이지: OFFSET 0   LIMIT 100  → 100건 처리 → IN_PROGRESS
+   이제 READY 개수가 100건 줄었다.
+2페이지: OFFSET 100 LIMIT 100  → 원래 101~200번째였던 행이
+   앞으로 100칸 당겨져서 201~300을 읽는다. 101~200은 통째로 스킵.
+```
+
+한 페이지를 처리하면 `READY` 개수가 그만큼 줄어듭니다. 그 상태에서 `OFFSET 100`을 다시 조회하면 원래 101번째였던 행이 앞으로 당겨져 있어 건너뛰게 됩니다. **처리하면서 목록에서 빠지는 데이터에 OFFSET 페이징을 쓰면 나타나는 전형적인 스킵 버그**입니다.
+
+그래서 OFFSET을 버리고 <mark>마지막으로 읽은 id 다음부터 조회하는 키셋 커서(`id > afterId`)</mark>로 바꿨습니다.
+
+```sql
+WHERE status = 'READY' AND created_at < :threshold
+  AND id > :afterId
+ORDER BY id ASC
+LIMIT :chunkSize
+```
+
+id는 단조 증가하고, 이미 전이된 행은 다음 조회에서 `status = 'READY'` 조건으로도 빠집니다. 스킵도 중복도 없습니다.
+
+## 함정 2. 락을 청크 트랜잭션에 묶어야 한다
+
+동시성은 조회 시 `FOR UPDATE`(비관적 락)로 잡았습니다. 그런데 이 락이 효과를 보려면 <mark>"잠그고 → 바꾸고 → 커밋"이 하나의 트랜잭션 안에서 일어나 잡은 락이 커밋 시점까지 유지</mark>되어야 합니다.
+
+- `JdbcCursorItemReader`는 스텝 시작 시 커서를 열어 스텝 내내 **별도 커넥션**으로 스트리밍합니다. 청크 트랜잭션과 커넥션이 분리돼 있어 `FOR UPDATE` 락이 각 청크의 쓰기·커밋에 묶이지 않습니다.
+- `JdbcPagingItemReader`는 페이지마다 쿼리를 새로 실행하고, 페이지 사이에 락을 유지하지 않습니다.
+
+여기서 규칙 하나가 나옵니다. <mark>Reader가 한 번에 읽는 개수 = 청크 커밋 간격(commit-interval)</mark>. 이렇게 맞추면 "한 번의 `FOR UPDATE` 조회"가 정확히 "한 청크 트랜잭션" 안에 들어가고, 그 조회로 잠근 행들이 같은 트랜잭션의 커밋 시점까지 잠긴 채 유지됩니다(chunk step은 `read()`를 청크 트랜잭션 안에서 호출합니다). 읽는 개수가 커밋 간격보다 크면, 다음 청크가 처리할 행의 락이 이전 커밋 때 이미 풀려 안전장치가 깨집니다.
+
+## 함정 3. 내장 Reader는 기존 쿼리를 호출하지 못한다
+
+함정 1·2를 풀어 만든 조회(키셋 커서 + `FOR UPDATE` + 조인)는 이미 리포지토리에 메서드로 있었습니다. 그대로 재사용하고 싶었지만, `Jdbc*`·`Jpa*` Reader는 SQL이나 JPQL을 **문자열로** 설정받습니다. 임의의 메서드에 위임하는 지점이 없어서, 쓰려면 쿼리를 배치 쪽에 다시 옮겨 적어야 하고 같은 쿼리가 두 곳에 존재하게 됩니다.
+
+메서드를 호출하는 Reader는 `RepositoryItemReader` 하나뿐인데, 이건 Spring Data의 `Pageable → Page` 메서드만 받습니다. OFFSET 방식이라 함정 1로 되돌아가고, `id > afterId` 커서와도 맞지 않습니다.
+
+## 그래서 어떤 Reader가 남나
+
+세 함정을 각 Reader 기준으로 다시 놓으면, 셋을 모두 통과하는 것이 없습니다.
+
+| Reader | 쿼리 재사용 | 스킵 없음 | 락 유지 | 막히는 지점 |
+|---|:---:|:---:|:---:|---|
+| `JdbcCursorItemReader` | ✕ | △ | ✕ | SQL 문자열만 받음 / 별도 커넥션 커서라 락 미유지 |
+| `JdbcPagingItemReader` | ✕ | ✕ | ✕ | SQL 문자열만 / OFFSET 스킵 / 페이지마다 새 쿼리 |
+| `JpaPagingItemReader` | ✕ | ✕ | ✕ | 위와 동일(JPQL 문자열) |
+| `RepositoryItemReader` | ○ | ✕ | ✕ | 메서드는 호출하나 `Pageable`=OFFSET → 스킵 재발 |
+| **커스텀(직접)** | ○ | ○ | ○ | 쿼리 그대로 호출 + `id > afterId` 키셋 + `fetch = commit-interval` |
+
+> △: `JdbcCursorItemReader`는 OFFSET이 아니라 단일 커서 스트리밍이라 스킵 자체는 없지만, 락(세 번째 열)에서 탈락합니다.
+
+표에 없는 나머지 구현체도 마찬가지입니다. `JpaCursorItemReader`·`HibernateCursorItemReader`·`StoredProcedureItemReader`(그리고 생태계의 `MyBatisCursorItemReader`)는 **커서형**이라 함정 2에, `HibernatePagingItemReader`·`MyBatisPagingItemReader`는 **페이징형**이라 함정 1에 걸립니다. 게다가 전부 쿼리를 문자열이나 매퍼 statement로 받아서 함정 3까지 그대로입니다. 즉 내장 Reader는 결국 **커서형과 페이징형 두 계열**로 나뉘는데, 커서형은 락이 안 묶이고 페이징형은 스킵이 나며, 어느 쪽도 이미 만든 쿼리 메서드를 그대로 부르지 못합니다.
+
+그러니 정확히는 "내장 Reader가 부족하다"가 아니라, <mark>키셋 커서 + 청크 트랜잭션에 묶인 락 + 기존 쿼리 재사용, 이 셋을 동시에 만족하는 내장 Reader가 없다</mark>는 것입니다.
+
+## 해결: 얇은 커스텀 Reader
+
+무거운 로직은 이미 쿼리 계층에 있으니, Reader는 <mark>청크 조회 결과를 한 건씩 흘려주는 버퍼</mark>면 충분했습니다.
+
+```java
+public class StatusTransitionItemReader implements ItemReader<Long> {
+
+    private final TargetIdQuery query;   // 이미 있는 조회 계층(키셋 커서 + FOR UPDATE)
+    private final int chunkSize;          // 스텝의 commit-interval과 같은 값
+
+    private final Deque<Long> buffer = new ArrayDeque<>();
+    private long afterId = 0L;
+    private boolean exhausted = false;
+
+    public StatusTransitionItemReader(TargetIdQuery query, int chunkSize) {
+        this.query = query;
+        this.chunkSize = chunkSize;
+    }
+
+    @Override
+    public Long read() {
+        if (buffer.isEmpty() && !exhausted) {
+            fill();
+        }
+        return buffer.poll();   // 비면 null → 스텝 종료
+    }
+
+    private void fill() {
+        List<Long> ids = query.findNextChunk(afterId, chunkSize);
+        if (ids.isEmpty()) {
+            exhausted = true;
+            return;
+        }
+        buffer.addAll(ids);
+        afterId = ids.get(ids.size() - 1);   // 다음 커서 = 이번 청크의 마지막 id
+        if (ids.size() < chunkSize) {
+            exhausted = true;                 // 마지막 페이지면 빈 조회 한 번을 생략
+        }
+    }
+}
+```
+
+`read()`는 버퍼에서 하나씩 꺼내고, 버퍼가 비면 커서로 다음 청크를 채웁니다. 스텝에 등록할 때 fetch 크기와 청크 크기를 같은 상수로 넘기면, 함정 2의 규칙이 코드로 강제됩니다.
+
+```java
+int CHUNK = 200;
+new StepBuilder("transitionStep", jobRepository)
+    .<Long, Long>chunk(CHUNK, txManager)
+    .reader(new StatusTransitionItemReader(query, CHUNK)) // ← 같은 값
+    .writer(writer)
+    .build();
+```
+
+Writer는 모인 id에 조건부 UPDATE를 겁니다. `WHERE`에 `status='READY'`를 한 번 더 넣은 것은, 락과 별개로 "조회 이후 상태가 바뀐 행"을 걸러 내는 2차 방어선입니다.
+
+```java
+public void write(Chunk<? extends Long> chunk) {
+    List<Long> ids = new ArrayList<>(chunk.getItems());
+    // UPDATE ... SET status='IN_PROGRESS' WHERE id IN (:ids) AND status='READY'
+    query.bulkUpdateStatus(ids, "READY", "IN_PROGRESS");
+}
+```
+
+## 남은 문제: 재시작
+
+이렇게 만들면서 딱 하나 포기한 게 있습니다. **재시작 복원**입니다. 내장 Reader는 읽은 위치를 `ExecutionContext`에 저장해, 중간에 실패해도 이어서 재개할 수 있습니다.
+
+커스텀에서도 이걸 얻는 길은 있습니다. `ItemStream`(open/update/close)을 함께 구현해 읽은 위치를 `ExecutionContext`에 저장하면 되고, 방법은 몇 가지입니다.
+
+- `AbstractItemCountingItemStreamItemReader` — `doRead()`만 구현하면 위치 저장이 딸려오지만, 저장하는 값이 `currentItemCount`(읽은 **개수**)라 우리 커서 `afterId`와 맞지 않습니다. 개수로는 커서를 되살릴 수 없어서, 결국 `open()`/`update()`를 직접 손봐야 합니다.
+- `AbstractPagingItemReader` — 페이징 리더의 추상 베이스지만 page(=OFFSET) 기반이라 함정 1(스킵)이 그대로 돌아옵니다.
+- **`ItemStreamReader`를 직접 구현** — `open()`/`update()`에서 `afterId`를 직접 저장·복원합니다. <mark>키셋 커서에는 이 방식이 가장 자연스럽습니다.</mark>
+
+그런데 이번에는 애초에 재시작 저장이 필요 없었습니다. 안 쓸 기능 때문에 라이프사이클 메서드를 얹을 이유가 없어, 순수 `ItemReader`로 갔습니다. 대신 기댄 건 멱등성입니다. <mark>상태 전이 자체가 멱등이라, 다시 실행하면 아직 `READY`인 행만 다시 잡힙니다.</mark> 이미 전이된 행은 조건에서 빠집니다.
+
+배치를 "떴다가 한 번 실행하고 종료"하는 방식(K8s CronJob 등)으로 운영하면, 중간 상태를 복원하기보다 그냥 재실행하는 편이 더 자연스러운 복구입니다. 그래서 재시작 저장을 포기해도 손해가 없었고, 덕분에 Reader가 이만큼 단순해졌습니다.
+
+> 반대로 재시작 복원이 꼭 필요한 배치라면, 세 방법 중 keyset 커서에는 `ItemStreamReader`를 직접 구현해 `afterId`를 저장하는 쪽이 가장 잘 맞습니다.
+
+## 마무리
+
+내장 컴포넌트가 "대부분의 경우"에 맞춰져 있다는 건, 경계 밖 요구가 두세 개 겹치면 안 맞을 수도 있다는 뜻이기도 합니다. 이번엔 읽으면서 목록에서 빠지는 데이터, 청크 트랜잭션에 묶인 락, 기존 쿼리 재사용이 겹쳐서 30줄짜리 Reader가 가장 나은 답이었습니다.
+
+내장을 안 쓴 게 아니라 쓸 수 없었던 것이고, 그 이유를 이해해 두면 다음 배치를 설계할 때도 판단이 빨라집니다.
