@@ -33,6 +33,12 @@ const config: Config = {
     locales: ['ko'],
   },
 
+  // Mermaid 다이어그램 활성화 (```mermaid 코드블록)
+  markdown: {
+    mermaid: true,
+  },
+  themes: ['@docusaurus/theme-mermaid'],
+
   presets: [
     [
       'classic',

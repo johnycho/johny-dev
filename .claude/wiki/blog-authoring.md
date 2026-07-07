@@ -28,12 +28,17 @@
 - 제네릭(`List<Long>`), ASCII 다이어그램, 중괄호 등은 **코드블록 안에서는 안전** — 그대로 둔다.
 - 작성 후 코드블록 밖 본문에 위험 패턴이 없는지 스캔한다(스킬 6절).
 
-## 4) 태그(tags) — `blog/tags.yml` 등록분만
+## 4) 다이어그램 — Mermaid 사용
+- 흐름도·구조도는 ASCII 아트 대신 **` ```mermaid ` 코드블록**으로 그린다. 한글은 코드블록에서 2칸 폭이라 ASCII 열 정렬이 깨지기 때문.
+- Mermaid는 `docusaurus.config.ts`에 활성화됨(`markdown.mermaid: true` + `@docusaurus/theme-mermaid`). 노드 라벨의 줄바꿈은 `<br/>` 사용.
+- 단순 화살표 한 줄(`A → B → C`)이면 굳이 다이어그램화하지 않아도 된다.
+
+## 5) 태그(tags) — `blog/tags.yml` 등록분만
 현재 등록된 태그: `hello`, `jpa`, `spring`, `mysql`, `redis`, `kafka`, `open-telemetry`, `system-design`, `architecture`.
 - 새 주제 태그가 필요하면 **먼저 `blog/tags.yml`에 label/permalink/description을 추가**한 뒤 사용.
 - 글 하나에 여러 태그 가능(예: `[ system-design, architecture ]`).
 
-## 5) 검증
+## 6) 검증
 - `npm run build` 로 MDX 컴파일 성공 확인(빌드 실패 시 MDX 파싱 오류 위치가 표시됨).
 - 필요 시 `npm start` 로컬 서버로 목록/본문 렌더 확인.
 
