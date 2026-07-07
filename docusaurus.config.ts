@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: '조니의 개발 블로그',
   tagline: 'Developer Archive',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.png',
 
   // Set the production url of your site here
   url: 'https://johnycho.dev', // GitHub Pages URL
@@ -51,6 +51,8 @@ const config: Config = {
           //     'https://github.com/johnycho/johny-dev/edit/main/',
         },
         blog: {
+          blogTitle: '인사이트', // 블로그 목록 페이지 제목(브라우저 탭)
+          blogDescription: '실무에서 부딪힌 문제와 해결 과정에서 얻은 깨달음을 기록합니다.',
           postsPerPage: 10, // 한 페이지당 표시할 게시글 개수 (기본값: 10)
           blogSidebarCount: "ALL", // 사이드바에 모든 게시글 표시
           showReadingTime: false,
