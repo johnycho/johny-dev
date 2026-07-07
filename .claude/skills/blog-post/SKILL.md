@@ -1,0 +1,31 @@
+---
+name: blog-post
+description: 마크다운 초안(예: ~/Downloads/*.md)이나 주제를 johny-dev 기술 블로그 게시글(blog/*.mdx)로 변환·작성한다. "블로그 글 추가", "이 md 포스트로 만들어줘", "게시글 작성" 등의 요청에 사용.
+---
+
+# 게시글 작성 스킬 (마크다운 → 블로그 .mdx)
+
+상세 규칙은 반드시 [../../wiki/blog-authoring.md](../../wiki/blog-authoring.md)를 먼저 읽고 그대로 따른다. 아래는 실행 절차 요약이다.
+
+## 절차
+
+1. **소스 확인**: 반영할 초안(md 파일 경로/주제)과 개수를 확인한다. 여러 개면 각각 별도 `.mdx`로 만든다.
+
+2. **파일명·슬러그 결정** (wiki 1절): `blog/YYYY-MM-DD-slug.mdx`, `slug`는 kebab-case. 날짜가 목록 정렬을 결정하니 여러 글이면 날짜/순서를 사용자와 맞춘다.
+
+3. **태그 결정** (wiki 4절): `blog/tags.yml`에 이미 있는 태그만 사용. 새 태그가 필요하면 먼저 `tags.yml`에 추가한 뒤 쓴다. 애매하면 사용자에게 확인.
+
+4. **프론트매터 + truncate 부착** (wiki 1절):
+   - `slug` / `title`(특수문자 있으면 따옴표) / `authors: [ johnycho ]` / `tags: [ ... ]`
+   - 프론트매터 다음에 `<!-- truncate -->` → `<br /><br />`.
+
+5. **본문 정리** (wiki 2·3절):
+   - 초안 맨 앞 H1(`# 제목`) 한 줄 제거(제목은 프론트매터에). 나머지 본문·코드블록은 유지.
+   - 강조 `<mark>`, 줄바꿈 `<br />` 사용.
+
+6. **MDX 위험 스캔** (wiki 3절): 코드블록 **밖** 본문에 raw `{` `}` `<태그`(단 `<mark>`,`<br />` 제외)가 없는지 확인. 있으면 이스케이프. 코드블록 안은 그대로 둔다.
+
+7. **검증**: `npm run build` 로 MDX 컴파일 확인. 필요 시 `npm start` 로 렌더 확인.
+
+## 커밋
+- 커밋·푸시는 [git 계정 정책](../../wiki/git-account.md)에 따라 **johnycho** 계정으로 (`gh auth switch --user johnycho`). hook이 자동 검증한다.
