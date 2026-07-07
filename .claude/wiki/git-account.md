@@ -10,12 +10,11 @@
 ## 커밋/푸시 절차
 1. 활성 계정 전환:  `gh auth switch --user johnycho`
 2. 커밋 · 푸시
-3. (권장) 원복:  `gh auth switch --user johny-cho`
+3. 원복:  `git push` 직후 자동(PostToolUse hook). 수동은 `gh auth switch --user johny-cho`.
 
-## 자동 검증 (hook)
-- `.claude/hooks/check-git-account.sh` (PreToolUse·Bash), `settings.json`에 등록.
-- `git push` / `git commit` 실행 시 gh 활성 계정이 `johnycho`가 아니면 **차단**하고 전환을 안내한다.
-- 그 외 명령에는 영향 없음.
+## 자동 검증/복귀 (hook, `settings.json` 등록)
+- **커밋/푸시 검증**: `.claude/hooks/check-git-account.sh` (PreToolUse·Bash). `git push`/`git commit` 시 gh 활성 계정이 `johnycho`가 아니면 **차단**하고 전환을 안내한다. 그 외 명령엔 영향 없음.
+- **push 후 복귀**: `.claude/hooks/restore-git-account.sh` (PostToolUse·Bash). `git push`가 끝나면 `gh auth switch --user johny-cho`로 기본 계정에 자동 원복한다(묻지 않음). commit 에는 반응하지 않는다 — commit 후 이어지는 push가 PreToolUse에서 차단되지 않도록. push가 원격 작업의 종료 지점이다.
 
 ## 참고
 - gh에는 `johnycho`, `johny-cho` 두 계정이 로그인되어 있음. 전환은 머신 전체·영구 적용.

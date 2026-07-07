@@ -10,6 +10,18 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/restore-git-account.sh\"",
+            "statusMessage": "gh 계정 johny-cho로 복귀"
+          }
+        ]
+      }
     ]
   }
 }
