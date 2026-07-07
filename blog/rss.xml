@@ -91,7 +91,7 @@
 <p>헥사고날 아키텍처(포트 앤 어댑터, Ports and Adapters)를 처음 접하면 <strong>유즈케이스, 포트, 인바운드/아웃바운드 어댑터</strong>의 관계가 가장 헷갈립니다. 이 글에서는 식당 비유와 자바 예제로 이 관계를 하나씩 풀어봅니다.</p>
 <hr>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-유즈케이스-vs-어댑터-한-줄-요약">1. 유즈케이스 vs 어댑터, 한 줄 요약<a href="https://johnycho.dev/blog/hexagonal-architecture#1-%EC%9C%A0%EC%A6%88%EC%BC%80%EC%9D%B4%EC%8A%A4-vs-%EC%96%B4%EB%8C%91%ED%84%B0-%ED%95%9C-%EC%A4%84-%EC%9A%94%EC%95%BD" class="hash-link" aria-label="1. 유즈케이스 vs 어댑터, 한 줄 요약에 대한 직접 링크" title="1. 유즈케이스 vs 어댑터, 한 줄 요약에 대한 직접 링크">​</a></h2>
-<p>핵심은 <strong>"안(도메인/코어)"과 "밖(외부 세계)"의 경계</strong>입니다. 유즈케이스는 안쪽, 어댑터는 바깥쪽입니다.</p>
+<p>핵심은 <strong>"안(도메인/코어)"과 "밖(외부 세계)"의 경계</strong>입니다. <mark>유즈케이스는 안쪽, 어댑터는 바깥쪽입니다.</mark></p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="유즈케이스-use-case">유즈케이스 (Use Case)<a href="https://johnycho.dev/blog/hexagonal-architecture#%EC%9C%A0%EC%A6%88%EC%BC%80%EC%9D%B4%EC%8A%A4-use-case" class="hash-link" aria-label="유즈케이스 (Use Case)에 대한 직접 링크" title="유즈케이스 (Use Case)에 대한 직접 링크">​</a></h3>
 <ul>
 <li>애플리케이션 코어(안쪽)에 위치하는 <strong>비즈니스 로직</strong></li>
@@ -111,7 +111,7 @@
 </li>
 </ul>
 <table><thead><tr><th></th><th>유즈케이스</th><th>어댑터</th></tr></thead><tbody><tr><td>위치</td><td>코어(안)</td><td>인프라(밖)</td></tr><tr><td>책임</td><td>비즈니스 규칙 "무엇"</td><td>기술 연동 "어떻게"</td></tr><tr><td>의존 방향</td><td>포트에만 의존</td><td>도메인/포트에 의존</td></tr><tr><td>교체 가능성</td><td>안정적, 잘 안 바뀜</td><td>기술 바뀌면 교체</td></tr></tbody></table>
-<p><strong>핵심 원칙</strong>: 의존성은 항상 바깥(어댑터) → 안(유즈케이스) 방향으로만 흐릅니다. 그래서 DB를 MySQL에서 MongoDB로 바꿔도, HTTP를 gRPC로 바꿔도 유즈케이스 코드는 그대로 유지됩니다.</p>
+<p><strong>핵심 원칙</strong>: <mark>의존성은 항상 바깥(어댑터) → 안(유즈케이스) 방향으로만 흐릅니다.</mark> 그래서 DB를 MySQL에서 MongoDB로 바꿔도, HTTP를 gRPC로 바꿔도 유즈케이스 코드는 그대로 유지됩니다.</p>
 <hr>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-식당-비유로-한-방에-이해하기-️">2. 식당 비유로 한 방에 이해하기 🍽️<a href="https://johnycho.dev/blog/hexagonal-architecture#2-%EC%8B%9D%EB%8B%B9-%EB%B9%84%EC%9C%A0%EB%A1%9C-%ED%95%9C-%EB%B0%A9%EC%97%90-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0-%EF%B8%8F" class="hash-link" aria-label="2. 식당 비유로 한 방에 이해하기 🍽️에 대한 직접 링크" title="2. 식당 비유로 한 방에 이해하기 🍽️에 대한 직접 링크">​</a></h2>
 <p><strong>유즈케이스 = 주방(요리사)</strong></p>
@@ -152,7 +152,7 @@
 <ul>
 <li>웨이터가 앱이든 전화든 상관없음</li>
 <li>재료가 이마트에서 오든 쿠팡에서 오든 상관없음</li>
-<li>→ 그래서 웹을 앱으로 바꿔도, DB를 바꿔도 주방 코드는 그대로</li>
+<li>→ <mark>그래서 웹을 앱으로 바꿔도, DB를 바꿔도 주방 코드는 그대로</mark></li>
 </ul>
 </li>
 </ol>
@@ -196,7 +196,7 @@
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="뒤집혀-있다는-게-이-말">"뒤집혀 있다"는 게 이 말<a href="https://johnycho.dev/blog/hexagonal-architecture#%EB%92%A4%EC%A7%91%ED%98%80-%EC%9E%88%EB%8B%A4%EB%8A%94-%EA%B2%8C-%EC%9D%B4-%EB%A7%90" class="hash-link" aria-label="&quot;뒤집혀 있다&quot;는 게 이 말에 대한 직접 링크" title="&quot;뒤집혀 있다&quot;는 게 이 말에 대한 직접 링크">​</a></h3>
 <table><thead><tr><th></th><th>어댑터가 하는 일</th><th>코어가 하는 일</th></tr></thead><tbody><tr><td><strong>인바운드</strong></td><td>포트를 <strong>호출</strong>(부른다)</td><td>포트를 <strong>구현</strong>(만든다)</td></tr><tr><td><strong>아웃바운드</strong></td><td>포트를 <strong>구현</strong>(만든다)</td><td>포트를 <strong>호출</strong>(부른다)</td></tr></tbody></table>
-<p>→ 어댑터가 인바운드에서는 "부르는 쪽", 아웃바운드에서는 "만드는 쪽". <strong>정확히 역할이 반대(뒤집힘)</strong>. 코어도 마찬가지로 반대.</p>
+<p>→ <mark>어댑터가 인바운드에서는 "부르는 쪽", 아웃바운드에서는 "만드는 쪽" — 정확히 역할이 반대(뒤집힘)</mark>. 코어도 마찬가지로 반대.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="왜-이렇게-뒤집힐까-핵심-이유">왜 이렇게 뒤집힐까? (핵심 이유)<a href="https://johnycho.dev/blog/hexagonal-architecture#%EC%99%9C-%EC%9D%B4%EB%A0%87%EA%B2%8C-%EB%92%A4%EC%A7%91%ED%9E%90%EA%B9%8C-%ED%95%B5%EC%8B%AC-%EC%9D%B4%EC%9C%A0" class="hash-link" aria-label="왜 이렇게 뒤집힐까? (핵심 이유)에 대한 직접 링크" title="왜 이렇게 뒤집힐까? (핵심 이유)에 대한 직접 링크">​</a></h3>
 <p>기준은 딱 하나: <strong>"화살표(의존성)는 항상 코어 안쪽을 향해야 한다."</strong></p>
 <div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">        밖 ────────▶ 안 ◀──────── 밖</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">   (인바운드 어댑터) (코어) (아웃바운드 어댑터)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
@@ -210,14 +210,14 @@
 <li>실제 구현(어댑터)은 밖에 두고, 그 어댑터가 코어의 인터페이스를 <strong>구현하러 들어옴</strong>.</li>
 <li>결과적으로 화살표가 다시 <strong>안쪽을 향함</strong>. ✅</li>
 </ul>
-<p>이게 <strong>의존성 역전(DIP, Dependency Inversion Principle)</strong> 이고, 어댑터의 역할이 뒤집히는 진짜 이유입니다.</p>
+<mark>이게 <strong>의존성 역전(DIP, Dependency Inversion Principle)</strong> 이고, 어댑터의 역할이 뒤집히는 진짜 이유입니다.</mark>
 <blockquote>
 <p><strong>한 문장 요약</strong>: 포트는 언제나 "호출 ↔ 구현" 사이에 끼는데, <strong>인바운드는 어댑터가 호출·코어가 구현</strong>, <strong>아웃바운드는 코어가 호출·어댑터가 구현</strong> — 화살표를 항상 코어 쪽으로 유지하려다 보니 어댑터의 역할이 서로 반대가 된다.</p>
 </blockquote>
 <hr>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-왜-인바운드-포트는-이름이-port가-아니고-usecase일까">5. 왜 인바운드 포트는 이름이 "Port"가 아니고 "UseCase"일까?<a href="https://johnycho.dev/blog/hexagonal-architecture#5-%EC%99%9C-%EC%9D%B8%EB%B0%94%EC%9A%B4%EB%93%9C-%ED%8F%AC%ED%8A%B8%EB%8A%94-%EC%9D%B4%EB%A6%84%EC%9D%B4-port%EA%B0%80-%EC%95%84%EB%8B%88%EA%B3%A0-usecase%EC%9D%BC%EA%B9%8C" class="hash-link" aria-label="5. 왜 인바운드 포트는 이름이 &quot;Port&quot;가 아니고 &quot;UseCase&quot;일까?에 대한 직접 링크" title="5. 왜 인바운드 포트는 이름이 &quot;Port&quot;가 아니고 &quot;UseCase&quot;일까?에 대한 직접 링크">​</a></h2>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="결론-먼저">결론 먼저<a href="https://johnycho.dev/blog/hexagonal-architecture#%EA%B2%B0%EB%A1%A0-%EB%A8%BC%EC%A0%80" class="hash-link" aria-label="결론 먼저에 대한 직접 링크" title="결론 먼저에 대한 직접 링크">​</a></h3>
-<p>인바운드 포트는 그 자체가 <strong>"이 애플리케이션이 할 수 있는 일(=유즈케이스)"의 목록</strong>이라서, <code>~Port</code>보다 <code>~UseCase</code>라고 부르는 게 의미가 더 잘 드러나기 때문입니다. <strong>둘 다 맞는 이름</strong>인데, 관례적으로 인바운드는 <code>UseCase</code>를 씁니다.</p>
+<p><mark>인바운드 포트는 그 자체가 <strong>"이 애플리케이션이 할 수 있는 일(=유즈케이스)"의 목록</strong>이라서, <code>~Port</code>보다 <code>~UseCase</code>라고 부르는 게 의미가 더 잘 드러나기 때문입니다.</mark> <strong>둘 다 맞는 이름</strong>인데, 관례적으로 인바운드는 <code>UseCase</code>를 씁니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="왜-그런지">왜 그런지<a href="https://johnycho.dev/blog/hexagonal-architecture#%EC%99%9C-%EA%B7%B8%EB%9F%B0%EC%A7%80" class="hash-link" aria-label="왜 그런지에 대한 직접 링크" title="왜 그런지에 대한 직접 링크">​</a></h3>
 <p>포트는 "코어가 바깥세계와 대화하는 창구"인데, 인바운드와 아웃바운드는 창구의 <strong>성격이 다릅니다.</strong></p>
 <p><strong>인바운드 포트 = "우리가 제공하는 기능 메뉴"</strong></p>
