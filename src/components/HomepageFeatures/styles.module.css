@@ -94,6 +94,14 @@
 }
 
 @media screen and (max-width: 768px) {
-  .features { padding: 3rem 0 3.2rem; }
-  .sectionHead { margin-bottom: 2rem; }
+  .features { padding: 2.4rem 0 2.6rem; }
+  .sectionHead { margin-bottom: 1.6rem; }
+  .sectionKicker { font-size: 0.7rem; padding: 0.24rem 0.6rem; }
+  .sectionTitle { font-size: 1.22rem; margin-top: 0.7rem; }
+  .card { padding: 1.3rem 1.3rem; border-radius: 13px; }
+  .cardGlyph { width: 38px; height: 38px; font-size: 1rem; margin-bottom: 0.9rem; border-radius: 10px; }
+  .cardTitle { font-size: 1rem; margin-bottom: 0.4rem; }
+  .cardDesc { font-size: 0.83rem; line-height: 1.65; }
+  .cardCta { margin-top: 1rem; padding-top: 0.85rem; font-size: 0.76rem; }
+  .row > [class*='col'] { margin-bottom: 1rem; }
 }

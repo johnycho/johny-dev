@@ -40,6 +40,8 @@
   --ifm-code-font-size: 100%;
   --ifm-code-border-radius: 6px;
   --ifm-global-radius: 12px;
+  /* 리스트 들여쓰기 축소 (기본 2rem은 번호+중첩 불릿이 겹쳐 과하게 들어감) */
+  --ifm-list-left-padding: 1.4rem;
 
   --ifm-heading-color: #1c1e22;
 
@@ -125,6 +127,13 @@ html {
   text-rendering: optimizeLegibility;
 }
 
+/* PC: 전체 폰트 살짝 축소(루트 크기 하향 → rem 기반 전체 균일 축소). 모바일은 별도 규칙 유지 */
+@media (min-width: 997px) {
+  :root {
+    --ifm-font-size-base: 93.75%; /* 16px → 15px */
+  }
+}
+
 body {
   font-feature-settings: 'ss01', 'cv01', 'cv03';
 }
@@ -135,11 +144,14 @@ h1, h2, h3, h4, h5 {
 h1 { letter-spacing: -0.03em; }
 
 /* 인라인 코드 */
-code {
+/* 인라인 코드만 칩 스타일(코드블록 폰트/여백은 그대로 유지).
+   폰트는 주변 글자보다 살짝 작게, 패딩도 축소해 영역이 과하게 커지지 않도록 */
+:not(pre) > code {
   font-family: var(--ifm-font-family-monospace);
+  font-size: 0.85em;
   background: var(--site-code-bg);
   border: 1px solid var(--site-card-border);
-  padding: 0.12em 0.4em;
+  padding: 0.06em 0.3em;
 }
 
 a {
@@ -220,6 +232,22 @@ a {
 /* PC 드롭다운 화살표(caret) 제거 */
 .navbar__link::after {
   content: none !important;
+}
+/* 모바일: 상단 바의 최상위 네비 링크는 햄버거 드로어로 이동(Infima 기본 동작 복원).
+   (pill 스타일의 무조건부 display:inline-flex 가 기본 display:none 을 덮어써서 생긴 깨짐 방지)
+   단, github 아이콘은 상단 바 우측(검색 버튼 옆)에 그대로 노출한다. */
+@media (max-width: 996px) {
+  .navbar__item.navbar__link:not(.navbar-github-logo) { display: none; }
+
+  /* 상단 바 우측: github + 검색만 나란히. 테마 토글은 상단에서 숨김(드로어에 별도 존재) */
+  .navbar__items--right { display: flex; align-items: center; }
+  .navbar__items--right [class*='colorModeToggle'] { display: none !important; }
+  .navbar__items--right .navbar-github-logo { display: inline-flex !important; order: 1; }
+  /* 검색 컨테이너는 기본 absolute(겹침 원인) → static 으로 바꿔 flex 로 github 옆에 나란히 */
+  .navbar__items--right [class*='navbarSearchContainer'] { order: 2; position: static; }
+
+  /* 드로어 내 중복 github 아이콘은 숨김 */
+  .navbar-sidebar .navbar-github-logo { display: none; }
 }
 .navbar__link:hover {
   color: var(--site-chrome-accent);
@@ -370,9 +398,9 @@ html .navbar-sidebar {
   background-color: color-mix(in srgb, var(--site-accent) 12%, transparent);
   color: var(--site-accent);
 }
-/* 모바일 드로어에서 github 원형 아이콘 정렬 */
+/* github 아이콘은 모바일 상단 바(검색 옆)에 노출하므로 드로어 중복본은 숨김 */
 .navbar-sidebar .navbar-github-logo {
-  display: inline-block;
+  display: none;
 }
 
 /* ============================================================= */
@@ -484,6 +512,9 @@ html[data-theme='dark'] mark code {
   border-left: 3px solid var(--site-accent);
   background: color-mix(in srgb, var(--site-accent) 7%, transparent);
   border-radius: 0 8px 8px 0;
+  /* 상하 패딩 확보 + 폰트는 본문보다 살짝 작게(기본은 본문보다 큼) */
+  padding: 0.9rem 1.15rem;
+  font-size: 0.92em;
 }
 
 .markdown img {
@@ -497,16 +528,67 @@ div[class*='codeBlockContainer'] {
   border-radius: 12px !important;
   border: 1px solid var(--site-card-border);
   box-shadow: var(--site-shadow);
+  /* 내부 pre(사각 배경)가 둥근 모서리를 덮어 모서리 선이 사라지는 문제 방지 */
+  overflow: hidden;
+}
+/* 모바일: 코드블록 폰트 축소 (고정폭이라 비율 축소로 ASCII 정렬 유지) */
+@media (max-width: 768px) {
+  .theme-code-block .prism-code,
+  div[class*='codeBlockContainer'] .prism-code,
+  .theme-code-block code,
+  div[class*='codeBlockContainer'] code {
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
 }
 
+/* border-collapse:separate 여야 border-radius+overflow로 모서리가 깔끔히 클리핑됨.
+   셀 테두리는 아래/오른쪽만 두고 가장자리에서 제거 → 이중 테두리·모서리 어긋남 방지 */
 .markdown table {
+  /* Docusaurus 기본 display:block 때문에 width:100%가 박스에만 적용되고 셀은 좌측 정렬돼
+     오른쪽이 비는 문제 → display:table 로 셀이 100% 폭에 분배되게 함 */
+  display: table;
+  table-layout: auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid var(--site-card-border);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: var(--site-shadow);
 }
+.markdown table th,
+.markdown table td {
+  border: none;
+  border-bottom: 1px solid var(--site-card-border);
+  border-right: 1px solid var(--site-card-border);
+}
+.markdown table th:last-child,
+.markdown table td:last-child {
+  border-right: none;
+}
+.markdown table tbody tr:last-child td,
+.markdown table tr:last-child td {
+  border-bottom: none;
+}
 .markdown table thead tr {
   background: var(--site-code-bg);
+}
+.markdown table thead th {
   border-bottom: 2px solid var(--site-accent);
+}
+/* 모바일: 테이블 폰트·패딩 축소 + 한글 단어 중간 끊김 방지 → 개행 최소화 */
+@media (max-width: 768px) {
+  .markdown table { font-size: 0.66rem; }
+  .markdown table th,
+  .markdown table td {
+    padding: 0.32rem 0.38rem;
+    line-height: 1.45;
+    word-break: keep-all;
+    overflow-wrap: anywhere;
+  }
+  /* 코드/식별자 등 긴 토큰은 셀 폭에 눌리지 않게 살짝 더 작게 */
+  .markdown table code { font-size: 0.92em; padding: 0.02em 0.2em; }
 }
 
 /* ── 이전/다음 글 네비게이션 (세련된 카드 · joylangcenter 방식) ── */
@@ -623,6 +705,14 @@ div[class*='codeBlockContainer'] {
   line-height: 1.42;
 }
 
+/* 글 상세 페이지 본문 전체를 blockquote 정도의 작은 크기로 (PC/모바일 공통) */
+.blog-post-page .markdown {
+  font-size: 0.83rem;
+  line-height: 1.72;
+}
+.blog-post-page .markdown > h2 { font-size: 1.12rem; }
+.blog-post-page .markdown > h3 { font-size: 0.98rem; }
+
 /* ── Disqus: 다크 테마의 Disqus 패널은 검정을 강제로 칠하므로(iframe 내부는 제어 불가),
    본문 카드 하단을 카드색 → 검정으로 그라데이션되는 댓글 존으로 full-bleed 처리해
    경계·이질감 없이 자연스럽게 이어지게 한다 (라이트는 원본 유지). ── */
@@ -635,10 +725,14 @@ html[data-theme='dark'] .disqus-root {
   border-radius: 0 0 18px 18px;
 }
 @media (max-width: 768px) {
+  /* 모바일은 본문 카드가 없으므로 페이지 배경(#282a2d 계열) → #121212 로 이어지는
+     전체 폭(100vw) 댓글 밴드로 처리 */
   html[data-theme='dark'] .disqus-root {
-    margin: 1.4rem -1.1rem -1.2rem;
-    padding: 1.4rem 1.1rem 1.2rem;
-    border-radius: 0 0 14px 14px;
+    width: 100vw;
+    margin: 1.4rem calc(50% - 50vw) 0;
+    padding: 1.2rem 0.9rem;
+    background: linear-gradient(180deg, var(--ifm-background-color) 0, #121212 0.6rem);
+    border-radius: 0;
   }
 }
 
@@ -649,7 +743,40 @@ html[data-theme='dark'] .disqus-root {
   font-weight: 700;
 }
 @media (max-width: 768px) {
-  .blog-post-page article { border-radius: 14px; padding: 1.2rem 1.1rem; }
+  /* 모바일: 본문 카드 제거(테두리·그림자·배경 없이) + 좌우 패딩 최소화 → 폭 확보, 개행 감소 */
+  .blog-post-page article {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0.4rem 0;
+  }
+  .blog-post-page article > header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.9rem;
+  }
+  /* 모바일 본문 타이포 축소 */
+  .markdown { font-size: 0.82rem; line-height: 1.68; }
+  .markdown h1:first-child { font-size: 1.5rem; }
+  .markdown > h2 { font-size: 1.12rem; }
+  .markdown > h3 { font-size: 0.98rem; }
+  .blog-post-page article > header h1,
+  .blog-post-page article > header h2 { font-size: 1.1rem !important; }
+  /* 모바일 헤더 메타 축소: 목록버튼·날짜·댓글수·프로필 */
+  .blog-post-page .post-back-link { font-size: 0.74rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
+  .blog-post-page article > header time { font-size: 0.76rem; }
+  .blog-post-page article > header a[data-disqus-identifier] { font-size: 0.76rem !important; margin-left: 0.7rem !important; }
+  .blog-post-page article > header [class*='authorName'] { font-size: 0.82rem; }
+  .blog-post-page article > header [class*='authorTitle'] { font-size: 0.7rem; }
+  .blog-post-page article > header .avatar__photo { width: 2.1rem; height: 2.1rem; }
+  /* 프로필: 이름·회사·소셜버튼이 세로로 너무 붙지 않도록 간격 확보 */
+  .blog-post-page article > header [class*='authorDetails'] { justify-content: center; gap: 0.12rem; }
+  .blog-post-page article > header [class*='authorTitle'] { display: block; margin: 0.12rem 0; line-height: 1.35; }
+  .blog-post-page article > header [class*='authorSocials'] { margin-top: 0.35rem; }
+  /* 폰트 축소에 맞춰 헤더 요소 간 세로 간격도 축소 (데스크톱 기준 16px → 과한 여백 방지) */
+  .blog-post-page article > header h1 { margin-bottom: 0.45rem !important; }
+  .blog-post-page article > header .margin-vert--md { margin-top: 0.35rem !important; margin-bottom: 0.35rem !important; }
+  .blog-post-page article > header .margin-top--md { margin-top: 0.45rem !important; }
 }
 
 /* ============================================================= */
