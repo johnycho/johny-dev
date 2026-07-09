@@ -717,21 +717,27 @@ div[class*='codeBlockContainer'] {
    본문 카드 하단을 카드색 → 검정으로 그라데이션되는 댓글 존으로 full-bleed 처리해
    경계·이질감 없이 자연스럽게 이어지게 한다 (라이트는 원본 유지). ── */
 html[data-theme='dark'] .disqus-root {
-  /* Disqus 다크 패널(.thread__wrapper) 실제 배경색 — 측정값. 그라데이션 끝을 이 색에 맞춰 경계 제거 */
-  /* 경계선만 아주 살짝 부드럽게(카드색→#121212, 0.5rem), 나머지는 #121212 단색 */
+  /* Disqus 다크 패널 실제 배경색(측정값). 엔진마다 다름:
+     데스크톱 Chrome=#121212, iOS Safari(WebKit)=순검정 #000 → 아래 @supports로 iOS만 재정의 */
+  --disqus-dark-bg: #121212;
   margin: 1.6rem calc(-1 * clamp(1.4rem, 3vw, 2.4rem)) calc(-1 * clamp(1.4rem, 3vw, 2.4rem));
   padding: 1.6rem clamp(1.4rem, 3vw, 2.4rem) clamp(1.4rem, 3vw, 2.4rem);
-  background: linear-gradient(180deg, var(--site-card-bg) 0, #121212 0.5rem);
+  background: linear-gradient(180deg, var(--site-card-bg) 0, var(--disqus-dark-bg) 0.5rem);
   border-radius: 0 0 18px 18px;
 }
+/* iOS/iPadOS(WebKit)에서는 Disqus가 순검정을 칠하므로 그라데이션 끝을 #000 으로 맞춘다 */
+@supports (-webkit-touch-callout: none) {
+  html[data-theme='dark'] .disqus-root {
+    --disqus-dark-bg: #000;
+  }
+}
 @media (max-width: 768px) {
-  /* 모바일은 본문 카드가 없으므로 페이지 배경(#282a2d 계열) → #121212 로 이어지는
-     전체 폭(100vw) 댓글 밴드로 처리 */
+  /* 모바일은 본문 카드가 없으므로 페이지 배경 → Disqus 색으로 이어지는 전체 폭(100vw) 댓글 밴드 */
   html[data-theme='dark'] .disqus-root {
     width: 100vw;
     margin: 1.4rem calc(50% - 50vw) 0;
     padding: 1.2rem 0.9rem;
-    background: linear-gradient(180deg, var(--ifm-background-color) 0, #121212 0.6rem);
+    background: linear-gradient(180deg, var(--ifm-background-color) 0, var(--disqus-dark-bg) 0.6rem);
     border-radius: 0;
   }
 }
