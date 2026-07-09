@@ -15,6 +15,31 @@
   text-align: left;
 }
 
+/* 검색어 입력 */
+.searchRow {
+  padding: 1.1rem 1.2rem 0.3rem;
+}
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.55rem 0.9rem;
+  font-family: var(--ifm-font-family-base);
+  font-size: 0.9rem;
+  color: var(--site-fg);
+  background: var(--site-code-bg);
+  border: 1px solid var(--site-card-border);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.searchInput::placeholder {
+  color: var(--site-muted);
+}
+.searchInput:focus {
+  border-color: var(--site-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--site-accent) 18%, transparent);
+}
+
 /* 분류 필터 */
 .filters {
   display: flex;
@@ -179,6 +204,15 @@
 }
 .row:hover .rowTitle { color: var(--site-accent); }
 
+/* 검색어 일치 하이라이트 (제목) */
+.hl {
+  background: color-mix(in srgb, var(--site-accent) 22%, transparent);
+  color: var(--site-accent);
+  border-radius: 3px;
+  padding: 0 0.12em;
+  font-weight: 700;
+}
+
 /* NEW 배지 — 오렌지→레드 알약(주목도 ↑) */
 .newTag {
   display: inline-block;
@@ -264,6 +298,8 @@
 
 /* 모바일: 카드형으로 전환 — 제목(한 줄 전체) 위, 아래 메타행에 분류칩(좌)·날짜(우) */
 @media (max-width: 600px) {
+  .searchRow { padding: 0.6rem 0.6rem 0.2rem; }
+  .searchInput { font-size: 0.82rem; padding: 0.45rem 0.7rem; }
   .filters { padding: 0.6rem; gap: 0.26rem; }
   .fbtn { font-size: 0.7rem; padding: 0.24rem 0.6rem; }
   .fbtnCount { font-size: 0.66rem; }

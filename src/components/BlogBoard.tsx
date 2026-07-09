@@ -18,6 +18,7 @@ type Entry = {
   permalink: string;
   title: string;
   date: string; // ISO
+  description: string; // 본문 도입부(아카이브 데이터에 이미 포함 — 검색용, 추가 로드 없음)
   tags: {label: string; permalink: string}[];
 };
 
@@ -27,6 +28,30 @@ function fmtDate(iso: string): string {
   return `${d.getFullYear()}.${p(d.getMonth() + 1)}.${p(d.getDate())}`;
 }
 
+// 제목에서 검색어와 일치하는 부분을 하이라이트
+function highlightTitle(title: string, q: string): React.ReactNode {
+  if (!q) return title;
+  const lower = title.toLowerCase();
+  const ql = q.toLowerCase();
+  if (!lower.includes(ql)) return title;
+  const parts: React.ReactNode[] = [];
+  let i = 0;
+  let idx = lower.indexOf(ql, i);
+  let key = 0;
+  while (idx !== -1) {
+    if (idx > i) parts.push(title.slice(i, idx));
+    parts.push(
+      <span key={key++} className={styles.hl}>
+        {title.slice(idx, idx + q.length)}
+      </span>,
+    );
+    i = idx + q.length;
+    idx = lower.indexOf(ql, i);
+  }
+  if (i < title.length) parts.push(title.slice(i));
+  return parts;
+}
+
 // 태그 표시 라벨 — 고정 정의 (원본 태그 label → 게시판 표시 라벨)
 const TAG_LABEL: Record<string, string> = {
   Kafka: 'Kafka',
@@ -34,18 +59,21 @@ const TAG_LABEL: Record<string, string> = {
   Redis: 'Redis',
   MySQL: 'MySQL',
   Architecture: '아키텍처',
-  SystemDesign: '시스템 설계',
+  SystemDesign: '설계',
+  '시스템 설계': '설계',
 };
 
 export default function BlogBoard({lockTag = null, paginate = true}: Props = {}) {
   const [filter, setFilter] = useState<string>('all'); // 'all' | tag.permalink
   const [page, setPage] = useState<number>(1);
+  const [query, setQuery] = useState<string>(''); // 검색어
 
   const posts: Entry[] = (blogPosts as any).archive.blogPosts
     .map((post: any) => ({
       permalink: post.metadata.permalink,
       title: post.metadata.title,
       date: post.metadata.date,
+      description: post.metadata.description ?? '',
       tags: (post.metadata.tags ?? []).map((t: any) => ({label: t.label, permalink: t.permalink})),
     }))
     .sort((a: Entry, b: Entry) => new Date(b.date).getTime() - new Date(a.date).getTime());
@@ -66,11 +94,23 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
     setPage(1);
   };
 
-  const matched = lockTag
+  // 1) 분류(태그) 필터
+  const base = lockTag
     ? posts.filter((p) => p.tags.some((t) => t.permalink === lockTag.permalink))
     : filter === 'all'
       ? posts
       : posts.filter((p) => p.tags.some((t) => t.permalink === filter));
+
+  // 2) 검색어 필터 — 제목 또는 분류(표시 라벨) 부분일치
+  const q = query.trim().toLowerCase();
+  const matched = q
+    ? base.filter(
+        (p) =>
+          p.title.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q) ||
+          p.tags.some((t) => (TAG_LABEL[t.label] ?? t.label).toLowerCase().includes(q)),
+      )
+    : base;
 
   const totalPages = Math.max(1, Math.ceil(matched.length / PAGE));
   const curPage = Math.min(page, totalPages);
@@ -79,6 +119,21 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
 
   return (
     <div className={styles.board}>
+      {!lockTag && (
+        <div className={styles.searchRow}>
+          <input
+            type="search"
+            className={styles.searchInput}
+            placeholder="제목·내용·분류 검색…"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setPage(1);
+            }}
+            aria-label="게시판 검색"
+          />
+        </div>
+      )}
       {!lockTag && (
         <div className={styles.filters}>
           <button
@@ -130,7 +185,7 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
                 <span className={styles.rowTitle}>
                   <span className={styles.rowText}>
                     {isNew && <span className={styles.newTag}>NEW</span>}
-                    {post.title}
+                    {highlightTitle(post.title, q)}
                   </span>
                 </span>
                 <span className={styles.rowDate}>{fmtDate(post.date)}</span>
@@ -138,7 +193,11 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
             </li>
           );
         })}
-        {shown.length === 0 && <li className={styles.empty}>해당 분류의 글이 아직 없어요.</li>}
+        {shown.length === 0 && (
+          <li className={styles.empty}>
+            {q ? `'${query.trim()}' 검색 결과가 없어요.` : '해당 분류의 글이 아직 없어요.'}
+          </li>
+        )}
       </ul>
 
       {paginate && matched.length > 0 && renderPager()}

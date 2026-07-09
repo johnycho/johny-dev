@@ -29,7 +29,7 @@ monitoring:
   description: 모니터링·관측성(로그·트레이스·메트릭) 관련 글
 
 system-design:
-  label: 시스템 설계
+  label: 설계
   permalink: /system-design
   description: 시스템 설계 관련 글
 
