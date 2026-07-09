@@ -66,6 +66,7 @@
 <li>충돌할 땐 <strong>KISS·YAGNI가 기본값</strong>, DRY는 중복이 실제로 아플 때(삼세번 규칙) 적용한다.</li>
 </ul>
 <p>세 원칙은 "무조건 지켜야 할 계명"이 아니라, <strong>복잡성이 늘어날 때마다 스스로에게 던지는 질문</strong>에 가깝습니다. "이거, 지금 이만큼 복잡할 필요가 있나?"</p>]]></content:encoded>
+            <category>설계</category>
             <category>아키텍처</category>
         </item>
         <item>
@@ -411,7 +412,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="마치며">마치며<a href="https://johnycho.dev/blog/fault-tolerance-high-availability#%EB%A7%88%EC%B9%98%EB%A9%B0" class="hash-link" aria-label="마치며에 대한 직접 링크" title="마치며에 대한 직접 링크">​</a></h2>
 <p><strong>내결함성은 장애 발생 시에도 요청 처리를 지속할 수 있는 능력이며, 고가용성은 장애 발생 후 빠른 복구를 통해 서비스 중단 시간을 최소화하는 개념입니다.</strong> 실무에서는 두 개념을 함께 적용하여 서비스의 연속성과 안정성을 확보합니다.</p>
 <p>분산 시스템에서는 장애를 완전히 제거하는 것은 현실적으로 불가능합니다. 중요한 것은 장애를 어떻게 견디고, 얼마나 신속하게 복구하는가 입니다. 내결함성과 고가용성을 정확히 이해하고 적절히 적용하는 것이 안정적인 시스템 설계의 출발점입니다.</p>]]></content:encoded>
-            <category>시스템 설계</category>
+            <category>설계</category>
             <category>아키텍처</category>
         </item>
         <item>

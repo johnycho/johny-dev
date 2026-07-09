@@ -69,6 +69,7 @@
             <name>Johny Cho</name>
             <uri>https://github.com/johnycho</uri>
         </author>
+        <category label="설계" term="설계"/>
         <category label="아키텍처" term="아키텍처"/>
     </entry>
     <entry>
@@ -426,7 +427,7 @@
             <name>Johny Cho</name>
             <uri>https://github.com/johnycho</uri>
         </author>
-        <category label="시스템 설계" term="시스템 설계"/>
+        <category label="설계" term="설계"/>
         <category label="아키텍처" term="아키텍처"/>
     </entry>
     <entry>
