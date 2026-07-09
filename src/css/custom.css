@@ -774,6 +774,7 @@ a[class*='tag_'][href$='/mysql'] { --tag-c: #7cbaff; }
 a[class*='tag_'][href$='/architecture'] { --tag-c: #fcc24d; }
 a[class*='tag_'][href$='/system-design'] { --tag-c: #52d9ea; }
 a[class*='tag_'][href$='/monitoring'] { --tag-c: #ff9dcb; }
+a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 /* 라이트: 흰 배경 대비 위해 진한 톤 */
 [data-theme='light'] a[class*='tag_'][href$='/kafka'] { --tag-c: #6d28d9; }
 [data-theme='light'] a[class*='tag_'][href$='/spring'] { --tag-c: #15803d; }
@@ -782,6 +783,7 @@ a[class*='tag_'][href$='/monitoring'] { --tag-c: #ff9dcb; }
 [data-theme='light'] a[class*='tag_'][href$='/architecture'] { --tag-c: #b45309; }
 [data-theme='light'] a[class*='tag_'][href$='/system-design'] { --tag-c: #0e7490; }
 [data-theme='light'] a[class*='tag_'][href$='/monitoring'] { --tag-c: #be185d; }
+[data-theme='light'] a[class*='tag_'][href$='/ai'] { --tag-c: #c2410c; }
 
 /* 글 제목 — joylangcenter와 동일 */
 .blog-post-page article > header h1,

@@ -173,6 +173,7 @@
 .t_architecture { --tag-c: #fcc24d; }
 .t_system-design { --tag-c: #52d9ea; }
 .t_monitoring { --tag-c: #ff9dcb; }
+.t_ai { --tag-c: #ff9f5e; }
 /* 라이트: 흰 배경 대비 위해 진한 톤 */
 [data-theme='light'] .t_kafka { --tag-c: #6d28d9; }
 [data-theme='light'] .t_spring { --tag-c: #15803d; }
@@ -181,6 +182,7 @@
 [data-theme='light'] .t_architecture { --tag-c: #b45309; }
 [data-theme='light'] .t_system-design { --tag-c: #0e7490; }
 [data-theme='light'] .t_monitoring { --tag-c: #be185d; }
+[data-theme='light'] .t_ai { --tag-c: #c2410c; }
 
 .rowTitle {
   flex: 1;

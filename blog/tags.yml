@@ -37,3 +37,8 @@ architecture:
   label: 아키텍처
   permalink: /architecture
   description: 아키텍처 관련 글
+
+ai:
+  label: AI
+  permalink: /ai
+  description: AI 엔지니어링·활용 관련 글
