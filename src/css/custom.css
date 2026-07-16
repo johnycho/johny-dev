@@ -846,6 +846,10 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 .cusdis-refresh-btn:hover { color: var(--site-accent); background: var(--site-accent-soft); }
 .cusdis-refresh-btn:active { transform: rotate(-180deg); }
 
+/* 위젯 iframe 배경 투명 — 부모(데스크톱 카드/모바일 페이지) 색을 따라감 */
+#cusdis_thread,
+#cusdis_thread iframe { background: transparent !important; }
+
 /* 위젯 마운트 전 로딩 스피너 (fallback) */
 @keyframes cusdis-spin { to { transform: rotate(360deg); } }
 .cusdis-loading { display: flex; justify-content: center; padding: 2.5rem 0; }

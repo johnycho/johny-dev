@@ -56,10 +56,11 @@ function brandCss(theme: Theme): string {
   }
   /* display: flow-root 로 BFC 를 만들어 자식 상/하 여백이 body 밖으로 새는 것을 막는다
      (body.scrollHeight 로 측정한 높이가 실제 콘텐츠와 일치 → 내부 스크롤 방지) */
-  html, body { overflow: hidden !important; }
+  /* 배경은 투명 — 위젯이 놓인 부모(데스크톱=본문 카드 / 모바일=페이지) 색을 그대로 따라 항상 일치 */
+  html, body { overflow: hidden !important; background: transparent !important; }
   body {
     font-family: 'NanumSquareRound', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    color: ${c.fg}; background: ${c.bg}; margin: 0; display: flow-root;
+    color: ${c.fg}; background: transparent; margin: 0; display: flow-root;
   }
 
   /* 입력창 */
