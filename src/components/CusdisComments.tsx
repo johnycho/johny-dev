@@ -179,6 +179,7 @@ function CusdisThread() {
   // 댓글 제출 후 위젯을 깨끗이 재마운트해 새 댓글이 바로 보이게 하는 키
   const [reloadKey, setReloadKey] = useState(0);
   const [reloading, setReloading] = useState(false); // 새로고침 리마운트 중(스타일 적용 전 원본 노출 방지)
+  const [settling, setSettling] = useState(true); // 최초 로드 시 스타일·정렬 안정화 전까지 가림(재정렬 깜빡임 방지)
   const formDraftRef = useRef<{nick: string; content: string} | null>(null); // 새로고침 시 작성 중이던 폼 내용 보존
   // 위젯을 실제로 다시 렌더해야 하는 경우(페이지 이동/새로고침)만 기억 — 테마 변경만으론 재렌더 금지
   const renderRef = useRef<{pageId: string; reloadKey: number}>({pageId: '', reloadKey: -1});
@@ -189,6 +190,8 @@ function CusdisThread() {
     // 테마 토글만으로는 위젯을 재렌더하지 않는다(재렌더 시 주입 CSS가 사라져 기본폼이 깜빡임).
     const needRender = renderRef.current.pageId !== pageId || renderRef.current.reloadKey !== reloadKey;
     renderRef.current = {pageId, reloadKey};
+    // 새 렌더(최초/페이지 이동/새로고침)에서만 다시 가림. 테마 토글만으론 가리지 않음.
+    if (needRender) setSettling(true);
     if (!document.getElementById(SCRIPT_ID)) {
       // 최초 1회: 한국어 로케일 지정 후 Cusdis 임베드 스크립트 주입(로드 시 자동 렌더)
       w.CUSDIS_LOCALE = KO_LOCALE;
@@ -234,8 +237,23 @@ function CusdisThread() {
     let giveUp: ReturnType<typeof setTimeout> | undefined;
     let secTimer: ReturnType<typeof setTimeout> | undefined;
     let submitTimer: ReturnType<typeof setTimeout> | undefined;
+    let revealTimer: ReturnType<typeof setTimeout> | undefined;
+    let revealFallback: ReturnType<typeof setTimeout> | undefined;
+    let revealScheduled = false;
     let submitHandled = false;
     let boundIframe: HTMLIFrameElement | undefined;
+
+    // 콘텐츠(댓글/폼)가 렌더되면, 스타일·정렬이 안정화될 시간을 준 뒤 노출(초기 재정렬 깜빡임 숨김)
+    const maybeReveal = () => {
+      if (revealScheduled || !boundIframe) return;
+      const doc = boundIframe.contentDocument;
+      const ready = !!(doc && doc.body && (doc.querySelector('.my-4') || doc.querySelector('textarea')));
+      if (!ready) return;
+      revealScheduled = true;
+      revealTimer = setTimeout(() => setSettling(false), 450);
+    };
+    // 안전망: 콘텐츠 감지 실패해도 오래 가리지 않도록
+    revealFallback = setTimeout(() => setSettling(false), 6000);
 
     // 댓글 제출 완료를 감지하면, 자동승인(웹훅) 반영 시간을 준 뒤 위젯을 재마운트한다.
     const maybeReloadAfterSubmit = () => {
@@ -648,6 +666,7 @@ function CusdisThread() {
       setupReplyFold(boundIframe);
       stripFakeBadge(boundIframe);
       spinnerOnSubmit(boundIframe);
+      maybeReveal();
       try {
         const doc = boundIframe.contentDocument;
         if (doc && doc.body) {
@@ -671,6 +690,7 @@ function CusdisThread() {
             spinnerOnSubmit(boundIframe);
             syncHeight(boundIframe);
             updateHeading(boundIframe);
+            maybeReveal();
             if (secTimer) clearTimeout(secTimer);
             secTimer = setTimeout(() => boundIframe && showSeconds(boundIframe), 400);
           });
@@ -708,6 +728,8 @@ function CusdisThread() {
       iv && clearInterval(iv);
       submitTimer && clearTimeout(submitTimer);
       secTimer && clearTimeout(secTimer);
+      revealTimer && clearTimeout(revealTimer);
+      revealFallback && clearTimeout(revealFallback);
       ro?.disconnect();
       mo?.disconnect();
       boundIframe?.removeEventListener('load', onReady);
@@ -747,18 +769,18 @@ function CusdisThread() {
         </button>
       </div>
       <div style={{position: 'relative'}}>
-        {reloading && (
+        {(reloading || settling) && (
           <div
             className="cusdis-loading"
             role="status"
-            aria-label="댓글 새로고침 중"
+            aria-label="댓글 불러오는 중"
             style={{position: 'absolute', inset: 0, background: 'var(--ifm-background-color)', zIndex: 2}}
           />
         )}
         <div
           key={reloadKey}
           id="cusdis_thread"
-          style={{opacity: reloading ? 0 : 1}}
+          style={{opacity: reloading || settling ? 0 : 1}}
           data-host={CUSDIS_HOST}
           data-app-id={CUSDIS_APP_ID}
           data-page-id={pageId}
