@@ -244,24 +244,53 @@ function CusdisThread() {
     let submitHandled = false;
     let boundIframe: HTMLIFrameElement | undefined;
 
+    // 댓글 데이터를 미리 한 번만 조회 → ① 예상 수(노출 게이트) ② 초단위 날짜 맵(재조회 없이 즉시 적용)
+    let expectedCount: number | null = null;
+    let flatCache: any[] | null = null;
+    (async () => {
+      try {
+        const r = await fetch(
+          `${CUSDIS_HOST}/api/open/comments?appId=${encodeURIComponent(CUSDIS_APP_ID)}&pageId=${encodeURIComponent(pageId)}&page=1`,
+        );
+        const j = await r.json();
+        const flat: any[] = [];
+        const walk = (arr: any[]) => (arr || []).forEach((c) => {(flat.push(c), walk((c.replies && c.replies.data) || []));});
+        walk((j && j.data && j.data.data) || []);
+        flatCache = flat;
+        expectedCount = flat.length;
+      } catch (_) {
+        expectedCount = 0;
+      }
+      if (boundIframe) {
+        showSeconds(boundIframe); // 캐시로 초단위 즉시 적용
+        maybeReveal();
+      }
+    })();
+
     // 콘텐츠 렌더 후 DOM 변경이 멎으면(정렬·스타일 안정화 완료) 노출 — 디바운스로 재정렬 깜빡임 숨김.
-    // (폼만 뜬 이른 시점에 노출하면 뒤늦게 로드된 댓글이 재정렬되며 보이므로, 변경이 멈출 때까지 대기)
+    // 게이트: (1) 폼 렌더 (2) 예상 댓글 수만큼 카드 렌더 (3) 날짜가 초단위까지 확정(정렬·표시 최종).
     const maybeReveal = () => {
       if (revealed || !boundIframe) return;
       const doc = boundIframe.contentDocument;
-      const ready = !!(doc && doc.body && (doc.querySelector('.my-4') || doc.querySelector('textarea')));
-      if (!ready) return;
+      if (!doc || !doc.body || !doc.querySelector('textarea')) return; // 폼도 아직이면 대기
+      if (expectedCount == null) return; // 예상 수 조회 전
+      if (doc.querySelectorAll('.my-4').length < expectedCount) return; // 댓글 아직 덜 그려짐
+      // 초 없는(분단위) 날짜가 남아있으면 아직 정렬·표시 확정 전 → 대기
+      const unconverted = expectedCount > 0 && [...doc.querySelectorAll('.my-4 div.text-sm')].some((el) =>
+        /^\d{4}-\d\d-\d\d \d\d:\d\d$/.test((el.textContent || '').trim()),
+      );
+      if (unconverted) return;
       if (revealTimer) clearTimeout(revealTimer);
       revealTimer = setTimeout(() => {
         revealed = true;
         setSettling(false);
-      }, 350);
+      }, 250);
     };
     // 안전망: 변경이 계속돼도 오래 가리지 않도록
     revealFallback = setTimeout(() => {
       revealed = true;
       setSettling(false);
-    }, 5000);
+    }, 6000);
 
     // 댓글 제출 완료를 감지하면, 자동승인(웹훅) 반영 시간을 준 뒤 위젯을 재마운트한다.
     const maybeReloadAfterSubmit = () => {
@@ -332,13 +361,19 @@ function CusdisThread() {
         ) as HTMLElement[];
         const needsConv = els.some((el) => (el.textContent || '').trim().length === 16); // "YYYY-MM-DD HH:MM"
         if (!needsConv) return;
-        const res = await fetch(
-          `${CUSDIS_HOST}/api/open/comments?appId=${encodeURIComponent(CUSDIS_APP_ID)}&pageId=${encodeURIComponent(pageId)}&page=1`,
-        );
-        const j = await res.json();
-        const flat: any[] = [];
-        const walk = (arr: any[]) => (arr || []).forEach((c) => {(flat.push(c), walk((c.replies && c.replies.data) || []));});
-        walk((j && j.data && j.data.data) || []);
+        // 이미 받아둔 캐시가 있으면 재조회 없이 즉시 사용(초 적용 지연 제거), 없으면 조회
+        let flat: any[];
+        if (flatCache) {
+          flat = flatCache;
+        } else {
+          const res = await fetch(
+            `${CUSDIS_HOST}/api/open/comments?appId=${encodeURIComponent(CUSDIS_APP_ID)}&pageId=${encodeURIComponent(pageId)}&page=1`,
+          );
+          const j = await res.json();
+          flat = [];
+          const walk = (arr: any[]) => (arr || []).forEach((c) => {(flat.push(c), walk((c.replies && c.replies.data) || []));});
+          walk((j && j.data && j.data.data) || []);
+        }
         // 같은 이름+분에 여러 댓글이 있으면(루트+본인 대댓글 등) 초가 충돌하므로,
         // (이름|분) → 정렬된 초 목록을 만들고 문서 순서대로 하나씩 배정한다(오래된→최신).
         const groups: Record<string, string[]> = {};
