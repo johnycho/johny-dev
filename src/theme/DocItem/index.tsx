@@ -4,7 +4,7 @@ import {DocProvider} from '@docusaurus/plugin-content-docs/client';
 import DocItemMetadata from '@theme/DocItem/Metadata';
 import DocItemLayout from '@theme/DocItem/Layout';
 import type {Props} from '@theme/DocItem';
-import DisqusComments from "@site/src/components/DisqusComments";
+import CusdisComments from "@site/src/components/CusdisComments";
 
 export default function DocItem(props: Props): ReactNode {
   const docHtmlClassName = `docs-doc-id-${props.content.metadata.id}`;
@@ -17,7 +17,7 @@ export default function DocItem(props: Props): ReactNode {
           <DocItemLayout>
             <MDXComponent />
             {/* 첫 페이지 (intro, 또는 slug='/') 에서는 댓글 숨기기 */}
-            {props.content.metadata.id !== 'intro' && <DisqusComments />}
+            {props.content.metadata.id !== 'intro' && <CusdisComments />}
           </DocItemLayout>
         </HtmlClassNameProvider>
       </DocProvider>

@@ -204,7 +204,7 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
     </div>
   );
 
-  // joylangcenter식 페이저: 최대 5개 번호 윈도우 + 생략(…) + « ‹ › »
+  // 페이저: 최대 5개 번호 윈도우 + 생략(…) + « ‹ › »
   function renderPager() {
     const WINDOW = 5;
     let winStart = Math.max(1, curPage - Math.floor(WINDOW / 2));

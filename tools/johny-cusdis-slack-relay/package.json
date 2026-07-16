@@ -1,0 +1,7 @@
+{
+  "name": "johny-cusdis-slack-relay",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "johny-dev용 Cusdis Webhook을 Slack으로 중계하는 Vercel 서버리스 함수 (독립 관리)"
+}

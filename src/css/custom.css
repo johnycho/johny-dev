@@ -1,13 +1,13 @@
 /**
  * Global styles — 터미널 컨셉 기술 블로그 디자인 시스템
- * 폰트: NanumSquareRound(본문, joylangcenter와 동일) + JetBrains Mono(코드/터미널 액센트)
+ * 폰트: NanumSquareRound(본문) + JetBrains Mono(코드/터미널 액센트)
  * 팔레트: 정제된 틸/시안 단일 액센트 + 슬레이트 뉴트럴 (그린은 터미널 프롬프트 상징)
  */
 
 @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap');
 
-/* 본문 글씨체 — joylangcenter와 동일한 NanumSquareRound (나눔스퀘어라운드) */
+/* 본문 글씨체 — NanumSquareRound (나눔스퀘어라운드) */
 @font-face {
   font-family: 'NanumSquareRound';
   font-style: normal;
@@ -33,7 +33,7 @@
   --ifm-font-family-base: 'NanumSquareRound', 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Roboto, sans-serif;
   /* UI 텍스트는 NanumSquareRound(base)로 통일. 단, 코드/터미널은 ASCII 정렬을 위해 고정폭 유지 */
   --ifm-font-family-monospace: 'JetBrains Mono', 'SFMono-Regular', Menlo, Consolas, monospace;
-  /* joylangcenter와 동일: base 100%(16px), code 100%, 제목은 Infima 기본값 */
+  /* base 100%(16px), code 100%, 제목은 Infima 기본값 */
   --ifm-font-size-base: 100%;
   --ifm-line-height-base: 1.75;
   --ifm-heading-font-weight: 700;
@@ -199,7 +199,7 @@ a {
   background: var(--site-chrome-bg-translucent);
 }
 
-/* 로고 타이틀 — 둥근 본문 글씨체(joylangcenter 느낌) */
+/* 로고 타이틀 — 둥근 본문 글씨체 */
 .navbar__title {
   font-family: var(--ifm-font-family-base);
   font-weight: 800;
@@ -210,7 +210,7 @@ a {
 /* 다크 chrome 위 햄버거 토글 */
 .navbar__toggle { color: var(--site-chrome-fg); }
 
-/* 상단 항목 간격 통일 (joylangcenter와 동일) */
+/* 상단 항목 간격 통일 */
 .navbar__items {
   gap: 0.45rem;
 }
@@ -292,7 +292,7 @@ a {
   border: 1.5px solid var(--site-accent);
 }
 
-/* GNB github — joylangcenter의 원형 소셜 아이콘처럼 둥근 아이콘 버튼 */
+/* GNB github — 둥근 아이콘 버튼 */
 .navbar-github-logo {
   width: 36px;
   height: 36px;
@@ -347,7 +347,7 @@ html[data-theme='dark'] .navbar-github-logo {
   transform: translateY(-1px);
 }
 
-/* 드롭다운 메뉴 — 둥근 pill 항목 + 부드러운 hover (간격도 joylangcenter와 동일) */
+/* 드롭다운 메뉴 — 둥근 pill 항목 + 부드러운 hover */
 .dropdown__menu {
   margin-top: 0.85rem;
   border-radius: 14px;
@@ -376,7 +376,7 @@ html[data-theme='dark'] .navbar-github-logo {
   color: var(--site-accent);
 }
 
-/* ── 모바일 네비게이션 드로어 (joylangcenter 느낌: 둥근 항목) ── */
+/* ── 모바일 네비게이션 드로어 (둥근 항목) ── */
 /* 특이성을 높여 Infima 기본 회색 대신 테마 배경 적용 */
 html .navbar-sidebar {
   background-color: var(--ifm-background-color);
@@ -466,7 +466,7 @@ a[class*='tag_']:hover {
 /*  Blog post page — 가독성                                       */
 /* ============================================================= */
 
-/* 콘텐츠 타이포 스케일 — joylangcenter와 동일하게 축소 (docs·blog 공통) */
+/* 콘텐츠 타이포 스케일 축소 (docs·blog 공통) */
 .markdown {
   font-size: 0.9rem;
   line-height: 1.72;
@@ -594,7 +594,7 @@ div[class*='codeBlockContainer'] {
   .markdown table code { font-size: 0.92em; padding: 0.02em 0.2em; }
 }
 
-/* ── 이전/다음 글 네비게이션 (세련된 카드 · joylangcenter 방식) ── */
+/* ── 이전/다음 글 네비게이션 (세련된 카드) ── */
 .blog-post-page .pagination-nav {
   gap: 1rem;
   margin-top: 2rem;
@@ -673,7 +673,7 @@ div[class*='codeBlockContainer'] {
   justify-content: center;
 }
 
-/* ── 글 상세 페이지: 목록으로 버튼 + 본문 카드 (joylangcenter 톤) ── */
+/* ── 글 상세 페이지: 목록으로 버튼 + 본문 카드 ── */
 .post-back-link {
   display: inline-flex;
   align-items: center;
@@ -785,7 +785,7 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 [data-theme='light'] a[class*='tag_'][href$='/monitoring'] { --tag-c: #be185d; }
 [data-theme='light'] a[class*='tag_'][href$='/ai'] { --tag-c: #c2410c; }
 
-/* 글 제목 — joylangcenter와 동일 */
+/* 글 제목 */
 .blog-post-page article > header h1,
 .blog-post-page article > header h2 {
   font-size: clamp(1.2rem, 2.2vw, 1.5rem) !important;
@@ -812,33 +812,50 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
   .table-of-contents { font-size: 0.86rem; }
 }
 
-/* ── Disqus: 다크 테마의 Disqus 패널은 검정을 강제로 칠하므로(iframe 내부는 제어 불가),
-   본문 카드 하단을 카드색 → 검정으로 그라데이션되는 댓글 존으로 full-bleed 처리해
-   경계·이질감 없이 자연스럽게 이어지게 한다 (라이트는 원본 유지). ── */
-html[data-theme='dark'] .disqus-root {
-  /* Disqus 다크 패널 실제 배경색(측정값). 엔진마다 다름:
-     데스크톱 Chrome=#121212, iOS Safari(WebKit)=순검정 #000 → 아래 @supports로 iOS만 재정의 */
-  --disqus-dark-bg: #121212;
-  margin: 1.6rem calc(-1 * clamp(1.4rem, 3vw, 2.4rem)) calc(-1 * clamp(1.4rem, 3vw, 2.4rem));
-  padding: 1.6rem clamp(1.4rem, 3vw, 2.4rem) clamp(1.4rem, 3vw, 2.4rem);
-  background: linear-gradient(180deg, var(--site-card-bg) 0, var(--disqus-dark-bg) 0.5rem);
-  border-radius: 0 0 18px 18px;
+/* ── Cusdis 댓글 (외곽: 헤딩·새로고침 버튼·로딩 스피너) — 위젯 iframe 내부는 컴포넌트가 주입 ── */
+.cusdis-head {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0 0 0.8rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--site-card-border);
 }
-/* iOS/iPadOS(WebKit)에서는 Disqus가 순검정을 칠하므로 그라데이션 끝을 #000 으로 맞춘다 */
-@supports (-webkit-touch-callout: none) {
-  html[data-theme='dark'] .disqus-root {
-    --disqus-dark-bg: #000;
-  }
+.cusdis-heading {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--site-fg);
+  margin: 0;
 }
-@media (max-width: 768px) {
-  /* 모바일은 본문 카드가 없으므로 페이지 배경 → Disqus 색으로 이어지는 전체 폭(100vw) 댓글 밴드 */
-  html[data-theme='dark'] .disqus-root {
-    width: 100vw;
-    margin: 1.4rem calc(50% - 50vw) 0;
-    padding: 1.2rem 0.9rem;
-    background: linear-gradient(180deg, var(--ifm-background-color) 0, var(--disqus-dark-bg) 0.6rem);
-    border-radius: 0;
-  }
+.cusdis-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 50%;
+  background: transparent;
+  border: 0;
+  color: var(--site-muted);
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s, transform 0.3s ease;
+}
+.cusdis-refresh-btn svg { width: 1.05rem; height: 1.05rem; display: block; }
+.cusdis-refresh-btn:hover { color: var(--site-accent); background: var(--site-accent-soft); }
+.cusdis-refresh-btn:active { transform: rotate(-180deg); }
+
+/* 위젯 마운트 전 로딩 스피너 (fallback) */
+@keyframes cusdis-spin { to { transform: rotate(360deg); } }
+.cusdis-loading { display: flex; justify-content: center; padding: 2.5rem 0; }
+.cusdis-loading::after {
+  content: '';
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 3px solid var(--site-card-border);
+  border-top-color: var(--site-accent);
+  animation: cusdis-spin 0.8s linear infinite;
 }
 
 /* TOC 강조 */
@@ -870,7 +887,6 @@ html[data-theme='dark'] .disqus-root {
   /* 모바일 헤더 메타 축소: 목록버튼·날짜·댓글수·프로필 */
   .blog-post-page .post-back-link { font-size: 0.74rem; padding: 0.3rem 0.75rem; margin-bottom: 0.6rem; }
   .blog-post-page article > header time { font-size: 0.76rem; }
-  .blog-post-page article > header a[data-disqus-identifier] { font-size: 0.76rem !important; margin-left: 0.7rem !important; }
   /* 프로필 — PC와 동일한 균형으로(모바일 스케일): 아바타·이름·직책·아이콘·간격 */
   .blog-post-page article > header .avatar__photo { width: 2.6rem; height: 2.6rem; }
   .blog-post-page article > header .avatar__name { margin-bottom: 0.22rem; }
