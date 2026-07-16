@@ -180,12 +180,17 @@ function CusdisThread() {
   const [reloadKey, setReloadKey] = useState(0);
   const [reloading, setReloading] = useState(false); // 새로고침 리마운트 중(스타일 적용 전 원본 노출 방지)
   const formDraftRef = useRef<{nick: string; content: string} | null>(null); // 새로고침 시 작성 중이던 폼 내용 보존
+  // 위젯을 실제로 다시 렌더해야 하는 경우(페이지 이동/새로고침)만 기억 — 테마 변경만으론 재렌더 금지
+  const renderRef = useRef<{pageId: string; reloadKey: number}>({pageId: '', reloadKey: -1});
 
   useEffect(() => {
     const theme: Theme = colorMode === 'dark' ? 'dark' : 'light';
     const w = window as any;
+    // 테마 토글만으로는 위젯을 재렌더하지 않는다(재렌더 시 주입 CSS가 사라져 기본폼이 깜빡임).
+    const needRender = renderRef.current.pageId !== pageId || renderRef.current.reloadKey !== reloadKey;
+    renderRef.current = {pageId, reloadKey};
     if (!document.getElementById(SCRIPT_ID)) {
-      // 최초 1회: 한국어 로케일 지정 후 Cusdis 임베드 스크립트 주입
+      // 최초 1회: 한국어 로케일 지정 후 Cusdis 임베드 스크립트 주입(로드 시 자동 렌더)
       w.CUSDIS_LOCALE = KO_LOCALE;
       const s = document.createElement('script');
       s.id = SCRIPT_ID;
@@ -193,8 +198,8 @@ function CusdisThread() {
       s.defer = true;
       s.src = `${CUSDIS_HOST}/js/cusdis.es.js`;
       document.body.appendChild(s);
-    } else if (w.CUSDIS) {
-      // SPA 페이지 이동 시 현재 글 기준으로 다시 렌더
+    } else if (w.CUSDIS && needRender) {
+      // 페이지 이동/새로고침 시에만 현재 글 기준으로 다시 렌더 (테마 변경 시엔 스타일만 교체)
       w.CUSDIS.initial();
     }
 
