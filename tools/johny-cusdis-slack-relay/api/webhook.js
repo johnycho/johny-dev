@@ -159,10 +159,13 @@ export default async function handler(req, res) {
   let rootId = commentId;
   let isReply = false;
   if (appId && commentId) {
-    let tree = await fetchTopComments(appId, pageId);
-    if (!findDeep(tree, commentId)) {
-      await sleep(900); // 방금 승인된 댓글이 목록에 반영될 시간
+    // 방금 만든 댓글이 목록 API 에 반영될 때까지 여러 번 재시도(반영 지연 시 루트 오인 방지).
+    // 못 찾으면 대댓글이 최상위로 오인되어 스레드에 안 붙으므로, 넉넉히 기다린다.
+    let tree = [];
+    for (let attempt = 0; attempt < 5; attempt++) {
       tree = await fetchTopComments(appId, pageId);
+      if (findDeep(tree, commentId)) break;
+      await sleep(700);
     }
     for (const top of tree) {
       if (findDeep([top], commentId)) {
