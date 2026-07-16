@@ -817,7 +817,7 @@ function CusdisThread() {
             className="cusdis-loading"
             role="status"
             aria-label="댓글 불러오는 중"
-            style={{position: 'absolute', inset: 0, background: 'var(--ifm-background-color)', zIndex: 2}}
+            style={{position: 'absolute', inset: 0, background: 'transparent', zIndex: 2}}
           />
         )}
         <div
