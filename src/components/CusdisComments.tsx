@@ -300,10 +300,12 @@ function CusdisThread() {
       try {
         const doc = iframe.contentDocument;
         if (!doc) return;
-        const dateEls = [...doc.querySelectorAll('.my-4 div.text-sm')].filter((el) =>
-          /^\d{4}-\d\d-\d\d \d\d:\d\d$/.test((el.textContent || '').trim()),
-        );
-        if (!dateEls.length) return;
+        // 분단위(초 없음)·초단위 날짜를 모두 수집(문서 순서). 최소 하나가 분단위여야 변환 필요.
+        const els = [...doc.querySelectorAll('.my-4 div.text-sm')].filter((el) =>
+          /^\d{4}-\d\d-\d\d \d\d:\d\d(:\d\d)?$/.test((el.textContent || '').trim()),
+        ) as HTMLElement[];
+        const needsConv = els.some((el) => (el.textContent || '').trim().length === 16); // "YYYY-MM-DD HH:MM"
+        if (!needsConv) return;
         const res = await fetch(
           `${CUSDIS_HOST}/api/open/comments?appId=${encodeURIComponent(CUSDIS_APP_ID)}&pageId=${encodeURIComponent(pageId)}&page=1`,
         );
@@ -311,20 +313,31 @@ function CusdisThread() {
         const flat: any[] = [];
         const walk = (arr: any[]) => (arr || []).forEach((c) => {(flat.push(c), walk((c.replies && c.replies.data) || []));});
         walk((j && j.data && j.data.data) || []);
-        const map: Record<string, string> = {};
+        // 같은 이름+분에 여러 댓글이 있으면(루트+본인 대댓글 등) 초가 충돌하므로,
+        // (이름|분) → 정렬된 초 목록을 만들고 문서 순서대로 하나씩 배정한다(오래된→최신).
+        const groups: Record<string, string[]> = {};
         flat.forEach((c) => {
           const name = ((c.moderator && c.moderator.displayName) || c.by_nickname || '').trim();
-          const min = fmtDate(c.createdAt, false);
           const sec = fmtDate(c.createdAt, true);
-          if (min && sec) map[`${name}|${min}`] = sec;
+          if (!sec) return;
+          const key = `${name}|${sec.slice(0, 16)}`;
+          (groups[key] ||= []).push(sec);
         });
-        dateEls.forEach((el) => {
-          const card = (el as HTMLElement).closest('.my-4');
+        Object.values(groups).forEach((a) => a.sort());
+        const cursor: Record<string, number> = {};
+        els.forEach((el) => {
+          const card = el.closest('.my-4');
           const nameEl = card && card.querySelector('.font-medium');
           const name = nameEl ? (nameEl.textContent || '').trim() : '';
-          const cur = (el.textContent || '').trim();
-          const sec = map[`${name}|${cur}`];
-          if (sec) el.textContent = sec;
+          const txt = (el.textContent || '').trim();
+          const key = `${name}|${txt.slice(0, 16)}`;
+          const arr = groups[key];
+          if (!arr || !arr.length) return;
+          const i = cursor[key] || 0;
+          if (i < arr.length) {
+            if (el.textContent !== arr[i]) el.textContent = arr[i];
+            cursor[key] = i + 1;
+          }
         });
       } catch (_) {}
     };
