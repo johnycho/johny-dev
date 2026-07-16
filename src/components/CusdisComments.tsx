@@ -240,21 +240,28 @@ function CusdisThread() {
     let submitTimer: ReturnType<typeof setTimeout> | undefined;
     let revealTimer: ReturnType<typeof setTimeout> | undefined;
     let revealFallback: ReturnType<typeof setTimeout> | undefined;
-    let revealScheduled = false;
+    let revealed = false;
     let submitHandled = false;
     let boundIframe: HTMLIFrameElement | undefined;
 
-    // 콘텐츠(댓글/폼)가 렌더되면, 스타일·정렬이 안정화될 시간을 준 뒤 노출(초기 재정렬 깜빡임 숨김)
+    // 콘텐츠 렌더 후 DOM 변경이 멎으면(정렬·스타일 안정화 완료) 노출 — 디바운스로 재정렬 깜빡임 숨김.
+    // (폼만 뜬 이른 시점에 노출하면 뒤늦게 로드된 댓글이 재정렬되며 보이므로, 변경이 멈출 때까지 대기)
     const maybeReveal = () => {
-      if (revealScheduled || !boundIframe) return;
+      if (revealed || !boundIframe) return;
       const doc = boundIframe.contentDocument;
       const ready = !!(doc && doc.body && (doc.querySelector('.my-4') || doc.querySelector('textarea')));
       if (!ready) return;
-      revealScheduled = true;
-      revealTimer = setTimeout(() => setSettling(false), 450);
+      if (revealTimer) clearTimeout(revealTimer);
+      revealTimer = setTimeout(() => {
+        revealed = true;
+        setSettling(false);
+      }, 350);
     };
-    // 안전망: 콘텐츠 감지 실패해도 오래 가리지 않도록
-    revealFallback = setTimeout(() => setSettling(false), 6000);
+    // 안전망: 변경이 계속돼도 오래 가리지 않도록
+    revealFallback = setTimeout(() => {
+      revealed = true;
+      setSettling(false);
+    }, 5000);
 
     // 댓글 제출 완료를 감지하면, 자동승인(웹훅) 반영 시간을 준 뒤 위젯을 재마운트한다.
     const maybeReloadAfterSubmit = () => {
