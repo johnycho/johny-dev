@@ -203,6 +203,25 @@ function CusdisThread() {
       w.CUSDIS.initial();
     }
 
+    // 테마 토글 즉시 반영 — 200ms 폴링(attach)을 기다리지 않고 기존 iframe 스타일을 바로 교체
+    // (홈페이지는 CSS 변수로 즉시 전환되므로, 여기서도 동기 교체해 지연을 없앤다)
+    try {
+      const ex = document.querySelector('#cusdis_thread iframe') as HTMLIFrameElement | null;
+      const doc = ex && ex.contentDocument;
+      if (doc && doc.head) {
+        let st = doc.getElementById(STYLE_ID) as HTMLStyleElement | null;
+        if (!st) {
+          st = doc.createElement('style');
+          st.id = STYLE_ID;
+          doc.head.appendChild(st);
+        }
+        if (st.getAttribute('data-theme') !== theme) {
+          st.textContent = brandCss(theme);
+          st.setAttribute('data-theme', theme);
+        }
+      }
+    } catch (_) {}
+
     // --- 높이 자동조정 + 브랜드 스타일 주입 ---
     // Cusdis 위젯은 부모로 resize 메시지를 보낼 때 targetOrigin 을 누락해
     // 최신 브라우저에서 자동 리사이즈가 동작하지 않는다(업스트림 버그).
