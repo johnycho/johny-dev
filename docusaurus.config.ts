@@ -117,16 +117,20 @@ const config: Config = {
       },
       items: [
         {
+          // 데스크톱: hover 드롭다운 / 모바일 드로어: 펼치면 2depth(카테고리) 노출
           to: '/docs/intro',
           label: '레퍼런스',
           position: 'left',
           type: 'dropdown',
+          className: 'navbar-noactive',
+          // activeBasePath: 해당 카테고리 하위 문서에 있을 때도 활성으로 인식 →
+          //   모바일 드로어에서 레퍼런스가 자동 펼쳐지고 현재 카테고리가 선택 표시됨
           items: [
-            {label: "Computer Science", to: "/docs/computer-science"},
-            {label: "Java", to: "/docs/java"},
-            {label: "Spring Framework", to: "/docs/spring-framework"},
-            {label: "Spring Data JPA", to: "/docs/spring-data-jpa"},
-            {label: "Database", to: "/docs/database"},
+            {label: "Computer Science", to: "/docs/computer-science", activeBasePath: "/docs/computer-science"},
+            {label: "Java", to: "/docs/java", activeBasePath: "/docs/java"},
+            {label: "Spring Framework", to: "/docs/spring-framework", activeBasePath: "/docs/spring-framework"},
+            {label: "Spring Data JPA", to: "/docs/spring-data-jpa", activeBasePath: "/docs/spring-data-jpa"},
+            {label: "Database", to: "/docs/database", activeBasePath: "/docs/database"},
           ],
         },
         {

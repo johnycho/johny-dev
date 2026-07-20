@@ -4,7 +4,6 @@ title: TCP 3-way handshake
 tags: [ cs, network ]
 ---
 
-# TCP 3-way handshake란?
 ![3-way handshake](img/3-way-handshaking.png)
 
 TCP/IP 네트워크에서 안정적이고 연결 지향적인 통신을 설정하기 위해 사용되는 절차입니다. 이 절차는 클라이언트와 서버 간에 신뢰할 수 있는 연결을 설정하기 위해 세 개의 메시지(세그먼트)를 교환하는 과정을 포함합니다.

@@ -4,7 +4,6 @@ title: 데이터베이스 동시성 제어 방법
 tags: [ db, mysql ]
 ---
 
-# 데이터베이스 시스템에서 동시성을 제어하는 방법
 대표적인 동시성 제어 방식으로 MVCC(Multi-Version Concurrency Control) 와 Lock-Based Concurrency Control이 있습니다.
 
 ## ✔️ MVCC(Multi-Version Concurrency Control)

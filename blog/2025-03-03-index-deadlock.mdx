@@ -6,9 +6,7 @@ tags: [ mysql ]
 ---
 
 <!-- truncate -->
-<br /><br />
 
-# 세컨더리 인덱스와 PK 인덱스 간 데드락, 왜 발생할까?
 MySQL `InnoDB`에서 `UPDATE`, `DELETE`, `SELECT ... FOR UPDATE` 등으로 레코드를 잠글 때  
 <mark>PK 인덱스 뿐 아니라 세컨더리 인덱스까지 락이 걸리면서 교착 상태(Deadlock)가 발생</mark>할 수 있습니다.
 

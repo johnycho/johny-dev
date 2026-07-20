@@ -181,6 +181,9 @@ function CusdisThread() {
   const [reloadKey, setReloadKey] = useState(0);
   const [reloading, setReloading] = useState(false); // 새로고침 리마운트 중(스타일 적용 전 원본 노출 방지)
   const [settling, setSettling] = useState(true); // 최초 로드 시 스타일·정렬 안정화 전까지 가림(재정렬 깜빡임 방지)
+  // 새로고침 중 스레드가 잠깐 0→기본높이→실제높이로 튀는 것 방지: 새로고침 직전 높이로 컨테이너를 고정
+  const [frozenHeight, setFrozenHeight] = useState<number | null>(null);
+  const lastCountRef = useRef(0); // 마지막 댓글 수 — 새로고침 중 일시적 0으로 헤딩 숫자가 사라지는 것 방지
   const formDraftRef = useRef<{nick: string; content: string} | null>(null); // 새로고침 시 작성 중이던 폼 내용 보존
   // 위젯을 실제로 다시 렌더해야 하는 경우(페이지 이동/새로고침)만 기억 — 테마 변경만으론 재렌더 금지
   const renderRef = useRef<{pageId: string; reloadKey: number}>({pageId: '', reloadKey: -1});
@@ -190,6 +193,8 @@ function CusdisThread() {
     const w = window as any;
     // 테마 토글만으로는 위젯을 재렌더하지 않는다(재렌더 시 주입 CSS가 사라져 기본폼이 깜빡임).
     const needRender = renderRef.current.pageId !== pageId || renderRef.current.reloadKey !== reloadKey;
+    // 다른 글로 이동할 때만 카운트 초기화(새로고침·테마변경 시엔 유지)
+    if (renderRef.current.pageId !== pageId) lastCountRef.current = 0;
     renderRef.current = {pageId, reloadKey};
     // 새 렌더(최초/페이지 이동/새로고침)에서만 다시 가림. 테마 토글만으론 가리지 않음.
     if (needRender) setSettling(true);
@@ -284,12 +289,14 @@ function CusdisThread() {
       revealTimer = setTimeout(() => {
         revealed = true;
         setSettling(false);
+        setFrozenHeight(null); // 안착 완료 → 고정 해제(실제 높이로 자연스럽게)
       }, 250);
     };
     // 안전망: 변경이 계속돼도 오래 가리지 않도록
     revealFallback = setTimeout(() => {
       revealed = true;
       setSettling(false);
+      setFrozenHeight(null);
     }, 6000);
 
     // 댓글 제출 완료를 감지하면, 자동승인(웹훅) 반영 시간을 준 뒤 위젯을 재마운트한다.
@@ -339,8 +346,11 @@ function CusdisThread() {
       try {
         const doc = iframe.contentDocument;
         const n = doc ? doc.querySelectorAll('.my-4 > .flex.items-center').length : 0;
+        // 새로고침 리마운트로 일시적으로 0이 되어도 직전 카운트를 유지(숫자·화살표 안 흔들림)
+        if (n > 0) lastCountRef.current = n;
+        const display = n > 0 ? n : lastCountRef.current;
         const heading = document.getElementById('cusdis-heading');
-        if (heading) heading.textContent = n > 0 ? `댓글 ${n}` : '댓글';
+        if (heading) heading.textContent = display > 0 ? `댓글 ${display}` : '댓글';
       } catch (_) {}
     };
 
@@ -798,6 +808,12 @@ function CusdisThread() {
                 formDraftRef.current = draft.nick || draft.content ? draft : null;
               }
             } catch (_) {}
+            // 현재 스레드 높이를 고정해 리마운트 중 높이 스파이크(0→기본→실제)를 가림
+            try {
+              const el = document.getElementById('cusdis_thread');
+              const h = el ? Math.round(el.getBoundingClientRect().height) : 0;
+              if (h > 0) setFrozenHeight(h);
+            } catch (_) {}
             setReloading(true);
             setReloadKey((k) => k + 1);
             setTimeout(() => setReloading(false), 3000);
@@ -811,7 +827,12 @@ function CusdisThread() {
           </svg>
         </button>
       </div>
-      <div style={{position: 'relative'}}>
+      <div
+        style={{
+          position: 'relative',
+          // 새로고침 중에는 직전 높이로 고정 + 넘침 숨김 → 중간 높이 스파이크가 안 보임
+          ...(frozenHeight != null ? {height: frozenHeight, overflow: 'hidden'} : null),
+        }}>
         {(reloading || settling) && (
           <div
             className="cusdis-loading"

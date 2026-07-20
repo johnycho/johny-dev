@@ -4,7 +4,6 @@ title: CORS(Cross Origin Resource Sharing)
 tags: [ cs, network ]
 ---
 
-# CORS란?
 CORS(Cross Origin Resource Sharing)는 출처가 다른 곳의 리소스를 요청할 때 접근 권한을 부여하는 메커니즘입니다. 리소스를 주고받는 두 곳의 출처가 다르면 출처가 교차한다고 합니다. 이때 출처는 URL뿐만 아니라 프로토콜과 포트까지 포함됩니다. 만약 클라이언트의 출처가 허용되지 않았다면 CORS 에러가 발생할 수 있습니다.
 
 ## ✔️ CORS는 왜 필요하지?

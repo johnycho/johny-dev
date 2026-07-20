@@ -4,7 +4,6 @@ title: equals와 hashCode 메소드
 tags: [ java ]
 ---
 
-# equals와 hashCode는 왜 함께 재정의해야 할까?
 `equals`와 `hashCode` 메서드는 객체의 동등성 비교와 해시값 생성을 위해서 사용할 수 있습니다. 하지만, 함께 재정의하지 않는다면 예상치 못한 결과를 만들 수 있습니다. 가령, 해시값을 사용하는 자료구조(`HashSet`, `HashMap`..)을 사용할 때 문제가 발생할 수 있습니다.
 
 ```java

@@ -239,15 +239,16 @@ a {
 @media (max-width: 996px) {
   .navbar__item.navbar__link:not(.navbar-github-logo) { display: none; }
 
-  /* 상단 바 우측: github + 검색만 나란히. 테마 토글은 상단에서 숨김(드로어에 별도 존재) */
+  /* 상단 바 우측: 테마토글 + github + 검색 나란히 (테마토글을 햄버거 밖으로, github 왼쪽에) */
   .navbar__items--right { display: flex; align-items: center; }
-  .navbar__items--right [class*='colorModeToggle'] { display: none !important; }
-  .navbar__items--right .navbar-github-logo { display: inline-flex !important; order: 1; }
-  /* 검색 컨테이너는 기본 absolute(겹침 원인) → static 으로 바꿔 flex 로 github 옆에 나란히 */
-  .navbar__items--right [class*='navbarSearchContainer'] { order: 2; position: static; }
+  .navbar__items--right [class*='colorModeToggle'] { display: flex !important; order: 1; }
+  .navbar__items--right .navbar-github-logo { display: inline-flex !important; order: 2; }
+  /* 검색 컨테이너는 기본 absolute(겹침 원인) → static 으로 바꿔 flex 로 나란히 */
+  .navbar__items--right [class*='navbarSearchContainer'] { order: 3; position: static; }
 
-  /* 드로어 내 중복 github 아이콘은 숨김 */
+  /* 드로어 내 중복 github 아이콘/테마토글은 숨김(테마토글은 상단바로 이동) */
   .navbar-sidebar .navbar-github-logo { display: none; }
+  .navbar-sidebar__brand [class*='toggle_'] { display: none !important; }
 }
 .navbar__link:hover {
   color: var(--site-chrome-accent);
@@ -300,7 +301,7 @@ a {
   padding: 0;
   border-radius: 50%;
   border: 1px solid var(--site-card-border);
-  background-color: var(--site-card-bg);
+  background-color: var(--docsearch-searchbox-background);
   background-image: url("/img/github-mark.svg");
   background-size: 18px 18px;
   background-repeat: no-repeat;
@@ -337,7 +338,7 @@ html[data-theme='dark'] .navbar-github-logo {
   justify-content: center;
   border-radius: 50%;
   border: 1px solid var(--site-card-border);
-  background-color: var(--site-card-bg);
+  background-color: var(--docsearch-searchbox-background);
   transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
 }
 .navbar__items--right [class*='colorModeToggle'] .clean-btn:hover,
@@ -651,6 +652,18 @@ div[class*='codeBlockContainer'] {
   content: '' !important;
 }
 
+/* docs 하단 좌우 네비게이션 — 기본 Infima보다 작게(컴팩트) */
+[class*='docMainContainer'] .pagination-nav__label {
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+[class*='docMainContainer'] .pagination-nav__sublabel {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 /* ── 글 상세 페이지: 좌측 사이드바를 우측 TOC(col--2)와 같은 폭의 투명 스페이서로 만들어
    본문 카드가 화면 정중앙에 오도록 좌우 대칭 정렬 (높이 0으로 레이아웃엔 영향 없음) ── */
 .blog-post-page aside.col.col--3 {
@@ -908,64 +921,61 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 /* ============================================================= */
 /*  Docs 페이지 헤더 (카테고리·문서 공통) — 본문과 구별되는 강조 헤더  */
 /* ============================================================= */
+/* 헤더 배너 — 은은한 teal 그라데이션 배경 + 상단 중앙 액센트 라인 (가운데 정렬) */
 .docs-head {
   position: relative;
-  margin: 0.2rem 0 1.8rem;
-  padding-bottom: 1.15rem;
+  overflow: hidden;
+  margin: 0.4rem 0 0.8rem;
+  padding: 1.5rem 1.5rem 1.35rem;
+  text-align: center;
+  background:
+    radial-gradient(
+      130% 150% at 50% -30%,
+      var(--site-accent-soft) 0%,
+      transparent 55%
+    ),
+    var(--site-card-bg);
+  border: 1px solid var(--site-card-border);
+  border-radius: 14px;
+  box-shadow: var(--site-shadow);
 }
+/* 카드 하단 전체 라인 — 왼쪽이 진하고 오른쪽으로 흐려지는 그라데이션 */
 .docs-head::after {
   content: '';
   position: absolute;
   left: 0;
+  right: 0;
   bottom: 0;
-  width: 100%;
   height: 2px;
-  border-radius: 2px;
   background: linear-gradient(
     90deg,
     var(--site-accent) 0%,
-    color-mix(in srgb, var(--site-accent) 30%, transparent) 22%,
-    var(--site-card-border) 46%,
-    transparent 100%
+    color-mix(in srgb, var(--site-accent) 45%, transparent) 32%,
+    transparent 72%
   );
 }
-.docs-eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.42rem;
-  font-family: var(--ifm-font-family-monospace);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--site-accent);
-  background: var(--site-accent-soft);
-  border: 1px solid color-mix(in srgb, var(--site-accent) 25%, transparent);
-  padding: 0.26rem 0.72rem;
-  border-radius: 999px;
-  margin: 0 0 0.75rem;
-}
-.docs-eyebrow::before {
-  content: '';
-  width: 0.4rem;
-  height: 0.4rem;
-  border-radius: 50%;
-  background: var(--site-accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--site-accent) 20%, transparent);
-}
 .docs-title {
-  font-size: clamp(1.6rem, 3vw, 2.1rem) !important;
+  font-size: clamp(1.35rem, 2.2vw, 1.7rem) !important;
   font-weight: 800;
   letter-spacing: -0.02em;
-  line-height: 1.2;
-  margin: 0 0 0.5rem !important;
+  line-height: 1.25;
+  margin: 0 0 0.8rem !important;
   color: var(--ifm-heading-color);
 }
 .docs-desc {
-  margin: 0;
+  max-width: 620px;
+  margin: 0 auto;
   color: var(--site-muted);
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+/* 설명이 없는 헤더(게시글 페이지)는 타이틀 아래 여백 제거 → 상하 균형 */
+.docs-head:not(:has(.docs-desc)) .docs-title {
+  margin-bottom: 0 !important;
+}
+/* 게시글 페이지: 아래는 본문이므로 카드↔본문 간격 확보 (카테고리는 게시판이라 좁게 유지) */
+.docs-head:not(:has(.docs-desc)) {
+  margin-bottom: 2rem;
 }
 
 /* ============================================================= */
@@ -1004,10 +1014,23 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 .theme-doc-sidebar-container {
   border-right: 1px solid var(--site-card-border);
 }
-/* docs 본문과 푸터가 붙지 않도록 여백 */
-.theme-doc-markdown {
-  padding-bottom: clamp(2.4rem, 5vw, 4rem);
+/* 넓은 화면에서 본문 컨테이너가 가운데 정렬되며 사이드바와 벌어지는 좌측 여백 제거 → 좌측 정렬 */
+@media (min-width: 997px) {
+  [class*='docMainContainer'] > .container { margin-left: 0; margin-right: 0; }
 }
+/* 모바일: docs 페이지(카테고리·게시글) 컨테이너 좌우 패딩 축소 → 카드·본문 좌우폭 확대 */
+@media (max-width: 996px) {
+  [class*='docMainContainer'] > .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+/* docs 본문 하단 과한 패딩 제거 — 태그(footer) 간격은 기본 docusaurus-mt-lg(블로그와 동일) 사용 */
+.theme-doc-markdown {
+  padding-bottom: 0;
+}
+/* iframe 기본 inline 하단 여백 제거(불필요한 공백 방지) */
+#cusdis_thread iframe { display: block; }
 /* 카테고리 generated-index 카드 */
 article .card {
   border: 1px solid var(--site-card-border);

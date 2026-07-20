@@ -6,7 +6,6 @@ tags: [ spring ]
 ---
 
 <!-- truncate -->
-<br /><br />
 
 "오래된 대기 작업을 처리중으로 넘기는 배치." 요구사항 한 줄만 보면 `JdbcPagingItemReader` 하나 붙이고 끝날 일 같았습니다. 그런데 이 배치에는 함정이 하나 숨어 있었습니다. <mark>배치가 읽는 조건(`status = 'READY'`)을, 배치가 직접 바꿔 버린다는 것</mark>(`READY → IN_PROGRESS`)입니다.
 

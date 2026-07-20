@@ -4,7 +4,6 @@ title: ddl-auto 옵션
 tags: [ spring, jpa ]
 ---
 
-# JPA의 ddl-auto 옵션은 각각 어떤 동작을 하고 어떤 상황에서 사용해야 할까?
 ddl-auto 옵션은 스프링 부트 애플리케이션에서 Hibernate와 같은 JPA 구현체를 사용할 때 데이터베이스 스키마 관리를 제어하는 설정입니다.
 이 옵션은 `application.properties` 또는 `application.yml` 파일에서 설정할 수 있으며, 다양한 값에 따라 데이터베이스 스키마에 대해 다른 동작을
 수행합니다.

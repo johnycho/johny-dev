@@ -2,7 +2,6 @@ import React, {type ReactNode} from 'react';
 import {PageMetadata} from '@docusaurus/theme-common';
 import {useCurrentSidebarCategory} from '@docusaurus/plugin-content-docs/client';
 import useBaseUrl from '@docusaurus/useBaseUrl';
-import DocPaginator from '@theme/DocPaginator';
 import DocVersionBanner from '@theme/DocVersionBanner';
 import DocVersionBadge from '@theme/DocVersionBadge';
 import DocBreadcrumbs from '@theme/DocBreadcrumbs';
@@ -30,7 +29,6 @@ function DocCategoryGeneratedIndexPageContent({categoryGeneratedIndex}: Props): 
       <DocBreadcrumbs />
       <DocVersionBadge />
       <header className="docs-head">
-        <p className="docs-eyebrow">REFERENCE</p>
         <Heading as="h1" className="docs-title">
           {categoryGeneratedIndex.title}
         </Heading>
@@ -39,15 +37,9 @@ function DocCategoryGeneratedIndexPageContent({categoryGeneratedIndex}: Props): 
         )}
       </header>
       {/* 기본 카드 그리드 대신 블로그처럼 게시판형(검색·페이징) 목록 */}
-      <article className="margin-top--lg">
+      <article>
         <DocsBoard items={category.items} />
       </article>
-      <footer className="margin-top--lg">
-        <DocPaginator
-          previous={categoryGeneratedIndex.navigation.previous}
-          next={categoryGeneratedIndex.navigation.next}
-        />
-      </footer>
     </div>
   );
 }
