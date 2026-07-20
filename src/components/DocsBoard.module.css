@@ -12,9 +12,9 @@
   text-align: left;
 }
 
-/* 검색어 입력 */
+/* 검색어 입력 — 위아래 균형 */
 .searchRow {
-  padding: 1.1rem 1.2rem 0.3rem;
+  padding: 1rem 1.2rem;
 }
 .searchInput {
   width: 100%;
@@ -174,7 +174,7 @@
 
 /* 모바일 */
 @media (max-width: 600px) {
-  .searchRow { padding: 0.6rem 0.6rem 0.2rem; }
+  .searchRow { padding: 0.7rem; }
   .searchInput { font-size: 0.82rem; padding: 0.45rem 0.7rem; }
   .listHead { padding: 0.6rem 0.8rem; font-size: 0.8rem; }
   .list { padding: 0.25rem 0.4rem; }

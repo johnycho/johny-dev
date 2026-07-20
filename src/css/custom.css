@@ -909,6 +909,15 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 /*  Sidebar (docs)                                               */
 /* ============================================================= */
 
+/* docs 사이드바는 카테고리(1depth)만 노출 — 하위 문서 목록·펼침 캐럿 숨김.
+   (카테고리 클릭 시 게시판형 인덱스로 이동, 문서 탐색은 게시판에서) */
+.theme-doc-sidebar-menu .menu__list { display: none !important; }
+.theme-doc-sidebar-menu .menu__caret { display: none !important; }
+.theme-doc-sidebar-menu .menu__link--sublist-caret::after { display: none !important; }
+.theme-doc-sidebar-menu .menu__list-item-collapsible .menu__link {
+  cursor: pointer;
+}
+
 .menu__link--active:not(.menu__link--sublist) {
   background: color-mix(in srgb, var(--site-accent) 12%, transparent);
   box-shadow: inset 3px 0 0 0 var(--site-accent);
