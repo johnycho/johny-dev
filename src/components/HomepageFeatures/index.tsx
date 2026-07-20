@@ -18,7 +18,7 @@ const FeatureList: FeatureItem[] = [
     glyph: '{ }',
     href: '/docs/intro',
     cta: 'open ./docs',
-    description: <>CS · Java · Spring · JPA · DB 등 정리된 개념과 지식을 주제별로 찾아봅니다.</>,
+    description: <>CS · Java · Spring · JPA · Database 등 정리된 개념과 지식을 주제별로 찾아봅니다.</>,
   },
   {
     title: '인사이트',

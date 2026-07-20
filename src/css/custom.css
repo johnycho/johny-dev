@@ -239,16 +239,22 @@ a {
 @media (max-width: 996px) {
   .navbar__item.navbar__link:not(.navbar-github-logo) { display: none; }
 
-  /* 상단 바 우측: 테마토글 + github + 검색 나란히 (테마토글을 햄버거 밖으로, github 왼쪽에) */
-  .navbar__items--right { display: flex; align-items: center; }
-  .navbar__items--right [class*='colorModeToggle'] { display: flex !important; order: 1; }
-  .navbar__items--right .navbar-github-logo { display: inline-flex !important; order: 2; }
+  /* 상단 바 우측: github → 테마토글 → 검색 (테마토글을 햄버거 밖으로). gap 으로 간격 통일 */
+  .navbar__items--right { display: flex; align-items: center; gap: 0.5rem; }
+  .navbar__items--right .navbar-github-logo { display: inline-flex !important; order: 1; margin: 0; }
+  .navbar__items--right [class*='colorModeToggle'] { display: flex !important; order: 2; margin: 0; width: 36px; justify-content: center; }
   /* 검색 컨테이너는 기본 absolute(겹침 원인) → static 으로 바꿔 flex 로 나란히 */
-  .navbar__items--right [class*='navbarSearchContainer'] { order: 3; position: static; }
+  .navbar__items--right [class*='navbarSearchContainer'] { order: 3; position: static; margin: 0; }
 
   /* 드로어 내 중복 github 아이콘/테마토글은 숨김(테마토글은 상단바로 이동) */
   .navbar-sidebar .navbar-github-logo { display: none; }
   .navbar-sidebar__brand [class*='toggle_'] { display: none !important; }
+}
+/* 상단바 우측 버튼 순서 PC·모바일 통일: github → 테마토글 → 검색 */
+@media (min-width: 997px) {
+  .navbar__items--right .navbar-github-logo { order: 1; }
+  .navbar__items--right [class*='colorModeToggle'] { order: 2; }
+  .navbar__items--right [class*='navbarSearchContainer'] { order: 3; }
 }
 .navbar__link:hover {
   color: var(--site-chrome-accent);
@@ -398,6 +404,11 @@ html .navbar-sidebar {
 .navbar-sidebar .menu__link--active {
   background-color: color-mix(in srgb, var(--site-accent) 12%, transparent);
   color: var(--site-accent);
+}
+/* 접이식(레퍼런스) 헤더 링크도 인사이트와 동일한 선택 배경/색 (Infima의 투명 덮어쓰기 방지) */
+.navbar-sidebar .menu__list-item-collapsible .menu__link--active {
+  background-color: color-mix(in srgb, var(--site-accent) 12%, transparent) !important;
+  color: var(--site-accent) !important;
 }
 /* github 아이콘은 모바일 상단 바(검색 옆)에 노출하므로 드로어 중복본은 숨김 */
 .navbar-sidebar .navbar-github-logo {
@@ -977,6 +988,10 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 .docs-head:not(:has(.docs-desc)) {
   margin-bottom: 2rem;
 }
+/* intro 페이지는 카테고리처럼 헤더↔본문 간격을 좁게 */
+.docs-doc-id-intro .docs-head:not(:has(.docs-desc)) {
+  margin-bottom: 0.8rem;
+}
 
 /* ============================================================= */
 /*  Sidebar (docs)                                               */
@@ -1018,9 +1033,22 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 @media (min-width: 997px) {
   [class*='docMainContainer'] > .container { margin-left: 0; margin-right: 0; }
 }
-/* 모바일: docs 페이지(카테고리·게시글) 컨테이너 좌우 여백 */
+/* 모바일 docs 게시글 좌우 여백은 기본값(1rem=16px). 단, 카테고리(board) 페이지만 패딩 축소해 게시판 폭 확대 */
 @media (max-width: 996px) {
-  [class*='docMainContainer'] > .container {
+  [class*='docMainContainer'] > .container:has([class*='board_']) {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+  /* intro 페이지: article 구조(row/col)라 container·row·col을 함께 맞춰 오버플로 없이 여백 축소 */
+  .docs-doc-id-intro [class*='docMainContainer'] > .container {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
+  }
+  .docs-doc-id-intro [class*='docMainContainer'] > .container > .row {
+    margin-left: -0.7rem;
+    margin-right: -0.7rem;
+  }
+  .docs-doc-id-intro [class*='docMainContainer'] > .container > .row > .col {
     padding-left: 0.7rem;
     padding-right: 0.7rem;
   }

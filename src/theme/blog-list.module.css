@@ -34,6 +34,10 @@
   font-size: clamp(0.95rem, 1.6vw, 1.05rem);
   line-height: 1.6;
 }
+/* 모바일: 좌우 패딩 축소 → 게시판 폭 확대 */
+@media (max-width: 996px) {
+  .container { padding-left: 0.7rem; padding-right: 0.7rem; }
+}
 @media (max-width: 600px) {
   .head { margin-bottom: 1.4rem; }
   .eyebrow { font-size: 0.72rem; }

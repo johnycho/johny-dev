@@ -123,6 +123,7 @@ const config: Config = {
           position: 'left',
           type: 'dropdown',
           className: 'navbar-noactive',
+          activeBasePath: '/docs', // 모바일 드로어: 모든 docs 페이지에서 레퍼런스를 선택 상태로 표시
           // activeBasePath: 해당 카테고리 하위 문서에 있을 때도 활성으로 인식 →
           //   모바일 드로어에서 레퍼런스가 자동 펼쳐지고 현재 카테고리가 선택 표시됨
           items: [

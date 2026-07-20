@@ -1,5 +1,5 @@
 .features {
-  padding: 5rem 0 5.5rem;
+  padding: 3rem 0 4rem;
   background: var(--ifm-background-surface-color);
   border-top: 1px solid var(--site-card-border);
 }
@@ -94,7 +94,7 @@
 }
 
 @media screen and (max-width: 768px) {
-  .features { padding: 2.4rem 0 2.6rem; }
+  .features { padding: 1.8rem 0 1.5rem; }
   .sectionHead { margin-bottom: 1.6rem; }
   .sectionKicker { font-size: 0.7rem; padding: 0.24rem 0.6rem; }
   .sectionTitle { font-size: 1.22rem; margin-top: 0.7rem; }
