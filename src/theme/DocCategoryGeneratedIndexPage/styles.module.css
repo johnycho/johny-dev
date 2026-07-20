@@ -1,5 +1,0 @@
-/* 카테고리 인덱스 — 게시판형이라 기본 75% 폭 제한은 두지 않고 문서 폭을 그대로 사용 */
-.title {
-  --ifm-h1-font-size: 2rem;
-  margin-bottom: calc(1.25 * var(--ifm-leading));
-}

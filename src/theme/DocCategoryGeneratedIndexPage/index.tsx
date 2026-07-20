@@ -10,7 +10,6 @@ import Heading from '@theme/Heading';
 import type {Props} from '@theme/DocCategoryGeneratedIndexPage';
 
 import DocsBoard from '@site/src/components/DocsBoard';
-import styles from './styles.module.css';
 
 function DocCategoryGeneratedIndexPageMetadata({categoryGeneratedIndex}: Props): ReactNode {
   return (
@@ -26,15 +25,18 @@ function DocCategoryGeneratedIndexPageMetadata({categoryGeneratedIndex}: Props):
 function DocCategoryGeneratedIndexPageContent({categoryGeneratedIndex}: Props): ReactNode {
   const category = useCurrentSidebarCategory();
   return (
-    <div className={styles.generatedIndexPage}>
+    <div>
       <DocVersionBanner />
       <DocBreadcrumbs />
       <DocVersionBadge />
-      <header>
-        <Heading as="h1" className={styles.title}>
+      <header className="docs-head">
+        <p className="docs-eyebrow">REFERENCE</p>
+        <Heading as="h1" className="docs-title">
           {categoryGeneratedIndex.title}
         </Heading>
-        {categoryGeneratedIndex.description && <p>{categoryGeneratedIndex.description}</p>}
+        {categoryGeneratedIndex.description && (
+          <p className="docs-desc">{categoryGeneratedIndex.description}</p>
+        )}
       </header>
       {/* 기본 카드 그리드 대신 블로그처럼 게시판형(검색·페이징) 목록 */}
       <article className="margin-top--lg">

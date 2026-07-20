@@ -906,6 +906,69 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 }
 
 /* ============================================================= */
+/*  Docs 페이지 헤더 (카테고리·문서 공통) — 본문과 구별되는 강조 헤더  */
+/* ============================================================= */
+.docs-head {
+  position: relative;
+  margin: 0.2rem 0 1.8rem;
+  padding-bottom: 1.15rem;
+}
+.docs-head::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--site-accent) 0%,
+    color-mix(in srgb, var(--site-accent) 30%, transparent) 22%,
+    var(--site-card-border) 46%,
+    transparent 100%
+  );
+}
+.docs-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--site-accent);
+  background: var(--site-accent-soft);
+  border: 1px solid color-mix(in srgb, var(--site-accent) 25%, transparent);
+  padding: 0.26rem 0.72rem;
+  border-radius: 999px;
+  margin: 0 0 0.75rem;
+}
+.docs-eyebrow::before {
+  content: '';
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--site-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--site-accent) 20%, transparent);
+}
+.docs-title {
+  font-size: clamp(1.6rem, 3vw, 2.1rem) !important;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 0.5rem !important;
+  color: var(--ifm-heading-color);
+}
+.docs-desc {
+  margin: 0;
+  color: var(--site-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* ============================================================= */
 /*  Sidebar (docs)                                               */
 /* ============================================================= */
 
@@ -921,6 +984,12 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 .menu__link--active:not(.menu__link--sublist) {
   background: color-mix(in srgb, var(--site-accent) 12%, transparent);
   box-shadow: inset 3px 0 0 0 var(--site-accent);
+}
+/* docs 사이드바: 활성 링크(카테고리 sublist 포함)에 배경 강조 — infima 기본값 위로 강제 */
+.theme-doc-sidebar-menu .menu__link--active {
+  background: color-mix(in srgb, var(--site-accent) 12%, transparent) !important;
+  box-shadow: inset 3px 0 0 0 var(--site-accent);
+  color: var(--site-accent);
 }
 
 /* 메뉴 항목을 둥근 pill 로 (상단 네비/드로어와 톤 통일) */

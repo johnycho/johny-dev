@@ -122,11 +122,11 @@ const config: Config = {
           position: 'left',
           type: 'dropdown',
           items: [
-            {label: "Computer Science", to: "/docs/category/computer-science"},
-            {label: "Java", to: "/docs/category/java"},
-            {label: "Spring Framework", to: "/docs/category/spring-framework"},
-            {label: "Spring Data JPA", to: "/docs/category/spring-data-jpa"},
-            {label: "Database", to: "/docs/category/database"},
+            {label: "Computer Science", to: "/docs/computer-science"},
+            {label: "Java", to: "/docs/java"},
+            {label: "Spring Framework", to: "/docs/spring-framework"},
+            {label: "Spring Data JPA", to: "/docs/spring-data-jpa"},
+            {label: "Database", to: "/docs/database"},
           ],
         },
         {

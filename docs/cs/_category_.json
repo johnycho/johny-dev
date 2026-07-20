@@ -3,6 +3,7 @@
   "position": 2,
   "link": {
     "type": "generated-index",
-    "description": "CS 관련 인사이트를 기록합니다."
+    "description": "CS 관련 인사이트를 기록합니다.",
+    "slug": "/computer-science"
   }
 }
