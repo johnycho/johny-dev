@@ -1018,11 +1018,11 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 @media (min-width: 997px) {
   [class*='docMainContainer'] > .container { margin-left: 0; margin-right: 0; }
 }
-/* 모바일: docs 페이지(카테고리·게시글) 컨테이너 좌우 패딩 축소 → 카드·본문 좌우폭 확대 */
+/* 모바일: docs 페이지(카테고리·게시글) 컨테이너 좌우 여백 */
 @media (max-width: 996px) {
   [class*='docMainContainer'] > .container {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
   }
 }
 /* docs 본문 하단 과한 패딩 제거 — 태그(footer) 간격은 기본 docusaurus-mt-lg(블로그와 동일) 사용 */
