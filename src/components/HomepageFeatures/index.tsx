@@ -16,8 +16,8 @@ const FeatureList: FeatureItem[] = [
   {
     title: '레퍼런스',
     glyph: '{ }',
-    href: '/docs/intro',
-    cta: 'open ./docs',
+    href: '/wiki',
+    cta: 'open ./wiki',
     description: <>CS · Java · Spring · JPA · Database 등 정리된 개념과 지식을 주제별로 찾아봅니다.</>,
   },
   {

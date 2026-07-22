@@ -148,11 +148,11 @@ function HomepageHeader() {
         </div>
 
         <div className={styles.ctaRow}>
-          <Link className={clsx(styles.ctaBtn, styles.ctaPrimary)} to="/blog">
-            $ ls ./blog
+          <Link className={clsx(styles.ctaBtn, styles.ctaPrimary)} to="/wiki">
+            $ open ./wiki
           </Link>
-          <Link className={clsx(styles.ctaBtn, styles.ctaGhost)} to="/docs/intro">
-            $ open ./docs
+          <Link className={clsx(styles.ctaBtn, styles.ctaGhost)} to="/blog">
+            $ ls ./blog
           </Link>
           <Link className={clsx(styles.ctaBtn, styles.ctaGhost)} to="https://github.com/johnycho">
             $ git remote

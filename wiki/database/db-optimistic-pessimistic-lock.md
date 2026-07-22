@@ -18,7 +18,7 @@ tags: [ db ]
 >> cf. MySQL은 `일관된 읽기(Consistent Nonlocking Reads)`를 지원하여 `X-Lock`이 걸려 있어도 단순 `SELECT`로 읽을 수 있습니다.
 
 ### MySQL에서는 단순 SELECT 문이 락이 걸린 row에 대해서 블로킹되지 않습니다. (InnoDB 엔진 기준, 기본 설정 기준)
-MySQL의 `InnoDB` 스토리지 엔진은 [MVCC(Multi-Version Concurrency Control)](/docs/database/db-concurrency-control#%EF%B8%8F-mvccmulti-version-concurrency-control)를 사용합니다.  
+MySQL의 `InnoDB` 스토리지 엔진은 [MVCC(Multi-Version Concurrency Control)](/wiki/database/db-concurrency-control#%EF%B8%8F-mvccmulti-version-concurrency-control)를 사용합니다.  
 즉, `SELECT`는 락을 걸지 않고, 트랜잭션 격리 수준에 따라 스냅샷된 데이터 버전을 읽습니다.
 
 따라서 누군가 `UPDATE`나 `DELETE`로 특정 row에 쓰기 락을 잡고 있어도, `SELECT * FROM table WHERE id = 1;`같은 단순 조회는 락을 기다리지 않고 바로 실행됩니다.

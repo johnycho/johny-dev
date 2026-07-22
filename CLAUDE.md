@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-johny-dev 기술 블로그 (Docusaurus). 게시글은 `blog/*.mdx`로 작성하며(`YYYY-MM-DD-slug.mdx`), 주제별 문서는 `docs/`, UI 커스터마이징은 `src/`에 있다.
+johny-dev 기술 블로그 (Docusaurus). 게시글은 `blog/*.mdx`로 작성하며(`YYYY-MM-DD-slug.mdx`), 주제별 문서는 `wiki/`(URL `/wiki/*`), UI 커스터마이징은 `src/`에 있다.
 
 ## 규칙은 `.claude/` 에서 관리한다
 작업 규칙은 **wiki(참조) · skill(절차) · hook(자동 검증)** 으로 분리되어 [`.claude/`](.claude/README.md) 에 중앙 관리된다. 색인: [`.claude/README.md`](.claude/README.md)

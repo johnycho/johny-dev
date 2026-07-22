@@ -1,6 +1,6 @@
 ---
 sidebar_position: 1
-slug: intro
+slug: /
 title: 📝 기록하고 기억하자 💪🏻
 ---
 
