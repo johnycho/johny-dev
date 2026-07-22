@@ -66,8 +66,10 @@
   font-family: var(--ifm-font-family-monospace);
   font-size: 0.92rem;
   line-height: 2;
-  /* 라인별 순차 노출 중 높이가 흔들리지 않도록 최종 높이 예약 */
+  /* 높이 고정: 명령이 쌓여도 커지지 않고 내부 스크롤 */
   min-height: 310px;
+  max-height: 310px;
+  overflow-y: auto;
 }
 
 .line {
@@ -106,6 +108,35 @@
   animation: blink 1.1s steps(1) infinite;
 }
 @keyframes blink { 50% { opacity: 0; } }
+
+/* 인터랙티브: 인식 못 한 명령 출력 (겹침 방지 — 음수 마진 없는 전용 스타일) */
+.termOut {
+  margin: 0.1rem 0 0.5rem;
+  color: var(--term-muted);
+  font-family: var(--ifm-font-family-monospace);
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* 인터랙티브 프롬프트 줄 — 보이는 텍스트는 .cmd span, 입력은 투명 오버레이 input */
+.termInputLine {
+  position: relative;
+  margin: 0;
+  color: var(--term-muted);
+  white-space: nowrap;
+}
+.termInput {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0; /* 텍스트·캐럿 숨김(오버레이). 실제 표시는 .cmd span + .cursor */
+  border: 0;
+  outline: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: text;
+}
 
 /* 기동 배너 (JOHNY DEV ASCII) — 배경 없는 한 줄 단위 div (라인별 노출) */
 .banner {
@@ -171,7 +202,7 @@
   .terminalBar { padding: 0.5rem 0.85rem; gap: 0.42rem; }
   .dot { width: 9px; height: 9px; }
   .terminalTitle { font-size: 0.68rem; }
-  .terminalBody { font-size: 0.72rem; padding: 1rem 1rem 1.15rem; line-height: 1.8; min-height: 270px; }
+  .terminalBody { font-size: 0.72rem; padding: 1rem 1rem 1.15rem; line-height: 1.8; min-height: 270px; max-height: 270px; }
   .banner { font-size: 0.52rem; line-height: 1.25; }
   .bannerTag { font-size: 0.72rem; }
   .output { font-size: 1.05rem; margin: 0.2rem 0 1rem; }
