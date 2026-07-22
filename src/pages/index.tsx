@@ -10,14 +10,12 @@ import styles from './index.module.css';
 type OutLine = {text: string; muted?: boolean; banner?: boolean; tag?: boolean; log?: boolean};
 type Step = {cmd: string; out: OutLine[]};
 
-// 'JOHNY DEV' ASCII 아트(figlet Big — H가 명확) — 라인별 노출을 위해 배열
+// 'JOHNY DEV' ASCII 아트(figlet Small — 얇고 깔끔한 형태) — 라인별 노출
 const JOHNY_BANNER_LINES = [
-  "       _  ____  _    _ _   ___     __  _____  ________      __",
-  "      | |/ __ \\| |  | | \\ | \\ \\   / / |  __ \\|  ____\\ \\    / /",
-  "      | | |  | | |__| |  \\| |\\ \\_/ /  | |  | | |__   \\ \\  / / ",
-  "  _   | | |  | |  __  | . ` | \\   /   | |  | |  __|   \\ \\/ /  ",
-  " | |__| | |__| | |  | | |\\  |  | |    | |__| | |____   \\  /   ",
-  "  \\____/ \\____/|_|  |_|_| \\_|  |_|    |_____/|______|   \\/    ",
+  "     _  ___  _  _ _  ___   __  ___  _____   __",
+  "  _ | |/ _ \\| || | \\| \\ \\ / / |   \\| __\\ \\ / /",
+  " | || | (_) | __ | .` |\\ V /  | |) | _| \\ V / ",
+  "  \\__/ \\___/|_||_|_|\\_| |_|   |___/|___| \\_/  ",
 ];
 
 function Prompt() {
