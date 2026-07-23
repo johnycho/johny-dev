@@ -153,6 +153,16 @@ h1 { letter-spacing: -0.03em; }
   border: 1px solid var(--site-card-border);
   padding: 0.06em 0.3em;
 }
+/* 라이트모드: 인라인 코드 배경이 흰 본문과 구분이 잘 안 됨 → 기존 회색을 더 진하게(테두리도 강조) */
+[data-theme='light'] :not(pre) > code {
+  background: #d7dbe1;
+  border-color: #c2c7ce;
+}
+/* 다크모드: 인라인 코드가 페이지(#282a2d)보다 어두워 묻힘 → 더 밝은 회색 칩 + 밝은 테두리 */
+[data-theme='dark'] :not(pre) > code {
+  background: #363a41;
+  border-color: #4b515a;
+}
 
 a {
   transition: color 0.15s ease;
