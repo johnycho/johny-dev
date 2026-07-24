@@ -206,7 +206,7 @@ a {
 /* 로고 타이틀 — 둥근 본문 글씨체 */
 .navbar__title {
   font-family: var(--ifm-font-family-base);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: -0.02em;
   color: var(--site-chrome-fg);
@@ -395,7 +395,7 @@ html .navbar-sidebar {
 }
 .navbar-sidebar .navbar__brand .navbar__title {
   font-family: var(--ifm-font-family-base);
-  font-weight: 800;
+  font-weight: 700;
 }
 .navbar-sidebar .menu__link {
   font-family: var(--ifm-font-family-base);
@@ -637,7 +637,7 @@ div[class*='codeBlockContainer'] {
   margin-bottom: 0.35rem;
   font-family: var(--ifm-font-family-base);
   font-size: 0.68rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.03em;
   color: var(--site-accent);
   text-transform: uppercase;
@@ -851,7 +851,7 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 }
 .cusdis-heading {
   font-size: 0.95rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--site-fg);
   margin: 0;
 }
@@ -971,7 +971,7 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
 }
 .docs-title {
   font-size: clamp(1.35rem, 2.2vw, 1.7rem) !important;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.25;
   margin: 0 0 0.8rem !important;

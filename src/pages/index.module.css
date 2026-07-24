@@ -85,7 +85,7 @@
 .output {
   margin: 0.3rem 0 1.3rem;
   font-size: 1.5rem;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.25;
   color: #f2f5fa;
@@ -155,7 +155,7 @@
   margin: 0.45rem 0 0.9rem;
   font-family: var(--ifm-font-family-monospace);
   font-size: 0.82rem;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--term-text);
   white-space: nowrap;
   overflow-x: auto;
