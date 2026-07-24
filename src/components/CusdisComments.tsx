@@ -49,10 +49,17 @@ const PALETTE: Record<Theme, Record<string, string>> = {
 function brandCss(theme: Theme): string {
   const c = PALETTE[theme];
   return `
-  /* iframe 내부에도 NanumSquareRound 로드 (부모 @font-face 는 상속되지 않음) */
+  /* iframe 내부에도 NanumSquareRound 로드 (부모 @font-face 는 상속되지 않음).
+     굵기별 실제 폰트(400/700)를 로드해 라벨·버튼·이름 등의 볼드를 또렷하게(가짜볼드 방지) */
   @font-face {
     font-family: 'NanumSquareRound'; font-style: normal; font-weight: 400; font-display: swap;
-    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    src: url('https://cdn.jsdelivr.net/gh/innks/NanumSquareRound/NanumSquareRoundR.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/gh/innks/NanumSquareRound/NanumSquareRoundR.woff') format('woff');
+  }
+  @font-face {
+    font-family: 'NanumSquareRound'; font-style: normal; font-weight: 700; font-display: swap;
+    src: url('https://cdn.jsdelivr.net/gh/innks/NanumSquareRound/NanumSquareRoundB.woff2') format('woff2'),
+         url('https://cdn.jsdelivr.net/gh/innks/NanumSquareRound/NanumSquareRoundB.woff') format('woff');
   }
   /* display: flow-root 로 BFC 를 만들어 자식 상/하 여백이 body 밖으로 새는 것을 막는다
      (body.scrollHeight 로 측정한 높이가 실제 콘텐츠와 일치 → 내부 스크롤 방지) */
@@ -123,7 +130,7 @@ function brandCss(theme: Theme): string {
   }
   /* 작성자 이름 + 관리자 배지 (한 줄) */
   .my-4 > .flex.items-center { align-items: center !important; }
-  .flex.items-center .font-medium { color: ${c.accent} !important; font-weight: 800 !important; font-size: 0.8rem !important; margin-right: .15rem !important; }
+  .flex.items-center .font-medium { color: ${c.accent} !important; font-weight: 700 !important; font-size: 0.8rem !important; margin-right: .15rem !important; }
   /* 하단 메타 줄(날짜 · 답글) */
   .my-4 > .text-sm { color: ${c.muted} !important; font-size: 0.72rem !important; margin: .1rem 0 0 !important; }
   .cusdis-meta { display: flex !important; align-items: center !important; gap: .8rem !important; margin-top: .05rem !important; }
@@ -142,7 +149,7 @@ function brandCss(theme: Theme): string {
     width: auto !important; height: auto !important;
     padding: .02rem .34rem !important; margin: 0 0 0 .2rem !important;
     border-radius: 4px !important; display: inline-flex !important; align-items: center !important;
-    font-size: .62rem !important; font-weight: 800 !important; line-height: 1.6 !important; letter-spacing: .02em !important;
+    font-size: .62rem !important; font-weight: 700 !important; line-height: 1.6 !important; letter-spacing: .02em !important;
   }
   /* 답글 @작성자 태그 — 내용 맨 앞 인라인 컬러 태그 */
   .cusdis-mention { color: ${c.mention} !important; font-weight: 700 !important; }
