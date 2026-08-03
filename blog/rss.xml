@@ -13,9 +13,9 @@
             <link>https://johnycho.dev/blog/spring-datajpatest-context-oom</link>
             <guid>https://johnycho.dev/blog/spring-datajpatest-context-oom</guid>
             <pubDate>Mon, 03 Aug 2026 00:00:00 GMT</pubDate>
-            <description><![CDATA[1. 무슨 일이 있었나]]></description>
-            <content:encoded><![CDATA[<br>
-<br>
+            <description><![CDATA[테스트를 하나씩 돌리면 다 통과하는데, 전부 한꺼번에 돌리면 메모리 부족(OOM)으로 실패했습니다. 범인은 코드 버그가 아니라 Spring이 테스트용 "세트(컨텍스트)"를 재사용하지 못하고 18개나 새로 만들어 쌓아둔 것이었습니다. 테스트들이 같은 세트를 공유하도록 설정을 하나로 모으니, 세트 수가 줄고 메모리 문제가 사라졌습니다.]]></description>
+            <content:encoded><![CDATA[<p>테스트를 <strong>하나씩</strong> 돌리면 다 통과하는데, <strong>전부 한꺼번에</strong> 돌리면 메모리 부족(OOM)으로 실패했습니다. 범인은 코드 버그가 아니라 <mark>Spring이 테스트용 "세트(컨텍스트)"를 재사용하지 못하고 18개나 새로 만들어 쌓아둔 것</mark>이었습니다. 테스트들이 <strong>같은 세트를 공유하도록</strong> 설정을 하나로 모으니, 세트 수가 줄고 메모리 문제가 사라졌습니다.</p>
+<hr>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-무슨-일이-있었나">1. 무슨 일이 있었나<a href="https://johnycho.dev/blog/spring-datajpatest-context-oom#1-%EB%AC%B4%EC%8A%A8-%EC%9D%BC%EC%9D%B4-%EC%9E%88%EC%97%88%EB%82%98" class="hash-link" aria-label="1. 무슨 일이 있었나에 대한 직접 링크" title="1. 무슨 일이 있었나에 대한 직접 링크">​</a></h2>
 <p>테스트를 하나만 돌리면:</p>
 <div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">✅ 통과</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
