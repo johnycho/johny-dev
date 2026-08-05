@@ -167,6 +167,11 @@ a {
   background: var(--site-accent);
   color: #04121a;
 }
+/* 라이트모드: accent(#0e8aa8)가 진해 선택 시 글자가 묻힘 → 연한 청록 배경 + 어두운 글자 */
+[data-theme='light'] ::selection {
+  background: #bce7f0;
+  color: #04121a;
+}
 
 /* 스크롤바 (webkit) */
 * {
