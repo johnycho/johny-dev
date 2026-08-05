@@ -151,7 +151,6 @@
 <p><mark>핵심은 "로그를 JSON으로 만들려고 라이브러리를 붙이던 시대"가 끝났다는 것</mark> — 이제 수집기에 맞는 형식 값 하나가 출발점입니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="용어-한-줄-정리">용어 한 줄 정리<a href="https://johnycho.dev/blog/spring-boot-structured-logging#%EC%9A%A9%EC%96%B4-%ED%95%9C-%EC%A4%84-%EC%A0%95%EB%A6%AC" class="hash-link" aria-label="용어 한 줄 정리에 대한 직접 링크" title="용어 한 줄 정리에 대한 직접 링크">​</a></h3>
 <table><thead><tr><th>용어</th><th>쉬운 뜻</th></tr></thead><tbody><tr><td>로그(log)</td><td>서버가 "무슨 일이 있었는지" 남기는 기록</td></tr><tr><td>구조적 로깅</td><td>로그를 사람이 읽는 문장이 아니라 기계가 읽는 JSON으로 남기기</td></tr><tr><td>로그 수집기</td><td>여러 서버의 로그를 한곳에 모아 검색하게 해 주는 도구(Elasticsearch 등)</td></tr><tr><td>grok</td><td>평문 로그를 정규식으로 쪼개 항목으로 만드는 파싱 규칙</td></tr><tr><td>MDC</td><td>지금 처리 중인 요청에 붙여 두는 "쪽지" — 그 요청의 모든 로그에 따라붙음</td></tr><tr><td>ECS / GELF / Logstash</td><td>수집기별로 선호하는 JSON 항목 규격(형식)</td></tr></tbody></table>]]></content:encoded>
-            <category>Spring Boot</category>
             <category>Spring</category>
             <category>모니터링</category>
         </item>

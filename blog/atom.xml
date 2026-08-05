@@ -158,7 +158,6 @@
             <name>Johny Cho</name>
             <uri>https://github.com/johnycho</uri>
         </author>
-        <category label="Spring Boot" term="Spring Boot"/>
         <category label="Spring" term="Spring"/>
         <category label="모니터링" term="모니터링"/>
     </entry>
