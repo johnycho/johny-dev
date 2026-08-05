@@ -8,11 +8,6 @@ spring:
   permalink: /spring
   description: Spring tag description
 
-spring-boot:
-  label: Spring Boot
-  permalink: /spring-boot
-  description: Spring Boot 버전별 변화·업데이트(3.2.0 이후) 시리즈
-
 mysql:
   label: MySQL
   permalink: /mysql

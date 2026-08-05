@@ -22,7 +22,7 @@ Spring Boot 3.2.0 **이후**의 변화를 **주제별**로 조사·작성한다.
 
 4. **사실 검증 체크** (wiki 3·5절): "언제(어느 버전)부터", "무엇이 어떻게 달라졌나", "이전 동작 대비 차이"를 버전 번호로 확정. 추측 금지 — 확인 안 되면 소스를 더 찾거나 범위를 좁힌다. "최신" 대신 버전·날짜로 표기.
 
-5. **파일명·태그 결정** (wiki 5절): `blog/YYYY-MM-DD-spring-boot-<주제>.mdx`. 태그 `[ spring-boot, spring ]`(+주제별). `spring-boot` 태그가 `blog/tags.yml`에 없으면 먼저 등록.
+5. **파일명·태그 결정** (wiki 5절): `blog/YYYY-MM-DD-spring-boot-<주제>.mdx`. 태그는 기존 **`spring`**(+주제별, 예: `monitoring`). 별도 `spring-boot` 태그는 만들지 않는다.
 
 6. **작성** — [blog-authoring.md](../../wiki/blog-authoring.md) 규칙대로:
    - 프론트매터(`authors: [ johnycho ]`, tags) → `<!-- truncate -->` → **인트로 문단**(기준점 3.2.0 이후 주제임을 한 줄로) → 본문.
