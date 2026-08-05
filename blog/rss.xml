@@ -82,6 +82,7 @@
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="용어-한-줄-정리">용어 한 줄 정리<a href="https://johnycho.dev/blog/ai-concepts-llm-agent-mcp#%EC%9A%A9%EC%96%B4-%ED%95%9C-%EC%A4%84-%EC%A0%95%EB%A6%AC" class="hash-link" aria-label="용어 한 줄 정리에 대한 직접 링크" title="용어 한 줄 정리에 대한 직접 링크">​</a></h3>
 <table><thead><tr><th>용어</th><th>쉬운 뜻</th></tr></thead><tbody><tr><td>LLM</td><td>다음 단어(토큰)를 예측해 글을 만드는 AI 모델</td></tr><tr><td>토큰</td><td>LLM이 글을 다루는 단위(대략 단어 조각)</td></tr><tr><td>컨텍스트 윈도우</td><td>모델이 한 번에 볼 수 있는 토큰의 최대량</td></tr><tr><td>도구 호출</td><td>LLM이 외부 기능을 "써 달라"고 요청하는 방법</td></tr><tr><td>에이전트</td><td>도구를 스스로 반복해 목표까지 가는 LLM</td></tr><tr><td>MCP</td><td>AI와 도구를 잇는 표준 규격("AI용 USB-C")</td></tr><tr><td>RAG</td><td>관련 자료를 검색해 프롬프트에 넣어 답을 보강</td></tr></tbody></table>]]></content:encoded>
             <category>AI</category>
+            <category>아키텍처</category>
         </item>
         <item>
             <title><![CDATA[JSON 로그, 이제 라이브러리 없이 — Spring Boot 3.4 구조적 로깅]]></title>
@@ -465,6 +466,7 @@
 <p>내장 컴포넌트가 "대부분의 경우"에 맞춰져 있다는 건, 경계 밖 요구가 두세 개 겹치면 안 맞을 수도 있다는 뜻이기도 합니다. 이번엔 읽으면서 목록에서 빠지는 데이터, 청크 트랜잭션에 묶인 락, 기존 쿼리 재사용이 겹쳐서 30줄짜리 Reader가 가장 나은 답이었습니다.</p>
 <p>내장을 안 쓴 게 아니라 쓸 수 없었던 것이고, 그 이유를 이해해 두면 다음 배치를 설계할 때도 판단이 빨라집니다.</p>]]></content:encoded>
             <category>Spring</category>
+            <category>설계</category>
         </item>
         <item>
             <title><![CDATA[헥사고날 아키텍처 쉽게 이해하기: 유즈케이스 · 포트 · 어댑터]]></title>
@@ -630,6 +632,7 @@
 </blockquote>
 <p>이 규칙 하나를 지키기 위해 포트(interface)를 경계에 두고, 어댑터가 인바운드에서는 호출하고 아웃바운드에서는 구현하는 형태로 역할이 뒤집힙니다. 그 덕분에 웹 프레임워크나 DB 같은 "기술"이 바뀌어도 비즈니스 로직(유즈케이스)은 흔들리지 않고, 테스트도 포트만 갈아끼우면 쉽게 할 수 있게 됩니다.</p>]]></content:encoded>
             <category>아키텍처</category>
+            <category>설계</category>
         </item>
         <item>
             <title><![CDATA[내결함성(Fault Tolerance)과 고가용성(High Availability) 제대로 이해하기]]></title>
@@ -899,6 +902,8 @@ end-to-end로는 결과가 정확히 한 번만 반영되도록 설계할 수 �
 <p><code>Exactly-once</code>는 설정의 문제가 아니라,
 어디에서 중복을 허용하고 어디에서 막을 것인지에 대한 설계의 문제입니다.</p>]]></content:encoded>
             <category>Kafka</category>
+            <category>설계</category>
+            <category>아키텍처</category>
         </item>
         <item>
             <title><![CDATA[Kafka 메시지 전달 보장 (Delivery Semantics)]]></title>
@@ -1056,6 +1061,7 @@ end-to-end로는 결과가 정확히 한 번만 반영되도록 설계할 수 �
 </ul>
 <p>이 질문에 답할 수 있다면 적절한 전달 보장을 선택할 수 있습니다.</p>]]></content:encoded>
             <category>Kafka</category>
+            <category>설계</category>
         </item>
         <item>
             <title><![CDATA[Kafka Producer/Consumer TraceId 불일치 문제 해결기 (with OpenTelemetry)]]></title>
@@ -1216,6 +1222,7 @@ OpenTelemetry 컨텍스트 추출·적용의 부재가 결합될 때 발생합�
 <li>Lua 스크립트를 통한 원자적 락 관리</li>
 </ul>]]></content:encoded>
             <category>Redis</category>
+            <category>설계</category>
         </item>
         <item>
             <title><![CDATA[Spring Cloud Config의 복호화 실패 처리 과정 — {cipher}...가 invalid.*로 바뀌는 이유]]></title>

@@ -85,6 +85,7 @@
             <uri>https://github.com/johnycho</uri>
         </author>
         <category label="AI" term="AI"/>
+        <category label="아키텍처" term="아키텍처"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[JSON 로그, 이제 라이브러리 없이 — Spring Boot 3.4 구조적 로깅]]></title>
@@ -488,6 +489,7 @@
             <uri>https://github.com/johnycho</uri>
         </author>
         <category label="Spring" term="Spring"/>
+        <category label="설계" term="설계"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[헥사고날 아키텍처 쉽게 이해하기: 유즈케이스 · 포트 · 어댑터]]></title>
@@ -657,6 +659,7 @@
             <uri>https://github.com/johnycho</uri>
         </author>
         <category label="아키텍처" term="아키텍처"/>
+        <category label="설계" term="설계"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[내결함성(Fault Tolerance)과 고가용성(High Availability) 제대로 이해하기]]></title>
@@ -934,6 +937,8 @@ end-to-end로는 결과가 정확히 한 번만 반영되도록 설계할 수 �
             <uri>https://github.com/johnycho</uri>
         </author>
         <category label="Kafka" term="Kafka"/>
+        <category label="설계" term="설계"/>
+        <category label="아키텍처" term="아키텍처"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Kafka 메시지 전달 보장 (Delivery Semantics)]]></title>
@@ -1095,6 +1100,7 @@ end-to-end로는 결과가 정확히 한 번만 반영되도록 설계할 수 �
             <uri>https://github.com/johnycho</uri>
         </author>
         <category label="Kafka" term="Kafka"/>
+        <category label="설계" term="설계"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Kafka Producer/Consumer TraceId 불일치 문제 해결기 (with OpenTelemetry)]]></title>
@@ -1263,6 +1269,7 @@ OpenTelemetry 컨텍스트 추출·적용의 부재가 결합될 때 발생합�
             <uri>https://github.com/johnycho</uri>
         </author>
         <category label="Redis" term="Redis"/>
+        <category label="설계" term="설계"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Spring Cloud Config의 복호화 실패 처리 과정 — {cipher}...가 invalid.*로 바뀌는 이유]]></title>
