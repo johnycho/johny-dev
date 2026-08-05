@@ -665,12 +665,18 @@ function CusdisThread() {
                   try {
                     const appId = data.appId || CUSDIS_APP_ID;
                     const pid = data.pageId || data.page_id || '';
-                    const r = await orig(
-                      `${CUSDIS_HOST}/api/open/comments?appId=${encodeURIComponent(appId)}&pageId=${encodeURIComponent(pid)}&page=1`,
-                    );
-                    const j = await r.json();
-                    const list = (j && j.data && j.data.data) || [];
-                    const loc = locate(list, data.parentId);
+                    // 최상위 댓글이 많으면 부모가 뒤 페이지로 밀릴 수 있어, pageCount 끝까지 순회하되 찾으면 조기 종료
+                    let loc: ReturnType<typeof locate> = null;
+                    let pageCount = 1;
+                    for (let page = 1; page <= pageCount; page++) {
+                      const r = await orig(
+                        `${CUSDIS_HOST}/api/open/comments?appId=${encodeURIComponent(appId)}&pageId=${encodeURIComponent(pid)}&page=${page}`,
+                      );
+                      const j = await r.json();
+                      pageCount = (j && j.data && j.data.pageCount) || pageCount;
+                      loc = locate((j && j.data && j.data.data) || [], data.parentId);
+                      if (loc && loc.node) break; // 부모 찾음 → 조기 종료
+                    }
                     if (loc && loc.node && loc.root && loc.node.id !== loc.root.id) {
                       const author = (loc.node.moderator && loc.node.moderator.displayName) || loc.node.by_nickname || '';
                       data.parentId = loc.root.id;

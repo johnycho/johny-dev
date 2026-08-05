@@ -38,16 +38,23 @@ async function autoApprove(token) {
   } catch (_) {}
 }
 
+// 최상위 댓글을 pageCount 끝까지 순회해 모두 모은다.
+// page=1 만 보면 최상위 댓글이 많은 글에서 부모가 뒤 페이지로 밀려 루트 탐색에 실패할 수 있다.
+// (답글은 각 댓글의 replies.data 에 인라인이라 최상위만 순회하면 된다)
 async function fetchTopComments(appId, pageId) {
+  const all = [];
   try {
-    const r = await fetch(
-      `${CUSDIS_HOST}/api/open/comments?appId=${encodeURIComponent(appId)}&pageId=${encodeURIComponent(pageId)}&page=1`,
-    );
-    const j = await r.json();
-    return (j && j.data && j.data.data) || [];
-  } catch (_) {
-    return [];
-  }
+    let pageCount = 1;
+    for (let page = 1; page <= pageCount; page++) {
+      const r = await fetch(
+        `${CUSDIS_HOST}/api/open/comments?appId=${encodeURIComponent(appId)}&pageId=${encodeURIComponent(pageId)}&page=${page}`,
+      );
+      const j = await r.json();
+      pageCount = (j && j.data && j.data.pageCount) || pageCount;
+      all.push(...((j && j.data && j.data.data) || []));
+    }
+  } catch (_) {}
+  return all;
 }
 const repliesOf = (c) => (c && c.replies && c.replies.data) || [];
 function findDeep(list, id) {
@@ -235,9 +242,10 @@ export default async function handler(req, res) {
 
   const sent = await postSlack({text: summary, blocks, threadTs});
 
-  // 최상위 댓글은 슬랙 메시지 ts + 승인 토큰을 KV 에 저장(대댓글 스레드 연결 + 슬랙 답글 평탄화용, 90일)
+  // 최상위 댓글은 슬랙 메시지 ts + 승인 토큰을 KV 에 영구 저장(대댓글 스레드 연결 + 슬랙 답글 평탄화용).
+  // TTL 을 걸면 오래된 글의 매핑이 만료돼 새 대댓글이 스레드에 안 묶이므로, 만료 없이 저장한다.
   if (!isReply && commentId && sent && sent.ts) {
-    await kvSet(`cusdis:ts:${commentId}`, {channel: sent.channel, ts: sent.ts, token}, 60 * 60 * 24 * 90);
+    await kvSet(`cusdis:ts:${commentId}`, {channel: sent.channel, ts: sent.ts, token});
   }
 
   return res.status(200).json({ok: true, threaded: !!threadTs});
