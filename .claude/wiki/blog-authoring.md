@@ -13,6 +13,7 @@
 - 프론트매터 바로 다음: `<!-- truncate -->` → `<br /><br />` → 본문. truncate가 목록 카드의 요약 경계.
 
 ## 2) 본문 규칙
+- **눈높이: 초보자도 이해할 수 있게 쓴다.** 전문 용어(예: MDC, ECS, grok, FQCN)는 처음 나올 때 한 줄로 풀어 준다. 필요하면 비유를 쓰고(예: 컨텍스트=세트/창고), 짧은 문장으로 단계를 밟는다. 배경 지식을 가정하지 말고 "왜 필요한지"부터 설명한다. 용어가 많으면 글 끝에 "용어 한 줄 정리" 표를 붙여도 좋다.
 - **제목 H1(`# ...`)을 본문 맨 앞에 중복으로 넣지 않는다** — 제목은 프론트매터에 있다. 인트로 문단으로 시작.
 - 원본 초안(예: `~/Downloads/*.md`)을 반영할 때는 맨 앞 H1 한 줄만 제거하고 나머지 본문·코드블록은 그대로 살린다.
 - 섹션 구분은 `##`부터 사용. 줄바꿈은 `<br />`.
@@ -34,7 +35,7 @@
 - 단순 화살표 한 줄(`A → B → C`)이면 굳이 다이어그램화하지 않아도 된다.
 
 ## 5) 태그(tags) — `blog/tags.yml` 등록분만
-현재 등록된 태그: `hello`, `jpa`, `spring`, `mysql`, `redis`, `kafka`, `open-telemetry`, `system-design`, `architecture`.
+현재 등록된 태그: `jpa`, `spring`, `spring-boot`, `mysql`, `redis`, `kafka`, `monitoring`, `system-design`, `architecture`, `ai`.
 - 새 주제 태그가 필요하면 **먼저 `blog/tags.yml`에 label/permalink/description을 추가**한 뒤 사용.
 - 글 하나에 여러 태그 가능(예: `[ system-design, architecture ]`).
 
