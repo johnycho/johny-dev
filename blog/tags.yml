@@ -1,3 +1,8 @@
+java:
+  label: Java
+  permalink: /java
+  description: Java 언어·표준 라이브러리 관련 글
+
 jpa:
   label: JPA
   permalink: /jpa

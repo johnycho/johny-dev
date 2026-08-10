@@ -35,7 +35,7 @@
 - 단순 화살표 한 줄(`A → B → C`)이면 굳이 다이어그램화하지 않아도 된다.
 
 ## 5) 태그(tags) — `blog/tags.yml` 등록분만
-현재 등록된 태그: `jpa`, `spring`, `mysql`, `redis`, `kafka`, `monitoring`, `system-design`, `architecture`, `ai`.
+현재 등록된 태그: `java`, `jpa`, `spring`, `mysql`, `redis`, `kafka`, `monitoring`, `system-design`, `architecture`, `ai`.
 - 새 주제 태그가 필요하면 **먼저 `blog/tags.yml`에 label/permalink/description을 추가**한 뒤 사용.
 - 글 하나에 여러 태그 가능(예: `[ system-design, architecture ]`).
 
