@@ -89,6 +89,83 @@
         <category label="아키텍처" term="아키텍처"/>
     </entry>
     <entry>
+        <title type="html"><![CDATA[대시보드는 깔았는데 — 서버 지표를 읽고 장애를 진단하는 법]]></title>
+        <id>https://johnycho.dev/blog/server-monitoring-analysis</id>
+        <link href="https://johnycho.dev/blog/server-monitoring-analysis"/>
+        <updated>2026-08-12T00:00:00.000Z</updated>
+        <summary type="html"><![CDATA[모니터링 툴을 붙이고 대시보드를 띄우는 것까지는 다들 합니다. 진짜 어려운 건 그다음 — 그 지표를 읽고 "지금 무슨 일이 벌어지는지"를 진단하는 것입니다. 화면 가득한 그래프 앞에서 어디부터 봐야 할지 막막했던 적이 있다면, 이 글이 그 순서를 잡아줍니다. 핵심 원칙은 하나입니다. 원인부터 뒤지지 말고, 증상을 먼저 파악한 뒤 범인을 좁혀 들어간다.]]></summary>
+        <content type="html"><![CDATA[<p>모니터링 툴을 붙이고 대시보드를 띄우는 것까지는 다들 합니다. 진짜 어려운 건 그다음 — <strong>그 지표를 읽고 "지금 무슨 일이 벌어지는지"를 진단하는 것</strong>입니다. 화면 가득한 그래프 앞에서 어디부터 봐야 할지 막막했던 적이 있다면, 이 글이 그 순서를 잡아줍니다. 핵심 원칙은 하나입니다. <mark>원인부터 뒤지지 말고, 증상을 먼저 파악한 뒤 범인을 좁혀 들어간다.</mark></p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-무엇부터-보나--4대-황금-신호">1. 무엇부터 보나 — 4대 황금 신호<a href="https://johnycho.dev/blog/server-monitoring-analysis#1-%EB%AC%B4%EC%97%87%EB%B6%80%ED%84%B0-%EB%B3%B4%EB%82%98--4%EB%8C%80-%ED%99%A9%EA%B8%88-%EC%8B%A0%ED%98%B8" class="hash-link" aria-label="1. 무엇부터 보나 — 4대 황금 신호에 대한 직접 링크" title="1. 무엇부터 보나 — 4대 황금 신호에 대한 직접 링크">​</a></h2>
+<p>구글 SRE가 정리한 <strong>황금 신호(Golden Signals)</strong> 네 가지가 출발점입니다. "사용자가 겪는 일"을 먼저 보는 지표들입니다.</p>
+<ul>
+<li><strong>트래픽(Traffic)</strong> — 얼마나 들어오나. 초당 요청 수(RPS)·트랜잭션 수.</li>
+<li><strong>지연 시간(Latency)</strong> — 얼마나 느린가. (뒤에서 다루지만, 평균이 아니라 백분위수로 봐야 합니다.)</li>
+<li><strong>에러(Errors)</strong> — 얼마나 실패하나. <code>4xx</code>(클라이언트 잘못)와 <code>5xx</code>(서버 잘못)를 반드시 구분.</li>
+<li><strong>포화도(Saturation)</strong> — 자원이 얼마나 찼나. CPU·메모리·스레드/커넥션 풀.</li>
+</ul>
+<p><mark>앞의 셋(트래픽·지연·에러)은 "사용자의 증상", 포화도는 "원인 후보"입니다.</mark> 그래서 증상 셋을 먼저 읽고, 포화도·리소스로 내려가며 범인을 좁힙니다.</p>
+<!-- -->
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-지연은-평균이-아니라-꼬리로-본다">2. 지연은 "평균"이 아니라 "꼬리"로 본다<a href="https://johnycho.dev/blog/server-monitoring-analysis#2-%EC%A7%80%EC%97%B0%EC%9D%80-%ED%8F%89%EA%B7%A0%EC%9D%B4-%EC%95%84%EB%8B%88%EB%9D%BC-%EA%BC%AC%EB%A6%AC%EB%A1%9C-%EB%B3%B8%EB%8B%A4" class="hash-link" aria-label="2. 지연은 &quot;평균&quot;이 아니라 &quot;꼬리&quot;로 본다에 대한 직접 링크" title="2. 지연은 &quot;평균&quot;이 아니라 &quot;꼬리&quot;로 본다에 대한 직접 링크">​</a></h2>
+<p>가장 흔한 함정이 <strong>평균 응답시간</strong>입니다. 평균은 분포를 지워버립니다 — 99명이 빠르고 1명이 10초 걸려도 평균은 멀쩡해 보이죠. 그래서 <strong>백분위수(percentile)</strong> 로 봅니다.</p>
+<ul>
+<li><strong>P50</strong> — 중앙값. 절반은 이보다 빠름(대표적 경험).</li>
+<li><strong>P95 / P99</strong> — 상위 5% / 1%가 겪는 지연. 이 <strong>꼬리 지연(tail latency)</strong> 이 실제 불만이 터지는 지점입니다.</li>
+</ul>
+<p><mark>P99는 "가장 운 나쁜 사용자"가 아니라, 요청을 많이 하는 "핵심 사용자"가 실제로 겪는 경험입니다.</mark> 한 화면이 내부적으로 여러 번 호출하면, 그중 하나만 꼬리에 걸려도 화면 전체가 느려지기 때문입니다. 호출이 많을수록 "하나쯤 느릴 확률"이 곱으로 커집니다.</p>
+<blockquote>
+<p>정리: <strong>지연 알람은 평균이 아니라 P95/P99에 건다.</strong></p>
+</blockquote>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="3-리소스로-범인-좁히기">3. 리소스로 범인 좁히기<a href="https://johnycho.dev/blog/server-monitoring-analysis#3-%EB%A6%AC%EC%86%8C%EC%8A%A4%EB%A1%9C-%EB%B2%94%EC%9D%B8-%EC%A2%81%ED%9E%88%EA%B8%B0" class="hash-link" aria-label="3. 리소스로 범인 좁히기에 대한 직접 링크" title="3. 리소스로 범인 좁히기에 대한 직접 링크">​</a></h2>
+<p>증상을 확인했으면, 이제 자원 지표로 원인을 좁힙니다. 각 지표에는 "이렇게 생기면 이 병" 같은 전형적 패턴이 있습니다.</p>
+<p><strong>CPU</strong> — 높으면 당연히 의심이지만, 함정은 반대입니다. <mark>"CPU는 낮은데 응답이 느리다"면 십중팔구 무언가를 기다리는 중(I/O 대기)</mark> — DB 응답, 락, 커넥션 풀 고갈입니다. 컨테이너 환경이면 <strong>스로틀링</strong>(할당량 초과로 강제로 CPU를 뺏김)도 꼭 확인해야 합니다. 사용률은 낮아 보여도 스로틀에 걸려 느린 경우가 많습니다.</p>
+<p><strong>메모리</strong> — 그래프 모양을 읽습니다. GC로 오르내리는 <strong>톱니 모양의 "최저점"이 계속 우상향</strong>이면 누수 신호입니다(회수돼도 바닥이 안 내려감). <strong>계단 모양</strong>으로 훅 뛰면 한 번에 대량 데이터를 로드했다는 뜻입니다.</p>
+<p><strong>스레드/커넥션 풀</strong> — 여기서 <strong>리틀의 법칙(Little's Law)</strong> 이 강력합니다.</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">동시 처리 중인 요청 수(L) = 초당 유입량(λ) × 평균 처리시간(W)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>처리시간(W)이 늘면 동시 요청(L)이 함께 불어나고, 풀·큐가 고갈되면 대기가 폭증해 응답시간이 수직 상승합니다. <mark>슬로 쿼리 하나가 커넥션을 오래 붙들면, 그 한 방이 도미노처럼 클러스터 전체를 무너뜨립니다.</mark></p>
+<p><strong>이벤트 루프 서버(Node.js 등)</strong> — 핵심 지표는 <strong>이벤트 루프 지연</strong>입니다. 평균이 아니라 최댓값·P99로 보세요. CPU를 오래 쓰는 작업 하나가 루프를 막으면 그 순간 모든 요청이 멈춥니다.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-지표-하나로는-안-보이는-복합-패턴">4. 지표 하나로는 안 보이는 복합 패턴<a href="https://johnycho.dev/blog/server-monitoring-analysis#4-%EC%A7%80%ED%91%9C-%ED%95%98%EB%82%98%EB%A1%9C%EB%8A%94-%EC%95%88-%EB%B3%B4%EC%9D%B4%EB%8A%94-%EB%B3%B5%ED%95%A9-%ED%8C%A8%ED%84%B4" class="hash-link" aria-label="4. 지표 하나로는 안 보이는 복합 패턴에 대한 직접 링크" title="4. 지표 하나로는 안 보이는 복합 패턴에 대한 직접 링크">​</a></h2>
+<p>진짜 장애는 지표 하나가 아니라 <strong>여러 지표의 조합</strong>으로 드러납니다.</p>
+<ul>
+<li><strong>병목(bottleneck)</strong> — 병목 지점 앞에는 대기가 쌓이고 뒤는 한가합니다. <mark>전체 처리량은 언제나 가장 좁은 단(段)의 용량으로 정해집니다.</mark></li>
+<li><strong>배압(backpressure)</strong> — 큐 길이가 줄지 않고 계속 쌓이면 유입이 처리 속도를 앞선 것. 방치하면 다 같이 죽으므로, <strong>로드 셰딩</strong>(<code>429 Too Many Requests</code>로 초과분을 빨리 거절)으로 일부를 포기해 전체를 살립니다.</li>
+<li><strong>캐시 스탬피드(cache stampede)</strong> — 캐시 히트율이 급락하면서 DB 부하가 동시에 튀는 패턴. DB가 갑자기 느려진 게 아니라, 캐시가 만료돼 다들 동시에 원본을 다시 만들며 몰린 것입니다.</li>
+<li><strong>타임아웃 예산(timeout budget)</strong> — 계층마다 타임아웃을 <strong>안쪽이 더 짧게</strong> 차등 설정합니다.</li>
+</ul>
+<!-- -->
+<p>안쪽(DB)이 먼저 끊겨야, 바깥(게이트웨이)이 "정돈된 에러"를 제때 받습니다. 바깥이 먼저 끊기면 안쪽 작업은 헛돌고 자원만 태웁니다.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-세-가지-시간--평시장애-중장애-후">5. 세 가지 시간 — 평시·장애 중·장애 후<a href="https://johnycho.dev/blog/server-monitoring-analysis#5-%EC%84%B8-%EA%B0%80%EC%A7%80-%EC%8B%9C%EA%B0%84--%ED%8F%89%EC%8B%9C%EC%9E%A5%EC%95%A0-%EC%A4%91%EC%9E%A5%EC%95%A0-%ED%9B%84" class="hash-link" aria-label="5. 세 가지 시간 — 평시·장애 중·장애 후에 대한 직접 링크" title="5. 세 가지 시간 — 평시·장애 중·장애 후에 대한 직접 링크">​</a></h2>
+<p>같은 지표라도 <strong>언제 보느냐</strong>에 따라 읽는 법이 다릅니다.</p>
+<ul>
+<li><strong>평시</strong> — <mark>평소 패턴을 외워둬야 이상을 알아챈다.</mark> "화요일 오후의 정상 곡선"을 알아야 "오늘의 이상"이 보입니다. 주간·월간 비교 패널이 유용합니다.</li>
+<li><strong>배포 직후(30분)</strong> — 배포 마커·버전 라벨로 변화를 추적하고, <strong>"회복 추세인가"</strong> 방향부터 봅니다. 나빠지는 방향이면 원인 규명보다 <strong>즉시 롤백</strong>(기준은 미리 합의).</li>
+<li><strong>장애 중</strong> — 원인부터 찾지 말고 <strong>영향 범위</strong>부터 파악 → <strong>복구 먼저</strong>, 원인 규명은 그다음. (트리아지)</li>
+<li><strong>장애 후</strong> — 포스트모템에서 "감지가 늦었나·대응이 느렸나"를 액션 아이템으로. 원인 그 자체보다 <strong>감지 공백과 대응 속도</strong>를 줄이는 게 개선의 핵심입니다.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="6-그래서--알람은-증상에-건다">6. 그래서 — 알람은 "증상"에 건다<a href="https://johnycho.dev/blog/server-monitoring-analysis#6-%EA%B7%B8%EB%9E%98%EC%84%9C--%EC%95%8C%EB%9E%8C%EC%9D%80-%EC%A6%9D%EC%83%81%EC%97%90-%EA%B1%B4%EB%8B%A4" class="hash-link" aria-label="6. 그래서 — 알람은 &quot;증상&quot;에 건다에 대한 직접 링크" title="6. 그래서 — 알람은 &quot;증상&quot;에 건다에 대한 직접 링크">​</a></h2>
+<p>가장 중요한 실무 원칙 하나로 정리됩니다. <mark>알람은 리소스(CPU 80%)가 아니라 증상(지연 P99, 에러율)에 걸어야 합니다.</mark> CPU가 높아도 사용자가 멀쩡하면 급한 일이 아니고, CPU가 낮아도 P99가 튀면 급한 일입니다. 알람은 "사용자가 아픈가"를 물어야지 "자원이 찼나"를 물으면 노이즈만 늘어납니다.</p>
+<p>관측 자체를 갖추는 쪽은 이 블로그의 <a href="https://johnycho.dev/blog/spring-boot-structured-logging">구조적 로깅</a>·<a href="https://johnycho.dev/blog/kafka-distributed-tracing">분산 추적</a> 글과 이어집니다 — 로그·트레이스로 재료를 모으고, 이 글의 방식으로 그 재료를 <strong>읽어</strong> 진단하는 셈입니다.</p>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="https://johnycho.dev/blog/server-monitoring-analysis#%EC%A0%95%EB%A6%AC" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>
+<ul>
+<li><strong>증상(트래픽·지연·에러)부터 → 원인(포화도·리소스)으로</strong> 좁혀 들어간다.</li>
+<li>지연은 <strong>평균이 아니라 P95/P99</strong>(꼬리 지연)로 본다.</li>
+<li>"CPU 낮은데 느림"=I/O 대기, 메모리 톱니 최저점 우상향=누수, 풀 고갈은 <strong>리틀의 법칙</strong>으로 이해한다.</li>
+<li>장애는 조합으로 드러난다 — <strong>병목·배압·캐시 스탬피드·타임아웃 예산</strong>.</li>
+<li>지표는 <strong>평시·장애 중·장애 후</strong>로 나눠 읽고, <strong>알람은 증상에</strong> 건다.</li>
+</ul>
+<mark>대시보드를 "설치"하는 것과 "읽는" 것은 다른 기술입니다 — 이 글은 후자를 위한 지도입니다.</mark>
+<blockquote>
+<p>이 글은 <a href="https://kciter.so/posts/server-monitoring-analysis-guide/" target="_blank" rel="noopener noreferrer">kciter — 서버 모니터링 분석 가이드</a>를 바탕으로, 핵심을 제 방식대로 정리한 것입니다.</p>
+</blockquote>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="용어-한-줄-정리">용어 한 줄 정리<a href="https://johnycho.dev/blog/server-monitoring-analysis#%EC%9A%A9%EC%96%B4-%ED%95%9C-%EC%A4%84-%EC%A0%95%EB%A6%AC" class="hash-link" aria-label="용어 한 줄 정리에 대한 직접 링크" title="용어 한 줄 정리에 대한 직접 링크">​</a></h3>
+<table><thead><tr><th>용어</th><th>쉬운 뜻</th></tr></thead><tbody><tr><td>황금 신호</td><td>먼저 봐야 할 4지표 — 트래픽·지연·에러·포화도</td></tr><tr><td>백분위수(P99)</td><td>"상위 1%가 겪는 지연" — 평균이 감추는 꼬리</td></tr><tr><td>포화도</td><td>자원(CPU·메모리·풀)이 얼마나 찼는지</td></tr><tr><td>리틀의 법칙</td><td>동시 요청 = 유입량 × 처리시간</td></tr><tr><td>배압</td><td>처리보다 유입이 빨라 큐가 쌓이는 상태</td></tr><tr><td>로드 셰딩</td><td>초과 요청을 빨리 거절해 전체를 살리기</td></tr><tr><td>캐시 스탬피드</td><td>캐시 만료로 원본 재생성이 한꺼번에 몰림</td></tr><tr><td>타임아웃 예산</td><td>계층별로 안쪽을 더 짧게 준 타임아웃</td></tr></tbody></table>]]></content>
+        <author>
+            <name>Johny Cho</name>
+            <uri>https://github.com/johnycho</uri>
+        </author>
+        <category label="모니터링" term="모니터링"/>
+        <category label="설계" term="설계"/>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[여러 스레드가 하나의 숫자를 더할 때 — Java LongAdder]]></title>
         <id>https://johnycho.dev/blog/java-longadder</id>
         <link href="https://johnycho.dev/blog/java-longadder"/>
