@@ -29,10 +29,13 @@
 - 제네릭(`List<Long>`), ASCII 다이어그램, 중괄호 등은 **코드블록 안에서는 안전** — 그대로 둔다.
 - 작성 후 코드블록 밖 본문에 위험 패턴이 없는지 스캔한다(스킬 6절).
 
-## 4) 다이어그램 — Mermaid 사용
-- 흐름도·구조도는 ASCII 아트 대신 **` ```mermaid ` 코드블록**으로 그린다. 한글은 코드블록에서 2칸 폭이라 ASCII 열 정렬이 깨지기 때문.
-- Mermaid는 `docusaurus.config.ts`에 활성화됨(`markdown.mermaid: true` + `@docusaurus/theme-mermaid`). 노드 라벨의 줄바꿈은 `<br/>` 사용.
-- 단순 화살표 한 줄(`A → B → C`)이면 굳이 다이어그램화하지 않아도 된다.
+## 4) 다이어그램·시각화 — Mermaid + Canvas 컴포넌트
+- **구조/흐름도는 Mermaid**: ASCII 아트 대신 **` ```mermaid ` 코드블록**으로 그린다(한글은 코드블록에서 2칸 폭이라 ASCII 열 정렬이 깨짐). Mermaid는 `docusaurus.config.ts`에 활성화됨(`markdown.mermaid: true`). 노드 라벨 줄바꿈은 `<br/>`. 단순 화살표 한 줄(`A → B → C`)이면 굳이 그리지 않아도 된다.
+- **시간에 따른 값·패턴은 애니메이션 Canvas 컴포넌트를 적극 활용**한다. 지표 추이(메모리 톱니/계단, 트래픽 곡선), 분포(응답시간 꼬리), 두 지표의 상관(캐시 히트율↓+DB 부하↑), 큐 발산 같은 "움직임이 의미 있는" 시각화는 정적 그림보다 **직접 만든 canvas 컴포넌트**가 이해를 돕는다.
+  - 재사용 컴포넌트: [`src/components/blog/MonitorCharts.tsx`](../../src/components/blog/MonitorCharts.tsx) — `AnimatedLineChart`(선·듀얼선·계단`step`·추세선`trend`·범례`legend`), `AnimatedBars`(막대). 의존성 없이 SSR 안전(그리기는 클라이언트 `useEffect`에서만).
+  - .mdx에서 `import {AnimatedLineChart, AnimatedBars} from '@site/src/components/blog/MonitorCharts';` 후 JSX로 사용. 새 시각화 유형이 필요하면 이 파일에 컴포넌트를 추가해 재사용한다.
+  - **저작권**: 다른 글의 이미지·애니메이션을 복사/핫링크하지 말 것. 같은 개념은 **직접 구현한 canvas 컴포넌트로 재현**하고, 원문은 링크로만 참조한다. (권한이 확인된 경우에만 출처 표기 후 임베드)
+  - 애니메이션은 부드럽게(정점 사이 보간 + easing). 과용은 금물 — 정적 표/Mermaid로 충분한 곳엔 쓰지 않는다.
 
 ## 5) 태그(tags) — `blog/tags.yml` 등록분만
 현재 등록된 태그: `java`, `jpa`, `spring`, `mysql`, `redis`, `kafka`, `monitoring`, `system-design`, `architecture`, `ai`.
