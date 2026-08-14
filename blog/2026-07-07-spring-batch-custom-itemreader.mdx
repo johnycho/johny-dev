@@ -128,11 +128,10 @@ public class StatusTransitionItemReader implements ItemReader<Long> {
 
 ```java
 int CHUNK = 200;
-new StepBuilder("transitionStep", jobRepository)
-    .<Long, Long>chunk(CHUNK, txManager)
-    .reader(new StatusTransitionItemReader(query, CHUNK)) // ← 같은 값
-    .writer(writer)
-    .build();
+new StepBuilder("transitionStep", jobRepository).<Long, Long>chunk(CHUNK, txManager)
+                                                .reader(new StatusTransitionItemReader(query, CHUNK)) // ← 같은 값
+                                                .writer(writer)
+                                                .build();
 ```
 
 Writer는 모인 id에 조건부 UPDATE를 겁니다. `WHERE`에 `status='READY'`를 한 번 더 넣은 것은, 락과 별개로 "조회 이후 상태가 바뀐 행"을 걸러 내는 2차 방어선입니다.

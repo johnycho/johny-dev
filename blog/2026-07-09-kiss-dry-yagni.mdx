@@ -65,8 +65,8 @@ DRY의 원래 정의(『실용주의 프로그래머』)는 "모든 **지식**�
 class OrderService {
     BigDecimal total(Order o) {
         return o.getItems().stream()
-                .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQty())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                           .map(i -> i.getPrice().multiply(BigDecimal.valueOf(i.getQty())))
+                           .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
 class InvoiceService {
@@ -79,8 +79,8 @@ class InvoiceService {
 class Order {
     public BigDecimal total() {
         return items.stream()
-                .map(OrderItem::subtotal)   // 소계 규칙도 OrderItem 안에 하나로
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    .map(OrderItem::subtotal)   // 소계 규칙도 OrderItem 안에 하나로
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
 ```
