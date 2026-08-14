@@ -1,0 +1,166 @@
+---
+slug: jvm-heap-dump-analysis
+title: "메모리가 샌다 — JVM 힙 덤프를 언제 뜨고 어떻게 분석하나"
+authors: [ johnycho ]
+tags: [ java ]
+---
+
+import {AnimatedLineChart} from '@site/src/components/blog/MonitorCharts';
+import MatDominatorTree, {MatHistogram, MatPathToGCRoots} from '@site/src/components/blog/MatMockup';
+import RetainedHeapDiagram from '@site/src/components/blog/RetainedHeapDiagram';
+
+<!-- truncate -->
+
+"서버 메모리가 계속 오르다 결국 `OutOfMemoryError`로 죽었다." 이럴 때 지표 그래프만 봐선 **무엇이 메모리를 잡고 안 놓는지**까지는 알 수 없습니다. 그 순간의 힙 전체를 사진처럼 찍은 **힙 덤프(heap dump)** 를 떠서 열어봐야 하죠. 언제 떠야 하고, 어떻게 뜨며, 무엇으로 어떤 순서로 분석하는지 정리합니다.
+
+## 힙 덤프란
+
+**힙 덤프**는 특정 순간 JVM 힙에 살아있는 **모든 객체의 스냅샷**입니다. 어떤 객체가 몇 개 있고, 각각 얼마를 차지하며, **누가 누구를 참조하는지**가 통째로 담깁니다(보통 `.hprof` 파일). <mark>지표(메트릭)가 "메모리가 얼마나 찼나"를 말한다면, 힙 덤프는 "무엇이 그 메모리를 차지했나"를 말합니다.</mark>
+
+## 1. 언제 떠야 하나
+
+대표적인 네 가지 상황입니다.
+
+- **OOM(OutOfMemoryError)** — 가장 명확한 신호. 죽는 그 순간의 힙을 자동으로 남기게 해두는 게 정석입니다(아래 옵션).
+- **메모리 누수 의심** — 트래픽은 그대론데 힙이 **계단처럼 우상향**하고 GC를 해도 안 내려갈 때. [서버 모니터링 글](./server-monitoring-analysis)에서 다룬 "톱니의 최저점(GC 직후)이 계속 올라가는" 패턴이 전형입니다.
+- **GC 과부하** — GC가 너무 자주·오래 돌아 CPU를 태우고 응답이 느려질 때. 힙에 쓸데없이 살아있는 객체가 많은지 확인.
+- **예상보다 큰 힙** — 특정 요청·배치 후 힙이 크게 뛰고 안 빠질 때.
+
+<mark>핵심은 "회수돼야 할 객체가 안 회수되고 쌓이는가"입니다.</mark> 아래처럼 GC 직후 최저점이 우상향이면 덤프를 뜰 때입니다.
+
+<AnimatedLineChart
+  title="이럴 때 덤프를 뜬다 — GC 직후에도 안 내려가는 힙"
+  data={[45, 72, 50, 78, 58, 84, 66, 90, 74, 96]}
+  trend={[45, 74]}
+  yMax={100}
+  unit="힙(%)"
+/>
+
+## 2. 어떻게 뜨나
+
+**① OOM 시 자동으로** (프로덕션 상시 권장) — 죽는 순간을 놓치지 않으려면 미리 걸어둡니다.
+
+```bash
+# 실행 옵션에 추가
+-XX:+HeapDumpOnOutOfMemoryError
+-XX:HeapDumpPath=/var/log/app/heapdump.hprof
+```
+
+**② 살아있는 프로세스에서 온디맨드로** — `jcmd`가 요즘 표준입니다.
+
+```bash
+# pid 확인
+jcmd -l        # 또는 jps
+
+# 힙 덤프 (기본은 full GC 후 '살아있는' 객체만 — 대개 이게 좋다)
+jcmd <pid> GC.heap_dump /var/log/app/heap.hprof
+
+# 예전 방식(jmap) — live 는 도달 불가 객체 제외
+jmap -dump:live,format=b,file=heap.hprof <pid>
+```
+
+<mark>주의: 덤프를 뜨면 그 순간 JVM이 멈춥니다(stop-the-world)</mark> — 덤프 크기는 대략 힙 크기만 하니(수 GB), 디스크·시간·순단을 감안해야 합니다. 컨테이너/쿠버네티스면 파드에 디스크 여유가 있는지, 뜬 뒤 `kubectl cp`로 빼낼 수 있는지 확인하세요. `live` 옵션은 full GC를 먼저 돌려 **정말 살아남은 것만** 남기므로 분석이 깔끔합니다(누수 추적에 유리).
+
+## 3. 무엇으로 여나
+
+`.hprof` 파일은 전용 분석 도구로 엽니다.
+
+- **[Eclipse MAT(Memory Analyzer Tool)](https://eclipse.dev/mat/)** — 사실상 표준. 리텐션·도미네이터·GC 루트 경로·누수 의심 리포트를 다 제공. 큰 덤프는 헤드리스 모드로 인덱싱하고 MAT 자체의 힙(`-vmargs -Xmx`)도 넉넉히 줘야 합니다.
+- **[VisualVM](https://visualvm.github.io/) / [JProfiler](https://www.ej-technologies.com/jprofiler) / [YourKit](https://www.yourkit.com/)** — GUI 프로파일러. 라이브 프로파일링까지 필요하면. (VisualVM은 무료, JProfiler·YourKit은 상용)
+
+> 실제 화면은 각 도구 공식 페이지에서 볼 수 있습니다. 아래는 MAT의 주요 뷰가 보여주는 내용을 예시 값으로 나타낸 것입니다.
+
+이 글은 가장 널리 쓰는 **MAT** 기준으로 절차를 설명합니다.
+
+## 4. 분석의 언어 — 이 개념 넷만 알면 된다
+
+MAT 화면의 용어가 낯설어서 막히는 경우가 많은데, 넷만 알면 됩니다.
+
+- **얕은 크기(Shallow heap)** — 그 객체 **자기 자신만**의 크기.
+- **유지 크기(Retained heap)** — <mark>그 객체를 지우면 **함께 사라지는** 메모리 총량</mark>(그 객체가 혼자 붙잡고 있던 것들까지). 누수를 찾을 때 핵심이 되는 숫자입니다.
+- **도미네이터 트리(Dominator tree)** — 어떤 객체가 메모리를 가장 많이 차지하는지 유지 크기가 큰 순으로 보여줍니다.
+- **GC 루트(GC root)** — 객체가 수거되지 않게 붙잡는 **최상위 앵커**(스레드 스택의 지역변수, `static` 필드, JNI 등). 누수란 결국 *"쓸모없어진 객체가 아직 GC 루트에서 도달 가능한 상태"* 입니다.
+
+<RetainedHeapDiagram />
+
+여기서 핵심은 **자기 자신 + 오직 자신만 붙잡고 있는 것들의 합**이라는 점입니다. 이 값(유지 크기)이 큰 객체가 도미네이터 트리 맨 위에 올라옵니다.
+
+## 5. 분석 절차
+
+MAT로 여는 순서는 대략 이렇습니다.
+
+```mermaid
+flowchart LR
+    D[".hprof 열기"] --> S["Leak Suspects<br/>자동 리포트"]
+    S --> T["Dominator Tree<br/>유지 크기 큰 순"]
+    T --> H["Histogram<br/>클래스별 인스턴스 수"]
+    H --> P["Path to GC Roots<br/>(soft/weak 제외)"]
+    P --> F["원인 코드 특정"]
+```
+
+1. **Leak Suspects 리포트** — MAT가 자동으로 "이게 수상하다"를 짚어줍니다. 대개 여기서 방향이 잡힙니다.
+2. **도미네이터 트리** — 유지 크기 큰 순으로 정렬. 맨 위에 있는 게 메모리를 가장 많이 차지한 객체입니다.
+3. **히스토그램** — 클래스별 인스턴스 수·크기. "왜 `String`이/이 엔트리가 수백만 개지?" 같은 이상 수치를 찾습니다.
+4. **Path to GC Roots** — 의심 객체를 우클릭 → *"Merge Shortest Paths to GC Roots"*, 이때 **soft/weak 참조는 제외**합니다. <mark>이게 "왜 이 객체가 안 지워지는지" — 붙잡고 있는 참조 사슬을 그대로 보여줍니다.</mark>
+5. **원인 코드 특정** — 그 사슬의 출발점(어느 `static` 컬렉션, 어느 캐시, 어느 `ThreadLocal`)을 코드에서 찾아 고칩니다.
+6. **베이스라인 비교(있으면)** — 평시 덤프와 문제 덤프를 MAT의 *Compare*로 비교하면, **무엇이 늘었는지**가 바로 드러납니다.
+
+### MAT 화면은 대략 이렇게 보인다 (재현 예시)
+
+> 아래 화면의 숫자는 예시입니다.
+
+먼저 화면에 나오는 영어 라벨의 뜻입니다 — 상단 **탭**과 표의 **열** 이름입니다.
+
+| 라벨 | 뜻 |
+|---|---|
+| Overview | 힙 전체 요약(총 크기·객체 수) |
+| Histogram | 클래스별 인스턴스 수·크기 목록 |
+| Dominator Tree | 유지 크기 큰 순으로 정렬한 트리 |
+| Leak Suspects | 누수 의심 자동 리포트 |
+| Objects | 인스턴스 개수 |
+| Shallow | 얕은 크기(객체 자신만) |
+| Retained | 유지 크기(지우면 함께 사라지는 총량) |
+
+**도미네이터 트리** — 유지 크기 큰 순. 맨 위 한둘이 대부분을 차지하면 그게 원인일 가능성이 큽니다.
+
+<MatDominatorTree />
+
+**히스토그램** — 클래스별 인스턴스 수·크기. "왜 이게 백만 개지?"를 찾습니다.
+
+<MatHistogram />
+
+**Path to GC Roots** — 그 `Product` 들이 왜 안 지워지나. 객체(맨 위)에서 위로 올라가면 결국 `static` 필드(GC 루트)가 캐시를 붙잡고 있음을 확인할 수 있습니다.
+
+<MatPathToGCRoots />
+
+<mark>이 사슬의 출발점이 `static` 필드라는 것 — "전역에서 잡고 안 놓는다"가 바로 누수의 원인입니다.</mark>
+
+## 6. 흔한 누수 패턴
+
+원인은 대개 이 목록 안에 있습니다.
+
+- **끝없이 커지는 `static` 컬렉션** — 전역 `Map`/`List`에 계속 넣기만 하고 안 비움.
+- **경계 없는 캐시** — 최대 크기·만료 없는 자체 캐시. (도미네이터 트리 최상단 단골)
+- **`ThreadLocal` 미정리** — 스레드 풀에서 재사용되는 스레드에 값이 남아 누적. 요청 끝에 `remove()` 필수.
+- **리스너·콜백 미해제** — 등록만 하고 해제 안 해 대상이 계속 참조됨.
+- **`ClassLoader` 누수** — 잦은 재배포 시 옛 클래스로더가 안 풀려 클래스·static이 통째로 남음.
+
+## 정리
+
+- 힙 덤프는 **그 순간 힙의 전체 스냅샷** — 메트릭이 "얼마나"라면 덤프는 "무엇이".
+- **OOM 자동 덤프 옵션은 프로덕션에 상시** 걸어두고, 살아있는 프로세스는 `jcmd ... GC.heap_dump`로 뜬다(STW·크기 주의).
+- **MAT**로 열어 **유지 크기(retained) → 도미네이터 트리 → Path to GC Roots** 순으로 원인과 참조 사슬을 좁힌다.
+- 원인은 대개 **static 컬렉션·무한 캐시·ThreadLocal·미해제 리스너·클래스로더**.
+
+<mark>지표로 "샌다"를 감지하고([모니터링](./server-monitoring-analysis)), 힙 덤프로 "무엇이 새는지"를 짚는다 — 이 둘이 한 세트입니다.</mark> 실제 OOM을 좇았던 사례는 [테스트 컨텍스트 OOM 글](./spring-datajpatest-context-oom)에서도 다뤘습니다.
+
+### 용어 한 줄 정리
+
+| 용어 | 쉬운 뜻 |
+|---|---|
+| 힙 덤프 | 그 순간 힙에 살아있는 모든 객체의 스냅샷(`.hprof`) |
+| 얕은 크기 | 객체 자기 자신만의 크기 |
+| 유지 크기 | 그 객체를 지우면 함께 사라지는 메모리 총량 |
+| 도미네이터 트리 | 유지 크기가 큰 순으로 정렬한 목록 |
+| GC 루트 | 객체가 수거되지 않게 붙잡는 최상위 앵커 |
+| Path to GC Roots | 그 객체가 안 지워지는 이유(참조 사슬) |

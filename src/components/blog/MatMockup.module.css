@@ -1,0 +1,196 @@
+/* MAT(Memory Analyzer) 창을 흉내 낸 오리지널 목업 — 실제 스크린샷 아님, 직접 그림 */
+.win {
+  margin: 1rem 0 0.35rem;
+  border: 1px solid var(--site-card-border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--site-card-bg);
+  box-shadow: var(--site-shadow-lg, 0 8px 24px -12px rgba(0, 0, 0, 0.4));
+  font-size: 0.78rem;
+}
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.7rem;
+  background: var(--site-chrome-bg, var(--site-card-bg));
+  border-bottom: 1px solid var(--site-card-border);
+}
+.dots {
+  display: flex;
+  gap: 6px;
+}
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.title {
+  color: var(--site-chrome-muted, var(--site-muted));
+  font-size: 0.74rem;
+}
+.tabs {
+  display: flex;
+  padding: 0 0.4rem;
+  border-bottom: 1px solid var(--site-card-border);
+  background: color-mix(in srgb, var(--site-card-bg) 92%, var(--site-muted));
+}
+.tab {
+  padding: 0.4rem 0.7rem;
+  color: var(--site-muted);
+  font-size: 0.72rem;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+}
+.tabActive {
+  color: var(--site-fg);
+  border-bottom-color: var(--site-accent);
+  font-weight: 700;
+}
+.scroll {
+  overflow-x: auto;
+}
+.thead,
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 4.4rem 4.4rem 5rem 5.6rem;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.34rem 0.7rem;
+  min-width: 470px;
+}
+.thead {
+  color: var(--site-muted);
+  font-weight: 700;
+  font-size: 0.7rem;
+  border-bottom: 1px solid var(--site-card-border);
+  background: color-mix(in srgb, var(--site-card-bg) 94%, var(--site-muted));
+}
+.row {
+  border-bottom: 1px solid color-mix(in srgb, var(--site-card-border) 55%, transparent);
+}
+.row:last-of-type {
+  border-bottom: none;
+}
+.cls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.tw {
+  color: var(--site-muted);
+  width: 0.85em;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+}
+.clsName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--ifm-font-family-monospace, monospace);
+  color: var(--site-fg);
+}
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--site-fg);
+}
+.muted {
+  color: var(--site-muted);
+}
+.pctWrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.pctBar {
+  flex: 1;
+  height: 7px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--site-muted) 25%, transparent);
+  overflow: hidden;
+}
+.pctFill {
+  height: 100%;
+  background: linear-gradient(90deg, #ff8a4b, #ff3d5e);
+}
+.pctNum {
+  width: 2.4em;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--site-muted);
+  font-size: 0.7rem;
+}
+.cap {
+  margin: 0 0 1rem;
+  color: var(--site-muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
+
+/* 히스토그램(4열) */
+.hhead,
+.hrow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 5rem 5rem 5.4rem;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.34rem 0.7rem;
+  min-width: 440px;
+}
+.hhead {
+  color: var(--site-muted);
+  font-weight: 700;
+  font-size: 0.7rem;
+  border-bottom: 1px solid var(--site-card-border);
+  background: color-mix(in srgb, var(--site-card-bg) 94%, var(--site-muted));
+}
+.hrow {
+  border-bottom: 1px solid color-mix(in srgb, var(--site-card-border) 55%, transparent);
+}
+.hrow:last-of-type {
+  border-bottom: none;
+}
+
+/* Path to GC Roots (참조 사슬 트리) */
+.pathRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.32rem 0.7rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--site-card-border) 55%, transparent);
+  min-width: 440px;
+  white-space: nowrap;
+}
+.pathRow:last-of-type {
+  border-bottom: none;
+}
+.pathIcon {
+  color: var(--site-muted);
+  flex-shrink: 0;
+  font-size: 0.72rem;
+}
+.pathName {
+  font-family: var(--ifm-font-family-monospace, monospace);
+  color: var(--site-fg);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pathField {
+  color: var(--site-muted);
+}
+.rootRow {
+  background: var(--site-accent-soft);
+}
+.rootTag {
+  margin-left: 6px;
+  flex-shrink: 0;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #ff8a4b, #ff3d5e);
+  padding: 0.05rem 0.42rem;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+}
