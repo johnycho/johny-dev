@@ -9,6 +9,8 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 ├── settings.json          ← Claude Code 설정(hook 등록) — 저장소 공유
 ├── wiki/                  ← 참조 문서(규칙의 "무엇/왜")
 │   ├── blog-authoring.md      · 게시글(.mdx) 작성 상세 규칙
+│   ├── wiki-authoring.md      · wiki 문서 작성 규칙
+│   ├── common-authoring.md    · 게시글·wiki 공통 규칙(코드 예시 스타일 등)
 │   ├── spring-boot-updates.md · 스프링 부트 업데이트 시리즈(3.2.0 이후) 소스·범위·주제 규칙
 │   └── git-account.md         · Git 계정(johnycho) 정책
 ├── skills/                ← 실행 절차(규칙의 "어떻게", 호출형)
