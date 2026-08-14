@@ -90,8 +90,8 @@ const config: Config = {
         content: 'a65c47dcb20d7111ecf322e7def1006c7e83100d',
       }
     ],
-    // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    // 링크 공유용 소셜 카드(OG) — index-banner에서 노트북 중심으로 크롭(1200×630)
+    image: 'img/social-card.jpg',
     colorMode: {
       defaultMode: 'dark',
       disableSwitch: false, // 다크/라이트 모드 전환 허용 (true로 설정하면 버튼이 사라짐)
