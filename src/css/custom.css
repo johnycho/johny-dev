@@ -1115,6 +1115,20 @@ html[data-theme='dark'] .mermaid {
   padding: 1.25rem 1rem;
 }
 
+/* 다이어그램이 과하게 커지지 않도록 폭 제한 + 가운데 정렬 */
+.docusaurus-mermaid-container {
+  text-align: center;
+  margin: 1.5rem auto 2.5rem; /* 아래 여백을 넉넉히 */
+}
+.docusaurus-mermaid-container svg,
+.mermaid svg {
+  /* useMaxWidth:false로 자연 크기 렌더 → 폰트가 전 포스트 공통.
+     폭을 강제로 늘리지 않고, 넘칠 때만 560px로 축소(모바일은 100%) */
+  max-width: min(720px, 100%) !important;
+  height: auto !important;
+  margin: 0 auto;
+}
+
 /* ============================================================= */
 /*  Glorious Terminal (기존 컴포넌트 유지)                          */
 /* ============================================================= */

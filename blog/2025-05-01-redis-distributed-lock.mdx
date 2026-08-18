@@ -184,6 +184,88 @@ public class RedissonDistributedLockService {
 
 ---
 
+## 워치독의 이면 — 락이 안 풀려 무한 대기하는 경우
+
+워치독은 편리하지만 양날입니다. <mark>워치독은 "소유 프로세스가 살아 있는 한" 락을 계속 연장하므로, 그 프로세스가 살아 있는 채로 멈추면 락이 영원히 안 풀립니다.</mark>
+
+- **소유자가 살아있는 채 멈춤** — 긴 GC 정지, 비즈니스 로직 데드락, `unlock()` 누락(예외 경로에서 `finally`가 빠짐) 등. 워치독이 계속 연장 → 락 영구 점유. 이때 대기 측이 `lock()`(무한 블로킹)이면 **영원히 대기**합니다.
+- **소유자가 죽으면(crash)** — 워치독이 멈춰 남은 lease(기본 30초)만 지나면 자동 해제됩니다. 즉 프로세스가 완전히 죽는 건 시간 안에 자가 치유되고, **"죽지 않고 멈춘" 경우가 진짜 문제**입니다.
+
+### 대응
+
+먼저 "무한"이 두 종류라는 걸 구분해야 합니다 — **대기자(waiter)가 락을 못 잡아 무한 대기**하는 것과, **보유자(holder)가 살아있는 채 멈춰 락을 영원히 쥐는 것**. 앞의 것은 워치독을 켠 채로도 해결되고, 뒤의 것은 워치독의 성질상 근본 해결이 안 됩니다.
+
+**1) 대기자의 무한 대기 — 워치독을 켠 채 없앤다**<br />
+무한 대기의 직접 원인은 `lock()`이 잡을 때까지 무한 블로킹하는 것입니다. `leaseTime`을 주지 않는 `tryLock(waitTime, unit)`을 쓰면 <mark>워치독(보유자 자동 연장)은 그대로 켜진 채 획득 대기에만 상한이 생깁니다.</mark> 못 잡으면 빠르게 실패해 재시도·알림으로 넘깁니다.
+
+```java
+RLock lock = redissonClient.getLock(lockKey);
+// leaseTime 없음 → 워치독 유지 + 최대 3초만 대기
+boolean acquired = lock.tryLock(3, TimeUnit.SECONDS);
+if (!acquired) {
+    throw new IllegalStateException("lock 획득 실패 — 빠른 실패로 처리");
+}
+try {
+    // 임계 구역 (보유 동안 워치독이 자동 연장)
+} finally {
+    if (lock.isHeldByCurrentThread()) {
+        lock.unlock();
+    }
+}
+```
+
+즉 "워치독을 유지하면서 무한 대기를 없애는" 답은 **`leaseTime` 없는 `tryLock(waitTime, unit)`** 입니다 — 보유자 쪽 자동 연장은 살리고, 대기자 쪽 무한 블로킹만 끊습니다.
+
+**2) 보유 시간까지 강제하려면 `leaseTime`을 명시**<br />
+1)로도 "보유자가 살아있는 채 멈춰 락을 계속 쥐는" 상황 자체는 안 풀립니다(워치독이 계속 연장하니까 — 이게 워치독의 목적). 그 홀드까지 강제로 끊으려면 `leaseTime`을 줍니다 — 이땐 워치독 대신 그 시간이 지나면 **무조건 해제**됩니다. 단, 임계 구역이 `leaseTime`보다 길어지면 작업 도중 락이 풀려 **이중 실행**이 날 수 있으니, `leaseTime`은 넉넉히 잡고 임계 구역을 **멱등하게** 설계합니다.
+
+```java
+// waitTime 3초 + leaseTime 30초(워치독 대신 30초 뒤 무조건 해제)
+boolean acquired = lock.tryLock(3, 30, TimeUnit.SECONDS);
+```
+
+**3) 해제는 `finally` + `isHeldByCurrentThread`로**<br />
+예외가 나도 반드시 해제하고, 만료 뒤 **다른 스레드가 잡은 락을 잘못 해제**하는 것을 막습니다(위 코드처럼).
+
+**4) 임계 구역이 멈추지 않게 + 보유 시간 모니터링**<br />
+임계 구역 안의 DB·외부 호출에 **타임아웃**을 걸어 소유자가 무한정 멈추지 않게 하고, 락 보유 시간을 지표로 둬 비정상적으로 긴 홀드를 알림으로 잡습니다.
+
+```java
+long start = System.nanoTime();
+try {
+    // 외부 호출엔 자체 타임아웃을 둬 무한정 멈추지 않게
+    externalClient.call(data, Duration.ofSeconds(5));
+} finally {
+    if (lock.isHeldByCurrentThread()) {
+        lock.unlock();
+    }
+    long heldMs = (System.nanoTime() - start) / 1_000_000;
+    if (heldMs > 3_000) {
+        log.warn("lock held too long: {}ms key={}", heldMs, lockKey); // 비정상 홀드 알림
+    }
+}
+```
+
+응급 복구가 필요하면 `forceUnlock()`이 있지만, 정상 소유자의 작업을 깨뜨릴 수 있어 **최후 수단**입니다.
+
+```java
+redisson.getLock(lockKey).forceUnlock(); // 소유자와 무관하게 강제 해제(주의)
+```
+
+**5) 정합성이 결정적이면 Redis 락의 한계를 인지**<br />
+<mark>Redis 분산락은 best-effort입니다.</mark> GC 정지·만료 타이밍으로 드물게 두 소유자가 동시에 존재할 수 있어, 절대적 상호배제가 필요하면 **펜싱 토큰**(자원 쪽에서 토큰 순번을 검증)이나 DB 트랜잭션 락을 함께 고려합니다.
+
+```java
+// 락 획득 때마다 단조 증가하는 토큰을 발급
+RAtomicLong fencing = redisson.getAtomicLong("fence:" + lockKey);
+long token = fencing.incrementAndGet();
+
+// 보호 대상 자원은 "더 큰 토큰의 쓰기만" 허용 → 멈췄다 되살아난 옛 소유자의 쓰기를 거부
+resource.writeIfTokenNewer(data, token);
+```
+
+---
+
 ## 마치며
 Redis에서 직접 `SETNX`로 락을 구현하고, 스핀락으로 반복 확인하고, TTL과 트랜잭션 타이밍을 수동으로 맞추던 코드와 비교하면
 `Redisson`은 분산락을 훨씬 더 안전하고, 간결하게 관리할 수 있는 도구입니다.

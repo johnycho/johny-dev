@@ -82,6 +82,17 @@ const config: Config = {
     // Mermaid: 다크 모드에선 dark 테마로 렌더 (라이트는 default)
     mermaid: {
       theme: { light: 'default', dark: 'default' },
+      options: {
+        fontSize: 16, // 다이어그램 글씨 크기 — 전 포스트 공통(자연 크기로 렌더)
+        // useMaxWidth:false → svg를 폭 100%로 늘리지 않고 자연 크기로 그림
+        // (세로·가로 모두 같은 폰트로 보이게. 넘칠 때만 CSS max-width로 축소)
+        flowchart: {
+          nodeSpacing: 28,
+          rankSpacing: 34,
+          useMaxWidth: false,
+          subGraphTitleMargin: { top: 8, bottom: 16 }, // subgraph 제목과 내용 사이 여백
+        },
+      },
     },
     // 네이버 SEO 설정
     metadata: [

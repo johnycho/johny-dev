@@ -155,6 +155,53 @@ TS.RANGE cpu - + AGGREGATION avg 60000   # 1분 평균
 - **Bitmap** — 비트 하나로 on/off. `SETBIT user:active 1001 1` → "N일차 출석" 같은 대량 플래그를 아주 작은 메모리로.
 - **HyperLogLog** — **대략적인** 고유 개수 세기. `PFADD visitors user1` → 오차 ~1%로 수억 개 UV를 몇 KB로 카운트.
 
+## Spring Boot에서 쓰기 — `RedisTemplate` 매핑
+
+Spring Data Redis는 각 자료구조를 `opsForX()`로 노출합니다. `StringRedisTemplate`(또는 `RedisTemplate`)을 주입해서 씁니다.
+
+| 자료구조 | API |
+|---|---|
+| String | `opsForValue()` |
+| Hash | `opsForHash()` |
+| List | `opsForList()` |
+| Set | `opsForSet()` |
+| Sorted Set | `opsForZSet()` |
+| Stream | `opsForStream()` |
+| Geospatial | `opsForGeo()` |
+
+```java
+private final StringRedisTemplate redis;   // 주입
+
+// String — 캐시·카운터
+redis.opsForValue().set("session:abc", "user-123", Duration.ofSeconds(60));
+redis.opsForValue().increment("page:view:home");                 // INCR
+
+// Hash — 객체 부분 갱신
+redis.opsForHash().put("user:1", "tier", "gold");                // HSET
+redis.opsForHash().increment("user:1", "age", 1);                // HINCRBY
+
+// List — 큐(FIFO)
+redis.opsForList().leftPush("queue:jobs", "job-1");              // LPUSH
+String job = redis.opsForList().rightPop("queue:jobs");          // RPOP
+
+// Set — 집합 연산
+redis.opsForSet().add("post:1:tags", "redis", "db");             // SADD
+Set<String> common = redis.opsForSet().intersect("u:1:follow", "u:2:follow"); // SINTER
+
+// Sorted Set — 리더보드
+redis.opsForZSet().add("leaderboard", "kim", 1500);              // ZADD
+Set<String> top10 = redis.opsForZSet().reverseRange("leaderboard", 0, 9); // 상위 10
+Long myRank = redis.opsForZSet().reverseRank("leaderboard", "kim");        // 내 순위
+
+// Stream — 이벤트 추가
+redis.opsForStream().add("orders", Map.of("type", "created", "id", "A-99")); // XADD
+
+// Geospatial — 반경 검색
+redis.opsForGeo().add("stores", new Point(127.02, 37.50), "gangnam");        // GEOADD
+```
+
+<mark>핵심 7개와 Geospatial은 `opsForX()`로 바로 매핑됩니다.</mark> **JSON · Time Series · Vector Set** 은 코어 `RedisTemplate`에 없고 각각 모듈(RedisJSON·RedisTimeSeries·Redis 8 Vector Set)이 필요합니다 — **Redis OM Spring**이나 RediSearch 클라이언트를 쓰거나, `redis.execute(...)`로 원시 명령을 보냅니다.
+
 ## 어떤 걸 언제 쓰나
 
 | 하고 싶은 것 | 자료구조 |

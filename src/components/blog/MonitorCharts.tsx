@@ -282,7 +282,7 @@ export function AnimatedLineChart({
     [data, data2, yMax, unit, yLabel, xLabel, color, color2, tone, tone2, title, trend, step, legend],
   );
   const ref = useCanvas(draw, height);
-  return <canvas ref={ref} style={{width: '100%', height, display: 'block'}} aria-label={title} />;
+  return <canvas ref={ref} style={{width: '100%', height, display: 'block', margin: '1rem auto 1.9rem'}} aria-label={title} />;
 }
 
 export function AnimatedBars({
@@ -330,5 +330,5 @@ export function AnimatedBars({
     [data, labels, yMax, unit, yLabel, xLabel, color, tone, title],
   );
   const ref = useCanvas(draw, height);
-  return <canvas ref={ref} style={{width: '100%', height, display: 'block'}} aria-label={title} />;
+  return <canvas ref={ref} style={{width: '100%', height, display: 'block', margin: '1rem auto 1.9rem'}} aria-label={title} />;
 }

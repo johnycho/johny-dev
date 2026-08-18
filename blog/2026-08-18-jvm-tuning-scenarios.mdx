@@ -1,0 +1,237 @@
+---
+slug: jvm-tuning-scenarios
+title: "실무 JVM 튜닝 — 언제, 어떤 옵션을 건드리나"
+authors: [ johnycho ]
+tags: [ java ]
+date: 2026-08-18T16:00:00
+---
+
+import {AnimatedLineChart, AnimatedBars} from '@site/src/components/blog/MonitorCharts';
+
+<!-- truncate -->
+
+JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데, 실무의 출발점은 반대입니다. <mark>요즘 JVM 기본값은 대체로 훌륭하고, 튜닝은 "증상이 있을 때 지표를 근거로" 하는 것입니다.</mark> 감으로 플래그를 붙이면 오히려 나빠지기 쉽습니다. 그래서 이 글은 **어떤 상황에 무엇이 필요한지**를 증상별로 정리합니다. (누수 분석은 [JVM 힙 덤프 분석](./jvm-heap-dump-analysis), 지표 읽기는 [서버 지표 읽기](./server-monitoring-analysis) 참고)
+
+## 먼저 — JVM 메모리와 GC를 1분만
+
+상황을 이해하려면 "JVM이 메모리를 어디에 쓰는지"만 알면 됩니다. **집**에 비유하면 쉽습니다.
+
+- **힙(heap)** — 물건이 쌓이는 **방**. 우리가 `new`로 만든 객체가 여기 놓입니다. 방이 꽉 차면 상황 2.
+- **GC(가비지 컬렉션)** — 안 쓰는 물건을 치워 주는 **로봇 청소기**. 돌리는 짧은 순간엔 방을 못 쓰는데(잠깐 문이 잠김), 이 멈춤이 **stop-the-world(STW)** 입니다. 이 멈춤이 길면 상황 1.
+- **Metaspace** — 물건이 아니라 그 물건의 **설계도**(클래스)를 꽂아 두는 작은 책꽂이. 방과는 별개 공간이라, 설계도 종류가 계속 늘면 여기가 차서 상황 3.
+- **네이티브(힙 밖) 메모리** — 방 말고도 쓰는 **베란다·창고**(연장·상자 = 스레드 스택·버퍼 등). 집 전체 평수(=컨테이너 메모리)엔 방 + 베란다가 **전부** 포함돼서, 합이 넘으면 상황 4.
+
+<mark>즉 문제는 늘 "집의 어느 공간이 부족한가"로 갈립니다 — 방(힙)이냐, 설계도 책꽂이(Metaspace)냐, 베란다까지 합친 전체 평수(컨테이너)냐.</mark> 이 그림만 있으면 아래 상황들이 한눈에 들어옵니다.
+
+## 튜닝 전에 — 측정부터
+
+옵션을 바꾸기 전에 **무슨 일이 일어나는지부터** 봅니다. 이 셋은 운영에 항상 켜 두는 걸 권합니다.
+
+```bash
+# GC 로그(통합 로깅, JDK 9+) — 정지 시간·빈도·원인 확인
+-Xlog:gc*:file=/var/log/app/gc.log:time,uptime,level,tags:filecount=5,filesize=10M
+
+# OOM 순간 힙 덤프 자동 저장 — 사후 분석의 핵심
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/app/
+
+# 상시 프로파일링 — 오버헤드 낮은 Flight Recorder
+-XX:+FlightRecorder
+```
+
+<mark>측정 없이 하는 튜닝은 추측입니다 — GC 로그·JFR·힙 덤프로 원인을 먼저 좁힌 뒤, 옵션은 한 번에 하나씩만 바꿔 효과를 확인합니다.</mark>
+
+## 상황 1 — GC 정지가 길다(지연 스파이크)
+
+**증상**: 평상시 빠른데 가끔 응답이 튄다. GC 로그에 수백 ms~초 단위 stop-the-world 정지가 보인다.
+
+<AnimatedLineChart
+  title="GC 정지 순간 응답시간이 튄다(개념 예시)"
+  data={[30, 32, 28, 33, 210, 31, 29, 35, 240, 30, 33, 195, 31, 30]}
+  yMax={260}
+  unit="응답시간(ms)"
+/>
+
+GC 로그를 열면 이런 줄이 보입니다 — 맨 끝 `830.5ms`가 그 순간 앱이 멈춘 시간입니다(830ms면 그동안 모든 요청이 대기).
+
+```text
+[gc] GC(42) Pause Young (Normal) 1856M->512M(2048M) 830.5ms
+```
+
+**대응**: 먼저 힙과 GC 종류를 본다. 힙이 너무 작아 자주 도는 거면 키우고, 저지연이 필요하면 **저지연 GC로 교체**한다.
+
+```bash
+-Xms4g -Xmx4g                 # 시작·최대 힙을 같게(리사이징으로 인한 정지 방지)
+-XX:MaxGCPauseMillis=100      # G1의 목표 정지 시간(기본 200ms)
+# 정지가 여전히 문제면 저지연 GC로:
+-XX:+UseZGC                   # 대용량 힙에서도 정지 수 ms 목표
+```
+
+<mark>`Xms`와 `Xmx`를 같게 두는 것만으로도 힙을 늘였다 줄였다 하며 생기는 정지가 사라집니다.</mark> 정지 자체가 서비스 목표(SLO)를 깨면 G1 → ZGC/Shenandoah로 옮깁니다.
+
+## 상황 2 — 힙 OutOfMemoryError
+
+**증상**: `java.lang.OutOfMemoryError: Java heap space`로 죽는다.
+
+**판단이 먼저다** — 진짜 메모리가 부족한 건지, **누수**인지 구분해야 한다. GC 로그에서 Full GC 뒤에도 사용량이 계속 우상향하면 누수 신호다.
+
+<AnimatedLineChart
+  title="누수 — Full GC 뒤에도 힙 사용률이 우상향(개념 예시)"
+  data={[40, 58, 46, 64, 52, 70, 60, 78, 68, 86, 76, 94]}
+  yMax={100}
+  unit="Full GC 후 힙(%)"
+  trend={[42, 96]}
+  tone="accent2"
+/>
+
+누수면 GC 로그가 이렇게 보입니다 — 가장 강한 청소(Full GC)를 해도 사용량이 **거의 안 줄어듭니다.**
+
+```text
+[gc] GC(88) Pause Full (Allocation Failure) 1980M->1905M(2048M)  ← 2GB 중 1.9GB가 그대로
+java.lang.OutOfMemoryError: Java heap space
+```
+
+- **누수라면** — `Xmx`를 올려도 시간만 벌 뿐 다시 터진다. 힙 덤프로 원인 객체를 찾아 **코드를 고친다**([힙 덤프 분석](./jvm-heap-dump-analysis)).
+- **진짜 부족이라면** — 워크로드에 맞게 `-Xmx`를 올린다.
+
+```bash
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/app/  # 죽는 순간 스냅샷
+-Xmx6g                                                          # 부족이 확실할 때만 상향
+```
+
+<mark>OOM의 절반 이상은 부족이 아니라 누수라, `-Xmx`를 키우는 건 근본 해결이 아닌 경우가 많습니다.</mark>
+
+## 상황 3 — Metaspace OutOfMemoryError
+
+**증상**: `OutOfMemoryError: Metaspace`. 힙이 아니라 **클래스 메타데이터** 영역이 찬 것이다.
+
+**원인**: 클래스를 과도하게 로드하거나(동적 프록시·코드 생성·스크립팅), 배포를 반복하며 **클래스로더가 회수되지 않는 누수**. 무작정 늘리기 전에 클래스 로딩 추이를 본다.
+
+<AnimatedLineChart
+  title="클래스로더 누수 — 로드된 클래스가 계속 증가(개념 예시)"
+  data={[18, 27, 36, 44, 53, 62, 70, 79, 88, 97]}
+  yMax={100}
+  unit="로드된 클래스(천 개)"
+  trend={[18, 97]}
+  tone="accent2"
+/>
+
+```bash
+-XX:MaxMetaspaceSize=512m     # 상한을 둬 무한 증가로 호스트를 먹는 걸 방지
+-Xlog:class+load,class+unload # 어떤 클래스가 계속 로드/언로드되는지 추적
+```
+
+<mark>Metaspace는 힙과 별개 영역이라 `-Xmx`로는 해결되지 않습니다 — 상한을 두되, 계속 는다면 클래스로더 누수를 의심합니다.</mark>
+
+## 상황 4 — 컨테이너에서 OOMKilled
+
+**증상**: 힙 OOM은 없는데 컨테이너가 `OOMKilled`(exit 137)로 죽는다. **JVM 전체 메모리가 컨테이너 한도를 넘은 것**이다.
+
+쿠버네티스라면 이렇게 알아챕니다 — 힙 OOM 예외 없이 파드가 `137`로 종료됩니다.
+
+```text
+$ kubectl describe pod my-app-xxxx
+    Last State:  Terminated
+      Reason:    OOMKilled
+      Exit Code: 137
+```
+
+**핵심**: 프로세스 메모리 = 힙 + **힙 밖(네이티브)**. 메타스페이스·스레드 스택·다이렉트 버퍼·코드 캐시가 다 포함된다. 힙만 한도에 맞추면 나머지가 넘쳐 커널이 죽인다.
+
+<AnimatedBars
+  title="프로세스 메모리 구성 — 힙은 일부일 뿐(개념 예시)"
+  labels={['힙', '메타스페이스', '스레드 스택', '다이렉트 버퍼', '코드 캐시']}
+  data={[1000, 256, 400, 256, 120]}
+  yMax={1100}
+  unit="MB"
+/>
+
+```bash
+-XX:MaxRAMPercentage=75.0     # 컨테이너 메모리의 %로 힙 지정(컨테이너 인식)
+-Xss512k                      # 스레드 많으면 스택 총합이 커지니 조정
+-XX:MaxDirectMemorySize=256m  # NIO·네티 다이렉트 버퍼 상한
+```
+
+<mark>컨테이너에선 `-Xmx` 고정값보다 `-XX:MaxRAMPercentage`로 비율 지정이 안전하고, 힙 밖 메모리 몫을 남겨 둬야 OOMKilled를 피합니다.</mark> 스레드 수가 많은 앱은 스택 총합도 무시 못 한다([스레드 풀](./spring-boot-thread-pools)).
+
+## 상황 5 — 처리량이 최우선인 배치
+
+**증상이 아니라 목적**: 야간 배치처럼 **개별 지연은 상관없고 전체 처리량**이 중요하다.
+
+이땐 저지연 GC가 오히려 손해다. 정지가 좀 길어도 **총 GC 오버헤드가 낮은** Parallel GC가 유리하다.
+
+<AnimatedBars
+  title="배치 처리량 — Parallel GC가 유리(개념 예시)"
+  labels={['G1', 'Parallel GC']}
+  data={[88, 97]}
+  yMax={100}
+  unit="처리량(상대 %)"
+/>
+
+```bash
+-XX:+UseParallelGC            # 처리량 지향 GC
+-Xms8g -Xmx8g                 # 큰 힙으로 GC 빈도 자체를 낮춤
+```
+
+<mark>지연이 목표가 아니면 저지연 GC를 붙일 이유가 없습니다 — 처리량 배치엔 Parallel GC + 큰 힙이 맞습니다.</mark>
+
+## 상황 6 — 기동 시간을 줄여야 한다
+
+**증상**: 오토스케일·서버리스·롤링 배포에서 **뜨는 데 오래 걸려** 스케일 대응이 느리다.
+
+```bash
+-XX:TieredStopAtLevel=1       # JIT을 C1까지만 — 기동 빠름(대신 최고 성능은 포기)
+-XX:SharedArchiveFile=app.jsa # AppCDS — 클래스 메타를 미리 구워 로딩 단축
+```
+
+여기에 스프링 부트 3.2+의 **CRaC**(체크포인트/복원)나 AOT를 더하면 기동이 크게 줄어든다.
+
+<AnimatedBars
+  title="기동 시간 — 옵션에 따른 단축(개념 예시)"
+  labels={['기본', 'Tiered=1', '+AppCDS', '+CRaC']}
+  data={[100, 72, 58, 18]}
+  yMax={110}
+  unit="기동 시간(상대)"
+/> <mark>단, `TieredStopAtLevel=1`은 오래 도는 서버의 최대 성능은 낮추므로, 기동이 진짜 병목일 때만 씁니다.</mark>
+
+## 상황 7 — 스레드·스택 관련
+
+**증상**: `StackOverflowError`(깊은 재귀) 또는 스레드가 매우 많아 스택 총합이 메모리를 압박.
+
+```bash
+-Xss1m       # 깊은 재귀로 StackOverflow면 상향
+-Xss256k     # 스레드 수천 개면 하향해 총합을 줄임
+```
+
+스택 크기는 **한 스레드용**이라, 스레드 수에 곱해져 전체 메모리에 영향을 줍니다. 방향이 상황마다 반대인 점만 주의합니다.
+
+## GC 종류 고르기
+
+| GC | 성격 | 언제 |
+|---|---|---|
+| Serial | 단일 스레드, 작은 힙 | 아주 작은 앱·CLI |
+| Parallel | 처리량 최우선 | 배치·백그라운드 작업 |
+| **G1 (기본)** | 정지·처리량 균형 | 대부분의 서비스(기본값) |
+| ZGC | 초저지연, 대용량 힙 | 정지 SLO가 빡빡할 때 |
+| Shenandoah | 초저지연(OpenJDK) | ZGC 대안 |
+
+<mark>특별한 이유가 없으면 기본 G1을 쓰고, "정지가 SLO를 깬다"가 확인될 때만 ZGC/Shenandoah로 옮깁니다.</mark>
+
+## 정리
+
+- **측정 먼저** — GC 로그·JFR·`HeapDumpOnOutOfMemoryError`를 켜고 원인을 좁힌다.
+- **증상 → 옵션** — GC 정지↔GC 선택·`Xms=Xmx`, 힙 OOM↔누수 판별, Metaspace↔`MaxMetaspaceSize`, OOMKilled↔`MaxRAMPercentage`+네이티브 메모리, 배치↔Parallel GC, 기동↔AppCDS·CDS.
+- **한 번에 하나씩** 바꾸고 지표로 확인, 컨테이너는 **비율(%) 기반**으로.
+- <mark>기본값이 이미 좋다 — 튜닝은 문제를 재현·측정한 뒤의 마지막 단계입니다.</mark>
+
+GC가 트래픽 증가로 어떻게 무너지는지는 [트래픽이 늘면 어디서 깨지나](./traffic-growth-problems)도 함께 보세요.
+
+### 용어 한 줄 정리
+
+| 용어 | 쉬운 뜻 |
+|---|---|
+| stop-the-world | GC가 앱 스레드를 잠시 멈추는 구간 |
+| 힙 / 네이티브 | 객체 저장 영역 / 그 밖(메타·스택·버퍼) 메모리 |
+| Metaspace | 클래스 메타데이터를 담는 힙 밖 영역 |
+| OOMKilled | 컨테이너 메모리 한도 초과로 커널이 종료(137) |
+| MaxRAMPercentage | 컨테이너 메모리의 %로 힙을 잡는 옵션 |
+| AppCDS | 클래스 데이터를 미리 구워 기동을 앞당김 |

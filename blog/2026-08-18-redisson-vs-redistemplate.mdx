@@ -1,0 +1,142 @@
+---
+slug: redisson-vs-redistemplate
+title: "Redisson vs RedisTemplate — 언제 무엇을 쓰나"
+authors: [ johnycho ]
+tags: [ redis, spring ]
+date: 2026-08-18T09:00:00
+---
+
+<!-- truncate -->
+
+Spring에서 Redis를 다룰 때 흔히 두 갈래를 만납니다 — Spring Data Redis의 **`RedisTemplate`**, 그리고 별도 클라이언트인 **Redisson**. 같은 Redis를 쓰지만 결이 다릅니다. <mark>`RedisTemplate`은 Redis "명령"에 밀착한 얇은 래퍼이고, Redisson은 분산 락·컬렉션 같은 걸 "자바 객체"로 감싼 고수준 클라이언트입니다.</mark> 어떤 상황에 무엇을 고르면 좋은지 비교합니다. (자료구조 기본은 [Redis 자료구조 총정리](./redis-data-structures), 분산락 배경은 [Redis 분산락](./redis-distributed-lock) 참고)
+
+## 결론부터
+
+- **단순 캐시·카운터·명령 위주** → `RedisTemplate` (가볍고 Spring 네이티브)
+- **분산 락·레이트리미터 등 동시성 제어, 풍부한 분산 컬렉션** → Redisson
+- 둘은 **한 프로젝트에서 공존**할 수 있습니다.
+
+## RedisTemplate — 명령에 밀착한 얇은 래퍼
+
+Spring Data Redis가 제공하며, Lettuce(기본)나 Jedis 위에서 동작합니다. `opsForValue`·`opsForHash`처럼 **Redis 명령과 거의 1:1**로 매핑되고, 직렬화는 `RedisSerializer`로 정합니다.
+
+```java
+redis.opsForValue().set("session:abc", "user-123", Duration.ofSeconds(60));
+redis.opsForZSet().add("leaderboard", "kim", 1500);
+```
+
+<mark>가볍고 Redis에 가깝지만, 분산 락 같은 "고수준 기능"은 내장돼 있지 않습니다</mark> — 필요하면 직접 `SET NX`로 구현하거나 Spring Integration의 `RedisLockRegistry`를 씁니다.
+
+## Redisson — 분산 객체·동시성 프리미티브
+
+이름이 어렵지만 핵심은 하나입니다. <mark>평소 서버 한 대(JVM 하나) 안에서만 쓰던 자바 도구를, 여러 서버가 함께 쓰도록 "분산" 버전으로 만들어 주는 것</mark>입니다.
+
+- **"분산 객체"란?** 보통 `HashMap`이나 `ReentrantLock`은 그 프로세스 안에서만 유효합니다 — 서버가 여러 대면 각자 딴 살림이죠. Redisson의 `RMap`·`RLock`은 겉보기엔 똑같은 자바 인터페이스지만, 실제 상태를 **Redis에 저장**해서 **모든 서버가 하나의 객체처럼 공유**합니다.
+- **"동시성 프리미티브"란?** 여러 주체가 한 자원을 동시에 다툴 때 순서를 잡아 주는 기본 도구(락·세마포어·카운터 등)입니다. 자바 표준(`ReentrantLock`·`Semaphore`)은 한 JVM 안에서만 통하는데, Redisson은 이걸 **서버를 넘나드는** 버전으로 줍니다.
+
+예를 들어 서버 3대가 같은 재고를 건드릴 때, 자바 `ReentrantLock`으론 각 서버 *내부의* 스레드끼리만 막힐 뿐 서버 사이 경쟁은 못 막습니다. Redisson `RLock`은 세 서버가 같은 Redis를 보고 잠그므로 **전체에서 한 번에 하나만** 임계 구역에 들어갑니다.
+
+Netty 기반 클라이언트로, 이런 "분산 도구"들을 폭넓게 제공합니다.
+
+- **동시성 프리미티브**: `RLock`(재진입·공정·멀티락), `RSemaphore`, `RRateLimiter`, `RCountDownLatch`
+- **분산 컬렉션**: `RMap`·`RList`·`RSet`(각각 `java.util` 인터페이스 구현), 엔트리별 TTL·near-cache(`RMapCache`·`RLocalCachedMap`)
+- **기타**: `RBloomFilter`, `RAtomicLong`, `RTopic`(pub/sub), 분산 실행 서비스 등
+- **여러 API 스타일**: 같은 기능을 **동기**(결과가 올 때까지 기다림)·**비동기**(`RFuture`로 나중에 받기)·**리액티브**(Reactor `Mono`/`Flux`)·**RxJava** 중 골라 호출할 수 있습니다. WebFlux 같은 논블로킹 스택과도 맞물립니다.
+- **코덱(codec)**: 자바 객체를 Redis에 저장할 때의 **직렬화 방식**(JSON·Kryo 등)을 지정합니다. `RedisTemplate`의 `RedisSerializer`에 해당하는 개념입니다.
+
+즉 Redisson은 "Redis 명령"이 아니라 **"여러 서버가 공유하는 자료구조·동시성 도구"** 를 다루는 관점입니다.
+
+## 같은 작업, 두 방식 — ① 분산 락
+
+가장 차이가 드러나는 예입니다.
+
+**RedisTemplate** — `SET NX`로 직접. 만료·안전 해제(내 토큰일 때만 삭제)를 스스로 챙겨야 하고, **재진입·자동 연장(워치독)은 없습니다.**
+
+```java
+String token = UUID.randomUUID().toString();
+Boolean ok = redis.opsForValue().setIfAbsent("lock:order", token, Duration.ofSeconds(10));
+if (Boolean.TRUE.equals(ok)) {
+    try {
+        // ... 임계 구역
+    } finally {
+        // 안전 해제는 "내 토큰이면 DEL" 을 원자적으로(Lua) 해야 한다
+        redis.execute(unlockScript, List.of("lock:order"), token);
+    }
+}
+```
+
+**Redisson** — `RLock` 한 객체로 끝. 재진입, 락 만료 자동 연장(워치독), 공정락까지 제공합니다.
+
+```java
+RLock lock = redisson.getLock("lock:order");
+lock.lock(10, TimeUnit.SECONDS);   // 재진입·워치독 지원
+try {
+    // ... 임계 구역
+} finally {
+    lock.unlock();
+}
+```
+
+<mark>분산 락처럼 "제대로 만들기 까다로운" 기능은 Redisson이 압도적으로 편합니다.</mark>
+
+## 같은 작업, 두 방식 — ② 레이트리미터
+
+**RedisTemplate**은 `INCR` + `EXPIRE`(또는 Lua)로 카운팅 로직을 직접 짭니다. **Redisson**은 객체 하나로 끝납니다.
+
+```java
+RRateLimiter limiter = redisson.getRateLimiter("api:rate");
+limiter.trySetRate(RateType.OVERALL, 100, 1, RateIntervalUnit.SECONDS); // 초당 100
+if (limiter.tryAcquire()) {
+    // 허용
+}
+```
+
+## 자료구조 사용감
+
+`RedisTemplate`은 `opsForHash` 같은 raw 명령에 가깝고, Redisson은 컬렉션을 **자바 `Map`처럼** 다룹니다.
+
+```java
+RMap<String, Product> cache = redisson.getMap("products");
+cache.put("p1", product);                 // java.util.Map 처럼
+Product p = cache.get("p1");
+
+// 엔트리별 TTL이 필요하면 RMapCache
+RMapCache<String, Product> c2 = redisson.getMapCache("products");
+c2.put("p1", product, 10, TimeUnit.MINUTES);
+```
+
+Redis의 기본 자료구조엔 "필드별 TTL"이 없는데, Redisson은 `RMapCache`로 그런 편의를 얹어 줍니다(내부적으로 별도 관리).
+
+## 직렬화·런타임·무게
+
+| 항목 | RedisTemplate (Spring Data Redis) | Redisson |
+|---|---|---|
+| 추상화 | 명령 중심(`opsForX`) | 객체·동시성 프리미티브 |
+| 분산 락/세마포어/리미터 | 내장 없음(직접·Spring Integration) | 1급 지원 |
+| 자료구조 | raw 명령에 밀착 | `java.util` 인터페이스 구현 |
+| 직렬화 | `RedisSerializer`(String·JSON·JDK) | 코덱(JSON·Kryo 등) |
+| 런타임 | Lettuce/Jedis | Netty |
+| API | 동기·리액티브 | 동기·비동기·리액티브·RxJava |
+| 무게 | 가벼움, Spring 네이티브 | 기능 많고 의존성 큼 |
+
+Redisson도 **Spring Boot 스타터**가 있어 통합이 쉽고, Spring Cache 백엔드로도 쓸 수 있습니다. <mark>그리고 둘은 배타적이지 않습니다 — 캐시는 `RedisTemplate`, 분산 락만 Redisson처럼 섞어 쓰는 구성이 흔합니다.</mark>
+
+## 선택 가이드
+
+| 상황 | 추천 |
+|---|---|
+| 캐시·세션·카운터·단순 명령 | RedisTemplate |
+| 리액티브 스택에서 가벼운 Redis 접근 | RedisTemplate(Lettuce) |
+| 분산 락·세마포어·레이트리미터 | Redisson |
+| `Map`/`List`처럼 쓰는 분산 컬렉션·near-cache | Redisson |
+| 블룸필터·분산 실행 등 고급 기능 | Redisson |
+| 최소 의존성·Redis에 밀착 | RedisTemplate |
+
+## 정리
+
+- <mark>`RedisTemplate`은 "명령", Redisson은 "분산 객체·동시성 도구"</mark> — 추상화 레벨이 다르다.
+- 단순 캐시·명령은 `RedisTemplate`, 분산 락·리미터·풍부한 컬렉션은 Redisson이 편하다.
+- 직접 만들기 까다로운 기능(락·리미터·블룸필터)일수록 Redisson의 값어치가 커진다.
+- 둘은 공존 가능 — 대부분은 `RedisTemplate`로 캐시하고, 필요한 지점만 Redisson으로.
+
+명령·자료구조 자체가 궁금하면 [Redis 자료구조 총정리](./redis-data-structures), 대용량에서의 주의점은 [대용량 Redis 대응](./redis-large-scale-pitfalls)을 함께 보세요.
