@@ -11,7 +11,7 @@ import RetainedHeapDiagram from '@site/src/components/blog/RetainedHeapDiagram';
 
 <!-- truncate -->
 
-"서버 메모리가 계속 오르다 결국 `OutOfMemoryError`로 죽었다." 이럴 때 지표 그래프만 봐선 **무엇이 메모리를 잡고 안 놓는지**까지는 알 수 없습니다. 그 순간의 힙 전체를 사진처럼 찍은 **힙 덤프(heap dump)** 를 떠서 열어봐야 하죠. 언제 떠야 하고, 어떻게 뜨며, 무엇으로 어떤 순서로 분석하는지 정리합니다.
+"서버 메모리가 계속 오르다 결국 `OutOfMemoryError`로 종료됐다." 이럴 때 지표 그래프만 봐선 **무엇이 메모리를 잡고 안 놓는지**까지는 알 수 없습니다. 그 순간의 힙 전체를 사진처럼 찍은 **힙 덤프(heap dump)** 를 떠서 열어봐야 하죠. 언제 떠야 하고, 어떻게 뜨며, 무엇으로 어떤 순서로 분석하는지 정리합니다.
 
 ## 힙 덤프란
 
@@ -21,7 +21,7 @@ import RetainedHeapDiagram from '@site/src/components/blog/RetainedHeapDiagram';
 
 대표적인 네 가지 상황입니다.
 
-- **OOM(OutOfMemoryError)** — 가장 명확한 신호. 죽는 그 순간의 힙을 자동으로 남기게 해두는 게 정석입니다(아래 옵션).
+- **OOM(OutOfMemoryError)** — 가장 명확한 신호. 종료되는 그 순간의 힙을 자동으로 남기게 해두는 게 정석입니다(아래 옵션).
 - **메모리 누수 의심** — 트래픽은 그대론데 힙이 **계단처럼 우상향**하고 GC를 해도 안 내려갈 때. [서버 모니터링 글](./server-monitoring-analysis)에서 다룬 "톱니의 최저점(GC 직후)이 계속 올라가는" 패턴이 전형입니다.
 - **GC 과부하** — GC가 너무 자주·오래 돌아 CPU를 태우고 응답이 느려질 때. 힙에 쓸데없이 살아있는 객체가 많은지 확인.
 - **예상보다 큰 힙** — 특정 요청·배치 후 힙이 크게 뛰고 안 빠질 때.
@@ -38,7 +38,7 @@ import RetainedHeapDiagram from '@site/src/components/blog/RetainedHeapDiagram';
 
 ## 2. 어떻게 뜨나
 
-**① OOM 시 자동으로** (프로덕션 상시 권장) — 죽는 순간을 놓치지 않으려면 미리 걸어둡니다.
+**① OOM 시 자동으로** (프로덕션 상시 권장) — 종료되는 순간을 놓치지 않으려면 미리 걸어둡니다.
 
 ```bash
 # 실행 옵션에 추가

@@ -8,7 +8,7 @@ date: 2026-08-18T14:00:00
 
 <!-- truncate -->
 
-스프링부트에서 "스레드 풀"은 하나가 아닙니다. <mark>웹 요청을 받는 풀, `@Async` 작업 풀, `@Scheduled` 스케줄러 풀, DB 커넥션 풀이 각각 따로 있고 서로 얽혀 있습니다.</mark> 어떤 풀이 무엇을 하고, 어디에 설정하며, 어떤 상황에 무엇을 조절해야 하는지 정리합니다. (부하가 늘 때 어디가 먼저 깨지는지는 [트래픽이 늘면 어디서 깨지나](./traffic-growth-problems), 지표 읽는 법은 [서버 지표 읽기](./server-monitoring-analysis) 참고)
+스프링부트에서 "스레드 풀"은 하나가 아닙니다. <mark>웹 요청을 받는 풀, `@Async` 작업 풀, `@Scheduled` 스케줄러 풀, DB 커넥션 풀이 각각 따로 있고 서로 얽혀 있습니다.</mark> 어떤 풀이 무엇을 하고, 어디에 설정하며, 어떤 상황에 무엇을 조절해야 하는지 정리합니다. (부하가 늘 때 어디가 먼저 문제가 생기는지는 [트래픽이 늘면 어디부터 문제가 생기나](./traffic-growth-problems), 지표 읽는 법은 [서버 지표 읽기](./server-monitoring-analysis) 참고)
 
 ## 스프링부트엔 풀이 여러 개다
 
@@ -33,7 +33,7 @@ server:
   tomcat:
     threads:
       max: 200          # 동시에 요청을 처리하는 최대 워커 스레드(기본 200)
-      min-spare: 10     # 미리 떠 있는 최소 스레드(기본 10)
+      min-spare: 10     # 미리 대기하는 최소 스레드(기본 10)
     accept-count: 100   # 스레드가 다 찼을 때 대기 큐 길이(기본 100)
     max-connections: 8192  # 동시에 수락하는 최대 커넥션(기본 8192)
 ```
@@ -70,14 +70,14 @@ ThreadPoolTaskExecutor taskExecutor() {
     ex.setCorePoolSize(8);
     ex.setMaxPoolSize(64);
     ex.setQueueCapacity(100);
-    ex.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy()); // 넘치면 호출 스레드가 직접 실행(자연스러운 백프레셔)
+    ex.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy()); // 큐가 가득 차면 호출 스레드가 직접 실행(자연스러운 백프레셔)
     ex.setThreadNamePrefix("async-");
     ex.initialize();
     return ex;
 }
 ```
 
-`CallerRunsPolicy`는 넘칠 때 호출한 스레드가 직접 실행해 유입 속도를 늦추는 **자연스러운 백프레셔(backpressure)**가 됩니다. 반대로 기본 `AbortPolicy`는 예외를 던져 빠르게 실패합니다.
+`CallerRunsPolicy`는 가득 찼을 때 호출한 스레드가 직접 실행해 유입 속도를 늦추는 **자연스러운 백프레셔(backpressure)**가 됩니다. 반대로 기본 `AbortPolicy`는 예외를 던져 빠르게 실패합니다.
 
 ## 3. @Scheduled 스케줄러 — ThreadPoolTaskScheduler
 
