@@ -221,10 +221,10 @@
   align-items: center;
   justify-content: center;
   margin-right: 0.45rem;
-  padding: 0.14rem 0.44rem;
+  padding: 0.22rem 0.46rem;
   /* 기본 폰트(NanumSquareRound)는 디센트가 커 대문자가 위로 떠 보임 → 메트릭 균형 잡힌 시스템 산세리프로 */
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.05em;
@@ -316,9 +316,9 @@
   .rowTitle { order: -1; flex: 1 0 100%; width: 100%; font-size: 0.82rem; line-height: 1.45; }
   .rowText { -webkit-line-clamp: 2; line-clamp: 2; }
   .tagCell { order: 1; width: auto; flex: 0 1 auto; justify-content: flex-start; }
-  .tagChip { min-width: 0; padding: 0.1rem 0.4rem; font-size: 0.6rem; }
+  .tagChip { min-width: 0; padding: 0.06rem 0.32rem; font-size: 0.54rem; }
   .rowDate { order: 2; margin-left: auto; width: auto; flex-shrink: 0; text-align: right; font-size: 0.68rem; }
-  .newTag { font-size: 0.52rem; padding: 0.04rem 0.3rem; margin-right: 0.3rem; }
+  .newTag { font-size: 0.56rem; padding: 0.18rem 0.34rem; margin-right: 0.3rem; }
   .pager { padding: 0.8rem 0.4rem 1rem; }
   .pagerGroup { gap: 0.2rem; }
   .pageBtn { min-width: 28px; height: 28px; font-size: 0.72rem; padding: 0 0.25rem; border-radius: 7px; }

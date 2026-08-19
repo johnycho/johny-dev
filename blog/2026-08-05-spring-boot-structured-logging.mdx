@@ -167,7 +167,7 @@ logging:
 ```
 
 - **콘솔은 평문, 파일만 JSON** 조합을 권합니다. 구조적 로깅을 켠 출력은 사람이 읽기엔 불편한 JSON 한 줄이 되므로, 눈으로 볼 콘솔은 평문으로 두는 편이 낫습니다.
-- **기존에 `logstash-logback-encoder`를 쓰고 있었다면**, 대부분 `logback-spring.xml`의 인코더 설정을 걷어내고 위 프로퍼티로 대체할 수 있습니다.
+- **기존에 `logstash-logback-encoder`를 쓰고 있었다면**, 대부분 `logback-spring.xml`의 인코더 설정을 제거하고 위 프로퍼티로 대체할 수 있습니다.
 
 ## 정리
 

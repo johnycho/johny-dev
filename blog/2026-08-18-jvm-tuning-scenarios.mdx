@@ -157,7 +157,7 @@ $ kubectl describe pod my-app-xxxx
 
 **증상이 아니라 목적**: 야간 배치처럼 **개별 지연은 상관없고 전체 처리량**이 중요하다.
 
-이땐 저지연 GC가 오히려 손해다. 정지가 좀 길어도 **총 GC 오버헤드가 낮은** Parallel GC가 유리하다.
+이땐 저지연 GC가 오히려 손해다. 정지가 다소 길어도 **총 GC 오버헤드가 낮은** Parallel GC가 유리하다.
 
 <AnimatedBars
   title="배치 처리량 — Parallel GC가 유리(개념 예시)"
@@ -211,7 +211,7 @@ $ kubectl describe pod my-app-xxxx
 | Serial | 단일 스레드, 작은 힙 | 아주 작은 앱·CLI |
 | Parallel | 처리량 최우선 | 배치·백그라운드 작업 |
 | **G1 (기본)** | 정지·처리량 균형 | 대부분의 서비스(기본값) |
-| ZGC | 초저지연, 대용량 힙 | 정지 SLO가 빡빡할 때 |
+| ZGC | 초저지연, 대용량 힙 | 정지 SLO가 엄격할 때 |
 | Shenandoah | 초저지연(OpenJDK) | ZGC 대안 |
 
 <mark>특별한 이유가 없으면 기본 G1을 쓰고, "정지가 SLO를 깬다"가 확인될 때만 ZGC/Shenandoah로 옮깁니다.</mark>
