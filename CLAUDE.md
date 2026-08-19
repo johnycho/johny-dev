@@ -14,6 +14,9 @@ johny-dev 기술 블로그 (Docusaurus). 게시글은 `blog/*.mdx`로 작성하�
 - **Git 계정 정책** → [`.claude/wiki/git-account.md`](.claude/wiki/git-account.md)
   - 이 저장소는 **johnycho** 계정으로 커밋·푸시 (머신 기본은 johny-cho). 커밋/푸시 시 hook이 자동 검증.
   - 커밋 identity는 repo-local git config에 johnycho / johnycho.dev@gmail.com로 고정됨.
+- **유틸 서버리스(Vercel) — `tools/johny-utils`** → [`.claude/wiki/vercel-deploy.md`](.claude/wiki/vercel-deploy.md)
+  - Cusdis→Slack 중계(`/api/webhook`·`/api/slack-action`) + 게시글 조회수(`/api/view-count`, Upstash Redis). 프런트: `src/viewCount.ts`·`src/components/ViewCount.tsx`.
+  - 배포 절차/스킬 → [`.claude/skills/deploy-utils/SKILL.md`](.claude/skills/deploy-utils/SKILL.md) (또는 `/deploy-utils`). 배포는 **사용자 승인 후** 프로덕션 별칭 `https://johny-utils.vercel.app` 로만.
 
 ## 참고
 - 저자 설정: `blog/authors.yml` · 태그 설정: `blog/tags.yml`

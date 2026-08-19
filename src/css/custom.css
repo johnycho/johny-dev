@@ -1120,6 +1120,22 @@ html[data-theme='dark'] .mermaid {
   text-align: center;
   margin: 1.5rem auto 2.5rem; /* 아래 여백을 넉넉히 */
 }
+
+/* 게시글 상세 조회수 (작성일 정보 옆) */
+.blog-view-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.7rem;
+  font-size: 0.86rem;
+  color: var(--site-muted, #8b95a5);
+  font-variant-numeric: tabular-nums;
+}
+.blog-view-count svg {
+  width: 1em;
+  height: 1em;
+  opacity: 0.85;
+}
 .docusaurus-mermaid-container svg,
 .mermaid svg {
   /* useMaxWidth:false로 자연 크기 렌더 → 폰트가 전 포스트 공통.

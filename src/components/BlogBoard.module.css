@@ -1,8 +1,9 @@
 /* 게시판형 블로그 목록 — johnycho 다크/틸 팔레트 스킨 */
 .board {
   --col-index: 38px;
-  --col-tag: 132px;
+  --col-tag: 100px;
   --col-date: 96px;
+  --col-views: 60px;
   --col-gap: 0.8rem;
 
   max-width: 1000px;
@@ -100,6 +101,7 @@
 .colTag { width: var(--col-tag); text-align: center; flex-shrink: 0; }
 .colTitle { flex: 1; min-width: 0; text-align: center; }
 .colDate { width: var(--col-date); text-align: center; flex-shrink: 0; }
+.colViews { width: var(--col-views); text-align: center; flex-shrink: 0; }
 
 /* 목록 */
 .list {
@@ -246,6 +248,17 @@
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
+/* 조회수 컬럼 */
+.rowViews {
+  flex-shrink: 0;
+  width: var(--col-views);
+  text-align: center;
+  font-family: var(--ifm-font-family-base);
+  font-size: 0.72rem;
+  color: var(--site-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 
 .empty {
   padding: 2rem;
@@ -318,6 +331,8 @@
   .tagCell { order: 1; width: auto; flex: 0 1 auto; justify-content: flex-start; }
   .tagChip { min-width: 0; padding: 0.06rem 0.32rem; font-size: 0.54rem; }
   .rowDate { order: 2; margin-left: auto; width: auto; flex-shrink: 0; text-align: right; font-size: 0.68rem; }
+  .rowViews { order: 3; width: auto; flex-shrink: 0; text-align: right; font-size: 0.66rem; }
+  .rowViews::before { content: '조회 '; opacity: 0.8; }
   .newTag { font-size: 0.56rem; padding: 0.18rem 0.34rem; margin-right: 0.3rem; }
   .pager { padding: 0.8rem 0.4rem 1rem; }
   .pagerGroup { gap: 0.2rem; }

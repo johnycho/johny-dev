@@ -1,7 +1,16 @@
-# Cusdis → Slack 알림 중계 (johny-dev)
+# johny-utils — johny-dev 유틸 서버리스 함수 (Vercel)
 
-새 댓글이 달리면 ① **자동 승인(공개)** 하고 ② Slack 채널로 알림 + **[답글]/[삭제] 버튼**을 보내는 중계 함수입니다.
-johny-dev 전용으로 **독립**되어 있습니다 — Cusdis App ID·Slack 앱·Vercel 프로젝트를 전용으로 씁니다.
+johny-dev 전용으로 **독립**된 Vercel 서버리스 함수 모음입니다(Cusdis App ID·Slack 앱·Vercel 프로젝트·Upstash를 전용으로 사용). 프로덕션 별칭: `https://johny-utils.vercel.app`.
+
+| 엔드포인트 | 역할 |
+|---|---|
+| `POST /api/webhook` | 새 댓글 → 자동 승인 + Slack 알림([답글]/[삭제] 버튼) |
+| `POST /api/slack-action` | Slack 버튼/모달 → 삭제·답글 처리 → Cusdis |
+| `GET·POST /api/view-count` | 게시글 조회수 카운터(Upstash `INCR`/`MGET`) |
+
+## 1) Cusdis → Slack 중계
+
+새 댓글이 달리면 ① **자동 승인(공개)** 하고 ② Slack 채널로 알림 + **[답글]/[삭제] 버튼**을 보냅니다.
 
 ```
 새 댓글 → Cusdis Webhook → api/webhook → ①자동승인 + ②Slack 알림([답글][삭제] 버튼)
@@ -10,6 +19,13 @@ Slack 버튼 클릭 → api/slack-action → 삭제 / 답글(모달) 처리 → 
 
 - **[🗑 삭제]**: 확인 후 해당 댓글 삭제 (원본 메시지 갱신, 하위 대댓글 연쇄 삭제)
 - **[↩︎ 답글]**: 모달에 답글 입력 → 관리자 답글로 등록
+
+## 2) 게시글 조회수 (`api/view-count`)
+
+- `POST /api/view-count { id: "/blog/..." }` → 해당 글 +1, 최신값 반환
+- `GET  /api/view-count?ids=/blog/a,/blog/b` → 여러 글 일괄 조회
+- 저장소는 webhook 과 **같은 Upstash Redis**(`KV_REST_API_URL`/`KV_REST_API_TOKEN`). 키는 `views:<permalink>`.
+- 중복 방지(기기당 하루 1회)는 프런트(`src/viewCount.ts`, localStorage)에서 판단. 프런트 표시는 `src/components/ViewCount.tsx`(상세) + `BlogBoard`(목록).
 
 ## 환경변수
 

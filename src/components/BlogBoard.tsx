@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Link from '@docusaurus/Link';
 // 블로그 아카이브(전체 글) 생성 데이터 — 아카이브 플러그인 해시는 빌드 간 안정적
 import blogPosts from '@generated/docusaurus-plugin-content-blog/default/p/blog-archive-f05.json';
+import {fetchViews} from '@site/src/viewCount';
 import styles from './BlogBoard.module.css';
 
 const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000;
@@ -67,6 +68,13 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
   const [filter, setFilter] = useState<string>('all'); // 'all' | tag.permalink
   const [page, setPage] = useState<number>(1);
   const [query, setQuery] = useState<string>(''); // 검색어
+  const [views, setViews] = useState<Record<string, number>>({}); // permalink → 조회수
+
+  // 조회수 일괄 조회(1회) — API/Upstash 미설정이면 빈 객체라 조용히 미표시
+  useEffect(() => {
+    const ids = (blogPosts as any).archive.blogPosts.map((p: any) => p.metadata.permalink);
+    fetchViews(ids).then(setViews);
+  }, []);
 
   const posts: Entry[] = (blogPosts as any).archive.blogPosts
     .map((post: any) => ({
@@ -161,7 +169,8 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
         <span className={styles.colIndex}>번호</span>
         <span className={styles.colTag}>분류</span>
         <span className={styles.colTitle}>제목</span>
-        <span className={styles.colDate}>날짜</span>
+        <span className={styles.colDate}>작성일</span>
+        <span className={styles.colViews}>조회수</span>
       </div>
 
       <ul className={styles.list}>
@@ -189,6 +198,9 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
                   </span>
                 </span>
                 <span className={styles.rowDate}>{fmtDate(post.date)}</span>
+                <span className={styles.rowViews}>
+                  {views[post.permalink] != null ? views[post.permalink].toLocaleString('ko-KR') : '–'}
+                </span>
               </Link>
             </li>
           );

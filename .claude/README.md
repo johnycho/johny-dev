@@ -12,10 +12,12 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 │   ├── wiki-authoring.md      · wiki 문서 작성 규칙
 │   ├── common-authoring.md    · 게시글·wiki 공통 규칙(코드 예시 스타일 등)
 │   ├── spring-boot-updates.md · 스프링 부트 업데이트 시리즈(3.2.0 이후) 소스·범위·주제 규칙
-│   └── git-account.md         · Git 계정(johnycho) 정책
+│   ├── git-account.md         · Git 계정(johnycho) 정책
+│   └── vercel-deploy.md       · Vercel 배포(tools/johny-utils) 정책·환경변수
 ├── skills/                ← 실행 절차(규칙의 "어떻게", 호출형)
 │   ├── blog-post/SKILL.md          · 마크다운 초안 → 블로그 게시글 변환 절차 (/blog-post)
-│   └── spring-update-post/SKILL.md · 스프링 부트 변화 조사 → 주제별 게시글 (/spring-update-post)
+│   ├── spring-update-post/SKILL.md · 스프링 부트 변화 조사 → 주제별 게시글 (/spring-update-post)
+│   └── deploy-utils/SKILL.md       · tools/johny-utils Vercel 프로덕션 배포 (/deploy-utils)
 └── hooks/                 ← 자동 검증/강제
     ├── check-git-account.sh   · 커밋·푸시 시 johnycho 계정인지 검증(PreToolUse)
     └── restore-git-account.sh · push 후 기본 계정 johny-cho로 자동 원복(PostToolUse)
