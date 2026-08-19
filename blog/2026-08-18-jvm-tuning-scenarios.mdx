@@ -219,8 +219,18 @@ $ kubectl describe pod my-app-xxxx
 ## 정리
 
 - **측정 먼저** — GC 로그·JFR·`HeapDumpOnOutOfMemoryError`를 켜고 원인을 좁힌다.
-- **증상 → 옵션** — GC 정지↔GC 선택·`Xms=Xmx`, 힙 OOM↔누수 판별, Metaspace↔`MaxMetaspaceSize`, OOMKilled↔`MaxRAMPercentage`+네이티브 메모리, 배치↔Parallel GC, 기동↔AppCDS·CDS.
 - **한 번에 하나씩** 바꾸고 지표로 확인, 컨테이너는 **비율(%) 기반**으로.
+
+증상별로 무엇을 조절하는지 한눈에:
+
+| 증상 | 조절할 것 |
+|---|---|
+| GC 정지가 길다 | GC 선택(G1 → ZGC) · `Xms=Xmx` |
+| 힙 OutOfMemoryError | 누수인지 부족인지 판별 후 대응 |
+| Metaspace OOM | `MaxMetaspaceSize` · 클래스로더 누수 점검 |
+| 컨테이너 OOMKilled | `MaxRAMPercentage` + 힙 밖(네이티브) 메모리 |
+| 처리량 배치 | Parallel GC |
+| 기동 시간 단축 | AppCDS · CDS |
 - <mark>기본값만으로 대체로 충분하다 — 튜닝은 문제를 재현·측정한 뒤의 마지막 단계입니다.</mark>
 
 GC가 트래픽 증가로 어떻게 나빠지는지는 [트래픽이 늘면 어디부터 문제가 생기나](./traffic-growth-problems)도 함께 보세요.
