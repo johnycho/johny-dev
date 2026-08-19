@@ -11,8 +11,8 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 
-<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.d4c076eb.css">
-<script src="/assets/js/runtime~main.75b6e03d.js" defer="defer"></script>
+<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.b323302e.css">
+<script src="/assets/js/runtime~main.144fda88.js" defer="defer"></script>
 <script src="/assets/js/main.e4db1669.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -66,7 +66,7 @@
 <p><mark>컨테이너에선 <code>-Xmx</code> 고정값보다 <code>-XX:MaxRAMPercentage</code>로 비율 지정이 안전하고, 힙 밖 메모리 몫을 남겨 둬야 OOMKilled를 피합니다.</mark> 스레드 수가 많은 앱은 스택 총합도 무시 못 한다(<a href="/blog/spring-boot-thread-pools">스레드 풀</a>).</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="상황-5--처리량이-최우선인-배치">상황 5 — 처리량이 최우선인 배치<a href="#상황-5--처리량이-최우선인-배치" class="hash-link" aria-label="상황 5 — 처리량이 최우선인 배치에 대한 직접 링크" title="상황 5 — 처리량이 최우선인 배치에 대한 직접 링크">​</a></h2>
 <p><strong>증상이 아니라 목적</strong>: 야간 배치처럼 <strong>개별 지연은 상관없고 전체 처리량</strong>이 중요하다.</p>
-<p>이땐 저지연 GC가 오히려 손해다. 정지가 좀 길어도 <strong>총 GC 오버헤드가 낮은</strong> Parallel GC가 유리하다.</p>
+<p>이땐 저지연 GC가 오히려 손해다. 정지가 다소 길어도 <strong>총 GC 오버헤드가 낮은</strong> Parallel GC가 유리하다.</p>
 <canvas style="width:100%;height:190px;display:block;margin:1rem auto 1.9rem" aria-label="배치 처리량 — Parallel GC가 유리(개념 예시)"></canvas>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">-XX:+UseParallelGC            # 처리량 지향 GC</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">-Xms8g -Xmx8g                 # 큰 힙으로 GC 빈도 자체를 낮춤</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 <mark>지연이 목표가 아니면 저지연 GC를 붙일 이유가 없습니다 — 처리량 배치엔 Parallel GC + 큰 힙이 맞습니다.</mark>
@@ -81,7 +81,7 @@
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">-Xss1m       # 깊은 재귀로 StackOverflow면 상향</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">-Xss256k     # 스레드 수천 개면 하향해 총합을 줄임</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 <p>스택 크기는 <strong>한 스레드용</strong>이라, 스레드 수에 곱해져 전체 메모리에 영향을 줍니다. 방향이 상황마다 반대인 점만 주의합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="gc-종류-고르기">GC 종류 고르기<a href="#gc-종류-고르기" class="hash-link" aria-label="GC 종류 고르기에 대한 직접 링크" title="GC 종류 고르기에 대한 직접 링크">​</a></h2>
-<table><thead><tr><th>GC</th><th>성격</th><th>언제</th></tr></thead><tbody><tr><td>Serial</td><td>단일 스레드, 작은 힙</td><td>아주 작은 앱·CLI</td></tr><tr><td>Parallel</td><td>처리량 최우선</td><td>배치·백그라운드 작업</td></tr><tr><td><strong>G1 (기본)</strong></td><td>정지·처리량 균형</td><td>대부분의 서비스(기본값)</td></tr><tr><td>ZGC</td><td>초저지연, 대용량 힙</td><td>정지 SLO가 빡빡할 때</td></tr><tr><td>Shenandoah</td><td>초저지연(OpenJDK)</td><td>ZGC 대안</td></tr></tbody></table>
+<table><thead><tr><th>GC</th><th>성격</th><th>언제</th></tr></thead><tbody><tr><td>Serial</td><td>단일 스레드, 작은 힙</td><td>아주 작은 앱·CLI</td></tr><tr><td>Parallel</td><td>처리량 최우선</td><td>배치·백그라운드 작업</td></tr><tr><td><strong>G1 (기본)</strong></td><td>정지·처리량 균형</td><td>대부분의 서비스(기본값)</td></tr><tr><td>ZGC</td><td>초저지연, 대용량 힙</td><td>정지 SLO가 엄격할 때</td></tr><tr><td>Shenandoah</td><td>초저지연(OpenJDK)</td><td>ZGC 대안</td></tr></tbody></table>
 <mark>특별한 이유가 없으면 기본 G1을 쓰고, &quot;정지가 SLO를 깬다&quot;가 확인될 때만 ZGC/Shenandoah로 옮깁니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="#정리" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>
 <ul>

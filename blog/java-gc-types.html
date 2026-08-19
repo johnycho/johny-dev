@@ -11,8 +11,8 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 
-<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.d4c076eb.css">
-<script src="/assets/js/runtime~main.75b6e03d.js" defer="defer"></script>
+<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.b323302e.css">
+<script src="/assets/js/runtime~main.144fda88.js" defer="defer"></script>
 <script src="/assets/js/main.e4db1669.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -33,7 +33,7 @@
 </ul>
 <canvas style="width:100%;height:190px;display:block;margin:1rem auto 1.9rem" aria-label="처리량 — 높을수록 좋음(개념 예시)"></canvas>
 <canvas style="width:100%;height:190px;display:block;margin:1rem auto 1.9rem" aria-label="정지 시간 — 짧을수록 좋음(개념 예시)"></canvas>
-<p><mark>둘 다 최고인 방식은 없습니다 — 처리량을 노리면 정지가 좀 길고, 정지를 줄이면 처리량을 약간 내줍니다.</mark> 그래서 &quot;내 서비스가 무엇을 더 중요하게 여기나&quot;가 선택의 출발점입니다.</p>
+<p><mark>둘 다 최고인 방식은 없습니다 — 처리량을 높이면 정지가 다소 길어지고, 정지를 줄이면 처리량이 약간 낮아집니다.</mark> 그래서 &quot;내 서비스가 무엇을 더 중요하게 여기나&quot;가 선택의 출발점입니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="종류별로--어떻게-세차하나">종류별로 — 어떻게 세차하나<a href="#종류별로--어떻게-세차하나" class="hash-link" aria-label="종류별로 — 어떻게 세차하나에 대한 직접 링크" title="종류별로 — 어떻게 세차하나에 대한 직접 링크">​</a></h2>
 <p><strong>Serial GC</strong> — 정비공 <strong>한 명</strong>이 차를 세워 놓고 혼자 세차합니다.<br></p>
 <ul>
@@ -56,7 +56,7 @@
 <p><strong>ZGC</strong> — 차를 거의 <strong>세우지 않고</strong> 달리는 중에 세차합니다.<br></p>
 <ul>
 <li>특징: 힙이 수십~수백 GB로 커도 <strong>정지가 수 ms 이하</strong>. 최신 저지연 방식.</li>
-<li>언제: <strong>정지 시간 목표(SLO)가 빡빡한</strong> 대용량·저지연 서비스.</li>
+<li>언제: <strong>정지 시간 목표(SLO)가 엄격한</strong> 대용량·저지연 서비스.</li>
 <li>플래그: <code>-XX:+UseZGC</code> (JDK 21부터 세대 구분 방식이 기본)</li>
 </ul>
 <p><strong>Shenandoah</strong> — ZGC처럼 차를 <strong>거의 세우지 않는</strong> 저지연 방식(OpenJDK 계열).<br></p>
@@ -72,7 +72,7 @@
 <li>플래그: <code>-XX:+UseEpsilonGC</code></li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="상황별로-무엇을-고를까">상황별로 무엇을 고를까<a href="#상황별로-무엇을-고를까" class="hash-link" aria-label="상황별로 무엇을 고를까에 대한 직접 링크" title="상황별로 무엇을 고를까에 대한 직접 링크">​</a></h2>
-<table><thead><tr><th>상황</th><th>추천</th><th>왜</th></tr></thead><tbody><tr><td>일반 웹 서비스(고민되면)</td><td><strong>G1</strong></td><td>정지·처리량 균형, 기본값</td></tr><tr><td>야간 배치·대량 처리(지연 무관)</td><td>Parallel</td><td>총 처리량 최고</td></tr><tr><td>응답 지연 SLO가 빡빡함</td><td>ZGC / Shenandoah</td><td>정지 수 ms</td></tr><tr><td>대용량 힙(수십 GB+)인데 정지 싫음</td><td>ZGC</td><td>힙 커도 짧은 정지</td></tr><tr><td>아주 작은 앱·CLI</td><td>Serial</td><td>단순·가벼움</td></tr><tr><td>성능 측정·초단명 작업</td><td>Epsilon</td><td>세차 오버헤드 0</td></tr></tbody></table>
+<table><thead><tr><th>상황</th><th>추천</th><th>왜</th></tr></thead><tbody><tr><td>일반 웹 서비스(고민되면)</td><td><strong>G1</strong></td><td>정지·처리량 균형, 기본값</td></tr><tr><td>야간 배치·대량 처리(지연 무관)</td><td>Parallel</td><td>총 처리량 최고</td></tr><tr><td>응답 지연 SLO가 엄격함</td><td>ZGC / Shenandoah</td><td>정지 수 ms</td></tr><tr><td>대용량 힙(수십 GB+)인데 정지 싫음</td><td>ZGC</td><td>힙 커도 짧은 정지</td></tr><tr><td>아주 작은 앱·CLI</td><td>Serial</td><td>단순·가벼움</td></tr><tr><td>성능 측정·초단명 작업</td><td>Epsilon</td><td>세차 오버헤드 0</td></tr></tbody></table>
 <p>간단한 결정 흐름으로 보면 이렇습니다.</p>
 <!-- -->
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="버전기본값-주의">버전·기본값 주의<a href="#버전기본값-주의" class="hash-link" aria-label="버전·기본값 주의에 대한 직접 링크" title="버전·기본값 주의에 대한 직접 링크">​</a></h2>

@@ -11,8 +11,8 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 
-<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.d4c076eb.css">
-<script src="/assets/js/runtime~main.75b6e03d.js" defer="defer"></script>
+<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.b323302e.css">
+<script src="/assets/js/runtime~main.144fda88.js" defer="defer"></script>
 <script src="/assets/js/main.e4db1669.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -30,7 +30,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="redisson--분산-객체동시성-프리미티브">Redisson — 분산 객체·동시성 프리미티브<a href="#redisson--분산-객체동시성-프리미티브" class="hash-link" aria-label="Redisson — 분산 객체·동시성 프리미티브에 대한 직접 링크" title="Redisson — 분산 객체·동시성 프리미티브에 대한 직접 링크">​</a></h2>
 <p>이름이 어렵지만 핵심은 하나입니다. <mark>평소 서버 한 대(JVM 하나) 안에서만 쓰던 자바 도구를, 여러 서버가 함께 쓰도록 &quot;분산&quot; 버전으로 만들어 주는 것</mark>입니다.</p>
 <ul>
-<li><strong>&quot;분산 객체&quot;란?</strong> 보통 <code>HashMap</code>이나 <code>ReentrantLock</code>은 그 프로세스 안에서만 유효합니다 — 서버가 여러 대면 각자 딴 살림이죠. Redisson의 <code>RMap</code>·<code>RLock</code>은 겉보기엔 똑같은 자바 인터페이스지만, 실제 상태를 <strong>Redis에 저장</strong>해서 <strong>모든 서버가 하나의 객체처럼 공유</strong>합니다.</li>
+<li><strong>&quot;분산 객체&quot;란?</strong> 보통 <code>HashMap</code>이나 <code>ReentrantLock</code>은 그 프로세스 안에서만 유효합니다 — 서버가 여러 대면 각자 따로 존재하죠. Redisson의 <code>RMap</code>·<code>RLock</code>은 겉보기엔 똑같은 자바 인터페이스지만, 실제 상태를 <strong>Redis에 저장</strong>해서 <strong>모든 서버가 하나의 객체처럼 공유</strong>합니다.</li>
 <li><strong>&quot;동시성 프리미티브&quot;란?</strong> 여러 주체가 한 자원을 동시에 다툴 때 순서를 잡아 주는 기본 도구(락·세마포어·카운터 등)입니다. 자바 표준(<code>ReentrantLock</code>·<code>Semaphore</code>)은 한 JVM 안에서만 통하는데, Redisson은 이걸 <strong>서버를 넘나드는</strong> 버전으로 줍니다.</li>
 </ul>
 <p>예를 들어 서버 3대가 같은 재고를 건드릴 때, 자바 <code>ReentrantLock</code>으론 각 서버 <em>내부의</em> 스레드끼리만 막힐 뿐 서버 사이 경쟁은 못 막습니다. Redisson <code>RLock</code>은 세 서버가 같은 Redis를 보고 잠그므로 <strong>전체에서 한 번에 하나만</strong> 임계 구역에 들어갑니다.</p>

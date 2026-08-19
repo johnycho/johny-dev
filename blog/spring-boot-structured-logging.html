@@ -11,8 +11,8 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 
-<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.d4c076eb.css">
-<script src="/assets/js/runtime~main.75b6e03d.js" defer="defer"></script>
+<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.b323302e.css">
+<script src="/assets/js/runtime~main.144fda88.js" defer="defer"></script>
 <script src="/assets/js/main.e4db1669.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -66,7 +66,7 @@
 <div class="language-yaml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-yaml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token comment" style="color:rgb(98, 114, 164)"># application-prod.yml — 운영에서만 파일을 JSON으로</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain"></span><span class="token key atrule">logging</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">  </span><span class="token key atrule">structured</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><span class="token key atrule">format</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">      </span><span class="token key atrule">file</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"> ecs</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">  </span><span class="token key atrule">file</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    </span><span class="token key atrule">name</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"> /var/log/app/app.json</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 <ul>
 <li><strong>콘솔은 평문, 파일만 JSON</strong> 조합을 권합니다. 구조적 로깅을 켠 출력은 사람이 읽기엔 불편한 JSON 한 줄이 되므로, 눈으로 볼 콘솔은 평문으로 두는 편이 낫습니다.</li>
-<li><strong>기존에 <code>logstash-logback-encoder</code>를 쓰고 있었다면</strong>, 대부분 <code>logback-spring.xml</code>의 인코더 설정을 걷어내고 위 프로퍼티로 대체할 수 있습니다.</li>
+<li><strong>기존에 <code>logstash-logback-encoder</code>를 쓰고 있었다면</strong>, 대부분 <code>logback-spring.xml</code>의 인코더 설정을 제거하고 위 프로퍼티로 대체할 수 있습니다.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="#정리" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>
 <ul>

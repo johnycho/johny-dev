@@ -11,8 +11,8 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 
-<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.d4c076eb.css">
-<script src="/assets/js/runtime~main.75b6e03d.js" defer="defer"></script>
+<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.b323302e.css">
+<script src="/assets/js/runtime~main.144fda88.js" defer="defer"></script>
 <script src="/assets/js/main.e4db1669.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -52,7 +52,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="그래서-redis-장애에도-견디게-하려면">그래서 Redis 장애에도 견디게 하려면<a href="#그래서-redis-장애에도-견디게-하려면" class="hash-link" aria-label="그래서 Redis 장애에도 견디게 하려면에 대한 직접 링크" title="그래서 Redis 장애에도 견디게 하려면에 대한 직접 링크">​</a></h2>
 <p>핵심은 하나입니다 — <mark>&quot;락이 잠깐 깨져도 데이터는 안전&quot;하도록, 정합성의 최종 방어선을 DB에 둔다.</mark></p>
 <ul>
-<li><strong>정합성 최종 보장은 DB에</strong> — 분산락으로 대부분의 경합을 걷어내되, 실제 올바름은 DB 원자 연산·유니크 제약·낙관적 락이 지키게 합니다. 락이 페일오버로 잠깐 이중 획득돼도 <code>WHERE stock &gt; 0</code> 같은 조건이 과판매를 막습니다.</li>
+<li><strong>정합성 최종 보장은 DB에</strong> — 분산락으로 대부분의 경합을 없애되, 실제 올바름은 DB 원자 연산·유니크 제약·낙관적 락이 지키게 합니다. 락이 페일오버로 잠깐 이중 획득돼도 <code>WHERE stock &gt; 0</code> 같은 조건이 과판매를 막습니다.</li>
 <li><strong>펜싱 토큰(fencing token)</strong> — 락 획득 시 단조 증가 토큰을 받아 자원이 검증하면, 멈췄다 되살아난 옛 소유자의 쓰기를 거부할 수 있습니다. (예시는 <a href="/blog/redis-distributed-lock">Redis 분산락</a>의 워치독 절)</li>
 <li><strong>HA 구성</strong> — Sentinel/Cluster로 가용성을 확보(안전성까지는 DB·펜싱이 보완).</li>
 <li><strong>락 실패 시 동작을 정의</strong> — Redis가 불가할 때 <strong>빠른 실패(요청 거절)</strong> 인지, <strong>폴백(DB 락으로 전환)</strong> 인지 미리 정합니다. 무한 대기 대신 <code>tryLock</code>에 대기 상한을 둡니다.</li>
