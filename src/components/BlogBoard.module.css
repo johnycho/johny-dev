@@ -224,10 +224,10 @@
   align-items: center;
   justify-content: center;
   margin-right: 0.4rem;
-  padding: 0.18rem 0.4rem;
+  padding: 0.15rem 0.12rem;
   /* 기본 폰트(NanumSquareRound)는 디센트가 커 대문자가 위로 떠 보임 → 메트릭 균형 잡힌 시스템 산세리프로 */
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 0.56rem;
+  font-size: 0.51rem;
   font-weight: 700;
   line-height: 1;
   letter-spacing: 0.05em;
@@ -334,7 +334,7 @@
   .rowDate { order: 2; margin-left: 0; width: auto; flex-shrink: 0; text-align: left; font-size: 0.7rem; }
   .rowViews { order: 3; width: auto; flex-shrink: 0; text-align: left; font-size: 0.7rem; }
   .rowViews::before { content: '조회수 '; opacity: 0.7; }
-  .newTag { font-size: 0.5rem; padding: 0.12rem 0.3rem; margin-right: 0.28rem; }
+  .newTag { font-size: 0.46rem; padding: 0.1rem 0.1rem; margin-right: 0.28rem; }
   .pager { padding: 0.8rem 0.4rem 1rem; }
   .pagerGroup { gap: 0.2rem; }
   .pageBtn { min-width: 28px; height: 28px; font-size: 0.72rem; padding: 0 0.25rem; border-radius: 7px; }
