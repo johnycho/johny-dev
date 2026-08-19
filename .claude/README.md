@@ -11,6 +11,7 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 │   ├── blog-authoring.md      · 게시글(.mdx) 작성 상세 규칙
 │   ├── wiki-authoring.md      · wiki 문서 작성 규칙
 │   ├── common-authoring.md    · 게시글·wiki 공통 규칙(코드 예시 스타일 등)
+│   ├── word-choice.md         · 표현·용어 순화(지양→권장 목록·예외) — 계속 늘어나 별도 관리
 │   ├── spring-boot-updates.md · 스프링 부트 업데이트 시리즈(3.2.0 이후) 소스·범위·주제 규칙
 │   ├── git-account.md         · Git 계정(johnycho) 정책
 │   └── vercel-deploy.md       · Vercel 배포(tools/johny-utils) 정책·환경변수
