@@ -10,6 +10,7 @@ import styles from './index.module.css';
 
 // 터미널에 직접 입력해 실행할 수 있는 명령 → 동작 매핑
 const COMMANDS: {match: string[]; to: string; external?: boolean}[] = [
+  {match: ['whoami', 'cat about.md', 'open ./about', 'cd ./about', 'cd about'], to: '/about'},
   {match: ['open ./wiki', 'open wiki', 'cd ./wiki', 'cd wiki'], to: '/wiki'},
   {match: ['ls ./blog', 'ls blog', 'cd ./blog', 'open ./blog'], to: '/blog'},
   {match: ['git remote', 'git remote -v'], to: 'https://github.com/johnycho', external: true},
@@ -255,7 +256,10 @@ function HomepageHeader() {
         </div>
 
         <div className={styles.ctaRow}>
-          <Link className={clsx(styles.ctaBtn, styles.ctaPrimary)} to="/wiki">
+          <Link className={clsx(styles.ctaBtn, styles.ctaPrimary)} to="/about">
+            $ whoami
+          </Link>
+          <Link className={clsx(styles.ctaBtn, styles.ctaGhost)} to="/wiki">
             $ open ./wiki
           </Link>
           <Link className={clsx(styles.ctaBtn, styles.ctaGhost)} to="/blog">

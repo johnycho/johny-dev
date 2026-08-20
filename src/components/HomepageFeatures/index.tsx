@@ -14,7 +14,14 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: '레퍼런스',
+    title: '소개',
+    glyph: 'ID',
+    href: '/about',
+    cta: 'whoami',
+    description: <>백엔드 엔지니어 조현준의 경력·기술·프로젝트를 한눈에 봅니다.</>,
+  },
+  {
+    title: '위키',
     glyph: '{ }',
     href: '/wiki',
     cta: 'open ./wiki',
@@ -28,7 +35,7 @@ const FeatureList: FeatureItem[] = [
     description: <>실무에서 부딪힌 문제와 해결 과정에서 얻은 깨달음을 글로 남깁니다.</>,
   },
   {
-    title: 'Communication',
+    title: '커뮤니케이션',
     glyph: '>_',
     href: 'https://github.com/johnycho',
     cta: 'git remote',
@@ -38,7 +45,7 @@ const FeatureList: FeatureItem[] = [
 
 function Feature({title, glyph, href, cta, description}: FeatureItem) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx('col col--3')}>
       <Link to={href} className={styles.card}>
         <span className={styles.cardGlyph}>{glyph}</span>
         <Heading as="h3" className={styles.cardTitle}>{title}</Heading>

@@ -130,9 +130,15 @@ const config: Config = {
       },
       items: [
         {
+          to: '/about',
+          label: '소개',
+          position: 'left',
+          className: 'navbar-noactive',
+        },
+        {
           // 데스크톱: hover 드롭다운 / 모바일 드로어: 펼치면 2depth(카테고리) 노출
           to: '/wiki',
-          label: '레퍼런스',
+          label: '위키',
           position: 'left',
           type: 'dropdown',
           className: 'navbar-noactive',

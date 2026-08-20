@@ -187,8 +187,10 @@
   color: #ffffff;
   border-color: var(--site-accent);
 }
-[data-theme='dark'] .ctaPrimary { color: #04121a; }
-.ctaPrimary:hover { filter: brightness(1.06); }
+/* hover 시에도 글자색을 명시 — Infima의 a:hover 색상 override 방지 */
+.ctaPrimary:hover { filter: brightness(1.06); color: #ffffff; }
+[data-theme='dark'] .ctaPrimary,
+[data-theme='dark'] .ctaPrimary:hover { color: #04121a; }
 .ctaGhost {
   background: color-mix(in srgb, var(--site-card-bg) 60%, transparent);
   color: var(--site-fg);
