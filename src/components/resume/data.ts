@@ -53,7 +53,7 @@ export const EXPERIENCE: Exp[] = [
   {
     logo: 'kurly.svg',
     company: '컬리(Kurly)',
-    role: 'SCM 프로덕트 개발 / Backend Engineer',
+    role: 'SCM 프로덕트 개발 / Senior Engineer',
     period: '2026.05 – 현재',
     status: '現',
     scale: '회원 1,000만+ 이커머스의 SCM(공급망) 백엔드',

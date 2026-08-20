@@ -137,12 +137,14 @@ export default function About(): ReactNode {
                   <div className={styles.expHead}>
                     <CompanyLogo file={e.logo} big={e.big} git={e.git} />
                     <div className={styles.credText}>
-                      <span className={styles.company}>
-                        {e.company}{e.jp && <span className={styles.jp}> {e.jp}</span>}
-                      </span>
-                      <span className={styles.meta}>{e.role} · {e.period}</span>
+                      <div className={styles.companyRow}>
+                        <span className={styles.company}>
+                          {e.company}{e.jp && <span className={styles.jp}> {e.jp}</span>}
+                        </span>
+                        <span className={styles.period}>{e.period}</span>
+                      </div>
+                      <span className={styles.meta}>{e.role}</span>
                     </div>
-                    <span className={`${styles.status} ${e.status === '現' ? styles.stCurrent : styles.stPast}`}>{e.status}</span>
                   </div>
                   <p className={styles.expScale}>{e.scale}</p>
                   <ul className={styles.ul}>
