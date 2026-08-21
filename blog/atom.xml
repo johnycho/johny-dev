@@ -385,9 +385,9 @@
 <p><strong>언제</strong>: 캐시에 담기 어려운 목록·검색·집계 쿼리가 늘어 primary의 읽기 부하가 한계에 닿습니다. 통계 대시보드 조회가 실서비스 쿼리와 자원을 두고 경쟁합니다.</p>
 <p><strong>읽기 전용 복제본</strong>(read replica)을 두고 쓰기는 primary, 읽기는 replica로 보냅니다. 더 나아가 <strong>CQRS</strong>(Command Query Responsibility Segregation)로 쓰기 모델과 읽기 모델을 분리해, 조회에 최적화된 별도 저장소를 두기도 합니다.</p>
 <!-- -->
-<p>근거는 <strong>읽기 처리량을 복제본 수만큼 늘리는 것</strong>입니다. 읽기 대 쓰기 비율이 높을수록 유리합니다.</p>
+<p>근거는 <strong>읽기 처리량을 복제본 수만큼 늘리는 것</strong>입니다 — 아래 그래프처럼 복제본이 늘수록 감당할 수 있는 읽기량이 커집니다. 특히 읽기가 쓰기보다 훨씬 많은 서비스일수록 효과가 큽니다.</p>
 <canvas style="width:100%;height:190px;display:block;margin:1rem auto 1.9rem" aria-label="읽기 복제본 수에 따른 읽기 처리량(상대)"></canvas>
-<p>정합성 과제는 <strong>복제 지연</strong>(replication lag)입니다. primary에 쓴 내용이 replica에 반영되기까지 짧은 시간이 걸려서, 방금 저장한 값을 곧바로 replica에서 읽으면 안 보일 수 있습니다. 대응은 쓰기 직후 그 데이터를 읽는 요청은 primary로 보내고(read-your-writes), 지연을 허용해도 되는 화면과 아닌 화면을 구분해 설계하는 것입니다. <mark>읽기 복제본은 읽기 처리량을 늘리는 대신 복제 지연이라는 정합성 비용을 지불합니다.</mark></p>
+<p>정합성 과제는 <strong>복제 지연</strong>(replication lag)입니다. primary에 쓴 내용이 replica로 복제되기까지 아주 짧은 지연이 있는데, 이 복제가 끝나기 전에 replica를 읽으면 replica에는 아직 새 값이 도착하지 않아 <strong>이전 값이 조회됩니다</strong>(방금 저장한 값이 안 보임). 대응은 쓰기 직후 그 데이터를 읽는 요청은 primary로 보내고(read-your-writes), 지연을 허용해도 되는 화면과 아닌 화면을 구분해 설계하는 것입니다. <mark>읽기 복제본은 읽기 처리량을 늘리는 대신 복제 지연이라는 정합성 비용을 지불합니다.</mark></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="6단계-동시성-제어--정합성의-핵심">6단계: 동시성 제어 — 정합성의 핵심<a href="https://johnycho.dev/blog/scaling-architecture-step-by-step#6%EB%8B%A8%EA%B3%84-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4--%EC%A0%95%ED%95%A9%EC%84%B1%EC%9D%98-%ED%95%B5%EC%8B%AC" class="hash-link" aria-label="6단계: 동시성 제어 — 정합성의 핵심에 대한 직접 링크" title="6단계: 동시성 제어 — 정합성의 핵심에 대한 직접 링크">​</a></h2>
 <p><strong>언제</strong>: 선착순 쿠폰 100장에 5천 명이 동시에 몰립니다. 여러 인스턴스가 같은 재고 행을 동시에 읽고 줄이면서, 재고가 음수가 되거나 한 사람이 두 번 받는 일이 생깁니다.</p>
 <p>인스턴스가 여러 대가 되면 서로 다른 요청이 <strong>같은 데이터를 동시에</strong> 수정하는 일이 잦아집니다. 도구는 여러 층입니다.</p>
