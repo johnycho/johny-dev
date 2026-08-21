@@ -86,7 +86,7 @@ private static final long serialVersionUID = 1L; // 명시 안 하면 변경마�
 
 ## 헷갈리기 쉬운 것 — API가 엔티티를 반환할 때 (Serializable과는 별개)
 
-지금까지는 자바 직렬화(`Serializable`) 이야기였습니다. 그런데 컨트롤러가 `return user;`처럼 **엔티티를 그대로 응답으로 내보내는 것**도 비슷한 함정이 있는데, 이건 `Serializable`이 아니라 **JSON 직렬화(Jackson)** 에서 나는 **별개의** 문제입니다(Jackson은 `Serializable`을 보지 않습니다).
+지금까지는 자바 직렬화(`Serializable`) 이야기였습니다. 그런데 컨트롤러가 `return user;`처럼 **엔티티를 그대로 응답으로 내보내는 것**도 비슷한 문제가 있는데, 이건 `Serializable`이 아니라 **JSON 직렬화(Jackson)** 에서 나는 **별개의** 문제입니다(Jackson은 `Serializable`을 보지 않습니다).
 
 - 평소 쓰는 API는 응답에 필요한 연관이 우연히 이미 초기화됐거나, OSIV(뷰까지 트랜잭션 유지)로 `LAZY`가 그때그때 로딩돼 무탈합니다.
 - 그러다 **어쩌다 한 번 호출되는 엔드포인트**가 초기화 안 된 다른 `LAZY` 연관을 건드리면, Jackson이 미초기화 프록시를 직렬화하다 `LazyInitializationException`이 납니다.
