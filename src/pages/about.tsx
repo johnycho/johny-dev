@@ -4,6 +4,7 @@ import Link from '@docusaurus/Link';
 import BrowserOnly from '@docusaurus/BrowserOnly';
 import useBaseUrl from '@docusaurus/useBaseUrl';
 import styles from './about.module.css';
+import CusdisComments from '../components/CusdisComments';
 import {
   NAME, ROLE, TAGLINE, CONTACTS, ABOUT, EXPERIENCE, PROJECTS, STRENGTHS,
   SKILLS, TROUBLES, EDUCATION, CERTS, OPENSOURCE, ACTIVITIES, boldSegments,
@@ -297,6 +298,8 @@ export default function About(): ReactNode {
               {ACTIVITIES.map((a) => <ActivityRow key={a.name} a={a} />)}
             </div>
           </section>
+
+          <CusdisComments />
         </div>
       </main>
     </Layout>

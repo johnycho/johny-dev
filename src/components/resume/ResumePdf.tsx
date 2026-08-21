@@ -57,7 +57,7 @@ const s = StyleSheet.create({
   h2: {
     fontFamily: 'Source Sans Pro',
     fontSize: 12.5, fontWeight: 700, color: INK, letterSpacing: 0.5,
-    marginTop: 7, marginBottom: 4, paddingBottom: 3,
+    marginTop: 10, marginBottom: 5, paddingBottom: 3,
     borderBottomWidth: 1, borderBottomColor: '#9aa0a6',
   },
   para: {marginBottom: 4},
@@ -68,7 +68,7 @@ const s = StyleSheet.create({
   whenRole: {fontSize: 8.3, color: MUTED, marginTop: 1.5},
   body: {flex: 1},
 
-  org: {fontSize: 11, fontWeight: 700, color: INK},
+  org: {fontSize: 10, fontWeight: 700, color: INK},
   company: {fontSize: 10, fontWeight: 700, color: INK},
   headline: {fontSize: 8.8, fontWeight: 700, color: ACCENT, marginTop: 5, marginBottom: 4},
 
@@ -92,7 +92,7 @@ const s = StyleSheet.create({
   credDetail: {fontSize: 8.3, color: MUTED, marginTop: 0.5},
   prRow: {flexDirection: 'row', alignItems: 'center', marginTop: 1},
   prLink: {fontFamily: 'Source Sans Pro', fontSize: 8.6, color: BODY, textDecoration: 'none'},
-  tsTitle: {fontSize: 11, fontWeight: 700, color: INK, marginBottom: 5},
+  tsTitle: {fontSize: 10, fontWeight: 700, color: INK, marginBottom: 5},
   osLink: {textDecoration: 'none'},
   osRow: {flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap', marginBottom: 5},
   osPr: {fontFamily: 'Source Sans Pro', fontSize: 8.6, fontWeight: 400, color: MUTED},

@@ -1003,6 +1003,19 @@ a[class*='tag_'][href$='/ai'] { --tag-c: #ff9f5e; }
   margin-bottom: 0.8rem;
 }
 
+/* ── 위키 문서(article) 페이지: 본문이 왼쪽으로 쏠리고 우측 TOC 칸이 비어 보이는 문제 완화.
+   (1) 본문+TOC 블록을 최대폭으로 제한하고 가운데 정렬 → 넓은 화면에서 좌우 여백이 대칭.
+   (2) 우측 TOC 칸을 조금 좁혀 본문 폭을 넓힘 → 오른쪽 빈 느낌 축소. TOC는 그대로 유지.
+   board형 카테고리 인덱스(docItemCol 없음)에는 적용되지 않도록 :has로 한정. ── */
+[class*='docMainContainer'] .container:has([class*='docItemCol']) {
+  max-width: 1180px;
+  margin-inline: auto;
+}
+[class*='docItemCol'] ~ .col--3 {
+  flex: 0 0 220px;
+  max-width: 220px;
+}
+
 /* ============================================================= */
 /*  Sidebar (docs)                                               */
 /* ============================================================= */
