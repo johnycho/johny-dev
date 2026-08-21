@@ -24,6 +24,11 @@ const MailIcon = () => (
     <rect x="3" y="5" width="18" height="14" rx="2" /><path d="m3 7 9 6 9-6" />
   </svg>
 );
+const LinkedInIcon = () => (
+  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+    <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.44-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.8 0 0 .77 0 1.73v20.54C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" />
+  </svg>
+);
 function CompanyLogo({file, big, git}: {file: string; big?: boolean; git?: boolean}) {
   const src = useBaseUrl(`/img/logos/${file}`);
   return (
@@ -107,9 +112,9 @@ export default function About(): ReactNode {
               <a className={styles.contactBtn} href={CONTACTS.github} target="_blank" rel="noreferrer">
                 <GitHubIcon /> GitHub
               </a>
-              <Link className={styles.contactBtn} to="/blog">
-                <BlogIcon /> 블로그
-              </Link>
+              <a className={styles.contactBtn} href={CONTACTS.linkedin} target="_blank" rel="noreferrer">
+                <LinkedInIcon /> LinkedIn
+              </a>
               <a className={styles.contactBtn} href={`mailto:${CONTACTS.email}`}>
                 <MailIcon /> Email
               </a>

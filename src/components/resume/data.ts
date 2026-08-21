@@ -5,7 +5,8 @@ export const ROLE = 'Backend Engineer';
 export const TAGLINE = '복잡한 도메인을 구조화하고, 안정적으로 확장 가능한 서버를 설계합니다.';
 
 export const CONTACTS = {
-  phone: '+82 10-7281-2722',
+  phone: '+82 10-7281-2722', // 현재 미표시(필요 시 복구)
+  linkedin: 'https://www.linkedin.com/in/johny-cho',
   email: 'johnycho.dev@gmail.com',
   site: 'https://johnycho.dev',
   github: 'https://github.com/johnycho',
