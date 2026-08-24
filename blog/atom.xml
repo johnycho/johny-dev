@@ -2,11 +2,112 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://johnycho.dev/blog</id>
     <title>조니의 개발 블로그 Blog</title>
-    <updated>2026-08-24T10:00:00.000Z</updated>
+    <updated>2026-08-25T09:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://johnycho.dev/blog"/>
     <subtitle>조니의 개발 블로그 Blog</subtitle>
     <icon>https://johnycho.dev/img/favicon.png</icon>
+    <entry>
+        <title type="html"><![CDATA[분산 환경 인증: JWT를 왜 쓰나 — 세션으로도 되는데]]></title>
+        <id>https://johnycho.dev/blog/jwt-vs-session-distributed-auth</id>
+        <link href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth"/>
+        <updated>2026-08-25T09:00:00.000Z</updated>
+        <summary type="html"><![CDATA[분산 서버 환경에서 인증을 이야기하면 대개 이렇게 정리합니다. "서버가 여러 대라 세션을 한 서버에 두면 다음 요청이 다른 서버로 갈 때 로그인이 풀린다. 그래서 JWT를 쓴다." 그런데 여기엔 빈틈이 있습니다. 세션도 분산 환경에서 잘 씁니다. 실제로 면접에서 "분산이라 JWT를 썼다"고 답하면 "세션도 분산 환경에서 써 왔는데, 그럼에도 왜 JWT냐"는 되물음이 돌아옵니다. 이 글은 그 되물음에 답합니다.]]></summary>
+        <content type="html"><![CDATA[<p>분산 서버 환경에서 인증을 이야기하면 대개 이렇게 정리합니다. "서버가 여러 대라 세션을 한 서버에 두면 다음 요청이 다른 서버로 갈 때 로그인이 풀린다. 그래서 JWT를 쓴다." 그런데 여기엔 빈틈이 있습니다. <strong>세션도 분산 환경에서 잘 씁니다.</strong> 실제로 면접에서 "분산이라 JWT를 썼다"고 답하면 "세션도 분산 환경에서 써 왔는데, 그럼에도 왜 JWT냐"는 되물음이 돌아옵니다. 이 글은 그 되물음에 답합니다.</p>
+<mark>"분산이라서 JWT"는 절반만 맞는 답입니다. 세션도 분산에서 동작하기 때문에, 진짜 이유는 상태를 어디에 두느냐의 트레이드오프에 있습니다.</mark>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="세션-기반-인증이-분산에서-막히는-지점">세션 기반 인증이 분산에서 막히는 지점<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#%EC%84%B8%EC%85%98-%EA%B8%B0%EB%B0%98-%EC%9D%B8%EC%A6%9D%EC%9D%B4-%EB%B6%84%EC%82%B0%EC%97%90%EC%84%9C-%EB%A7%89%ED%9E%88%EB%8A%94-%EC%A7%80%EC%A0%90" class="hash-link" aria-label="세션 기반 인증이 분산에서 막히는 지점에 대한 직접 링크" title="세션 기반 인증이 분산에서 막히는 지점에 대한 직접 링크">​</a></h2>
+<p>세션 기반 인증은 <strong>서버가 상태(로그인 정보)를 들고 있는</strong> 방식입니다. 로그인에 성공하면 서버 메모리에 세션을 만들고, 클라이언트에는 그 세션을 가리키는 <code>SESSIONID</code>만 쿠키로 내려줍니다. 이후 요청마다 서버는 이 ID로 자기 메모리의 세션을 찾아 "누구인지"를 압니다. (쿠키·세션의 기초는 <a href="https://johnycho.dev/wiki/computer-science/cs-cookie-session">쿠키와 세션의 차이</a> 문서를 참고하세요.)</p>
+<p>문제는 서버가 여러 대일 때입니다. A 서버에서 로그인해 세션이 A 메모리에 생겼는데, 다음 요청이 로드밸런서를 거쳐 B 서버로 가면 B는 그 세션을 모릅니다. 로그인이 풀린 것처럼 보입니다.</p>
+<!-- -->
+<mark>세션이 특정 서버의 로컬 메모리에만 있으면, 요청이 다른 서버로 분산되는 순간 인증 상태가 끊깁니다.</mark>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="그런데-세션도-분산에서-잘-됩니다">그런데 세션도 분산에서 잘 됩니다<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#%EA%B7%B8%EB%9F%B0%EB%8D%B0-%EC%84%B8%EC%85%98%EB%8F%84-%EB%B6%84%EC%82%B0%EC%97%90%EC%84%9C-%EC%9E%98-%EB%90%A9%EB%8B%88%EB%8B%A4" class="hash-link" aria-label="그런데 세션도 분산에서 잘 됩니다에 대한 직접 링크" title="그런데 세션도 분산에서 잘 됩니다에 대한 직접 링크">​</a></h2>
+<p>여기가 핵심입니다. 위 문제는 "세션이 <strong>로컬 메모리에만</strong> 있을 때"의 문제일 뿐, 세션 방식 자체의 한계가 아닙니다. 분산 환경에서 세션을 쓰는 정석 해법이 여럿 있습니다.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="1-스티키-세션-세션-어피니티">1) 스티키 세션 (세션 어피니티)<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#1-%EC%8A%A4%ED%8B%B0%ED%82%A4-%EC%84%B8%EC%85%98-%EC%84%B8%EC%85%98-%EC%96%B4%ED%94%BC%EB%8B%88%ED%8B%B0" class="hash-link" aria-label="1) 스티키 세션 (세션 어피니티)에 대한 직접 링크" title="1) 스티키 세션 (세션 어피니티)에 대한 직접 링크">​</a></h3>
+<p>쉽게 말하면 은행 창구와 같습니다. 처음 방문한 손님에게 <strong>번호표</strong>를 주고, 다음에 와도 그 번호표를 보고 <strong>같은 창구(서버)</strong> 로 안내하는 것입니다. 손님(사용자)의 상담 기록(세션)이 그 창구에만 있어도, 늘 같은 창구로 가니 문제가 없습니다.</p>
+<p>이 "번호표"를 무엇으로 삼느냐에 따라 두 방식이 있습니다.</p>
+<p><strong>방식 1. 쿠키를 번호표로</strong> — 로드밸런서가 사용자의 첫 요청을 A 서버로 보낸 뒤, 응답에 "너는 A 담당" 이라는 쿠키를 붙여 줍니다. 이후 요청에는 브라우저가 그 쿠키를 자동으로 실어 보내고, 로드밸런서는 그걸 보고 다시 A로 보냅니다. <strong>이 과정은 전부 로드밸런서가 하고, 우리 서버 코드는 손댈 게 없습니다.</strong></p>
+<p>AWS의 로드밸런서(ALB)라면 체크박스 하나 켜는 수준입니다.</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">스티키 세션    : 켜기(ON)</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">고정 기준      : 로드밸런서가 발급하는 쿠키</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">고정 유지 시간 : 1일</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>설정 파일로는 이렇게 표현됩니다(위와 같은 내용입니다).</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">stickiness.enabled                    = true      # 스티키 세션 켜기</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">stickiness.type                       = lb_cookie # 로드밸런서가 만든 쿠키로 고정</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">stickiness.lb_cookie.duration_seconds = 86400     # 하루 동안 같은 서버 유지</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p><strong>방식 2. 접속 IP를 번호표로</strong> — 쿠키 없이, "같은 곳에서 온 요청(같은 IP)은 늘 같은 서버로" 라고 정하는 방식입니다. Nginx는 한 줄(<code>ip_hash</code>)이면 됩니다.</p>
+<div class="language-nginx codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-nginx codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">upstream app {</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    ip_hash;              # 접속 IP가 같으면 항상 같은 서버로 보냄</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    server 10.0.0.11:8080;   # 서버 A</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    server 10.0.0.12:8080;   # 서버 B</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">}</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>쿠버네티스도 같은 아이디어를 옵션 한 줄로 제공합니다.</p>
+<div class="language-yaml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-yaml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token key atrule">spec</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">  </span><span class="token key atrule">sessionAffinity</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"> ClientIP   </span><span class="token comment" style="color:rgb(98, 114, 164)"># 같은 IP는 항상 같은 Pod(서버)로</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<ul>
+<li>장점: <strong>서버 코드를 안 바꿔도 됩니다.</strong> 로드밸런서·인프라 설정만으로 됩니다.</li>
+<li>한계: 특정 서버로 손님이 쏠릴 수 있고, 그 서버가 죽으면 거기 붙어 있던 세션이 <strong>통째로 사라져</strong> 재로그인해야 합니다. 배포·오토스케일로 서버가 교체돼도 마찬가지입니다. 특히 IP 방식은 회사·모바일처럼 여러 사람이 <strong>같은 IP로 나가는 환경</strong>에서 한 서버로 몰릴 수 있습니다.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="2-중앙-세션-스토어-외부화">2) 중앙 세션 스토어 (외부화)<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#2-%EC%A4%91%EC%95%99-%EC%84%B8%EC%85%98-%EC%8A%A4%ED%86%A0%EC%96%B4-%EC%99%B8%EB%B6%80%ED%99%94" class="hash-link" aria-label="2) 중앙 세션 스토어 (외부화)에 대한 직접 링크" title="2) 중앙 세션 스토어 (외부화)에 대한 직접 링크">​</a></h3>
+<p>세션을 서버 메모리가 아니라 <strong>모든 서버가 공유하는 외부 저장소</strong>(주로 Redis)에 둡니다. 어느 서버로 요청이 가든 같은 Redis를 조회하므로 로그인이 유지됩니다. Spring Session 같은 도구가 이 방식을 표준으로 지원합니다.</p>
+<!-- -->
+<ul>
+<li>장점: 서버는 무상태(stateless)에 가까워지고, 어느 서버로 붙어도 동일하게 동작합니다. 로그아웃·강제 만료가 즉시 반영됩니다.</li>
+<li>한계: 요청마다 세션 스토어를 조회하니 <strong>네트워크 왕복이 한 번 더</strong> 생기고, 세션 스토어가 죽으면 인증 전체가 흔들립니다. 스토어를 HA로 이중화해야 합니다.</li>
+</ul>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="3-세션-클러스터링-복제">3) 세션 클러스터링 (복제)<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#3-%EC%84%B8%EC%85%98-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0%EB%A7%81-%EB%B3%B5%EC%A0%9C" class="hash-link" aria-label="3) 세션 클러스터링 (복제)에 대한 직접 링크" title="3) 세션 클러스터링 (복제)에 대한 직접 링크">​</a></h3>
+<p>서버들끼리 세션을 서로 복제해 모든 노드가 같은 세션을 갖게 합니다. WAS 클러스터 기능으로 구현하는데, 노드가 늘수록 복제 트래픽이 커져 확장성이 떨어집니다. 요즘은 중앙 세션 스토어 방식에 밀려 잘 쓰지 않습니다.</p>
+<mark>스티키 세션·중앙 세션 스토어·세션 복제 — 분산 환경에서도 세션은 얼마든지 동작합니다. 따라서 "분산이라서 JWT"는 이유가 되지 못합니다.</mark>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="그럼-진짜-이유는-상태를-어디에-둘-것인가">그럼 진짜 이유는: 상태를 어디에 둘 것인가<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#%EA%B7%B8%EB%9F%BC-%EC%A7%84%EC%A7%9C-%EC%9D%B4%EC%9C%A0%EB%8A%94-%EC%83%81%ED%83%9C%EB%A5%BC-%EC%96%B4%EB%94%94%EC%97%90-%EB%91%98-%EA%B2%83%EC%9D%B8%EA%B0%80" class="hash-link" aria-label="그럼 진짜 이유는: 상태를 어디에 둘 것인가에 대한 직접 링크" title="그럼 진짜 이유는: 상태를 어디에 둘 것인가에 대한 직접 링크">​</a></h2>
+<p>세션과 JWT의 본질적 차이는 "분산이냐"가 아니라 <strong>인증 상태를 서버가 들고 있느냐, 토큰 자체에 담아 서버가 안 들고 있느냐</strong>입니다.</p>
+<ul>
+<li><strong>세션</strong>: 상태를 서버(또는 공유 스토어)가 보관. 요청이 오면 그 상태를 <strong>찾아봐야</strong> 누구인지 안다. → <strong>상태 저장(stateful)</strong></li>
+<li><strong>JWT</strong>: 상태를 토큰 안에 서명해서 담아 클라이언트가 보관. 요청이 오면 서버는 <strong>서명만 검증</strong>하면 저장소 조회 없이 누구인지 안다. → <strong>상태 비저장(stateless)</strong></li>
+</ul>
+<p>JWT는 <code>헤더.페이로드.서명</code> 세 부분으로 이뤄지고, 페이로드에 사용자 식별자 같은 클레임을 담습니다. 서버는 비밀키(또는 공개키)로 서명을 검증해 위·변조되지 않았음만 확인하면 되므로, <strong>인증을 위해 DB나 세션 스토어를 조회하지 않아도 됩니다.</strong></p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1LTEyMyJ9.SflKxwRJSMeKKF2QT4fw</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>토큰은 점(<code>.</code>)을 기준으로 세 부분으로 나뉩니다.</p>
+<ul>
+<li><strong>헤더</strong> — <code>eyJhbGciOiJIUzI1NiJ9</code> : 서명 알고리즘 같은 메타데이터. 디코딩하면 <code>{"alg":"HS256"}</code>.</li>
+<li><strong>페이로드</strong> — <code>eyJzdWIiOiJ1LTEyMyJ9</code> : 사용자 식별자 등 클레임(claim). 디코딩하면 <code>{"sub":"u-123"}</code>.</li>
+<li><strong>서명</strong> — <code>SflKxwRJSMeKKF2QT4fw</code> : 헤더·페이로드를 비밀키로 서명한 값. 위·변조 검증에 씁니다.</li>
+</ul>
+<p>토큰 구조·서명 방식은 <a href="https://johnycho.dev/wiki/computer-science/cs-jwt">JWT (Json Web Token)</a> 문서에서 더 자세히 다룹니다.</p>
+<p>그래서 JWT를 선택하는 실질적 이유는 이렇게 정리됩니다.</p>
+<ol>
+<li><strong>인증 경로에서 저장소 조회 제거</strong>: 요청마다 세션 스토어를 왕복하지 않으니, 트래픽이 커질수록 이점이 큽니다. 세션 스토어가 단일 병목·단일 장애점이 되는 것도 피합니다.</li>
+<li><strong>서버 간 공유 인프라가 필요 없음</strong>: 공유 Redis나 세션 복제 없이, 각 서버가 서명키만 있으면 독립적으로 검증합니다. 서버 증설이 단순해집니다.</li>
+<li><strong>서비스·도메인 간 전파가 쉬움</strong>: MSA에서 게이트웨이가 검증한 신원을 토큰 그대로 하위 서비스에 넘기면, 각 서비스가 세션 공유 없이 신원을 확인할 수 있습니다. 모바일 앱·외부 연동처럼 쿠키/세션이 부자연스러운 클라이언트에도 잘 맞습니다.</li>
+</ol>
+<mark>JWT의 진짜 이점은 "분산"이 아니라 "인증을 무상태로 만들어 요청마다의 저장소 조회와 공유 세션 인프라를 없앤다"는 데 있습니다.</mark>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="공짜는-아니다--jwt의-대가-무효화">공짜는 아니다 — JWT의 대가: 무효화<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#%EA%B3%B5%EC%A7%9C%EB%8A%94-%EC%95%84%EB%8B%88%EB%8B%A4--jwt%EC%9D%98-%EB%8C%80%EA%B0%80-%EB%AC%B4%ED%9A%A8%ED%99%94" class="hash-link" aria-label="공짜는 아니다 — JWT의 대가: 무효화에 대한 직접 링크" title="공짜는 아니다 — JWT의 대가: 무효화에 대한 직접 링크">​</a></h2>
+<p>무상태의 대가는 <strong>한 번 발급한 토큰을 만료 전에 취소하기 어렵다</strong>는 점입니다. 세션은 서버가 상태를 쥐고 있으니 세션 하나만 지우면 즉시 무효가 되지만, JWT는 상태를 서버가 안 들고 있으니 "이 토큰 이제 무효"라고 서버가 일방적으로 선언할 방법이 없습니다. 서명이 유효하고 만료 시간이 남아 있으면 서버는 그대로 통과시킵니다.</p>
+<p>이게 문제가 되는 상황:</p>
+<ul>
+<li>로그아웃했는데 토큰은 만료 전까지 계속 유효</li>
+<li>회원 탈퇴·비밀번호 변경·계정 정지가 일어났는데 이미 나간 토큰은 살아 있음</li>
+<li>토큰이 탈취됐는데 만료까지 막을 방법이 없음</li>
+</ul>
+<p>현실적인 완화책은 결국 <strong>"무상태를 조금 포기"</strong> 하는 것입니다.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="짧은-액세스-토큰--리프레시-토큰">짧은 액세스 토큰 + 리프레시 토큰<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#%EC%A7%A7%EC%9D%80-%EC%95%A1%EC%84%B8%EC%8A%A4-%ED%86%A0%ED%81%B0--%EB%A6%AC%ED%94%84%EB%A0%88%EC%8B%9C-%ED%86%A0%ED%81%B0" class="hash-link" aria-label="짧은 액세스 토큰 + 리프레시 토큰에 대한 직접 링크" title="짧은 액세스 토큰 + 리프레시 토큰에 대한 직접 링크">​</a></h3>
+<p>액세스 토큰의 수명을 짧게(수십 분~수 시간) 두고, 만료되면 수명이 긴 리프레시 토큰으로 재발급합니다. 탈취돼도 유효 기간이 짧아 피해 창이 줄고, 재발급 시점에 계정 유효성을 다시 점검할 수 있습니다.</p>
+<h3 class="anchor anchorWithStickyNavbar_LWe7" id="블랙리스트-거부-목록">블랙리스트 (거부 목록)<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#%EB%B8%94%EB%9E%99%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EA%B1%B0%EB%B6%80-%EB%AA%A9%EB%A1%9D" class="hash-link" aria-label="블랙리스트 (거부 목록)에 대한 직접 링크" title="블랙리스트 (거부 목록)에 대한 직접 링크">​</a></h3>
+<p>토큰마다 고유 ID(<code>jti</code>)를 부여하고, 무효화해야 할 토큰의 <code>jti</code>를 Redis에 올려 둡니다. 검증할 때 블랙리스트에 있으면 거부합니다. 이때 Redis 항목의 <strong>TTL을 토큰 남은 만료 시간에 맞추면</strong>, 어차피 만료로 사라질 토큰만 그때까지 막으면 되므로 저장 비용이 한정됩니다.</p>
+<div class="codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">// 로그아웃/강제 만료 시</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">SET blacklist:{jti} 1 EX {토큰 남은 초}</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain" style="display:inline-block"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">// 검증 시: 블랙리스트에 있으면 거부</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">EXISTS blacklist:{jti}   → 1이면 401</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
+<p>단, 블랙리스트를 쓰는 순간 검증 경로에 다시 저장소 조회가 생깁니다. <strong>"무상태로 부하를 줄인다"는 JWT의 이점을 일부 반납</strong>하는 셈이라, 어느 데이터를 얼마나 검사할지는 서비스 민감도에 따라 정합니다. 결제·금융처럼 탈취 피해가 큰 서비스는 조회 비용을 감수하고 즉시 무효화를 택하고, 그렇지 않은 서비스는 짧은 만료로 대신하기도 합니다.</p>
+<mark>JWT는 무상태로 이점을 얻지만, 즉시 무효화가 필요한 순간 블랙리스트 같은 상태를 다시 끌어들여야 합니다. 결국 무상태의 이점과 무효화의 필요 사이의 저울질입니다.</mark>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="토큰에-무엇을-담을까">토큰에 무엇을 담을까<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#%ED%86%A0%ED%81%B0%EC%97%90-%EB%AC%B4%EC%97%87%EC%9D%84-%EB%8B%B4%EC%9D%84%EA%B9%8C" class="hash-link" aria-label="토큰에 무엇을 담을까에 대한 직접 링크" title="토큰에 무엇을 담을까에 대한 직접 링크">​</a></h2>
+<p>JWT 페이로드는 <strong>서명은 되지만 암호화는 아니어서</strong> 누구나 디코딩해 내용을 볼 수 있습니다(Base64URL). 그래서 담을 것과 담지 말 것을 구분해야 합니다.</p>
+<ul>
+<li>담기 좋은 것: 사용자 식별자(UUID), 잘 바뀌지 않는 기기 식별자, 역할·권한 같은 최소한의 인가 정보.</li>
+<li>피할 것: 비밀번호·주민번호 같은 <strong>민감 정보</strong>, 그리고 <strong>자주 바뀌는 값</strong>(닉네임·잔액 등). 자주 바뀌는 값을 넣으면 값이 바뀔 때마다 토큰이 낡아, 결국 서버가 최신값을 다시 조회해야 하므로 무상태 이점이 사라집니다.</li>
+</ul>
+<h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="https://johnycho.dev/blog/jwt-vs-session-distributed-auth#%EC%A0%95%EB%A6%AC" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>
+<ul>
+<li>"서버가 분산이라 JWT를 쓴다"는 절반의 답입니다. <strong>세션도 스티키 세션·중앙 세션 스토어(Redis)·세션 복제로 분산에서 잘 동작</strong>합니다.</li>
+<li>진짜 차이는 <strong>상태를 서버가 들고 있느냐(세션·stateful) vs 토큰에 담아 서버가 안 들고 있느냐(JWT·stateless)</strong> 입니다.</li>
+<li>JWT의 실질적 이점은 <strong>인증 경로에서 저장소 조회와 공유 세션 인프라를 없애는 것</strong> — 트래픽 확장과 서비스 간 신원 전파에 유리합니다.</li>
+<li>대가는 <strong>즉시 무효화의 어려움</strong>입니다. 짧은 만료 + 리프레시 토큰, <code>jti</code> 블랙리스트(TTL을 만료에 맞춤)로 완화하되, 이는 무상태 이점을 일부 되돌리는 트레이드오프임을 인지하고 서비스 민감도에 맞춰 선택합니다.</li>
+</ul>
+<p>세션이 무조건 구식이고 JWT가 정답인 것이 아닙니다. <strong>요청마다의 조회 비용을 줄이는 무상태의 이점과, 상태를 쥐고 있어야 가능한 즉시 제어 사이에서 서비스 특성에 맞게 고르는 문제</strong>입니다.</p>]]></content>
+        <author>
+            <name>Johny Cho</name>
+            <uri>https://github.com/johnycho</uri>
+        </author>
+        <category label="설계" term="설계"/>
+        <category label="Redis" term="Redis"/>
+        <category label="아키텍처" term="아키텍처"/>
+    </entry>
     <entry>
         <title type="html"><![CDATA[헥사고날 아키텍처(포트·어댑터)로 멀티모듈 프로젝트 구성하기]]></title>
         <id>https://johnycho.dev/blog/hexagonal-multimodule</id>
@@ -1387,103 +1488,6 @@ CPU가 차면 런 큐가 길어지고, 힙 압박으로 <strong>GC가 자주·�
             <uri>https://github.com/johnycho</uri>
         </author>
         <category label="Redis" term="Redis"/>
-        <category label="설계" term="설계"/>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[메시지 큐 어떻게 고르나 — Kafka·RabbitMQ·SQS 비교와 선택 기준]]></title>
-        <id>https://johnycho.dev/blog/message-queue-comparison</id>
-        <link href="https://johnycho.dev/blog/message-queue-comparison"/>
-        <updated>2026-08-18T11:00:00.000Z</updated>
-        <summary type="html"><![CDATA["비동기로 처리하자"는 결론까지는 쉬운데, 막상 어떤 메시지 큐를 쓸지에서 막힙니다. Kafka? RabbitMQ? SQS? 겉보기엔 다 "메시지를 보내고 받는" 도구라 비슷해 보이지만, 먼저 "로그 기반이냐, 브로커 큐냐"라는 두 갈래 모델을 이해하면 선택의 절반이 끝납니다. 모델·성능·순서·전달보장·운영 같은 축으로 비교하고, 용도별 선택 기준을 정리합니다.]]></summary>
-        <content type="html"><![CDATA[<p>"비동기로 처리하자"는 결론까지는 쉬운데, 막상 <strong>어떤 메시지 큐를 쓸지</strong>에서 막힙니다. Kafka? RabbitMQ? SQS? 겉보기엔 다 "메시지를 보내고 받는" 도구라 비슷해 보이지만, <mark>먼저 "로그 기반이냐, 브로커 큐냐"라는 두 갈래 모델을 이해하면 선택의 절반이 끝납니다.</mark> 모델·성능·순서·전달보장·운영 같은 축으로 비교하고, 용도별 선택 기준을 정리합니다.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="큰-두-갈래--로그-기반-vs-브로커-큐">큰 두 갈래 — 로그 기반 vs 브로커 큐<a href="https://johnycho.dev/blog/message-queue-comparison#%ED%81%B0-%EB%91%90-%EA%B0%88%EB%9E%98--%EB%A1%9C%EA%B7%B8-%EA%B8%B0%EB%B0%98-vs-%EB%B8%8C%EB%A1%9C%EC%BB%A4-%ED%81%90" class="hash-link" aria-label="큰 두 갈래 — 로그 기반 vs 브로커 큐에 대한 직접 링크" title="큰 두 갈래 — 로그 기반 vs 브로커 큐에 대한 직접 링크">​</a></h2>
-<p>메시지 큐는 크게 두 부류입니다.</p>
-<ul>
-<li><strong>로그 기반(log-based)</strong> — Kafka, Pulsar, Redis Streams. 메시지를 <strong>지우지 않고 로그에 차곡차곡 쌓고</strong>, 컨슈머는 "어디까지 읽었는지(오프셋)"로 읽습니다. 읽어도 남아 있어 <strong>여러 소비자·재처리(재생)</strong> 가 됩니다.</li>
-<li><strong>브로커 큐(message broker)</strong> — RabbitMQ, ActiveMQ. <strong>브로커가 라우팅</strong>해서 큐에 넣고, 컨슈머가 처리 후 확인(ack)하면 <strong>큐에서 사라집니다(consume-and-delete)</strong>. 유연한 라우팅과 저지연이 강점.</li>
-</ul>
-<!-- -->
-<mark>"읽어도 남아 재생되는" 로그 기반과, "처리하면 사라지는" 브로커 큐 — 이 차이가 재처리·순서·라우팅 성격을 전부 가릅니다.</mark>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="축별-비교">축별 비교<a href="https://johnycho.dev/blog/message-queue-comparison#%EC%B6%95%EB%B3%84-%EB%B9%84%EA%B5%90" class="hash-link" aria-label="축별 비교에 대한 직접 링크" title="축별 비교에 대한 직접 링크">​</a></h2>
-<table><thead><tr><th>축</th><th>Kafka (로그)</th><th>RabbitMQ (브로커 큐)</th><th>SQS (관리형 큐)</th></tr></thead><tbody><tr><td>처리량</td><td>매우 높음(수십만~수백만/s)</td><td>높지만 로그보다 낮음</td><td>스케일되지만 건당 지연 큼</td></tr><tr><td>지연</td><td>낮음(배치·풀 특성)</td><td>매우 낮음(인메모리 라우팅)</td><td>상대적으로 높음</td></tr><tr><td>순서</td><td>파티션 내 보장</td><td>큐 단위(경쟁 소비 시 흐트러질 수 있음)</td><td>FIFO 큐에서만</td></tr><tr><td>전달 보장</td><td>at-least-once, 트랜잭션으로 EOS</td><td>at-least-once(confirm+ack)</td><td>at-least-once(FIFO는 중복 제거)</td></tr><tr><td>소비 모델</td><td>pull + 컨슈머 그룹(오프셋)</td><td>push + prefetch + ack</td><td>pull(폴링)</td></tr><tr><td>라우팅</td><td>토픽·키 해시 위주</td><td>exchange(direct·topic·fanout·headers) 강력</td><td>큐/주제(SNS 조합)</td></tr><tr><td>재처리(재생)</td><td>됨(오프셋 리셋)</td><td>기본 안 됨(사라짐)</td><td>안 됨</td></tr><tr><td>운영 부담</td><td>무거움(러닝커브)</td><td>중간</td><td>거의 없음(완전관리형)</td></tr></tbody></table>
-<p>전달 보장은 어느 큐든 기본이 at-least-once(중복 가능)입니다 — 자세한 개념은 <a href="https://johnycho.dev/blog/kafka-delivery-semantics">전달 보장 정리</a>, Kafka의 정확히 한 번은 <a href="https://johnycho.dev/blog/kafka-transactions-exactly-once">트랜잭션 EOS</a>·<a href="https://johnycho.dev/blog/kafka-outbox-exactly-once">Outbox</a> 글을 참고하세요.</p>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="대표-주자-한-줄-요약">대표 주자 한 줄 요약<a href="https://johnycho.dev/blog/message-queue-comparison#%EB%8C%80%ED%91%9C-%EC%A3%BC%EC%9E%90-%ED%95%9C-%EC%A4%84-%EC%9A%94%EC%95%BD" class="hash-link" aria-label="대표 주자 한 줄 요약에 대한 직접 링크" title="대표 주자 한 줄 요약에 대한 직접 링크">​</a></h2>
-<ul>
-<li><strong>Kafka</strong> — 로그 기반의 표준. <mark>고처리량·재생·여러 소비자·이벤트 스트리밍에 최적</mark>. 대신 운영이 무겁고 세밀한 라우팅·우선순위는 약함.</li>
-<li><strong>RabbitMQ</strong> — 스마트 브로커. <strong>복잡한 라우팅, 작업 큐, 저지연, 메시지별 제어</strong>(우선순위·TTL·데드레터)가 강점. 대규모 재생·초고처리량엔 로그 기반이 유리.</li>
-<li><strong>SQS</strong> — AWS 완전관리형. <strong>운영이 거의 없고</strong> 무한히 스케일. 재생 없음, 건당 지연이 있는 편. AWS 생태계·단순 큐에 적합.</li>
-<li><strong>Redis Streams</strong> — 이미 Redis를 쓰고 <strong>가벼운 로그·소비자 그룹</strong>이 필요할 때. 전용 브로커보다 기능·내구성은 제한적.</li>
-<li><strong>Pulsar</strong> — 로그+큐 하이브리드, 계층형 저장·멀티테넌시·지오복제. 기능은 풍부하나 스택이 큼.</li>
-<li><strong>NATS(JetStream)</strong> — 초경량·저지연 pub/sub. 마이크로서비스 내부 통신에.</li>
-</ul>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="용도별-선택-기준">용도별 선택 기준<a href="https://johnycho.dev/blog/message-queue-comparison#%EC%9A%A9%EB%8F%84%EB%B3%84-%EC%84%A0%ED%83%9D-%EA%B8%B0%EC%A4%80" class="hash-link" aria-label="용도별 선택 기준에 대한 직접 링크" title="용도별 선택 기준에 대한 직접 링크">​</a></h2>
-<p>세 가지만 물어보면 대개 좁혀집니다.</p>
-<ol>
-<li><strong>읽은 메시지를 다시 재생해야 하나?</strong> → 예면 <strong>로그 기반(Kafka/Pulsar/Redis Streams)</strong>, 아니면 브로커 큐도 후보.</li>
-<li><strong>라우팅이 복잡한가?(조건별 분기·우선순위·TTL)</strong> → 예면 <strong>RabbitMQ</strong>.</li>
-<li><strong>운영에 쓸 여력이 있나?</strong> → 적으면 <strong>관리형(SQS/관리형 Kafka)</strong>.</li>
-</ol>
-<table><thead><tr><th>원하는 것</th><th>추천</th></tr></thead><tbody><tr><td>이벤트 스트리밍·로그·재처리·고처리량</td><td>Kafka (또는 Pulsar)</td></tr><tr><td>복잡한 라우팅·작업 큐·저지연·메시지별 제어</td><td>RabbitMQ</td></tr><tr><td>운영 최소·AWS·단순 큐</td><td>SQS</td></tr><tr><td>이미 Redis 사용·가벼운 스트림</td><td>Redis Streams</td></tr><tr><td>멀티테넌시·지오복제·계층 저장</td><td>Pulsar</td></tr><tr><td>초경량 서비스 간 메시징</td><td>NATS</td></tr></tbody></table>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="아키텍처-관점--어떤-상황에-왜-그-선택인가">아키텍처 관점 — 어떤 상황에 왜 그 선택인가<a href="https://johnycho.dev/blog/message-queue-comparison#%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98-%EA%B4%80%EC%A0%90--%EC%96%B4%EB%96%A4-%EC%83%81%ED%99%A9%EC%97%90-%EC%99%9C-%EA%B7%B8-%EC%84%A0%ED%83%9D%EC%9D%B8%EA%B0%80" class="hash-link" aria-label="아키텍처 관점 — 어떤 상황에 왜 그 선택인가에 대한 직접 링크" title="아키텍처 관점 — 어떤 상황에 왜 그 선택인가에 대한 직접 링크">​</a></h2>
-<p>각 큐가 "무엇을 잘하도록 설계됐는지"를 보면 선택이 분명해집니다. 큰 갈림길을 먼저 그림으로 보면 이렇습니다.</p>
-<!-- -->
-<p><strong>RabbitMQ는 라우팅·작업 큐 제어가 필요할 때만</strong> 고르는 자리입니다. 맨 아래(재생·라우팅 요구가 없고 관리형도 싫을 때)는 Redis·NATS 같은 가벼운 자체 호스팅 큐로 충분합니다. 특히 많이 저울질하는 셋을 시나리오로 봅니다.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="kafka--이벤트를-흐름의-원장으로">Kafka — "이벤트를 흐름의 원장으로"<a href="https://johnycho.dev/blog/message-queue-comparison#kafka--%EC%9D%B4%EB%B2%A4%ED%8A%B8%EB%A5%BC-%ED%9D%90%EB%A6%84%EC%9D%98-%EC%9B%90%EC%9E%A5%EC%9C%BC%EB%A1%9C" class="hash-link" aria-label="Kafka — &quot;이벤트를 흐름의 원장으로&quot;에 대한 직접 링크" title="Kafka — &quot;이벤트를 흐름의 원장으로&quot;에 대한 직접 링크">​</a></h3>
-<p><strong>상황</strong>: 주문 이벤트 하나를 결제·배송·정산·추천·데이터 분석이 <strong>각자</strong> 소비하고, 나중에 새 소비자가 붙어 <strong>과거부터 다시</strong> 읽어야 한다.</p>
-<p><strong>왜 이점인가</strong>: 로그가 남으니 컨슈머 그룹마다 <strong>독립된 오프셋</strong>으로 읽습니다 — 한 소비자가 느려도 다른 소비자에 영향 없고(각자 lag), 새 소비자를 붙여 처음부터 재생하는 게 공짜입니다. 파티션으로 수평 확장해 처리량을 올리고, 파티션 안에서는 순서가 보장됩니다. <mark>프로듀서와 컨슈머를 "시간적으로" 분리 — 이벤트를 사실의 원장처럼 쌓아 여러 곳이 원할 때 소비합니다.</mark></p>
-<p>구체적으로 이런 설계에 강합니다.</p>
-<ul>
-<li><strong>확장·순서 모델</strong> — 파티션이 병렬성과 순서의 단위입니다. 처리량은 파티션·컨슈머를 늘려 키우고, 순서가 필요한 것은 <strong>같은 키로 같은 파티션</strong>에 보냅니다(전역 순서 대신 키 단위 순서).</li>
-<li><strong>보존·백필(backfill)</strong> — 리텐션 기간 안에서 오프셋을 되감아 재처리하고, 새 서비스를 붙여 <strong>과거부터 다시 읽어</strong> 상태를 채웁니다. 버그로 잘못 처리한 구간을 다시 돌리는 것도 됩니다.</li>
-<li><strong>스트림 처리와 결합</strong> — CDC(변경 데이터 캡처)·이벤트 소싱·Kafka Streams/ksqlDB와 맞물려 "흐르는 데이터를 그 자리에서 가공"하는 파이프라인의 중심이 됩니다.</li>
-</ul>
-<p>한마디로 <strong>"한 번 발생한 이벤트를 여러 곳이, 원할 때, 다시 볼 수 있어야 한다"</strong> 면 Kafka입니다.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="rabbitmq--브로커가-라우팅작업-분배의-중심">RabbitMQ — "브로커가 라우팅·작업 분배의 중심"<a href="https://johnycho.dev/blog/message-queue-comparison#rabbitmq--%EB%B8%8C%EB%A1%9C%EC%BB%A4%EA%B0%80-%EB%9D%BC%EC%9A%B0%ED%8C%85%EC%9E%91%EC%97%85-%EB%B6%84%EB%B0%B0%EC%9D%98-%EC%A4%91%EC%8B%AC" class="hash-link" aria-label="RabbitMQ — &quot;브로커가 라우팅·작업 분배의 중심&quot;에 대한 직접 링크" title="RabbitMQ — &quot;브로커가 라우팅·작업 분배의 중심&quot;에 대한 직접 링크">​</a></h3>
-<p><strong>상황</strong>: 이미지 리사이즈·메일 발송 같은 <strong>작업</strong>을 워커 여러 대가 나눠 처리한다(한 작업은 한 워커만). 속성별 라우팅·우선순위·TTL·실패 시 데드레터 같은 정교한 제어가 필요하다.</p>
-<p><strong>왜 이점인가</strong>: exchange가 조건에 따라 알맞은 큐로 꽂아 주고(브로커가 똑똑함), push+prefetch로 워커 부하를 고르게 나눕니다. ack하면 사라지는 소비-삭제 모델이 "작업 큐"에 딱 맞고, 인메모리 라우팅이라 지연이 낮습니다. <mark>"무엇을 누구에게, 어떻게 나눠 줄지"를 브로커가 책임지는 구조입니다.</mark></p>
-<p>라우팅과 제어 수단이 풍부합니다.</p>
-<ul>
-<li><strong>exchange 타입</strong> — <code>direct</code>(정확 매칭)·<code>topic</code>(패턴 매칭)·<code>fanout</code>(전체 브로드캐스트)·<code>headers</code>(속성 매칭)로 "어떤 메시지를 어느 큐로" 유연하게 정합니다.</li>
-<li><strong>작업 분배</strong> — 경쟁 소비자(여러 워커가 한 큐를 나눠 처리) + <code>prefetch</code>로 부하를 고르게 나눠, 느린 워커에 일이 몰리지 않게 합니다.</li>
-<li><strong>메시지별 제어</strong> — 우선순위 큐, 메시지 TTL, 실패 시 <strong>데드레터 큐(DLQ)</strong>, 지연·재시도 큐까지 건 단위로 세밀하게 다룹니다.</li>
-</ul>
-<p>한마디로 <strong>"작업을 정교하게 라우팅해 워커들에 나눠 시키고, 처리하면 끝"</strong> 이면 RabbitMQ입니다.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="awssqssnskinesiseventbridge--운영을-클라우드에-위임">AWS(SQS·SNS·Kinesis·EventBridge) — "운영을 클라우드에 위임"<a href="https://johnycho.dev/blog/message-queue-comparison#awssqssnskinesiseventbridge--%EC%9A%B4%EC%98%81%EC%9D%84-%ED%81%B4%EB%9D%BC%EC%9A%B0%EB%93%9C%EC%97%90-%EC%9C%84%EC%9E%84" class="hash-link" aria-label="AWS(SQS·SNS·Kinesis·EventBridge) — &quot;운영을 클라우드에 위임&quot;에 대한 직접 링크" title="AWS(SQS·SNS·Kinesis·EventBridge) — &quot;운영을 클라우드에 위임&quot;에 대한 직접 링크">​</a></h3>
-<p><strong>상황</strong>: AWS 환경에서 서비스를 비동기로 느슨하게 연결하고 싶고, 브로커를 직접 운영하긴 싫다. Lambda 같은 서버리스와 자연스럽게 붙이고 싶다.</p>
-<p><strong>왜 이점인가</strong>: 완전관리형이라 스케일·가용성·패치를 클라우드가 맡고, 종량제에 IAM·Lambda 트리거가 통합됩니다. 조합으로 대부분을 커버합니다.</p>
-<ul>
-<li><strong>SQS</strong> — 단순 큐(버퍼·작업 분배). <strong>Standard</strong>(사실상 무제한 처리량·best-effort 순서·at-least-once) / <strong>FIFO</strong>(엄격한 순서·중복 제거, 대신 처리량 상한). 실패 대비 DLQ, 가시성 타임아웃으로 재처리.</li>
-<li><strong>SNS + SQS</strong> — SNS로 <strong>fan-out</strong>(여러 SQS·Lambda에 브로드캐스트)해 Kafka식 다중 소비를 관리형으로 흉내 냅니다. 소비자마다 독립 큐라 서로 영향이 적습니다.</li>
-<li><strong>Kinesis / MSK</strong> — <strong>재생·순서</strong>가 있는 스트리밍이 필요하지만 운영은 싫을 때. Kinesis는 샤드 단위 확장, MSK는 관리형 Kafka(기존 Kafka 자산을 그대로).</li>
-<li><strong>EventBridge</strong> — 이벤트 버스. <strong>규칙(rule) 기반 라우팅</strong>·SaaS 이벤트 통합·스케줄(cron)에 강합니다(고처리량 스트리밍용은 아님).</li>
-<li><strong>Lambda 연동</strong> — SQS·Kinesis·SNS를 이벤트 소스로 걸어 <strong>서버리스 소비자</strong>를 자동 스케일합니다.</li>
-</ul>
-<!-- -->
-<p><mark>"AWS에 얹어 운영 부담 없이 붙인다"</mark> 면 SQS/SNS를 기본으로, 스트리밍은 Kinesis·MSK, 이벤트 라우팅은 EventBridge를 더합니다.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="잘못-고르면--흔한-어긋남">잘못 고르면 — 흔한 어긋남<a href="https://johnycho.dev/blog/message-queue-comparison#%EC%9E%98%EB%AA%BB-%EA%B3%A0%EB%A5%B4%EB%A9%B4--%ED%9D%94%ED%95%9C-%EC%96%B4%EA%B8%8B%EB%82%A8" class="hash-link" aria-label="잘못 고르면 — 흔한 어긋남에 대한 직접 링크" title="잘못 고르면 — 흔한 어긋남에 대한 직접 링크">​</a></h3>
-<p>설계 의도와 반대로 쓰면 고생합니다.</p>
-<ul>
-<li><strong>Kafka를 작업 큐처럼</strong> — 건당 ack·우선순위·수만 개의 개별 큐·건당 초저지연이 필요하면 결이 안 맞습니다(그건 RabbitMQ 몫).</li>
-<li><strong>RabbitMQ로 대규모 재생·장기 보관</strong> — 메시지는 처리하면 사라지고, 많이 쌓일수록 성능이 떨어집니다. 이벤트 재생·이력 보관은 로그 기반(Kafka)으로.</li>
-<li><strong>SQS에 복잡한 라우팅·초저지연을 기대</strong> — SQS는 단순 큐입니다. 조건 라우팅은 EventBridge·SNS, 스트림 재생은 Kinesis·MSK로 나눠야 합니다.</li>
-</ul>
-<mark>설계 의도대로 쓰면 셋 다 훌륭하고, 의도에서 벗어나면 어느 것도 편하지 않습니다.</mark>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="목표로-되짚기">목표로 되짚기<a href="https://johnycho.dev/blog/message-queue-comparison#%EB%AA%A9%ED%91%9C%EB%A1%9C-%EB%90%98%EC%A7%9A%EA%B8%B0" class="hash-link" aria-label="목표로 되짚기에 대한 직접 링크" title="목표로 되짚기에 대한 직접 링크">​</a></h3>
-<table><thead><tr><th>아키텍처 목표</th><th>선택</th></tr></thead><tbody><tr><td>이벤트를 여러 곳이 재생·독립 소비</td><td>Kafka (관리형이면 MSK·Kinesis)</td></tr><tr><td>작업을 워커에 분배 + 정교한 라우팅</td><td>RabbitMQ</td></tr><tr><td>AWS에서 운영 없이 디커플링·서버리스 연동</td><td>SQS (+ SNS fan-out)</td></tr></tbody></table>
-<h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="https://johnycho.dev/blog/message-queue-comparison#%EC%A0%95%EB%A6%AC" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>
-<ul>
-<li>먼저 <strong>로그 기반(재생됨) vs 브로커 큐(처리하면 사라짐)</strong> 를 가른다.</li>
-<li><strong>Kafka</strong>=고처리량·스트리밍·재생, <strong>RabbitMQ</strong>=라우팅·저지연·작업 큐, <strong>SQS</strong>=운영 최소·관리형.</li>
-<li>"재생 필요?·라우팅 복잡?·운영 여력?" 세 질문으로 대개 좁혀진다.</li>
-</ul>
-<p><mark>"제일 좋은 메시지 큐"는 없고, 워크로드의 성격(재생·순서·라우팅·처리량·운영)에 맞는 큐가 있을 뿐입니다.</mark> 정확히 한 번 처리 같은 보장이 필요하면 큐 선택과 함께 <a href="https://johnycho.dev/blog/kafka-delivery-semantics">전달 보장</a>·<a href="https://johnycho.dev/blog/kafka-transactions-exactly-once">EOS</a> 설계를 같이 봐야 합니다.</p>
-<h3 class="anchor anchorWithStickyNavbar_LWe7" id="용어-한-줄-정리">용어 한 줄 정리<a href="https://johnycho.dev/blog/message-queue-comparison#%EC%9A%A9%EC%96%B4-%ED%95%9C-%EC%A4%84-%EC%A0%95%EB%A6%AC" class="hash-link" aria-label="용어 한 줄 정리에 대한 직접 링크" title="용어 한 줄 정리에 대한 직접 링크">​</a></h3>
-<table><thead><tr><th>용어</th><th>쉬운 뜻</th></tr></thead><tbody><tr><td>로그 기반</td><td>메시지를 지우지 않고 쌓아 오프셋으로 읽음(재생 가능)</td></tr><tr><td>브로커 큐</td><td>브로커가 라우팅, ack하면 큐에서 삭제</td></tr><tr><td>컨슈머 그룹</td><td>로그의 파티션을 그룹 안에서 나눠 읽는 단위</td></tr><tr><td>prefetch/ack</td><td>브로커 큐에서 미리 받고 처리 확인하는 방식</td></tr><tr><td>재생(replay)</td><td>이미 읽은 메시지를 처음부터 다시 처리</td></tr><tr><td>데드레터(DLQ)</td><td>처리 실패 메시지를 따로 보관하는 큐</td></tr></tbody></table>]]></content>
-        <author>
-            <name>Johny Cho</name>
-            <uri>https://github.com/johnycho</uri>
-        </author>
-        <category label="Kafka" term="Kafka"/>
         <category label="설계" term="설계"/>
     </entry>
 </feed>
