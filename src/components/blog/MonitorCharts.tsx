@@ -56,28 +56,35 @@ function useCanvas(draw: (ctx: CanvasRenderingContext2D, w: number, h: number, t
     let raf = 0;
     let start = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // 비트맵 버퍼를 만든 기준 폭. 그리기도 이 값을 써서 버퍼와 표시 폭 불일치(가로 늘어짐)를 막는다.
+    let cssW = 0;
 
+    // 표시 폭이 바뀌었을 때만 버퍼를 다시 잡는다(매 프레임 초기화·clear 방지).
     const resize = () => {
-      const cssW = canvas.clientWidth || 600;
+      const w = canvas.clientWidth || 600;
+      if (w === cssW) return;
+      cssW = w;
       canvas.width = Math.round(cssW * dpr);
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
     resize();
-    window.addEventListener('resize', resize);
+    // 최초 로드 시 레이아웃이 늦게 확정돼도(폭 변경 감지) 버퍼를 다시 맞춘다.
+    const ro = new ResizeObserver(() => resize());
+    ro.observe(canvas);
 
     const frame = (ts: number) => {
       if (!start) start = ts;
       const t = (ts - start) / 1000;
-      const w = canvas.clientWidth || 600;
-      ctx.clearRect(0, 0, w, height);
-      draw(ctx, w, height, t);
+      resize(); // 그리기 직전 폭 재확인 — 버퍼와 그리기 폭을 항상 일치
+      ctx.clearRect(0, 0, cssW, height);
+      draw(ctx, cssW, height, t);
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener('resize', resize);
+      ro.disconnect();
     };
   }, [draw, height]);
   return canvasRef;
