@@ -328,7 +328,8 @@
   .row { align-items: center; padding: 0.6rem 0.5rem; flex-wrap: wrap; gap: 0.32rem 0.5rem; }
   .rowIndex { display: none; }
   .rowTitle { order: -1; flex: 1 0 100%; width: 100%; margin-left: 0; font-size: 0.82rem; line-height: 1.45; }
-  .rowText { -webkit-line-clamp: 2; line-clamp: 2; }
+  /* 모바일에선 제목 전체가 보이도록 줄 클램프 해제 */
+  .rowText { display: block; -webkit-line-clamp: unset; line-clamp: unset; overflow: visible; }
   .tagCell { order: 1; width: auto; flex: 0 1 auto; justify-content: flex-start; }
   .tagChip { min-width: 0; padding: 0.06rem 0.32rem; font-size: 0.54rem; }
   .rowDate { order: 2; margin-left: 0; width: auto; flex-shrink: 0; text-align: left; font-size: 0.7rem; }

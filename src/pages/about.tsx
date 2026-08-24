@@ -33,7 +33,7 @@ const LinkedInIcon = () => (
 function CompanyLogo({file, big, git}: {file: string; big?: boolean; git?: boolean}) {
   const src = useBaseUrl(`/img/logos/${file}`);
   return (
-    <span className={`${styles.coLogo} ${big ? styles.coLogoBig : ''} ${git ? styles.coLogoGit : ''}`}>
+    <span className={`${styles.coLogo} ${big ? styles.coLogoBig : ''} ${git ? styles.coLogoGit : ''} ${file === 'interon.svg' ? styles.coLogoXl : ''}`}>
       <img src={src} alt="" loading="lazy" />
     </span>
   );
@@ -63,7 +63,7 @@ function Cred({logo, icon, org, detail, status, big}: {logo?: string; icon?: Rea
   return (
     <div className={styles.cred}>
       <span className={`${styles.credMark} ${icon ? styles.credMarkIcon : ''}`}>
-        {icon ? icon : <img className={`${styles.credLogo} ${big ? styles.credLogoBig : ''}`} src={src} alt="" loading="lazy" />}
+        {icon ? icon : <img className={`${styles.credLogo} ${big ? styles.credLogoBig : ''} ${(logo === 'oracle.svg' || logo === 'forca.png') ? styles.credLogoXl : ''}`} src={src} alt="" loading="lazy" />}
       </span>
       <div className={styles.credText}>
         <span className={styles.credOrg}>{org}</span>

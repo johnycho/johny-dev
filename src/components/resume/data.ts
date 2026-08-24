@@ -333,8 +333,8 @@ export const EDUCATION: Edu[] = [
 // [이름, 취득연월, 로고 파일]: 로고 없는 항목은 파일명 '' (PDF는 로고 미표기)
 export const CERTS: [string, string, string][] = [
   ['정보처리기사', '2016.05', 'qnet.svg'],
-  ['OCP: Oracle Database 11g Administrator', '2016.07', 'oracle.png'],
-  ['OCJP: Oracle Certified Professional, Java SE 6', '2016.08', 'oracle.png'],
+  ['OCP: Oracle Database 11g Administrator', '2016.07', 'oracle.svg'],
+  ['OCJP: Oracle Certified Professional, Java SE 6', '2016.08', 'oracle.svg'],
   ['JLPT N2', '2016.08', ''],
 ];
 
