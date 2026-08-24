@@ -17,6 +17,9 @@ johny-dev 기술 블로그 (Docusaurus). 게시글은 `blog/*.mdx`로 작성하�
 - **유틸 서버리스(Vercel) — `tools/johny-utils`** → [`.claude/wiki/vercel-deploy.md`](.claude/wiki/vercel-deploy.md)
   - Cusdis→Slack 중계(`/api/webhook`·`/api/slack-action`) + 게시글 조회수(`/api/view-count`, Upstash Redis). 프런트: `src/viewCount.ts`·`src/components/ViewCount.tsx`.
   - 배포 절차/스킬 → [`.claude/skills/deploy-utils/SKILL.md`](.claude/skills/deploy-utils/SKILL.md) (또는 `/deploy-utils`). 배포는 **사용자 승인 후** 프로덕션 별칭 `https://johny-utils.vercel.app` 로만.
+- **소개 페이지(/about)·이력서 PDF 수정** → [`.claude/wiki/about-resume.md`](.claude/wiki/about-resume.md)
+  - 절차/스킬 → [`.claude/skills/resume-verify/SKILL.md`](.claude/skills/resume-verify/SKILL.md) (또는 `/resume-verify`)
+  - 핵심: 내용은 **단일 원천 `src/components/resume/data.ts`** 만 수정 → **Rezumi 피드백 반영** → **PDF 페이지 오버플로 최종 확인**(헤드리스 렌더로 항목이 다음 페이지로 어색하게 넘어가지 않는지)까지 하고 종료.
 
 ## 참고
 - 저자 설정: `blog/authors.yml` · 태그 설정: `blog/tags.yml`

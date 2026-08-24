@@ -1,0 +1,10 @@
+{
+  "name": "about-resume-skill",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "소개 페이지·이력서 수정 보조 도구(Rezumi 피드백 수집). render-resume.cjs는 저장소 node_modules를 사용.",
+  "dependencies": {
+    "playwright": "^1.62.1"
+  }
+}

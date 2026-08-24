@@ -1,5 +1,6 @@
 # Dependencies
 /node_modules
+.claude/skills/resume-verify/node_modules
 
 # Production
 /build

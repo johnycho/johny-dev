@@ -13,7 +13,7 @@ export const CONTACTS = {
   blog: 'https://johnycho.dev/blog', // 웹 소개 페이지 버튼용
 };
 
-// About Me — 이력서 원문 (**...** 은 강조/볼드 구간)
+// About Me: 이력서 원문 (**...** 은 강조/볼드 구간)
 export const ABOUT: string[] = [
   '백엔드 개발자로서 복잡한 도메인을 구조화하고, **안정적으로 확장 가능한 서버**를 설계하는 능력을 가장 중요한 가치로 두고 있습니다.',
   '한국과 일본에서 파견 엔지니어 및 인하우스 개발자로 활동하며 **커머스·게임·통신·AR·데이터 분석** 등 다양한 산업의 문제를 직접 해결해 왔습니다. 이 과정에서 단순 기능 개발을 넘어, **요구사항 정의–설계–API 개발–운영–성능 개선**까지 엔드 투 엔드 관점의 개발 역량을 쌓았습니다.',
@@ -61,7 +61,7 @@ export const EXPERIENCE: Exp[] = [
     bullets: [
       '입고 도메인 기능 개발',
       '대량 데이터 처리와 동시성 정합성을 고려한 배치 신규 개발',
-      '헥사고날 아키텍처 멀티모듈 MSA에서 API·배치·Kafka 이벤트 처리 개발',
+      '헥사고날(포트·어댑터·DIP) 멀티모듈 MSA에서 API·배치·Kafka 이벤트 처리 개발',
     ],
   },
   {
@@ -119,10 +119,10 @@ export const PROJECTS: Project[] = [
       '**헥사고날 아키텍처 멀티모듈 MSA**에서 API·배치·Kafka 이벤트 처리 개발',
     ],
     results: [
-      '==일 수만 건== 규모의 회송·폐기 처리를 **커서 기반 조회·벌크 연산**으로 신규 개발해 성능·안정성 확보',
-      '여러 주체가 동시에 바꾸는 상태 전이에 **조건부 업데이트와 분산 락**을 적용해 데이터 정합성 확보',
+      '==일 수만 건== 규모의 회송·폐기 처리를 **커서 기반 조회·벌크 연산**으로 신규 개발해 ==약 1~2분 내 안정 처리==',
+      '여러 주체가 동시에 바꾸는 상태 전이에 **조건부 업데이트와 분산 락**으로 멱등성·데이터 정합성 확보',
       '**청크 분할·병렬 처리**로 처리량을 확보하고, 재시도·건너뛰기 정책으로 배치 중단 방지',
-      '**Outbox 패턴**으로 상태 변경과 이벤트 발행을 묶어, 장애 시에도 이벤트 유실·중복 없이 정합성 보장',
+      '**Outbox 패턴**과 **컨슈머 멱등 처리**로 상태 변경·이벤트 발행을 묶어, 장애 시에도 이벤트 유실·중복 없이 정합성 보장',
       '처리 완료·실패 결과를 이메일·슬랙으로 자동 통지하는 알림 연동을 구축해 **운영 가시성 확보**',
     ],
     tech: ['Java 21', 'Spring Boot 3.2', 'Spring Batch', 'JPA', 'QueryDSL', 'MySQL', 'Kafka', 'Redis', 'AWS'],
@@ -132,6 +132,7 @@ export const PROJECTS: Project[] = [
     period: '2024.03 – 2025.12',
     desc: '유저 참여도와 장기 유지율(리텐션) 향상을 목표로 경제·보상·리텐션 시스템 등 메타 컨텐츠를 설계하고, 대규모 트래픽에서도 안정적으로 운영 가능한 서버 구조로 구축한 프로젝트.',
     roles: [
+      '**도메인 주도 설계(DDD) 기반 레이어드 아키텍처**로 도메인·응용·인프라 계층을 분리해 모듈 간 의존성 최소화·확장성 확보',
       '튜토리얼·단계별 미션·출석/보상·VIP 등급·이벤트 푸시 등 **메타 컨텐츠 도메인 설계·구현**',
       '운영툴 기반 유저/컨텐츠 관리 기능 및 **지표 대시보드 연동**',
     ],
@@ -139,7 +140,7 @@ export const PROJECTS: Project[] = [
       '보상 지급·VIP 등급 갱신 등 동시성 핵심 로직에 **Redisson 분산 락**을 적용해 중복 지급·데이터 충돌 방지',
       '경제 재화 변경 로직에 **DB 트랜잭션 + 비관적 락(Pessimistic Lock)**을 적용해 대규모 동시 요청에서도 정합성 보장',
       '**Kafka 비동기 이벤트 처리**로 트래픽 피크 구간의 메인 트랜잭션 부하를 분리하고 응답 속도 안정화',
-      '**Spring Batch**로 대량 이벤트 푸시를 안정 처리 — Chunk 기반 대량 처리 + 병렬 Step으로 성능 개선, Retry/Skip 정책으로 외부 푸시 API 실패 시 자동 복구·발송 누락 방지',
+      '**Spring Batch**로 대량 이벤트 푸시를 안정 처리: Chunk 기반 대량 처리 + 병렬 Step으로 성능 개선, Retry/Skip 정책으로 외부 푸시 API 실패 시 자동 복구·발송 누락 방지',
       'Redis 캐시 + TTL 전략으로 읽기 트래픽을 분산해 ==DB 부하 40% 이상 감소==',
     ],
     tech: ['Java', 'Spring Boot', 'JPA', 'MariaDB', 'Redis', 'Kafka', 'Spring Batch', 'AWS'],
@@ -149,6 +150,7 @@ export const PROJECTS: Project[] = [
     period: '2021.12 – 2024.03',
     desc: '대규모 동시 접속 환경에서 확률 연산과 게임 플레이를 안정적으로 처리하도록 게임 룰 엔진·시뮬레이션 시스템을 구축하고, 다양한 슬롯 테마 추가에 유연하게 대응하도록 로직을 모듈화·최적화한 프로젝트.',
     roles: [
+      '**도메인 주도 설계(DDD) 기반 레이어드 아키텍처**로 계층·모듈 경계를 분리해 신규 테마 확장 시 영향 범위 최소화',
       '슬롯 릴·심볼·페이라인·보너스 게임 등 **핵심 룰 엔진 설계**',
       '**RTP(환급률) 계산 모듈** 구현 및 출시 전 확률 검증용 시뮬레이션 툴 구축',
       '객체 풀링·캐싱 등 **코어 연산 성능 최적화**',
@@ -162,31 +164,66 @@ export const PROJECTS: Project[] = [
     tech: ['Java', 'Spring Boot', 'JPA', 'MariaDB', 'Redis', 'Kafka'],
   },
   {
+    title: "베이컨·콜린스 커머스 웹사이트 구축",
+    period: '2021.03 – 2021.12',
+    desc: '자사 브랜드 베이컨과 신규 브랜드 콜린스의 커머스 웹사이트를 WordPress·WooCommerce CMS에 Spring Boot API 서버를 분리·연동하는 구조로 구축한 프로젝트. 인증·상품·회원·주문·결제 전반을 설계·구현하고 AWS에 배포·운영.',
+    roles: [
+      '**WordPress·WooCommerce CMS에 Spring Boot API 서버를 분리 연동**하는 아키텍처로 구축(콘텐츠·상품 노출은 CMS, 인증·회원·주문·결제 등 핵심 도메인은 API 서버 담당)',
+      '**인증·상품·회원·주문·결제** 전반 REST API 설계·구현: **카카오 로그인**과 **아임포트(iamport) PG**에 **네이버페이·카카오페이** 간편결제 연동',
+      '동시 주문에서 **재고 오버셀링·중복 결제** 문제를 **비관적 락·조건부 재고 차감**과 **멱등성 키**로 해결',
+      '베이컨박스 **정기배송(Lite/Basic/Premium)** 상품 구성·주문·이력 API와 구매 패턴 기반 상품 추천 로직 구현',
+      '**AWS 인프라**(EC2·RDS 등) 구성과 **Jenkins CI/CD** 파이프라인 구축',
+    ],
+    results: [
+      'CMS는 유지하면서 핵심 도메인을 **API 서버로 분리**하고 조회 API에 **로컬(L1)+Redis(L2) 다층 캐시**를 적용해 **확장성·유지보수성과 주요 화면 응답 속도 개선**',
+      '세일·프로모션 등 **이벤트성 트래픽 급증**에도 다층 캐시로 원본(DB) 부하를 완화해 **안정적으로 응답 유지**',
+      '아임포트 결제 콜백과 주문·재고 상태를 **트랜잭션으로 동기화**해 결제·주문 정합성 확보',
+      '**카카오 로그인·간편결제(네이버·카카오페이)** 로 가입·결제 흐름을 단축해 **결제 사용성 개선**',
+      '신규 브랜드 콜린스를 **론칭 일정 내 안정적으로 오픈**',
+    ],
+    tech: ['Java', 'Spring Boot', 'JPA', 'WordPress', 'WooCommerce', 'iamport', 'MariaDB', 'Redis', 'AWS', 'Jenkins'],
+  },
+  {
     title: 'B2B 사업자몰 구축',
     period: '2020.12 – 2021.02',
     desc: '거래처 단가·할인율·정산 데이터를 멤버십 등급별로 관리해, 대량 주문과 파트너사 전용 판매 프로세스를 안정적으로 지원하는 B2B 사업자몰을 구축한 프로젝트.',
     roles: [
-      '사업자 멤버십(등록·승인·등급) 기능 설계·구현',
-      '멤버십 등급별 **할인율 자동 계산** 및 상품 주문·결제 API 개발',
-      '주문 이력·**정산 데이터 관리** 모듈 개발',
+      '거래처 단가·**등급별 할인율·정산 정책을 정규화한 테이블 구조**로 데이터 모델 설계',
+      '**WooCommerce 플랫폼에 Spring Boot 백엔드를 연동**해 사업자 멤버십(등록·승인·등급)·주문·결제 구현',
+      '멤버십 등급별 **할인율 자동 계산**과 주문 이력·**정산 데이터 관리** 모듈 개발',
     ],
     results: [
-      '파트너 전용 B2B 거래 채널을 구축해 **신규 매출 경로 확보**',
-      '등급별 할인·정산 로직을 자동화해 수기 처리 공수와 오류를 줄이고 **운영 효율 향상**',
+      '파트너 전용 B2B 거래 채널을 신규 구축해 **B2B 신규 매출 경로 확보**',
+      '등급별 할인·정산 로직 자동화로 수기 처리·오류를 줄여 ==정산 운영 공수 약 50% 절감==',
     ],
     tech: ['Java', 'Spring Boot', 'JPA', 'WooCommerce', 'MariaDB', 'AWS', 'Jenkins'],
+  },
+  {
+    title: '베이컨 스토어 대시보드 구축',
+    period: '2020.10 – 2020.11',
+    desc: '비즈니스 핵심 데이터를 데이터 웨어하우스(Amazon Redshift)로 이관하고, Redash 대시보드로 주요 운영 지표를 실시간 분석하는 시스템을 구축한 프로젝트.',
+    roles: [
+      '운영 DB(MariaDB) → **Amazon Redshift 데이터 웨어하우스** 마이그레이션 환경 구축',
+      '**Redash 서버 구축·Redshift 연동**으로 지표 시각화 대시보드 제공',
+      '비즈니스 지표별 **집계 쿼리 작성·최적화**',
+    ],
+    results: [
+      'OLTP와 분석 부하를 분리(**컬럼 기반 DW 전환**)해 집계·분석 처리 속도 향상',
+      '운영 지표를 대시보드에서 셀프 조회하도록 해 **데이터 접근 편의성 향상**',
+    ],
+    tech: ['MariaDB', 'Amazon Redshift', 'AWS', 'Redash'],
   },
   {
     title: '모바일 메신저 성능 개선',
     period: '2018.03 – 2018.05',
     desc: '트래픽 증가로 발생한 메시지 송·수신 지연과 앱 과부하를 해결하기 위해, 클라이언트 중심 처리 구조를 서버 사이드로 전환하고 쿼리 최적화·부하 테스트로 성능을 개선한 프로젝트.',
     roles: [
-      '메시지 필터링·정렬·읽음 처리 로직을 **클라이언트 → 서버 사이드로 이관**해 단말 CPU·메모리 사용량 감소',
+      '**JMeter 부하 테스트**로 TPS·응답 시간을 측정해 메시지 송·수신 지연의 **병목 구간 식별**',
+      '단말에서 처리하던 메시지 필터링·정렬·읽음 로직을 **서버 사이드로 이관**해 단말 부하 감소·처리 일관성 확보',
       '대화방 조회의 다중 JOIN 쿼리를 **인덱스 재설계·페이징 구조**로 개선',
-      '**JMeter 기반 부하 테스트**로 TPS 시나리오 설계·수행',
     ],
     results: [
-      '메시지 조회·대화방 로딩 구간의 **응답 속도 개선** 및 체감 지연 감소',
+      '대화방 조회 응답을 ==기존 약 1.2초 → 0.3초로 단축==해 체감 지연 감소',
       '페이징 처리·불필요한 데이터 전송 제거로 **네트워크 트래픽 감소**',
       'JMeter 부하 테스트로 병목 구간을 식별해 처리 구조 개선',
     ],
@@ -197,12 +234,13 @@ export const PROJECTS: Project[] = [
     period: '2017.03 – 2017.06',
     desc: '대용량 정산 데이터 누적으로 인한 성능 저하를 해결하기 위해, 정산 SQL 튜닝과 JOIN 구조 개선으로 처리 속도를 높이고 정산 프로세스를 자동화한 프로젝트.',
     roles: [
-      '주요 정산 SQL에 **인덱스 재설계·실행 계획 분석 기반 튜닝** 수행',
-      '대규모 정산 데이터의 다중 JOIN을 최소화하고 일부 연산을 로직으로 분리해 **DB 부하 완화**',
+      '**슬로우 쿼리 로그·실행 계획(EXPLAIN)** 분석으로 풀스캔·비효율 JOIN 등 병목 정산 쿼리 식별',
+      '조회 조건·정렬에 맞춘 **복합 인덱스 재설계**·다중 JOIN 최소화로 실행 계획 개선',
+      '**복잡한 집계·연산은 DB 대신 애플리케이션(비즈니스 로직)에서 처리**해 DB 부하 완화',
       '정산 데이터 추출–파일 생성–업로드 **프로세스 자동화**',
     ],
     results: [
-      'JOIN 구조 개선·로직 분리로 **정산 데이터 조회·처리 속도 향상**',
+      '대용량 정산 데이터의 JOIN·인덱스 튜닝으로 정산 처리를 ==기존 약 10분 → 1~2분으로 단축==',
       '대용량 정산 구간에서 발생하던 **DB 병목·응답 지연 개선**',
       '파일 입출력 자동화로 운영 수작업 공수 감소·처리 오류 최소화',
     ],
@@ -215,6 +253,7 @@ export const STRENGTHS: [string, string][] = [
   ['대용량 트래픽 성능 최적화', '프로파일링 기반 병목 분석 · 캐싱 · 알고리즘 개선'],
   ['이벤트 기반·비동기/배치', 'Kafka 비동기 처리 · Spring Batch 대량 처리'],
   ['도메인 설계·데이터 모델링', '요구사항 정의부터 운영까지 엔드 투 엔드'],
+  ['아키텍처·설계 원칙', '헥사고날(포트·어댑터) 기반 DIP · 관심사 분리 · 도메인 중심 설계'],
 ];
 
 export const SKILLS: [string, string[]][] = [
@@ -255,7 +294,7 @@ export const TROUBLES: Trouble[] = [
       '컨슈머에 OpenTelemetry 컨텍스트 추출 로직이 없어 메시지 수신 시 **새 TraceId로 스팬이 시작됨**',
     ],
     solution: [
-      '**OpenTelemetry 표준 컨텍스트 전파**로 전환 — Kafka 헤더의 traceparent를 읽어 컨텍스트를 복원하고 현재 스레드에 적용',
+      '**OpenTelemetry 표준 컨텍스트 전파**로 전환: Kafka 헤더의 traceparent를 읽어 컨텍스트를 복원하고 현재 스레드에 적용',
       'MessageConsumer 인터페이스에 **공통 트레이싱 로직**을 추가해 모든 컨슈머에 자동 적용',
     ],
     result: [
@@ -272,7 +311,7 @@ export const TROUBLES: Trouble[] = [
       '페이지가 깊어질수록 쿼리 실행 시간이 급증하고 DB CPU가 치솟아 **전체 배치가 불안정**',
     ],
     solution: [
-      '**Cursor 기반(no-offset) 조회**로 전환 — 마지막 조회 id 기준 WHERE id > :afterId ORDER BY id LIMIT :chunkSize 로 스트리밍하며 순차 조회',
+      '**Cursor 기반(no-offset) 조회**로 전환: 마지막 조회 id 기준 WHERE id > :afterId ORDER BY id LIMIT :chunkSize 로 스트리밍하며 순차 조회',
       'JPA Cursor ItemReader에 **fetchSize(1,000건 단위) Query Hint**를 적용해 네트워크 왕복·메모리 사용 최적화',
       '불필요한 **OFFSET 계산·반복 정렬 비용 제거**',
     ],
@@ -290,11 +329,11 @@ export const EDUCATION: Edu[] = [
   {org: '빅데이터 전문가 육성과정 (FORCA)', detail: '2016', status: '수료'},
 ];
 
-// [이름, 취득연월, 로고 파일] — 로고 없는 항목은 파일명 '' (PDF는 로고 미표기)
+// [이름, 취득연월, 로고 파일]: 로고 없는 항목은 파일명 '' (PDF는 로고 미표기)
 export const CERTS: [string, string, string][] = [
   ['정보처리기사', '2016.05', 'qnet.svg'],
-  ['OCP — Oracle Database 11g Administrator', '2016.07', 'oracle.png'],
-  ['OCJP — Oracle Certified Professional, Java SE 6', '2016.08', 'oracle.png'],
+  ['OCP: Oracle Database 11g Administrator', '2016.07', 'oracle.png'],
+  ['OCJP: Oracle Certified Professional, Java SE 6', '2016.08', 'oracle.png'],
   ['JLPT N2', '2016.08', ''],
 ];
 
@@ -308,7 +347,7 @@ export type OpenSource = {
 };
 export const OPENSOURCE: OpenSource[] = [
   {
-    title: 'Spring Cloud Config — Vault 인증 로직 개선',
+    title: 'Spring Cloud Config: Vault 인증 로직 개선',
     prLabel: 'PR #3178', prUrl: 'https://github.com/spring-cloud/spring-cloud-config/pull/3178', extra: 'merged Jan 2026',
     issue: [
       'Vault TOKEN 인증 모드인데도 **설정 파일에 명시된 토큰이 우선 적용되지 않**고 기본 Token Provider 로직이 동작하는 버그',
@@ -320,7 +359,7 @@ export const OPENSOURCE: OpenSource[] = [
     ],
   },
   {
-    title: 'Spring Cloud Config — {file} 접두어 기반 파일 내용 Base64 치환 기능 도입',
+    title: 'Spring Cloud Config: {file} 접두어 기반 파일 내용 Base64 치환 기능 도입',
     prLabel: 'PR #3179', prUrl: 'https://github.com/spring-cloud/spring-cloud-config/pull/3179',
     issue: [
       '{file} 접두어를 사용해도 파일 내용을 자동 해석하는 기능이 없어 **설정 확장성·편의성이 제한**',
@@ -331,7 +370,7 @@ export const OPENSOURCE: OpenSource[] = [
     ],
   },
   {
-    title: 'Spring Security — serialVersionUID 검사 로직 개선',
+    title: 'Spring Security: serialVersionUID 검사 로직 개선',
     prLabel: 'PR #18474', prUrl: 'https://github.com/spring-projects/spring-security/pull/18474#issuecomment-4165965631', extra: 'merged',
     issue: [
       '@SuppressWarnings("serial") 검사 로직이 잘못 구현되어 **false positive 판정 발생**',

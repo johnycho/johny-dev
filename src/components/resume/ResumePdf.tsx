@@ -344,6 +344,10 @@ function ResumeDoc() {
   );
 }
 
+// 헤드리스 PDF 렌더 검증용 export (resume-verify 스킬의 render-resume.cjs가 사용).
+// 앱에서는 import하지 않으므로 프로덕션 번들에서 트리셰이킹됨 — 그대로 둘 것.
+export const __ResumeDoc = ResumeDoc;
+
 const DownloadIcon = () => (
   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="M7 10l5 5 5-5" /><path d="M12 15V3" />

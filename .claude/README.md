@@ -13,11 +13,13 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 │   ├── common-authoring.md    · 게시글·wiki 공통 규칙(코드 예시 스타일 등)
 │   ├── word-choice.md         · 표현·용어 순화(지양→권장 목록·예외) — 계속 늘어나 별도 관리
 │   ├── spring-boot-updates.md · 스프링 부트 업데이트 시리즈(3.2.0 이후) 소스·범위·주제 규칙
+│   ├── about-resume.md        · 소개 페이지(/about)·이력서 PDF 수정 규칙(단일 원천 data.ts·Rezumi 피드백·PDF 페이지 검증)
 │   ├── git-account.md         · Git 계정(johnycho) 정책
 │   └── vercel-deploy.md       · Vercel 배포(tools/johny-utils) 정책·환경변수
 ├── skills/                ← 실행 절차(규칙의 "어떻게", 호출형)
 │   ├── blog-post/SKILL.md          · 마크다운 초안 → 블로그 게시글 변환 절차 (/blog-post)
 │   ├── spring-update-post/SKILL.md · 스프링 부트 변화 조사 → 주제별 게시글 (/spring-update-post)
+│   ├── resume-verify/SKILL.md      · 소개 페이지·이력서 PDF 수정·검증(+Rezumi 피드백·PDF 검증) (/resume-verify)
 │   └── deploy-utils/SKILL.md       · tools/johny-utils Vercel 프로덕션 배포 (/deploy-utils)
 └── hooks/                 ← 자동 검증/강제
     ├── check-git-account.sh   · 커밋·푸시 시 johnycho 계정인지 검증(PreToolUse)
@@ -27,6 +29,7 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 ## 사용
 - **게시글 작성**: `/blog-post` 스킬 호출 또는 "블로그 글 추가해줘" → skill이 wiki 규칙을 따름.
 - **스프링 부트 시리즈**: `/spring-update-post` 호출 또는 "스프링부트 업데이트 글 써줘" → 공식 소스 조사 후 blog-authoring 규칙대로 작성.
+- **소개 페이지·이력서 수정/검증**: `/resume-verify` 호출 또는 "소개페이지 수정/이력서 내용 바꿔/이력서 검증" → 내용은 `data.ts`만 고치고, Rezumi 피드백 반영 + PDF 페이지 오버플로 최종 확인(about-resume.md 규칙)을 필수로 거친다.
 - **규칙 확인/수정**: `wiki/` 문서를 본다. 규칙이 바뀌면 wiki를 갱신하고, 절차가 바뀌면 skill을, 자동화가 바뀌면 hook을 수정.
 - **hook**: `git commit`/`git push` 시 gh 활성 계정이 johnycho가 아니면 차단·안내(PreToolUse). `git push`가 끝나면 기본 계정 johny-cho로 자동 원복(PostToolUse). (`settings.json`에 등록)
 
