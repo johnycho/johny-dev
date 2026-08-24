@@ -38,13 +38,13 @@ const s = StyleSheet.create({
     fontSize: 9,
     lineHeight: 1.36,
     color: BODY,
-    paddingTop: 32,
-    paddingBottom: 30,
+    paddingTop: 28,
+    paddingBottom: 20,
     paddingHorizontal: 42,
   },
 
   // 헤더 — 원본 이력서와 동일: 이름/직함 + 아이콘 연락처 세로 스택
-  headRow: {flexDirection: 'row', alignItems: 'baseline', marginBottom: 9},
+  headRow: {flexDirection: 'row', alignItems: 'baseline', marginBottom: 7},
   name: {fontSize: 22, fontWeight: 700, color: INK, lineHeight: 1.1},
   role: {fontFamily: 'Source Sans Pro', fontSize: 11.5, color: '#40485a', marginLeft: 8, lineHeight: 1.1},
   contactList: {flexDirection: 'column'},
@@ -57,13 +57,13 @@ const s = StyleSheet.create({
   h2: {
     fontFamily: 'Source Sans Pro',
     fontSize: 12.5, fontWeight: 700, color: INK, letterSpacing: 0.5,
-    marginTop: 10, marginBottom: 5, paddingBottom: 3,
+    marginTop: 8, marginBottom: 4, paddingBottom: 3,
     borderBottomWidth: 1, borderBottomColor: '#9aa0a6',
   },
-  para: {marginBottom: 4},
+  para: {marginBottom: 3},
 
   // 타임라인 행 (왼쪽 기간 · 오른쪽 내용)
-  row: {flexDirection: 'row', marginBottom: 6},
+  row: {flexDirection: 'row', marginBottom: 5},
   when: {width: 110, fontSize: 9.3, color: '#3f4657', paddingTop: 1, paddingRight: 10},
   whenRole: {fontSize: 8.3, color: MUTED, marginTop: 1.5},
   body: {flex: 1},
@@ -85,7 +85,7 @@ const s = StyleSheet.create({
   // 2단 (Education | Certificates, Strengths)
   twoCol: {flexDirection: 'row', gap: 22},
   col: {flex: 1},
-  credRow: {marginBottom: 5},
+  credRow: {marginBottom: 4},
   credOrg: {fontSize: 9.3, fontWeight: 700, color: INK},
   credOrgLink: {fontSize: 9.3, fontWeight: 700, color: INK, textDecoration: 'none'},
   credOrgRow: {flexDirection: 'row', alignItems: 'center'},
@@ -129,41 +129,41 @@ const LabeledList = ({label, items, flush}: {label: string; items: string[]; flu
 
 // 연락처 아이콘 (원본 이력서와 동일: 테일색 아이콘 + 텍스트)
 const IcGitHub = () => (
-  <Svg width={10} height={10} viewBox="0 0 16 16">
+  <Svg width={12} height={12} viewBox="0 0 16 16">
     <Path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z" fill={ACCENT} />
   </Svg>
 );
 const IcLinkedIn = () => (
-  <Svg width={10} height={10} viewBox="0 0 24 24">
+  <Svg width={12} height={12} viewBox="0 0 24 24">
     <Path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.13 1.44-2.13 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.8 0 0 .77 0 1.73v20.54C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" fill={ACCENT} />
   </Svg>
 );
 const IcPhone = () => (
-  <Svg width={10} height={10} viewBox="0 0 24 24">
+  <Svg width={12} height={12} viewBox="0 0 24 24">
     <Path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" stroke={ACCENT} strokeWidth={2} fill="none" />
   </Svg>
 );
 const IcGlobe = () => (
-  <Svg width={10} height={10} viewBox="0 0 24 24">
+  <Svg width={12} height={12} viewBox="0 0 24 24">
     <Circle cx={12} cy={12} r={9.5} stroke={ACCENT} strokeWidth={2} fill="none" />
     <Path d="M2.5 12 H21.5" stroke={ACCENT} strokeWidth={2} fill="none" />
     <Path d="M12 2.5 a15 15 0 0 1 0 19 a15 15 0 0 1 0 -19 Z" stroke={ACCENT} strokeWidth={2} fill="none" />
   </Svg>
 );
 const IcLink = () => (
-  <Svg width={10} height={10} viewBox="0 0 24 24">
+  <Svg width={12} height={12} viewBox="0 0 24 24">
     <Path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" stroke={ACCENT} strokeWidth={2} fill="none" />
     <Path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" stroke={ACCENT} strokeWidth={2} fill="none" />
   </Svg>
 );
 const IcMail = () => (
-  <Svg width={10} height={10} viewBox="0 0 24 24">
+  <Svg width={12} height={12} viewBox="0 0 24 24">
     <Rect x={3} y={5} width={18} height={14} rx={2} stroke={ACCENT} strokeWidth={2} fill="none" />
     <Path d="M3 7 L12 13 L21 7" stroke={ACCENT} strokeWidth={2} fill="none" />
   </Svg>
 );
 const IcExtSmall = () => (
-  <Svg width={8} height={8} viewBox="0 0 24 24">
+  <Svg width={10} height={10} viewBox="0 0 24 24">
     <Path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" stroke={ACCENT} strokeWidth={2.4} fill="none" />
     <Path d="M15 3h6v6" stroke={ACCENT} strokeWidth={2.4} fill="none" />
     <Path d="M10 14 21 3" stroke={ACCENT} strokeWidth={2.4} fill="none" />
@@ -171,8 +171,8 @@ const IcExtSmall = () => (
 );
 
 // 왼쪽 기간 · 오른쪽 내용 타임라인 행
-const Row = ({when, children}: {when: string; children: React.ReactNode}) => (
-  <View style={s.row} wrap={false}>
+const Row = ({when, children, pageBreak}: {when: string; children: React.ReactNode; pageBreak?: boolean}) => (
+  <View style={s.row} break={pageBreak}>
     <Text style={s.when}>{when}</Text>
     <View style={s.body}>{children}</View>
   </View>
@@ -217,7 +217,7 @@ function ResumeDoc() {
 
         {/* INTRODUCE */}
         <View>
-          <Text style={s.h2}>INTRODUCE</Text>
+          <Text style={s.h2}>INTRODUCTION</Text>
           {ABOUT.map((p, i) => (
             <Text key={i} style={s.para}>
               {boldSegments(p).map((seg, j) => (
@@ -271,9 +271,9 @@ function ResumeDoc() {
           </View>
         </View>
 
-        {/* ACTIVITY — 1페이지 (Education·Certificates 다음) */}
-        <View>
-          <Text style={s.h2}>ACTIVITY</Text>
+        {/* ACTIVITIES (섹션 통째로 유지해 페이지 경계에서 쪼개지지 않게) */}
+        <View wrap={false}>
+          <Text style={s.h2}>ACTIVITIES</Text>
           {ACTIVITIES.map((a) => (
             <View key={a.name} style={s.credRow}>
               {a.url ? (
@@ -293,7 +293,7 @@ function ResumeDoc() {
         <View break>
           <Text style={s.h2}>KEY PROJECTS</Text>
           {PROJECTS.map((p) => (
-            <Row key={p.title} when={p.period}>
+            <Row key={p.title} when={p.period} pageBreak={p.title === '모바일 메신저 성능 개선'}>
               <Text style={s.org}>{p.title}</Text>
               <Text style={s.desc}>{p.desc}</Text>
               <LabeledList label="담당" items={p.roles} flush />
@@ -321,7 +321,7 @@ function ResumeDoc() {
 
         {/* OPENSOURCE CONTRIBUTION */}
         <View>
-          <Text style={s.h2}>OPENSOURCE CONTRIBUTION</Text>
+          <Text style={s.h2}>OPEN SOURCE CONTRIBUTIONS</Text>
           {OPENSOURCE.map((o) => (
             <View key={o.prLabel} style={{marginBottom: 9}} wrap={false}>
               <View style={s.osRow}>

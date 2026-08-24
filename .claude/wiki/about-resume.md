@@ -7,6 +7,11 @@
 - 소개 페이지(`src/pages/about.tsx`)와 이력서 PDF(`src/components/resume/ResumePdf.tsx`)는 **둘 다 [`src/components/resume/data.ts`](../../src/components/resume/data.ts)를 읽는다.**
 - 그래서 **경력·프로젝트·수치·문구 등 "내용"은 반드시 `data.ts`만 고친다.** about.tsx/ResumePdf.tsx는 표현(레이아웃·스타일)만 담당한다. 한쪽에만 하드코딩하지 않는다.
 - 문구는 [word-choice.md](./word-choice.md)의 지양어 규칙을 따른다.
+- **섹션 제목 영문 표기는 문법을 지킨다** (웹·PDF 공통):
+  - 셀 수 있는 명사는 **복수**: Projects · Certificates · Activities · Skills · (Open Source) Contributions.
+  - 불가산 명사는 **단수**: Education · Experience · Troubleshooting. (Educations·Experiences 처럼 억지 복수 금지)
+  - 제목은 **명사형**으로: `Introduce`(동사) 대신 `Introduction`.
+  - "open source"는 **두 단어**로: `Opensource` 대신 `Open Source`.
 
 ## 2) 필수 프로세스 ① — Rezumi 피드백 루프 (내용 변경 시)
 소개/이력 **내용을 추가·삭제·수정하면**(단순 오타·레이아웃 제외), 반영 전/후에 [Rezumi](https://rezumi.kr) AI 이력서 피드백을 받아 반영한다.
