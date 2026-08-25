@@ -150,8 +150,10 @@
 }
 .credLogo { width: 100%; height: 100%; object-fit: contain; padding: 5px; }
 .credLogoBig { padding: 1px; }
-/* oracle·forca — 박스는 그대로, 로고만 조금 더 크게 */
-.credLogoXl { padding: 2px; }
+/* forca — 여백 0(꽉 참)에서 살짝만 작게 */
+.credLogoXl { padding: 3px; }
+/* oracle — 약간의 여백 */
+.credLogoOracle { padding: 3px; }
 /* 가로형 워드마크 로고(예: gj-aischool) — 박스 높이 맞춤, 폭 자동 */
 .credMarkWide {
   flex: 0 0 auto;

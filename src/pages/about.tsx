@@ -63,7 +63,7 @@ function Cred({logo, icon, org, detail, status, big}: {logo?: string; icon?: Rea
   return (
     <div className={styles.cred}>
       <span className={`${styles.credMark} ${icon ? styles.credMarkIcon : ''}`}>
-        {icon ? icon : <img className={`${styles.credLogo} ${big ? styles.credLogoBig : ''} ${(logo === 'oracle.svg' || logo === 'forca.png') ? styles.credLogoXl : ''}`} src={src} alt="" loading="lazy" />}
+        {icon ? icon : <img className={`${styles.credLogo} ${big ? styles.credLogoBig : ''} ${logo === 'forca.png' ? styles.credLogoXl : ''} ${logo === 'oracle.svg' ? styles.credLogoOracle : ''}`} src={src} alt="" loading="lazy" />}
       </span>
       <div className={styles.credText}>
         <span className={styles.credOrg}>{org}</span>

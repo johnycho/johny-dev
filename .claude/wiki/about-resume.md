@@ -7,6 +7,7 @@
 - 소개 페이지(`src/pages/about.tsx`)와 이력서 PDF(`src/components/resume/ResumePdf.tsx`)는 **둘 다 [`src/components/resume/data.ts`](../../src/components/resume/data.ts)를 읽는다.**
 - 그래서 **경력·프로젝트·수치·문구 등 "내용"은 반드시 `data.ts`만 고친다.** about.tsx/ResumePdf.tsx는 표현(레이아웃·스타일)만 담당한다. 한쪽에만 하드코딩하지 않는다.
 - 문구는 [word-choice.md](./word-choice.md)의 지양어 규칙을 따른다.
+- **팩트에 맞는 동사를 쓴다**: 신규로 만든 것을 "개선·단축"이라 쓰지 않는다(개선은 기존 대비가 있을 때만). 신규 개발은 **구축·개발·확보**로, 성과는 "무엇을 얼마 규모로 얼마 만에 처리" 식의 **처리량·규모·시간**으로 표현한다. 예: (신규 배치) "~개선" → "~확보", "50% 단축"(대비 없음) → "일 수만 건을 약 1~2분 내 처리".
 - **섹션 제목 영문 표기는 문법을 지킨다** (웹·PDF 공통):
   - 셀 수 있는 명사는 **복수**: Projects · Certificates · Activities · Skills · (Open Source) Contributions.
   - 불가산 명사는 **단수**: Education · Experience · Troubleshooting. (Educations·Experiences 처럼 억지 복수 금지)
