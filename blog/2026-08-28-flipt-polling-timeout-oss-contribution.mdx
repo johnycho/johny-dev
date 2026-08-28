@@ -1,0 +1,193 @@
+---
+slug: flipt-polling-timeout-oss-contribution
+title: "오픈소스 기여기: 폴링이 영원히 멈추던 버그 — connect timeout ≠ request timeout"
+authors: [ johnycho ]
+tags: [ opensource, system-design ]
+date: 2026-08-28T09:00:00
+---
+
+<!-- truncate -->
+
+피처 플래그 도구 [Flipt](https://www.flipt.io/)의 클라이언트 SDK를 쓰다가, 폴링으로 플래그 스냅샷을 갱신하는 백그라운드 작업이 **어느 순간부터 영원히 멈춰** 오래된 스냅샷만 계속 반환하는 버그를 겪었습니다. 원인을 추적해 보니 "에러가 나서 멈춘 것"이 아니라 **요청 타임아웃이 없어 응답을 무한정 기다리다 멈춰 버린** 것이었습니다. 마침 비슷한 시기에 [Flipt 오픈소스 프로젝트](https://github.com/flipt-io/flipt-client-sdks)(upstream)에도 같은 증상의 [이슈](https://github.com/flipt-io/flipt-client-sdks/issues/1926)가 리포팅돼 있어, 원인을 규명하고 수정 [PR](https://github.com/flipt-io/flipt-client-sdks/pull/1928)을 제출하기까지의 과정을 정리합니다.
+
+<mark>`connect_timeout`은 "연결까지"만 제한합니다. 연결된 뒤 응답이 멈추면, 전체 요청 타임아웃이 없는 한 클라이언트는 영원히 기다립니다 — 이게 폴링이 멈춰 버린 원인이었습니다.</mark>
+
+## 증상 — 재기동 전까지 스스로 회복되지 않음
+
+Flipt 클라이언트를 `POLLING` 모드로 쓰면, 엔진이 백그라운드에서 주기적으로 스냅샷을 다시 가져와 최신 플래그를 반영합니다. 그런데 이 갱신 작업이 한 번 멈추면:
+
+- 이후 모든 플래그 평가가 **시작 시점에 가져온 스냅샷**만 반환합니다.
+- 엔진 인스턴스는 살아 있고 에러도 없어서, **문제를 인지하기 어렵습니다.**
+- 유일한 회복 방법이 **클라이언트 인스턴스를 새로 만드는 것**(보통 앱 재기동)뿐입니다.
+
+피처 플래그는 "지금 이 기능을 켤지 끌지"를 실시간으로 바꾸는 스위치입니다. 그 값이 옛 상태로 멈춰 있으면 다음과 같은 문제가 발생할 수 있습니다.
+
+- 장애가 나서 문제 기능을 **끄려고 플래그를 off로 내려도**, 멈춘 클라이언트는 옛 스냅샷대로 여전히 **on으로 평가**해 문제 기능이 계속 노출됩니다(킬 스위치 무력화).
+- 새 기능을 **일부 사용자에게만 켜서 점진 공개**하려고 플래그를 켜도, off로 남아 **그 클라이언트에는 신규 기능이 열리지 않습니다.**
+
+즉, 서버에서 플래그를 아무리 바꿔도 그 클라이언트에는 닿지 않아, 배포·롤백을 위한 스위치가 동작하지 않습니다.
+
+## 원인 추적 — `break`가 아니라 hang
+
+이슈에는 이렇게 적혀 있었습니다.
+
+> `HTTPFetcher::start` breaks out of the loop on error. Nothing restarts the task, and the Engine holding it stays alive and keeps serving evaluations from the last snapshot.
+
+즉 "에러가 나면 폴링 루프가 `break`로 빠져나가 다시 시작하지 않고, 엔진은 살아 있는 채 마지막 스냅샷만 계속 반환한다"는 진단입니다. 해당 코드는 이렇습니다.
+
+```rust
+FetchMode::Polling => {
+    if let Err(e) = fetcher.handle_polling(&tx).await {
+        log::warn!("error fetching polling: {e}");
+        break;   // 여기서 루프 종료
+    }
+    // ... update_interval 만큼 대기 후 반복 ...
+}
+```
+
+그런데 `handle_polling`을 따라가 보면, fetch·JSON 파싱 오류는 `Err(e)`로 **소비자에게 전달**되고 함수 자체는 `Ok(())`를 반환합니다. 즉 이 함수가 `Err`를 반환하는 경우는 **결과를 보낼 채널이 닫혔을 때(=클라이언트가 종료됐을 때)뿐**입니다.
+
+```rust
+async fn handle_polling(&mut self, sender: &mpsc::Sender<...>) -> Result<(), Error> {
+    let result = match self.fetch().await {          // ← 여기서 멈추면?
+        Ok(Some(resp)) => /* JSON 파싱 */,
+        Ok(None) => return Ok(()),
+        Err(e) => Err(e),                            // 에러도 결과로 "전송"됨
+    };
+    sender.send(result).await                        // 전송 실패 시에만 Err 반환
+        .map_err(|_| Error::Internal("failed to send result".into()))
+}
+```
+
+그래서 메인테이너도 "이 `break`는 클라이언트가 닫힐 때만 실행된다"며 재현에 실패했습니다. 실제로 멈춘 지점은 다른 곳, **`self.fetch().await`가 반환되지 않고 멈추는(hang)** 부분에 있었습니다.
+
+<mark>루프가 끊긴 게 아니라, 폴링 루프가 `fetch().await`에서 블로킹돼 다음 주기로 넘어가지 못한 것입니다. 끝나지 않는 `await`는 에러도 로그도 없이 백그라운드 작업을 정지시킵니다.</mark>
+
+## 왜 `fetch()`가 멈췄나 — 타임아웃 설정의 사각지대
+
+클라이언트를 만드는 코드를 보면, 폴링 모드의 요청 타임아웃이 **사용자가 명시했을 때만** 설정됩니다.
+
+```rust
+let mut client_builder = reqwest::Client::builder()
+    .connect_timeout(Duration::from_secs(10));   // 연결까지만 10초 제한
+
+match self.mode {
+    FetchMode::Polling => {
+        if let Some(request_timeout) = self.request_timeout {   // 기본값(미설정)이면
+            if request_timeout.as_secs() > 0 {                  // 이 블록을 건너뜀
+                client_builder = client_builder.timeout(request_timeout);
+            }
+        }
+    }
+    // ...
+}
+```
+
+여기서 두 타임아웃의 차이가 핵심입니다.
+
+| 옵션 | 무엇을 제한하나 |
+|---|---|
+| `connect_timeout` | TCP·TLS **연결 수립**까지의 시간 |
+| `timeout`(전체 요청) | 연결 후 **응답을 다 받기까지** 포함한 전체 시간 |
+
+기본 설정에는 `connect_timeout(10s)`만 있고 **전체 요청 타임아웃이 없습니다.** 그래서 연결은 정상적으로 맺어졌는데 서버가 응답을 끝까지 보내지 못하면(과부하로 느려진 서버, 응답을 지연시키는 프록시 등), `fetch().await`가 **완료되지 않고 계속 대기합니다.** 재시도 미들웨어도 도움이 되지 않습니다 — 재시도는 에러가 발생해야 동작하는데, 이 경우는 에러 없이 대기만 이어지기 때문입니다.
+
+```mermaid
+%%{init: {'sequence': {'actorMargin': 210}}}%%
+sequenceDiagram
+  box 클라이언트 SDK (같은 프로세스)
+    participant P as 폴링 루프
+    participant C as HTTP 클라이언트
+  end
+  participant S as Flipt 서버 (원격)
+  P->>C: 1. fetch() 호출
+  C->>S: 2. GET snapshot (연결 OK)
+  S-->>C: 3. 헤더만, 본문 지연
+  Note over C: 전체 타임아웃 없음
+  Note over P: 무한 대기 → 다음 주기 못 감
+```
+
+메인테이너가 재현하지 못한 이유도 이걸로 설명됩니다 — 재현하려면 "연결은 받아 주되 응답을 멈추는" 서버가 필요했습니다.
+
+## 수정 — 폴링에는 항상 전체 타임아웃을 건다
+
+수정 범위는 작고 간단합니다. 폴링 모드에서는 사용자가 값을 주지 않아도 **항상 합리적인 기본 타임아웃**을 적용하게 했습니다. 테스트하기 쉽도록 결정 로직을 별도 함수로 뺐습니다.
+
+```rust
+/// 폴링 모드에서 쓸 전체 요청 타임아웃을 결정한다. 멈춘 응답이 폴링 루프를
+/// 영원히 막지 못하도록, 사용자가 값을 안 줬거나(또는 1초 미만이라 builder가
+/// 버리는 값이면) 기본값으로 대체한다.
+fn polling_request_timeout(request_timeout: Option<Duration>, default: Duration) -> Duration {
+    request_timeout
+        .filter(|t| t.as_secs() > 0)
+        .unwrap_or(default)
+}
+```
+
+그리고 클라이언트 빌더에서 조건 없이 이 값을 적용합니다.
+
+```rust
+FetchMode::Polling => {
+    client_builder = client_builder.timeout(polling_request_timeout(
+        self.request_timeout,
+        self.default_request_timeout,   // 기본 30초
+    ));
+}
+```
+
+이제 응답이 멈추면 기본 타임아웃에서 **에러로 끊기고**, 그 에러가 소비자에게 전달된 뒤 폴링 루프는 다음 주기로 넘어가 **재시도**합니다. 무한 대기가 사라집니다.
+
+<mark>이 방법의 핵심은 "에러를 잘 처리하자"가 아니라 "끝나지 않을 수 있는 대기에 반드시 상한을 두자"입니다.</mark>
+
+## 테스트 — hang은 어떻게 검증하나
+
+"무한 대기"를 검증하려면 **응답을 일부러 붙잡고 있는 서버**가 필요합니다. mockito로 헤더만 보내고 본문을 오래 잡아 두는 mock 서버를 만든 뒤, 짧은 기본 타임아웃을 주입해(프로덕션 30초를 기다리지 않도록) **정해진 시간 안에 에러로 끝나는지**를 확인했습니다.
+
+```rust
+#[tokio::test(flavor = "multi_thread")]
+async fn test_polling_default_timeout_unblocks_stalled_response() {
+    let mut server = Server::new_async().await;
+    let _mock = server.mock("GET", "...snapshot...")
+        .with_status(200)
+        .with_chunked_body(|_w| {
+            std::thread::sleep(Duration::from_secs(30));   // 응답을 붙잡아 둠
+            Ok(())
+        })
+        .create_async().await;
+
+    let mut fetcher = HTTPFetcherBuilder::new(&server.url())
+        // request_timeout(..)를 주지 않음 → 기본값 경로를 검증
+        .default_request_timeout(Duration::from_secs(1))   // 테스트용 짧은 기본값
+        .build().unwrap();
+
+    let start = Instant::now();
+    let result = fetcher.initial_fetch().await;
+
+    assert!(result.is_err(), "멈춘 응답은 기본 타임아웃에서 끊겨야 한다");
+    assert!(start.elapsed() < Duration::from_secs(20), "즉시 타임아웃돼야 한다");
+}
+```
+
+여기서 "테스트용 기본값 주입"을 위해 빌더에 `#[cfg(test)]` 메서드를 하나 두었습니다. 프로덕션 코드 경로는 그대로 두면서, **기본 타임아웃 경로 자체를 실제로 실행해** 검증할 수 있습니다. 함께 넣은 단위 테스트는 결정 로직을 다음과 같이 명시적으로 검증합니다.
+
+- 값 미설정 → 기본값 적용
+- 1초 미만 값 → 기본값 적용(builder가 버리는 값이므로)
+- 유효한 값 → 그대로 사용
+
+## 기여 과정 — 대화 먼저, 그다음 PR
+
+1. **이슈에 재현 + 원인 댓글**: 메인테이너가 재현을 요청한 상태였으므로, "app 코드 없이" 재현하는 최소 예제(연결은 받되 본문을 멈추는 서버)와 함께 "진짜 원인은 `break`가 아니라 기본 타임아웃 누락"이라는 분석을 남겼습니다.
+2. **포크 → 브랜치 → 수정 → 테스트**: `cargo fmt`·`cargo clippy`·`cargo test` 통과 확인.
+3. **DCO 사인오프 커밋**: 이 저장소는 커밋에 `Signed-off-by`가 필요해 `git commit -s`로 서명.
+4. **PR 생성**: 문제·근본 원인·수정·테스트를 정리하고, 머지 시 이슈가 자동으로 닫히도록 `Fixes` 키워드로 이슈를 연결.
+
+<mark>리포트에 이미 있는 진단을 그대로 받지 않고, 코드로 직접 원인을 다시 규명한 것이 기여의 핵심이었습니다 — 원인이 다르면 고칠 곳도 달라집니다.</mark>
+
+## 정리
+
+- **`connect_timeout`과 전체 `timeout`은 다르다:**<br />
+  연결만 제한하고 응답 대기에 상한이 없으면, 정체된 서버 하나에 백그라운드 작업이 통째로 멈출 수 있습니다.
+- **에러 없이 멈추는 게 더 위험하다:**<br />
+  예외·로그가 없으니 모니터링에도 안 걸리고, 재시도 로직도 발동하지 않습니다. 끝나지 않을 수 있는 모든 `await`에는 타임아웃을 설정합니다.
+- **오픈소스 기여는 거창하지 않아도 된다:**<br />
+  실무에서 겪은 버그를 최소 재현으로 정리하고, 근본 원인을 코드로 규명해 작은 PR로 만드는 것만으로 충분히 가치가 있습니다.

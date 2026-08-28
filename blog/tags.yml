@@ -47,3 +47,8 @@ ai:
   label: AI
   permalink: /ai
   description: AI 엔지니어링·활용 관련 글
+
+opensource:
+  label: 오픈소스
+  permalink: /opensource
+  description: 오픈소스 기여 관련 글
