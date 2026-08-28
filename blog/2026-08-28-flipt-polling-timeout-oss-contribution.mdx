@@ -29,37 +29,93 @@ Flipt 클라이언트를 `POLLING` 모드로 쓰면, 엔진이 백그라운드�
 
 ## 원인 추적 — `break`가 아니라 hang
 
+### 폴링 루프가 하는 일
+
+먼저 폴링이 어떻게 도는지부터 봅니다. 엔진은 시작할 때 백그라운드 작업(루프)을 하나 띄우고, 그 안에서 다음을 **무한 반복**합니다.
+
+1. 서버에서 스냅샷을 한 번 가져온다 (`handle_polling`)
+2. `update_interval`(예: 30초)만큼 기다린다
+3. 다시 1번으로
+
+### 이슈의 진단: "에러가 나면 루프가 끊긴다"
+
 이슈에는 이렇게 적혀 있었습니다.
 
 > `HTTPFetcher::start` breaks out of the loop on error. Nothing restarts the task, and the Engine holding it stays alive and keeps serving evaluations from the last snapshot.
 
-즉 "에러가 나면 폴링 루프가 `break`로 빠져나가 다시 시작하지 않고, 엔진은 살아 있는 채 마지막 스냅샷만 계속 반환한다"는 진단입니다. 해당 코드는 이렇습니다.
+즉 이 루프가 **에러가 나면 `break`로 빠져나가 다시 시작하지 않는다**는 진단입니다. 해당 코드는 이렇습니다.
 
 ```rust
 FetchMode::Polling => {
-    if let Err(e) = fetcher.handle_polling(&tx).await {
+    if let Err(e) = fetcher.handle_polling(&tx).await {  // 에러면
         log::warn!("error fetching polling: {e}");
-        break;   // 여기서 루프 종료
+        break;                                           // 루프 종료
     }
     // ... update_interval 만큼 대기 후 반복 ...
 }
 ```
 
-그런데 `handle_polling`을 따라가 보면, fetch·JSON 파싱 오류는 `Err(e)`로 **소비자에게 전달**되고 함수 자체는 `Ok(())`를 반환합니다. 즉 이 함수가 `Err`를 반환하는 경우는 **결과를 보낼 채널이 닫혔을 때(=클라이언트가 종료됐을 때)뿐**입니다.
+`handle_polling`이 `Err`를 반환하면 `break`로 루프를 끝냅니다. 여기까지만 보면 "에러 → 루프 종료"가 맞아 보입니다. 그런데 진짜 물어야 할 건 **`handle_polling`이 도대체 언제 `Err`를 반환하느냐** 입니다.
+
+### `handle_polling`이 `Err`를 내는 경우는 딱 하나
 
 ```rust
 async fn handle_polling(&mut self, sender: &mpsc::Sender<...>) -> Result<(), Error> {
-    let result = match self.fetch().await {          // ← 여기서 멈추면?
-        Ok(Some(resp)) => /* JSON 파싱 */,
-        Ok(None) => return Ok(()),
-        Err(e) => Err(e),                            // 에러도 결과로 "전송"됨
+    let result = match self.fetch().await {   // ① 서버에서 가져오기
+        Ok(Some(resp)) => /* JSON 파싱 */,     //    성공+새 데이터 → 문서를 result에
+        Ok(None) => return Ok(()),             //    성공했지만 변경 없음 → 보낼 것 없이 종료
+        Err(e) => Err(e),                      // ② 실패해도 "에러를 result에" 담을 뿐
     };
-    sender.send(result).await                        // 전송 실패 시에만 Err 반환
-        .map_err(|_| Error::Internal("failed to send result".into()))
+    sender.send(result).await                  // ③ 그 result를 소비자에게 전달
+        .map_err(|_| Error::Internal("failed to send result".into()))  // ④ 전달 실패 시에만 Err
 }
 ```
 
-그래서 메인테이너도 "이 `break`는 클라이언트가 닫힐 때만 실행된다"며 재현에 실패했습니다. 실제로 멈춘 지점은 다른 곳, **`self.fetch().await`가 반환되지 않고 멈추는(hang)** 부분에 있었습니다.
+한 줄씩 따라가 봅니다.
+
+- **① `self.fetch().await`** — 서버에서 스냅샷을 가져옵니다. 결과는 세 가지입니다: 새 데이터가 있으면 `Ok(Some(문서))`, 성공했지만 바뀐 게 없으면 `Ok(None)`, 실패하면 `Err(e)`.
+  - `Ok(None)`은 요청은 성공했는데 **새 스냅샷이 없을 때**입니다(예: 서버가 "변경 없음 — 304 Not Modified"으로 응답). 보낼 게 없으니 그냥 `return Ok(())`로 끝내고 다음 주기를 기다립니다.
+- **② 여기가 포인트** — fetch가 **실패(`Err(e)`)해도** 그 에러는 함수의 반환값이 아니라 `result`라는 **변수에 담길** 뿐입니다. 즉 "에러가 났다"고 해서 함수가 곧바로 `Err`를 내며 끝나지 않습니다.
+- **③ `sender.send(result)`** — 성공 문서든 에러든, 그 `result`를 채널로 **소비자(엔진)에게 전달**합니다. 에러도 "정상적으로 전달되는 결과"인 셈입니다.
+- **④** — `handle_polling`이 실제로 `Err`를 반환하는 건 **오직 이 `send`가 실패했을 때** 뿐입니다. 그리고 `send`는 **받는 쪽(소비자)이 사라졌을 때만** 실패합니다 = **클라이언트가 종료됐을 때.**
+
+④가 왜 "클라이언트 종료일 때만"인지, 코드 흐름을 따라가 보겠습니다.
+
+- **함수가 `Err`를 반환하는 경로는 `send` 하나뿐입니다.** `handle_polling`은 결과(성공 문서 또는 에러)를 `result`에 담고, 맨 마지막에 `sender.send(result)`로 내보냅니다. 이 `send`의 성공/실패가 그대로 함수의 반환값이 됩니다. fetch·JSON 파싱 에러는 여기서 함수를 끝내지 않고 `result`에 담겨 전송될 뿐이라, 그 자체로는 함수를 `Err`로 만들지 않습니다.
+- **`send`는 수신자가 닫혔을 때만 실패합니다.** 이 채널은 용량이 정해진(bounded) 채널이라, 큐가 가득 차면 `send`는 에러를 내지 않고 **자리가 빌 때까지 대기**합니다. `send`가 `Err`를 돌려주는 유일한 조건은 **받는 쪽(수신자)이 닫혔을 때**입니다.
+- **그 수신자는 클라이언트가 종료될 때 닫힙니다.** 폴링을 시작할 때 만든 채널의 수신자를 엔진(소비자)이 들고 결과를 소비하는데, 클라이언트를 정리하면 이 수신자도 함께 사라집니다.
+
+세 가지를 이으면 결론은 하나로 모입니다: **`handle_polling`의 `Err` → `send` 실패 → 수신자 닫힘 → 클라이언트 종료.** 따라서 fetch가 에러를 내거나 hang에 빠지더라도, 그것만으로는 `Err`도 `break`도 발생하지 않습니다.
+
+근거가 되는 원문을 직접 인용하면 이렇습니다.
+
+**① `send`의 실패 조건 — tokio 공식 문서** ([`Sender::send`](https://docs.rs/tokio/latest/tokio/sync/mpsc/struct.Sender.html#method.send))
+
+> If the receive half of the channel is closed, either due to `close` being called or the `Receiver` handle dropping, the function returns an error.
+
+즉 `send`가 에러를 내는 건 **수신자가 닫히거나 드롭됐을 때뿐**이고, 큐가 가득 차면 에러 대신 대기합니다.
+
+**② 그 수신자가 만들어져 엔진으로 넘어가는 지점 — 실제 코드** ([`http.rs`의 `start`](https://github.com/flipt-io/flipt-client-sdks/blob/0ebaa5025ab8c208fb15c8da9ca068187215cd6f/flipt-engine-ffi/src/http.rs))
+
+```rust
+let (tx, rx) = mpsc::channel(100);
+// tx: 폴링 태스크가 결과를 보내는 쪽(sender)
+// rx: 엔진(소비자)이 결과를 받는 쪽(receiver) — start()가 이 rx를 호출자에게 반환한다.
+//     따라서 rx는 클라이언트(엔진)가 정리될 때 함께 사라진다 → 그때만 send가 실패.
+```
+
+정리하면 이렇게 갈립니다.
+
+- **fetch가 에러남** → 에러는 소비자에게 전달되고, `handle_polling`은 `Ok`를 반환 → 루프는 `break` 없이 **계속 돕니다.**
+- **클라이언트가 종료됨** → `send` 실패 → `Err` 반환 → `break`. (이땐 끝나는 게 맞습니다.)
+
+즉 **"에러 때문에 루프가 영구 종료된다"는 상황은 실제로는 일어나지 않습니다.** 이슈는 `break` 줄을 원인으로 지목했지만, 그 `break`는 fetch 에러가 아니라 **수신자가 닫혔을 때(=클라이언트 종료)** 에만 실행되기 때문입니다. 정상적으로 돌아가는 클라이언트에서는 아무리 fetch가 실패해도 그 에러가 소비자에게 전달될 뿐, 루프는 다음 주기로 계속 넘어갑니다.
+
+그래서 메인테이너는 "이 `break`는 클라이언트가 닫힐 때만 실행된다"고 답하며 재현에 실패했습니다. `break`만 놓고 보면 그 말이 맞습니다 — 다만 실제 장애의 원인은 `break`가 아니라 **그 위에서 반환조차 되지 않고 멈추는 `fetch().await`** 에 있었고, 그 지점은 이슈에서 지목되지 않았습니다. 재현하려면 "에러를 내는 서버"가 아니라 "연결은 받아 주되 응답을 끝까지 보내지 않는 서버"가 필요했던 것이죠.
+
+### 그럼 진짜로 멈춘 곳은?
+
+바로 위 코드의 **① `self.fetch().await` 한 줄**입니다. 이 호출이 **성공도 실패도 아닌 채, 영원히 반환되지 않으면(hang)** 어떻게 될까요? 그 아래의 ③ `send`도, 이어지는 `update_interval` 대기도, 다음 주기도 **전부 실행되지 못합니다.** 루프는 `break`로 끊긴 게 아니라, `fetch().await` 이 지점에서 **블로킹된 상태로** 다음으로 나아가지 못하는 것입니다.
 
 <mark>루프가 끊긴 게 아니라, 폴링 루프가 `fetch().await`에서 블로킹돼 다음 주기로 넘어가지 못한 것입니다. 끝나지 않는 `await`는 에러도 로그도 없이 백그라운드 작업을 정지시킵니다.</mark>
 
@@ -102,7 +158,7 @@ sequenceDiagram
   participant S as Flipt 서버 (원격)
   P->>C: 1. fetch() 호출
   C->>S: 2. GET snapshot (연결 OK)
-  S-->>C: 3. 헤더만, 본문 지연
+  S-->>C: 3. header만, body 지연
   Note over C: 전체 타임아웃 없음
   Note over P: 무한 대기 → 다음 주기 못 감
 ```
@@ -111,27 +167,28 @@ sequenceDiagram
 
 ## 수정 — 폴링에는 항상 전체 타임아웃을 건다
 
-수정 범위는 작고 간단합니다. 폴링 모드에서는 사용자가 값을 주지 않아도 **항상 합리적인 기본 타임아웃**을 적용하게 했습니다. 테스트하기 쉽도록 결정 로직을 별도 함수로 뺐습니다.
+수정 범위는 작고 간단합니다. 폴링 모드에서 사용자가 값을 주지 않아도 **항상 전체 요청 타임아웃이 걸리도록**, 빌더의 `request_timeout` 기본값을 `None`이 아니라 **30초(`Some(...)`)** 로 바꿨습니다.
 
 ```rust
-/// 폴링 모드에서 쓸 전체 요청 타임아웃을 결정한다. 멈춘 응답이 폴링 루프를
-/// 영원히 막지 못하도록, 사용자가 값을 안 줬거나(또는 1초 미만이라 builder가
-/// 버리는 값이면) 기본값으로 대체한다.
-fn polling_request_timeout(request_timeout: Option<Duration>, default: Duration) -> Duration {
-    request_timeout
-        .filter(|t| t.as_secs() > 0)
-        .unwrap_or(default)
+/// 폴링 모드의 기본 전체 요청 타임아웃. 멈춘 응답(연결은 됐지만 body가
+/// 끝나지 않는 경우)이 폴링을 영원히 막지 못하게 한다. connect_timeout으론 못 막는다.
+const DEFAULT_POLLING_REQUEST_TIMEOUT: Duration = Duration::from_secs(30);
+
+// 빌더를 만들 때 request_timeout 기본값을 None → Some(30초)로
+HTTPFetcherBuilder {
+    // ...
+    request_timeout: Some(DEFAULT_POLLING_REQUEST_TIMEOUT),   // 예전엔 None (그래서 타임아웃이 안 걸렸음)
+    // ...
 }
 ```
 
-그리고 클라이언트 빌더에서 조건 없이 이 값을 적용합니다.
+빌더는 값이 있으면 그대로 클라이언트에 적용합니다. 이제 기본값이 `Some`이라 **폴링에는 언제나 타임아웃이 걸립니다.**
 
 ```rust
 FetchMode::Polling => {
-    client_builder = client_builder.timeout(polling_request_timeout(
-        self.request_timeout,
-        self.default_request_timeout,   // 기본 30초
-    ));
+    if let Some(request_timeout) = self.request_timeout {   // 기본이 Some(30초)라 항상 적용
+        client_builder = client_builder.timeout(request_timeout);
+    }
 }
 ```
 
@@ -141,42 +198,46 @@ FetchMode::Polling => {
 
 ## 테스트 — hang은 어떻게 검증하나
 
-"무한 대기"를 검증하려면 **응답을 일부러 붙잡고 있는 서버**가 필요합니다. mockito로 헤더만 보내고 본문을 오래 잡아 두는 mock 서버를 만든 뒤, 짧은 기본 타임아웃을 주입해(프로덕션 30초를 기다리지 않도록) **정해진 시간 안에 에러로 끝나는지**를 확인했습니다.
+두 가지로 검증했습니다. 먼저 **단위 테스트**로 "빌더 기본값이 실제로 타임아웃을 갖는지"(예전엔 `None`이던 부분)를 확인합니다.
+
+```rust
+#[test]
+fn test_builder_defaults_request_timeout() {
+    let builder = HTTPFetcherBuilder::new("http://localhost:8080");
+    assert_eq!(builder.request_timeout, Some(DEFAULT_POLLING_REQUEST_TIMEOUT));
+}
+```
+
+그리고 **hang 자체**를 재현해 막히는지 봅니다. 이걸 검증하려면 응답을 일부러 붙잡는 서버가 필요합니다. mockito로 header만 보내고 body를 오래 붙잡아 두는 mock 서버를 만든 뒤, 짧은 요청 타임아웃(1초)을 걸어 **정해진 시간 안에 에러로 끝나는지**를 확인합니다(프로덕션 30초를 기다리지 않도록).
 
 ```rust
 #[tokio::test(flavor = "multi_thread")]
-async fn test_polling_default_timeout_unblocks_stalled_response() {
+async fn test_polling_request_timeout_unblocks_stalled_response() {
     let mut server = Server::new_async().await;
     let _mock = server.mock("GET", "...snapshot...")
         .with_status(200)
         .with_chunked_body(|_w| {
-            std::thread::sleep(Duration::from_secs(30));   // 응답을 붙잡아 둠
+            std::thread::sleep(Duration::from_secs(30));   // body를 붙잡아 둠
             Ok(())
         })
         .create_async().await;
 
     let mut fetcher = HTTPFetcherBuilder::new(&server.url())
-        // request_timeout(..)를 주지 않음 → 기본값 경로를 검증
-        .default_request_timeout(Duration::from_secs(1))   // 테스트용 짧은 기본값
+        .authentication(Authentication::None)
+        .request_timeout(Duration::from_secs(1))   // 짧은 타임아웃으로 빠르게 검증
         .build().unwrap();
 
     let start = Instant::now();
     let result = fetcher.initial_fetch().await;
 
-    assert!(result.is_err(), "멈춘 응답은 기본 타임아웃에서 끊겨야 한다");
+    assert!(result.is_err(), "멈춘 응답은 타임아웃에서 끊겨야 한다");
     assert!(start.elapsed() < Duration::from_secs(20), "즉시 타임아웃돼야 한다");
 }
 ```
 
-여기서 "테스트용 기본값 주입"을 위해 빌더에 `#[cfg(test)]` 메서드를 하나 두었습니다. 프로덕션 코드 경로는 그대로 두면서, **기본 타임아웃 경로 자체를 실제로 실행해** 검증할 수 있습니다. 함께 넣은 단위 테스트는 결정 로직을 다음과 같이 명시적으로 검증합니다.
+## 기여 과정 — 논의 먼저, 그다음 PR
 
-- 값 미설정 → 기본값 적용
-- 1초 미만 값 → 기본값 적용(builder가 버리는 값이므로)
-- 유효한 값 → 그대로 사용
-
-## 기여 과정 — 대화 먼저, 그다음 PR
-
-1. **이슈에 재현 + 원인 댓글**: 메인테이너가 재현을 요청한 상태였으므로, "app 코드 없이" 재현하는 최소 예제(연결은 받되 본문을 멈추는 서버)와 함께 "진짜 원인은 `break`가 아니라 기본 타임아웃 누락"이라는 분석을 남겼습니다.
+1. **이슈에 재현 + 원인 댓글**: 메인테이너가 재현을 요청한 상태였으므로, "app 코드 없이" 재현하는 최소 예제(연결은 받되 body를 멈추는 서버)와 함께 "진짜 원인은 `break`가 아니라 기본 타임아웃 누락"이라는 분석을 남겼습니다.
 2. **포크 → 브랜치 → 수정 → 테스트**: `cargo fmt`·`cargo clippy`·`cargo test` 통과 확인.
 3. **DCO 사인오프 커밋**: 이 저장소는 커밋에 `Signed-off-by`가 필요해 `git commit -s`로 서명.
 4. **PR 생성**: 문제·근본 원인·수정·테스트를 정리하고, 머지 시 이슈가 자동으로 닫히도록 `Fixes` 키워드로 이슈를 연결.
