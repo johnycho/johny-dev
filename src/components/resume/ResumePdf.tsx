@@ -94,7 +94,7 @@ const s = StyleSheet.create({
   prLink: {fontFamily: 'Source Sans Pro', fontSize: 8.6, color: BODY, textDecoration: 'none'},
   tsTitle: {fontSize: 10, fontWeight: 700, color: INK, marginBottom: 5},
   osLink: {textDecoration: 'none'},
-  osRow: {flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap', marginBottom: 5},
+  osRow: {flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap', marginBottom: 3},
   osPr: {fontFamily: 'Source Sans Pro', fontSize: 8.6, fontWeight: 400, color: MUTED},
   extArrow: {fontFamily: 'Noto Sans KR', fontSize: 8.5, color: ACCENT},
 
@@ -323,7 +323,7 @@ function ResumeDoc() {
         <View>
           <Text style={s.h2}>OPEN SOURCE CONTRIBUTIONS</Text>
           {OPENSOURCE.map((o) => (
-            <View key={o.prLabel} style={{marginBottom: 9}} wrap={false}>
+            <View key={o.prLabel} style={{marginBottom: 6}} wrap={false}>
               <View style={s.osRow}>
                 <Link style={s.osLink} src={o.prUrl}>
                   <Text style={s.org}>

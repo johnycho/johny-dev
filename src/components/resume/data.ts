@@ -348,6 +348,18 @@ export type OpenSource = {
 };
 export const OPENSOURCE: OpenSource[] = [
   {
+    title: 'Flipt Client SDK: 폴링 리프레셔 무한 대기(hang) 수정',
+    prLabel: 'PR #1928', prUrl: 'https://github.com/flipt-io/flipt-client-sdks/pull/1928', extra: 'merged Aug 2026',
+    issue: [
+      'FetchMode.POLLING에서 **전체 요청 타임아웃이 없어**, 응답이 없는 서버에 폴링 루프가 무한 대기하며 **이전 스냅샷만 반환**',
+      'connect_timeout만 있고 request timeout이 미설정이라 **클라이언트를 재기동해야만 정상화되는** 장애',
+    ],
+    solution: [
+      '폴링 모드 빌더의 request_timeout에 **기본값을 설정**해, 응답이 오지 않아도 일정 시간 뒤 실패로 반환되고 **다음 주기에 재시도**되도록 수정',
+      '단위 테스트와 응답 지연 재현 **E2E 테스트를 추가**해 같은 문제의 **재발 방지**',
+    ],
+  },
+  {
     title: 'Spring Cloud Config: Vault 인증 로직 개선',
     prLabel: 'PR #3178', prUrl: 'https://github.com/spring-cloud/spring-cloud-config/pull/3178', extra: 'merged Jan 2026',
     issue: [
