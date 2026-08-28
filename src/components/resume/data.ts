@@ -91,7 +91,7 @@ export const EXPERIENCE: Exp[] = [
     ],
   },
   {
-    logo: 'interon.svg',
+    logo: 'interon.png',
     big: true,
     company: 'InterON',
     jp: '(일본)',

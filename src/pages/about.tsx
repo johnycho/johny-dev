@@ -33,7 +33,7 @@ const LinkedInIcon = () => (
 function CompanyLogo({file, big, git}: {file: string; big?: boolean; git?: boolean}) {
   const src = useBaseUrl(`/img/logos/${file}`);
   return (
-    <span className={`${styles.coLogo} ${big ? styles.coLogoBig : ''} ${git ? styles.coLogoGit : ''} ${file === 'interon.svg' ? styles.coLogoXl : ''}`}>
+    <span className={`${styles.coLogo} ${big ? styles.coLogoBig : ''} ${git ? styles.coLogoGit : ''} ${file === 'interon.png' ? styles.coLogoXl : ''}`}>
       <img src={src} alt="" loading="lazy" />
     </span>
   );
