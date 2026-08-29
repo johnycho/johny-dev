@@ -113,8 +113,9 @@
 .coLogo img { width: 100%; height: 100%; object-fit: contain; padding: 5px; display: block; }
 /* 가로로 긴 로고(깃컴퍼니·InterON) — 박스는 그대로, 내부 로고만 키움 */
 .coLogoBig img { padding: 0; }
-/* InterON — 박스 안에 로고 전체가 보이도록 여백 없이 꽉 채움 */
-.coLogoXl img { padding: 0; }
+/* InterON(가로 워드마크 PNG) — object-fit 대신 폭 100%·높이 자동으로 박스 폭을 꽉 채움.
+   PNG라 intrinsic 크기가 확정돼 PC·iOS 모두 동일하게 렌더된다(iOS의 object-fit 축소 회피). */
+.coLogoXl img { padding: 0; width: 100%; height: auto; object-fit: unset; }
 /* 깃컴퍼니만 아주 살짝 줄임 */
 .coLogoGit img { padding: 2px; }
 
