@@ -34,6 +34,9 @@ function highlightTitle(title: string, q: string): React.ReactNode {
 export default function DocsBoard({items}: {items: any[]}) {
   const [query, setQuery] = useState('');
   const [page, setPage] = useState(1);
+  // 정렬 — null=원래순(사이드바 순서). 제목 헤더 클릭 시 오름→내림→원래순 순환.
+  const [sortKey, setSortKey] = useState<string | null>(null);
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
 
   // 사이드바 아이템 → {제목, 링크} (문서 링크 + 하위 카테고리 첫 문서 링크)
   const rows: Row[] = (items ?? [])
@@ -46,10 +49,29 @@ export default function DocsBoard({items}: {items: any[]}) {
   const q = query.trim().toLowerCase();
   const matched = q ? rows.filter((r) => r.label.toLowerCase().includes(q)) : rows;
 
-  const totalPages = Math.max(1, Math.ceil(matched.length / PAGE));
+  // 정렬 — 제목 오름/내림, 원래순(null)은 사이드바 순서 그대로
+  const dir = sortDir === 'asc' ? 1 : -1;
+  const sorted =
+    sortKey === null ? matched : [...matched].sort((a, b) => dir * a.label.localeCompare(b.label, 'ko'));
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE));
   const curPage = Math.min(page, totalPages);
   const startIdx = (curPage - 1) * PAGE;
-  const shown = matched.slice(startIdx, startIdx + PAGE);
+  const shown = sorted.slice(startIdx, startIdx + PAGE);
+
+  // 제목 헤더 클릭 → 오름 → 내림 → 원래순(null) 3단계 순환
+  const changeSort = () => {
+    if (sortKey !== 'title') {
+      setSortKey('title');
+      setSortDir('asc');
+    } else if (sortDir === 'asc') {
+      setSortDir('desc');
+    } else {
+      setSortKey(null);
+      setSortDir('asc');
+    }
+    setPage(1);
+  };
 
   return (
     <div className={styles.board}>
@@ -67,9 +89,20 @@ export default function DocsBoard({items}: {items: any[]}) {
         />
       </div>
 
-      <div className={styles.listHead} aria-hidden="true">
+      <div className={styles.listHead}>
         <span className={styles.colIndex}>번호</span>
-        <span className={styles.colTitle}>제목</span>
+        <button
+          type="button"
+          className={`${styles.colTitle} ${styles.sortBtn} ${sortKey === 'title' ? styles.sortBtnOn : ''}`}
+          onClick={changeSort}
+          aria-label="제목(으)로 정렬">
+          제목
+          <span className={styles.sortStack} aria-hidden="true">
+            {/* 위(오름)·아래(내림) 캐럿을 항상 함께 표시하고, 활성 방향만 진하게 */}
+            <span className={`${styles.sortUp} ${sortKey === 'title' && sortDir === 'asc' ? styles.sortOn : ''}`}>⌃</span>
+            <span className={`${styles.sortDown} ${sortKey === 'title' && sortDir === 'desc' ? styles.sortOn : ''}`}>⌃</span>
+          </span>
+        </button>
       </div>
 
       <ul className={styles.list}>
@@ -90,7 +123,7 @@ export default function DocsBoard({items}: {items: any[]}) {
         )}
       </ul>
 
-      {matched.length > 0 && renderPager()}
+      {sorted.length > 0 && renderPager()}
     </div>
   );
 

@@ -64,11 +64,24 @@ const TAG_LABEL: Record<string, string> = {
   '시스템 설계': '설계',
 };
 
+// 게시판 컬럼. sortable=true인 컬럼만 헤더 클릭으로 정렬(오름→내림→원래순 3단계). 번호는 정렬 제외.
+const COLS: {key: string; label: string; cls: string; sortable: boolean}[] = [
+  {key: 'index', label: '번호', cls: 'colIndex', sortable: false},
+  {key: 'tag', label: '분류', cls: 'colTag', sortable: true},
+  {key: 'title', label: '제목', cls: 'colTitle', sortable: true},
+  {key: 'date', label: '작성일', cls: 'colDate', sortable: true},
+  {key: 'views', label: '조회수', cls: 'colViews', sortable: true},
+];
+
 export default function BlogBoard({lockTag = null, paginate = true}: Props = {}) {
   const [filter, setFilter] = useState<string>('all'); // 'all' | tag.permalink
   const [page, setPage] = useState<number>(1);
   const [query, setQuery] = useState<string>(''); // 검색어
   const [views, setViews] = useState<Record<string, number>>({}); // permalink → 조회수
+  // 정렬 — 기본은 작성일 내림차순(최신순). 헤더 클릭 시 오름→내림→원래순(null) 순환.
+  const [sortKey, setSortKey] = useState<string | null>('date');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
+  const [sortMenuOpen, setSortMenuOpen] = useState<boolean>(false); // 모바일 정렬 드롭다운
 
   // 조회수 일괄 조회(1회) — API/Upstash 미설정이면 빈 객체라 조용히 미표시
   useEffect(() => {
@@ -120,10 +133,51 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
       )
     : base;
 
-  const totalPages = Math.max(1, Math.ceil(matched.length / PAGE));
+  // 3) 정렬 — 컬럼 헤더 클릭 / 모바일 드롭다운. 원래순(null)은 기본 순서(작성일 최신순).
+  const viewOf = (p: Entry) => views[p.permalink] ?? 0;
+  const cmp = (a: Entry, b: Entry) => {
+    switch (sortKey) {
+      case 'title':
+        return a.title.localeCompare(b.title, 'ko');
+      case 'tag':
+        return (a.tags[0]?.label ?? '').localeCompare(b.tags[0]?.label ?? '', 'ko');
+      case 'views':
+        return viewOf(a) - viewOf(b);
+      default: // date
+        return new Date(a.date).getTime() - new Date(b.date).getTime();
+    }
+  };
+  const dir = sortDir === 'asc' ? 1 : -1;
+  const sorted =
+    sortKey === null
+      ? matched
+      : [...matched].sort((a, b) => {
+          const c = cmp(a, b);
+          // 동점이면 항상 최신순으로 안정 정렬
+          return c !== 0 ? dir * c : new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / PAGE));
   const curPage = Math.min(page, totalPages);
   const startIdx = paginate ? (curPage - 1) * PAGE : 0;
-  const shown = paginate ? matched.slice(startIdx, startIdx + PAGE) : matched.slice(0, PAGE);
+  const shown = paginate ? sorted.slice(startIdx, startIdx + PAGE) : sorted.slice(0, PAGE);
+
+  // 헤더 클릭 → 오름 → 내림 → 원래순(null) 3단계 순환. 다른 컬럼이면 오름차순부터.
+  const changeSort = (key: string) => {
+    if (sortKey !== key) {
+      setSortKey(key);
+      setSortDir('asc');
+    } else if (sortDir === 'asc') {
+      setSortDir('desc');
+    } else {
+      setSortKey(null);
+      setSortDir('asc');
+    }
+    setPage(1);
+  };
+  // 모바일 단일 컨트롤 표시용 유효 상태 (원래순 null → 작성일 내림차순으로 표시)
+  const effSortKey = sortKey ?? 'date';
+  const effSortDir: 'asc' | 'desc' = sortKey === null ? 'desc' : sortDir;
 
   return (
     <div className={styles.board}>
@@ -165,12 +219,85 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
         </div>
       )}
 
-      <div className={styles.listHead} aria-hidden="true">
-        <span className={styles.colIndex}>번호</span>
-        <span className={styles.colTag}>분류</span>
-        <span className={styles.colTitle}>제목</span>
-        <span className={styles.colDate}>작성일</span>
-        <span className={styles.colViews}>조회수</span>
+      {/* 모바일 정렬 컨트롤 — 데스크톱에선 숨김(헤더 클릭으로 정렬) */}
+      <div className={styles.mobileSort}>
+        <div className={styles.msControl}>
+          <div className={styles.msDropdown}>
+            <button
+              type="button"
+              className={styles.msColBtn}
+              onClick={() => setSortMenuOpen((o) => !o)}
+              aria-haspopup="listbox"
+              aria-expanded={sortMenuOpen}>
+              {COLS.find((c) => c.key === effSortKey)?.label}
+            </button>
+            {sortMenuOpen && (
+              <>
+                <div className={styles.msBackdrop} onClick={() => setSortMenuOpen(false)} />
+                <ul className={styles.msMenu} role="listbox">
+                  {COLS.filter((c) => c.sortable).map((c) => (
+                    <li key={c.key}>
+                      <button
+                        type="button"
+                        role="option"
+                        aria-selected={effSortKey === c.key}
+                        className={`${styles.msOption} ${effSortKey === c.key ? styles.msOptionOn : ''}`}
+                        onClick={() => {
+                          setSortKey(c.key);
+                          setSortDir(effSortDir);
+                          setSortMenuOpen(false);
+                          setPage(1);
+                        }}>
+                        {c.label}
+                        {effSortKey === c.key && <span className={styles.msCheck}>✓</span>}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </div>
+          <span className={styles.msDivider} aria-hidden="true" />
+          <button
+            type="button"
+            className={styles.msDir}
+            onClick={() => {
+              setSortKey(effSortKey);
+              setSortDir(effSortDir === 'asc' ? 'desc' : 'asc');
+              setPage(1);
+            }}
+            aria-label={effSortDir === 'asc' ? '오름차순 — 클릭 시 내림차순' : '내림차순 — 클릭 시 오름차순'}>
+            <span style={{display: 'inline-block', transform: effSortDir === 'desc' ? 'rotate(180deg)' : undefined}}>⌃</span>
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.listHead}>
+        {COLS.map((c) =>
+          c.sortable ? (
+            <button
+              key={c.key}
+              type="button"
+              className={`${styles[c.cls]} ${styles.sortBtn} ${sortKey === c.key ? styles.sortBtnOn : ''}`}
+              onClick={() => changeSort(c.key)}
+              aria-label={`${c.label}(으)로 정렬`}>
+              {c.label}
+              <span className={styles.sortStack} aria-hidden="true">
+                {/* 위(오름)·아래(내림) 캐럿을 항상 함께 표시하고, 활성 방향만 진하게 */}
+                <span
+                  className={`${styles.sortUp} ${sortKey === c.key && sortDir === 'asc' ? styles.sortOn : ''}`}>
+                  ⌃
+                </span>
+                <span
+                  className={`${styles.sortDown} ${sortKey === c.key && sortDir === 'desc' ? styles.sortOn : ''}`}>
+                  ⌃
+                </span>
+              </span>
+            </button>
+          ) : (
+            <span key={c.key} className={styles[c.cls]}>{c.label}</span>
+          ),
+        )}
       </div>
 
       <ul className={styles.list}>
@@ -212,7 +339,7 @@ export default function BlogBoard({lockTag = null, paginate = true}: Props = {})
         )}
       </ul>
 
-      {paginate && matched.length > 0 && renderPager()}
+      {paginate && sorted.length > 0 && renderPager()}
     </div>
   );
 
