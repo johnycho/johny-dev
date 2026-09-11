@@ -10,6 +10,13 @@ description: 마크다운 초안(예: ~/Downloads/*.md)이나 주제를 johny-de
 ## 절차
 
 1. **소스 확인**: 반영할 초안(md 파일 경로/주제)과 개수를 확인한다. 여러 개면 각각 별도 `.mdx`로 만든다.
+   - **소스가 유튜브 영상이면 자막(스크립트)을 받아 내용을 확인한다.** WebFetch로는 유튜브 자막이 안 나오니 `yt-dlp`를 쓴다.
+     - 설치(최초 1회): `brew install yt-dlp` (또는 `pip3 install --user yt-dlp`).
+     - 자막 받기: `yt-dlp --skip-download --write-auto-sub --write-sub --sub-lang "ko.*,ko,en" --sub-format vtt -o '/tmp/vid.%(ext)s' "<URL>"` → `/tmp/vid.ko-orig.vtt` 등 생성. (영어 자막은 `429`로 실패할 수 있으나 한국어만 있어도 충분.)
+     - **멤버십 전용 영상**(로그인 필요)이면 위가 `members-only` 오류로 실패한다. 이때 `--cookies-from-browser chrome`(또는 `safari`/`firefox`/`edge`)를 붙여 **이미 로그인된 브라우저 세션의 쿠키를 재사용**한다. 예: `yt-dlp --cookies-from-browser chrome --skip-download --write-auto-sub --write-sub --sub-lang "ko.*,ko" --sub-format vtt -o '/tmp/vid.%(ext)s' "<URL>"`. 자격증명은 직접 다루지 않고 브라우저 쿠키만 빌린다(사용자가 해당 브라우저에 멤버십으로 로그인돼 있어야 함).
+     - VTT 정리: 타임스탬프·`<...>` 인라인 태그·중복 줄을 제거해 순수 텍스트로 만든 뒤(`python3`로 간단히), **앞·중·뒤를 훑어** 실제 다룬 기법·순서·고유 수치를 파악한다.
+     - **자막을 그대로 옮기지 말고**(저작권) 내 언어로 요약·재구성한다. 영상이 강조한 핵심 기법을 빠짐없이 반영하고, 인트로에 **원본 영상을 출처로 링크**한다(발표자/채널명도 확인되면 표기). 상세는 [blog-authoring.md](../../wiki/blog-authoring.md) 2절의 "외부 발표·영상 기반" 규칙을 따른다.
+     - 자막을 못 받으면 사용자에게 유튜브 "스크립트 표시" 텍스트를 붙여넣어 달라고 요청한다.
 
 2. **파일명·슬러그 결정** (wiki 1절): `blog/YYYY-MM-DD-slug.mdx`, `slug`는 kebab-case. 날짜가 목록 정렬을 결정하니 여러 글이면 날짜/순서를 사용자와 맞춘다.
 
