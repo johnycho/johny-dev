@@ -12,8 +12,8 @@
         <id>https://johnycho.dev/blog/web-state-cookie-session-jwt</id>
         <link href="https://johnycho.dev/blog/web-state-cookie-session-jwt"/>
         <updated>2026-10-02T09:00:00.000Z</updated>
-        <summary type="html"><![CDATA[HTTP는 원래 상태를 기억하지 않는 무상태(stateless) 프로토콜입니다. 그 한계를 넘으려고 쿠키·세션·JWT가 차례로 등장했습니다. 웹 상태 관리를 다룬 영상을 바탕으로, 각 기술이 어떤 문제에서 나왔고 무엇인지 연대기로 정리합니다.]]></summary>
-        <content type="html"><![CDATA[<p>HTTP는 원래 상태를 기억하지 않는 <strong>무상태(stateless)</strong> 프로토콜입니다. 그 한계를 넘으려고 쿠키·세션·JWT가 차례로 등장했습니다. <a href="https://www.youtube.com/watch?v=t2ZCSCOX1RU" target="_blank" rel="noopener noreferrer">웹 상태 관리를 다룬 영상</a>을 바탕으로, 각 기술이 <strong>어떤 문제에서 나왔고</strong> 무엇인지 연대기로 정리합니다.</p>
+        <summary type="html"><![CDATA[HTTP는 원래 상태를 기억하지 않는 무상태(stateless) 프로토콜입니다. 그 한계를 넘으려고 쿠키·세션·JWT가 차례로 등장했습니다. 각 기술이 어떤 문제에서 나왔고 무엇인지 연대기로 정리합니다.]]></summary>
+        <content type="html"><![CDATA[<p>HTTP는 원래 상태를 기억하지 않는 <strong>무상태(stateless)</strong> 프로토콜입니다. 그 한계를 넘으려고 쿠키·세션·JWT가 차례로 등장했습니다. 각 기술이 <strong>어떤 문제에서 나왔고</strong> 무엇인지 연대기로 정리합니다.</p>
 <mark>쿠키·세션·JWT는 서로 대체재가 아니라, 앞선 방식의 한계를 메우며 이어진 <strong>역사의 흐름</strong>입니다. 그 인과를 알면 언제 무엇을 쓸지가 보입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="태초에-http가-있었다">태초에 HTTP가 있었다<a href="https://johnycho.dev/blog/web-state-cookie-session-jwt#%ED%83%9C%EC%B4%88%EC%97%90-http%EA%B0%80-%EC%9E%88%EC%97%88%EB%8B%A4" class="hash-link" aria-label="태초에 HTTP가 있었다에 대한 직접 링크" title="태초에 HTTP가 있었다에 대한 직접 링크">​</a></h2>
 <p>팀 버너스리는 논문을 편하게 공유하려고 월드와이드웹(WWW)을 만들었고, 그 프로토콜이 HTTP입니다. 당시 목적은 단순했습니다 — <strong>"문서만 잘 전달하면 된다."</strong> 그래서 HTTP는 요청→응답 후 <strong>연결을 바로 끊는</strong> 구조, 즉 <strong>비연결(connectionless)·무상태(stateless)</strong> 로 설계됐습니다. 서버 입장에선 요청을 처리하고 바로 잊어버리면 되니 편했습니다.</p>
@@ -88,8 +88,8 @@
         <id>https://johnycho.dev/blog/web-cache-layers</id>
         <link href="https://johnycho.dev/blog/web-cache-layers"/>
         <updated>2026-09-29T09:00:00.000Z</updated>
-        <summary type="html"><![CDATA[웹 성능을 높인다고 하면 대부분 Redis 캐시를 떠올립니다. 맞는 말이지만 그게 전부는 아닙니다. 사용자의 브라우저에서 애플리케이션 서버까지, 요청이 지나는 경로에는 여러 캐시 계층이 있습니다. 캐시 계층을 다룬 영상을 바탕으로, 각 계층에 어떤 캐시가 있고 언제·어떻게 쓰는지 정리합니다.]]></summary>
-        <content type="html"><![CDATA[<p>웹 성능을 높인다고 하면 대부분 <strong>Redis 캐시</strong>를 떠올립니다. 맞는 말이지만 그게 전부는 아닙니다. 사용자의 브라우저에서 애플리케이션 서버까지, 요청이 지나는 경로에는 <strong>여러 캐시 계층</strong>이 있습니다. <a href="https://www.youtube.com/watch?v=sdIfMnxALuY" target="_blank" rel="noopener noreferrer">캐시 계층을 다룬 영상</a>을 바탕으로, 각 계층에 어떤 캐시가 있고 언제·어떻게 쓰는지 정리합니다.</p>
+        <summary type="html"><![CDATA[웹 성능을 높인다고 하면 대부분 Redis 캐시를 떠올립니다. 맞는 말이지만 그게 전부는 아닙니다. 사용자의 브라우저에서 애플리케이션 서버까지, 요청이 지나는 경로에는 여러 캐시 계층이 있습니다. 각 계층에 어떤 캐시가 있고 언제·어떻게 쓰는지 정리합니다.]]></summary>
+        <content type="html"><![CDATA[<p>웹 성능을 높인다고 하면 대부분 <strong>Redis 캐시</strong>를 떠올립니다. 맞는 말이지만 그게 전부는 아닙니다. 사용자의 브라우저에서 애플리케이션 서버까지, 요청이 지나는 경로에는 <strong>여러 캐시 계층</strong>이 있습니다. 각 계층에 어떤 캐시가 있고 언제·어떻게 쓰는지 정리합니다.</p>
 <mark>핵심 원칙 하나 — 요청은 <strong>가능한 한 사용자와 가까운 계층에서 끝내라.</strong> 사용자 체감이 빠르고, 뒷단 서버 자원을 안 쓰니 효율적입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="계층-한눈에-보기">계층 한눈에 보기<a href="https://johnycho.dev/blog/web-cache-layers#%EA%B3%84%EC%B8%B5-%ED%95%9C%EB%88%88%EC%97%90-%EB%B3%B4%EA%B8%B0" class="hash-link" aria-label="계층 한눈에 보기에 대한 직접 링크" title="계층 한눈에 보기에 대한 직접 링크">​</a></h2>
 <p>사용자 → 서버 방향으로, 캐시는 이렇게 쌓여 있습니다.</p>
@@ -171,8 +171,8 @@
         <id>https://johnycho.dev/blog/monolith-vs-microservices</id>
         <link href="https://johnycho.dev/blog/monolith-vs-microservices"/>
         <updated>2026-09-25T09:00:00.000Z</updated>
-        <summary type="html"><![CDATA["스타트업 초기 멤버로 합류했다면 모놀리스와 MSA 중 무엇을 고르겠습니까?" 면접에서 흔히 나오는 질문입니다. "대세는 MSA죠", "넷플릭스도 쓰니까요" 같은 답은 절반만 맞습니다. 모놀리스와 MSA를 다룬 영상을 바탕으로, 선택 기준과 MSA를 지탱하는 요소들을 정리합니다. (이런 구조를 다이어그램으로 표현하는 법은 C4 모델 참고.)]]></summary>
-        <content type="html"><![CDATA[<p>"스타트업 초기 멤버로 합류했다면 모놀리스와 MSA 중 무엇을 고르겠습니까?" 면접에서 흔히 나오는 질문입니다. "대세는 MSA죠", "넷플릭스도 쓰니까요" 같은 답은 절반만 맞습니다. <a href="https://www.youtube.com/watch?v=Z53SHQGrTvU" target="_blank" rel="noopener noreferrer">모놀리스와 MSA를 다룬 영상</a>을 바탕으로, 선택 기준과 MSA를 지탱하는 요소들을 정리합니다. (이런 구조를 다이어그램으로 표현하는 법은 <a href="https://johnycho.dev/blog/c4-model-architecture-diagram">C4 모델</a> 참고.)</p>
+        <summary type="html"><![CDATA["스타트업 초기 멤버로 합류했다면 모놀리스와 MSA 중 무엇을 고르겠습니까?" 면접에서 흔히 나오는 질문입니다. "대세는 MSA죠", "넷플릭스도 쓰니까요" 같은 답은 절반만 맞습니다. 선택 기준과 MSA를 지탱하는 요소들을 정리합니다. (이런 구조를 다이어그램으로 표현하는 법은 C4 모델 참고.)]]></summary>
+        <content type="html"><![CDATA[<p>"스타트업 초기 멤버로 합류했다면 모놀리스와 MSA 중 무엇을 고르겠습니까?" 면접에서 흔히 나오는 질문입니다. "대세는 MSA죠", "넷플릭스도 쓰니까요" 같은 답은 절반만 맞습니다. 선택 기준과 MSA를 지탱하는 요소들을 정리합니다. (이런 구조를 다이어그램으로 표현하는 법은 <a href="https://johnycho.dev/blog/c4-model-architecture-diagram">C4 모델</a> 참고.)</p>
 <mark>핵심 명제 하나 — <strong>기술은 비용입니다.</strong> MSA는 공짜로 주어지지 않고, <strong>복잡성이라는 값</strong>을 치러야 합니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="모놀리스-vs-msa--무엇이-다른가">모놀리스 vs MSA — 무엇이 다른가<a href="https://johnycho.dev/blog/monolith-vs-microservices#%EB%AA%A8%EB%86%80%EB%A6%AC%EC%8A%A4-vs-msa--%EB%AC%B4%EC%97%87%EC%9D%B4-%EB%8B%A4%EB%A5%B8%EA%B0%80" class="hash-link" aria-label="모놀리스 vs MSA — 무엇이 다른가에 대한 직접 링크" title="모놀리스 vs MSA — 무엇이 다른가에 대한 직접 링크">​</a></h2>
 <ul>
@@ -237,8 +237,8 @@
         <id>https://johnycho.dev/blog/c4-model-architecture-diagram</id>
         <link href="https://johnycho.dev/blog/c4-model-architecture-diagram"/>
         <updated>2026-09-22T09:00:00.000Z</updated>
-        <summary type="html"><![CDATA[머릿속엔 설계가 다 있는데, 막상 그림으로 옮기려 하면 "어디까지 그려야 하지? 이 정도면 되나?" 싶어 막막해집니다. 개발은 곧잘 하는데 그걸 그림으로 표현하는 걸 어려워하는 경우가 많습니다. 아키텍처 다이어그램 그리는 법을 다룬 영상을 바탕으로, 업계에서 검증된 C4 모델로 설계를 시각화하는 방법을 정리합니다.]]></summary>
-        <content type="html"><![CDATA[<p>머릿속엔 설계가 다 있는데, 막상 그림으로 옮기려 하면 "어디까지 그려야 하지? 이 정도면 되나?" 싶어 막막해집니다. 개발은 곧잘 하는데 그걸 그림으로 표현하는 걸 어려워하는 경우가 많습니다. <a href="https://www.youtube.com/watch?v=mTb7DtL7zxs" target="_blank" rel="noopener noreferrer">아키텍처 다이어그램 그리는 법을 다룬 영상</a>을 바탕으로, 업계에서 검증된 <strong>C4 모델</strong>로 설계를 시각화하는 방법을 정리합니다.</p>
+        <summary type="html"><![CDATA[머릿속엔 설계가 다 있는데, 막상 그림으로 옮기려 하면 "어디까지 그려야 하지? 이 정도면 되나?" 싶어 막막해집니다. 개발은 곧잘 하는데 그걸 그림으로 표현하는 걸 어려워하는 경우가 많습니다. 업계에서 검증된 C4 모델로 설계를 시각화하는 방법을 정리합니다.]]></summary>
+        <content type="html"><![CDATA[<p>머릿속엔 설계가 다 있는데, 막상 그림으로 옮기려 하면 "어디까지 그려야 하지? 이 정도면 되나?" 싶어 막막해집니다. 개발은 곧잘 하는데 그걸 그림으로 표현하는 걸 어려워하는 경우가 많습니다. 업계에서 검증된 <strong>C4 모델</strong>로 설계를 시각화하는 방법을 정리합니다.</p>
 <mark>C4의 핵심은 하나입니다 — 구글 지도를 확대하듯, 아키텍처를 <strong>네 단계의 추상화 수준</strong>으로 나눠 그린다. 큰 그림에서 시작해 점점 세부로 내려간다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-c4인가--탄생-배경">왜 C4인가 — 탄생 배경<a href="https://johnycho.dev/blog/c4-model-architecture-diagram#%EC%99%9C-c4%EC%9D%B8%EA%B0%80--%ED%83%84%EC%83%9D-%EB%B0%B0%EA%B2%BD" class="hash-link" aria-label="왜 C4인가 — 탄생 배경에 대한 직접 링크" title="왜 C4인가 — 탄생 배경에 대한 직접 링크">​</a></h2>
 <p>C4 모델은 영국의 아키텍처 컨설턴트 <strong>사이먼 브라운(Simon Brown)</strong> 이 2000년대 중반 아키텍처 워크숍을 진행하며 만들었습니다. 그는 참가자들에게 <strong>같은 요구사항</strong>을 주고 설계시킨 뒤, 결과를 다이어그램으로 그려 보라고 했습니다. 그런데 나온 그림들을 <strong>아무도 이해하지 못했습니다.</strong> 표기법이 제각각이고, 박스 하나하나의 의미가 애매하고, 화살표에 설명이 없고, <strong>한 그림에 서로 다른 추상화 레벨이 뒤섞여</strong> 있었습니다.</p>
@@ -320,8 +320,8 @@
         <id>https://johnycho.dev/blog/mysql-index-btree-explain</id>
         <link href="https://johnycho.dev/blog/mysql-index-btree-explain"/>
         <updated>2026-09-18T09:00:00.000Z</updated>
-        <summary type="html"><![CDATA[SQL이 느릴 때 가장 먼저 보는 건 인덱스입니다. 그런데 인덱스를 만들었는데도 쿼리가 여전히 느리거나, 아예 인덱스를 안 타는 경험을 누구나 해 봤을 겁니다. MySQL 인덱스를 다룬 영상을 바탕으로, InnoDB 기준 B+트리 동작 원리 → 인덱스를 못 타는 이유 → 실행계획(EXPLAIN) 진단 → 커버링 인덱스 최적화까지 실무에서 바로 쓰는 순서로 정리합니다.]]></summary>
-        <content type="html"><![CDATA[<p>SQL이 느릴 때 가장 먼저 보는 건 인덱스입니다. 그런데 인덱스를 만들었는데도 쿼리가 여전히 느리거나, 아예 인덱스를 안 타는 경험을 누구나 해 봤을 겁니다. <a href="https://www.youtube.com/watch?v=rDkHiOvB9ko" target="_blank" rel="noopener noreferrer">MySQL 인덱스를 다룬 영상</a>을 바탕으로, InnoDB 기준 <strong>B+트리 동작 원리 → 인덱스를 못 타는 이유 → 실행계획(EXPLAIN) 진단 → 커버링 인덱스 최적화</strong>까지 실무에서 바로 쓰는 순서로 정리합니다.</p>
+        <summary type="html"><![CDATA[SQL이 느릴 때 가장 먼저 보는 건 인덱스입니다. 그런데 인덱스를 만들었는데도 쿼리가 여전히 느리거나, 아예 인덱스를 안 타는 경험을 누구나 해 봤을 겁니다. InnoDB 기준 B+트리 동작 원리 → 인덱스를 못 타는 이유 → 실행계획(EXPLAIN) 진단 → 커버링 인덱스 최적화까지 실무에서 바로 쓰는 순서로 정리합니다.]]></summary>
+        <content type="html"><![CDATA[<p>SQL이 느릴 때 가장 먼저 보는 건 인덱스입니다. 그런데 인덱스를 만들었는데도 쿼리가 여전히 느리거나, 아예 인덱스를 안 타는 경험을 누구나 해 봤을 겁니다. InnoDB 기준 <strong>B+트리 동작 원리 → 인덱스를 못 타는 이유 → 실행계획(EXPLAIN) 진단 → 커버링 인덱스 최적화</strong>까지 실무에서 바로 쓰는 순서로 정리합니다.</p>
 <mark>인덱스는 만들기만 하면 무조건 빨라지는 장치가 아니라, 옵티마이저가 비용을 계산해 <strong>사용할지 결정하는</strong> 정렬된 자료구조입니다. 구조를 알아야 왜 안 타는지가 보입니다.</mark>
 <p>먼저 흔한 상황. <code>orders(user_id)</code>에 인덱스를 걸고 조회했는데 <code>EXPLAIN</code> 결과가 <code>type=ALL</code>, <code>key=NULL</code> — 인덱스를 안 타고 풀스캔입니다. "분명 인덱스를 걸었는데 왜?" 이 질문의 답은 인덱스가 내부에서 어떻게 정렬되고 탐색되는지에 있습니다. 흔한 오해 셋 — <strong>인덱스는 걸면 무조건 빨라진다 / 많을수록 좋다 / 있으면 항상 쓰인다</strong> — 부터 풀어 봅니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-인덱스란--책-뒤의-색인">1. 인덱스란 — 책 뒤의 색인<a href="https://johnycho.dev/blog/mysql-index-btree-explain#1-%EC%9D%B8%EB%8D%B1%EC%8A%A4%EB%9E%80--%EC%B1%85-%EB%92%A4%EC%9D%98-%EC%83%89%EC%9D%B8" class="hash-link" aria-label="1. 인덱스란 — 책 뒤의 색인에 대한 직접 링크" title="1. 인덱스란 — 책 뒤의 색인에 대한 직접 링크">​</a></h2>
@@ -435,8 +435,8 @@
         <id>https://johnycho.dev/blog/tps-and-performance-limit</id>
         <link href="https://johnycho.dev/blog/tps-and-performance-limit"/>
         <updated>2026-09-15T09:00:00.000Z</updated>
-        <summary type="html"><![CDATA[부하 테스트를 돌리면 늘 만나는 그래프가 있습니다. x축은 동시 접속자 수, 왼쪽 y축은 TPS(초당 처리량), 오른쪽 y축은 평균 응답시간(MRT). 이 곡선을 읽을 줄 알면 "이 서버가 초당 몇 건까지 감당하는가"를 판단할 수 있습니다. 성능 지표 TPS를 다룬 영상을 바탕으로, TPS의 정확한 의미와 성능 한계점(임계점)을 찾는 법을 정리합니다.]]></summary>
-        <content type="html"><![CDATA[<p>부하 테스트를 돌리면 늘 만나는 그래프가 있습니다. x축은 동시 접속자 수, 왼쪽 y축은 TPS(초당 처리량), 오른쪽 y축은 평균 응답시간(MRT). 이 곡선을 읽을 줄 알면 "이 서버가 초당 몇 건까지 감당하는가"를 판단할 수 있습니다. <a href="https://www.youtube.com/watch?v=PG9Ta0KlCPM" target="_blank" rel="noopener noreferrer">성능 지표 TPS를 다룬 영상</a>을 바탕으로, TPS의 정확한 의미와 성능 한계점(임계점)을 찾는 법을 정리합니다.</p>
+        <summary type="html"><![CDATA[부하 테스트를 돌리면 늘 만나는 그래프가 있습니다. x축은 동시 접속자 수, 왼쪽 y축은 TPS(초당 처리량), 오른쪽 y축은 평균 응답시간(MRT). 이 곡선을 읽을 줄 알면 "이 서버가 초당 몇 건까지 감당하는가"를 판단할 수 있습니다. TPS의 정확한 의미와 성능 한계점(임계점)을 찾는 법을 정리합니다.]]></summary>
+        <content type="html"><![CDATA[<p>부하 테스트를 돌리면 늘 만나는 그래프가 있습니다. x축은 동시 접속자 수, 왼쪽 y축은 TPS(초당 처리량), 오른쪽 y축은 평균 응답시간(MRT). 이 곡선을 읽을 줄 알면 "이 서버가 초당 몇 건까지 감당하는가"를 판단할 수 있습니다. TPS의 정확한 의미와 성능 한계점(임계점)을 찾는 법을 정리합니다.</p>
 <mark>동시 접속자 수와 처리량을 잇는 것은 "응답시간"입니다. 이 관계를 알면 TPS가 왜 어느 지점에서 꺾이는지, 그때 무엇을 손봐야 하는지가 보입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="흔한-오해--동시-접속자가-1000명이면-tps도-1000">흔한 오해 — "동시 접속자가 1,000명이면 TPS도 1,000"<a href="https://johnycho.dev/blog/tps-and-performance-limit#%ED%9D%94%ED%95%9C-%EC%98%A4%ED%95%B4--%EB%8F%99%EC%8B%9C-%EC%A0%91%EC%86%8D%EC%9E%90%EA%B0%80-1000%EB%AA%85%EC%9D%B4%EB%A9%B4-tps%EB%8F%84-1000" class="hash-link" aria-label="흔한 오해 — &quot;동시 접속자가 1,000명이면 TPS도 1,000&quot;에 대한 직접 링크" title="흔한 오해 — &quot;동시 접속자가 1,000명이면 TPS도 1,000&quot;에 대한 직접 링크">​</a></h2>
 <p>아닙니다. 둘은 다른 개념입니다.</p>
@@ -506,8 +506,8 @@
         <id>https://johnycho.dev/blog/ticketing-system-architecture</id>
         <link href="https://johnycho.dev/blog/ticketing-system-architecture"/>
         <updated>2026-09-11T09:00:00.000Z</updated>
-        <summary type="html"><![CDATA[명절 KTX 예매, 인기 공연 티켓 오픈. 오전 7시 정각에 눌렀는데 대기 순번이 50만 번대, 뒤에는 200만 명. 이런 서비스는 평소엔 한산하다가 오픈 순간에만 수백만 명이 동시에 몰립니다. 이 트래픽을 그대로 DB로 흘리면 오픈과 동시에 장애가 납니다. 대규모 선착순 예매 시스템 아키텍처를 다룬 영상을 바탕으로, 이런 폭발적 동시접속을 견디는 예매 시스템의 뼈대를 정리합니다.]]></summary>
-        <content type="html"><![CDATA[<p>명절 KTX 예매, 인기 공연 티켓 오픈. 오전 7시 정각에 눌렀는데 <strong>대기 순번이 50만 번대, 뒤에는 200만 명</strong>. 이런 서비스는 평소엔 한산하다가 오픈 순간에만 수백만 명이 동시에 몰립니다. 이 트래픽을 그대로 DB로 흘리면 오픈과 동시에 장애가 납니다. <a href="https://www.youtube.com/watch?v=EC2Xqyq6vg4" target="_blank" rel="noopener noreferrer">대규모 선착순 예매 시스템 아키텍처를 다룬 영상</a>을 바탕으로, 이런 폭발적 동시접속을 견디는 예매 시스템의 뼈대를 정리합니다.</p>
+        <summary type="html"><![CDATA[명절 KTX 예매, 인기 공연 티켓 오픈. 오전 7시 정각에 눌렀는데 대기 순번이 50만 번대, 뒤에는 200만 명. 이런 서비스는 평소엔 한산하다가 오픈 순간에만 수백만 명이 동시에 몰립니다. 이 트래픽을 그대로 DB로 흘리면 오픈과 동시에 장애가 납니다. 이런 폭발적 동시접속을 견디는 예매 시스템의 뼈대를 정리합니다.]]></summary>
+        <content type="html"><![CDATA[<p>명절 KTX 예매, 인기 공연 티켓 오픈. 오전 7시 정각에 눌렀는데 <strong>대기 순번이 50만 번대, 뒤에는 200만 명</strong>. 이런 서비스는 평소엔 한산하다가 오픈 순간에만 수백만 명이 동시에 몰립니다. 이 트래픽을 그대로 DB로 흘리면 오픈과 동시에 장애가 납니다. 이런 폭발적 동시접속을 견디는 예매 시스템의 뼈대를 정리합니다.</p>
 <mark>핵심은 "모두를 동시에 처리하려 하지 않는 것"입니다. 앞단(대기열)에서 순서를 매겨 흘려보내고, 실제 좌석 경쟁만 원자적으로 처리하고, DB 쓰기는 메시지 큐로 완충합니다.</mark>
 <p>이 시스템이 지켜야 할 요구사항은 세 가지입니다.</p>
 <ul>
@@ -580,7 +580,7 @@
 </ul>
 <mark>Redis·MQ는 "빠르게 걸러 주는 앞단"이고, "한 좌석은 한 번만"이라는 최종 책임은 DB의 조건부 UPDATE에 둡니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="7-심화-대기열-redis의-고가용성과-클러스터-샤딩">7. (심화) 대기열 Redis의 고가용성과 클러스터 샤딩<a href="https://johnycho.dev/blog/ticketing-system-architecture#7-%EC%8B%AC%ED%99%94-%EB%8C%80%EA%B8%B0%EC%97%B4-redis%EC%9D%98-%EA%B3%A0%EA%B0%80%EC%9A%A9%EC%84%B1%EA%B3%BC-%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0-%EC%83%A4%EB%94%A9" class="hash-link" aria-label="7. (심화) 대기열 Redis의 고가용성과 클러스터 샤딩에 대한 직접 링크" title="7. (심화) 대기열 Redis의 고가용성과 클러스터 샤딩에 대한 직접 링크">​</a></h2>
-<p>여기까지는 대기열의 "기능"이었습니다. 그런데 <strong>대기열을 담당하는 Redis가 한 대뿐이면 그 한 대가 단일 장애점(SPOF)</strong> 입니다. 수백만이 몰리는 명절 예매에서 그 한 대에 장애가 나면 시스템 전체가 마비됩니다. 그래서 대기열 Redis의 <strong>고가용성(HA)</strong> 설계가 필요합니다(<a href="https://www.youtube.com/watch?v=ANEVGPEZUQs" target="_blank" rel="noopener noreferrer">이 주제를 다룬 후속 영상</a>).</p>
+<p>여기까지는 대기열의 "기능"이었습니다. 그런데 <strong>대기열을 담당하는 Redis가 한 대뿐이면 그 한 대가 단일 장애점(SPOF)</strong> 입니다. 수백만이 몰리는 명절 예매에서 그 한 대에 장애가 나면 시스템 전체가 마비됩니다. 그래서 대기열 Redis의 <strong>고가용성(HA)</strong> 설계가 필요합니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="복제--sentinel--클러스터">복제 → Sentinel → 클러스터<a href="https://johnycho.dev/blog/ticketing-system-architecture#%EB%B3%B5%EC%A0%9C--sentinel--%ED%81%B4%EB%9F%AC%EC%8A%A4%ED%84%B0" class="hash-link" aria-label="복제 → Sentinel → 클러스터에 대한 직접 링크" title="복제 → Sentinel → 클러스터에 대한 직접 링크">​</a></h3>
 <ul>
 <li><strong>복제(replication)</strong> — 리플리카를 둬 <strong>읽기(순위 조회)를 분산</strong>합니다. 예매는 쓰기보다 "내 순번" 조회가 훨씬 많기 때문입니다. 마스터에 쓰고 리플리카에서 읽되, 복제는 <strong>비동기</strong>라 수백 ms~수 초 <strong>지연</strong>이 생길 수 있습니다. 그래서 <strong>정확성이 필요한 등록·정확 순번은 마스터</strong>에서, <strong>지연을 감수해도 되는 통계성 조회는 리플리카</strong>로 나눕니다.</li>
@@ -619,8 +619,8 @@
         <id>https://johnycho.dev/blog/kafka-original-design-principles</id>
         <link href="https://johnycho.dev/blog/kafka-original-design-principles"/>
         <updated>2026-09-02T09:00:00.000Z</updated>
-        <summary type="html"><![CDATA[카프카를 쓰다 보면 "왜 이렇게 만들었지?" 싶은 지점이 있습니다. 브로커가 컨슈머 상태를 안 들고 있고, 메시지를 지우지도 않고, 디스크에 쓰는데도 빠릅니다. 이 선택들은 우연이 아니라 2011년 원논문(Kafka: a Distributed Messaging System for Log Processing, Jay Kreps 외)에 이미 담긴 설계 원칙에서 나옵니다. 이 논문을 리뷰한 영상을 계기로, 논문의 흐름(배경 → 설계 원칙 → 분산 조율 → 성능 비교 → 트레이드오프)을 따라 카프카를 만든 핵심 원칙을 하나씩 다시 정리합니다.]]></summary>
-        <content type="html"><![CDATA[<p>카프카를 쓰다 보면 "왜 이렇게 만들었지?" 싶은 지점이 있습니다. 브로커가 컨슈머 상태를 안 들고 있고, 메시지를 지우지도 않고, 디스크에 쓰는데도 빠릅니다. 이 선택들은 우연이 아니라 <strong>2011년 원논문</strong>(<a href="https://notes.stephenholiday.com/Kafka.pdf" target="_blank" rel="noopener noreferrer">Kafka: a Distributed Messaging System for Log Processing</a>, Jay Kreps 외)에 이미 담긴 설계 원칙에서 나옵니다. 이 논문을 리뷰한 <a href="https://www.youtube.com/watch?v=IF-LA5KBTtc" target="_blank" rel="noopener noreferrer">영상</a>을 계기로, 논문의 흐름(배경 → 설계 원칙 → 분산 조율 → 성능 비교 → 트레이드오프)을 따라 카프카를 만든 핵심 원칙을 하나씩 다시 정리합니다.</p>
+        <summary type="html"><![CDATA[카프카를 쓰다 보면 "왜 이렇게 만들었지?" 싶은 지점이 있습니다. 브로커가 컨슈머 상태를 안 들고 있고, 메시지를 지우지도 않고, 디스크에 쓰는데도 빠릅니다. 이 선택들은 우연이 아니라 2011년 원논문(Kafka: a Distributed Messaging System for Log Processing, Jay Kreps 외)에 이미 담긴 설계 원칙에서 나옵니다. 논문의 흐름(배경 → 설계 원칙 → 분산 조율 → 성능 비교 → 트레이드오프)을 따라 카프카를 만든 핵심 원칙을 하나씩 다시 정리합니다.]]></summary>
+        <content type="html"><![CDATA[<p>카프카를 쓰다 보면 "왜 이렇게 만들었지?" 싶은 지점이 있습니다. 브로커가 컨슈머 상태를 안 들고 있고, 메시지를 지우지도 않고, 디스크에 쓰는데도 빠릅니다. 이 선택들은 우연이 아니라 <strong>2011년 원논문</strong>(<a href="https://notes.stephenholiday.com/Kafka.pdf" target="_blank" rel="noopener noreferrer">Kafka: a Distributed Messaging System for Log Processing</a>, Jay Kreps 외)에 이미 담긴 설계 원칙에서 나옵니다. 논문의 흐름(배경 → 설계 원칙 → 분산 조율 → 성능 비교 → 트레이드오프)을 따라 카프카를 만든 핵심 원칙을 하나씩 다시 정리합니다.</p>
 <mark>카프카의 설계는 "메시지 큐를 잘 만들자"가 아니라 "대량 로그를 높은 처리량으로 흘려보내자"에서 출발합니다. 그 목표가 아래 모든 선택을 설명합니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="배경--왜-또-하나의-메시징-시스템이었나">배경 — 왜 또 하나의 메시징 시스템이었나<a href="https://johnycho.dev/blog/kafka-original-design-principles#%EB%B0%B0%EA%B2%BD--%EC%99%9C-%EB%98%90-%ED%95%98%EB%82%98%EC%9D%98-%EB%A9%94%EC%8B%9C%EC%A7%95-%EC%8B%9C%EC%8A%A4%ED%85%9C%EC%9D%B4%EC%97%88%EB%82%98" class="hash-link" aria-label="배경 — 왜 또 하나의 메시징 시스템이었나에 대한 직접 링크" title="배경 — 왜 또 하나의 메시징 시스템이었나에 대한 직접 링크">​</a></h2>
 <p>논문이 나온 2011년, LinkedIn은 두 종류의 로그가 폭발적으로 늘고 있었습니다.</p>
@@ -1287,8 +1287,8 @@
         <id>https://johnycho.dev/blog/multi-layer-caching</id>
         <link href="https://johnycho.dev/blog/multi-layer-caching"/>
         <updated>2026-08-21T13:00:00.000Z</updated>
-        <summary type="html"><![CDATA[선물하기·상품 진열처럼 읽기가 폭주하는 서비스에서는, Redis 한 대를 앞에 둬도 어느 순간 그 Redis 자체가 병목이 됩니다. 이 글은 로컬 캐시(L1)를 Redis(L2) 앞에 두는 다층 캐싱으로 읽기 폭주를 버티는 방법, 그때 생기는 정합성 문제(인스턴스 간 무효화), 그리고 핫 프로모션 같은 급등을 미리 채워 대비하는 워밍업까지 정리합니다. (카카오 선물하기의 대용량 트래픽 캐싱 전략 발표를 보고 개념을 제 언어로 다시 정리한 글입니다.)]]></summary>
-        <content type="html"><![CDATA[<p>선물하기·상품 진열처럼 <strong>읽기가 폭주하는</strong> 서비스에서는, Redis 한 대를 앞에 둬도 어느 순간 그 Redis 자체가 병목이 됩니다. 이 글은 로컬 캐시(L1)를 Redis(L2) 앞에 두는 <strong>다층 캐싱</strong>으로 읽기 폭주를 버티는 방법, 그때 생기는 정합성 문제(인스턴스 간 무효화), 그리고 핫 프로모션 같은 급등을 미리 채워 대비하는 워밍업까지 정리합니다. (카카오 선물하기의 <a href="https://www.youtube.com/watch?v=BUV4A2F9i7w" target="_blank" rel="noopener noreferrer">대용량 트래픽 캐싱 전략 발표</a>를 보고 개념을 제 언어로 다시 정리한 글입니다.)</p>
+        <summary type="html"><![CDATA[선물하기·상품 진열처럼 읽기가 폭주하는 서비스에서는, Redis 한 대를 앞에 둬도 어느 순간 그 Redis 자체가 병목이 됩니다. 이 글은 로컬 캐시(L1)를 Redis(L2) 앞에 두는 다층 캐싱으로 읽기 폭주를 버티는 방법, 그때 생기는 정합성 문제(인스턴스 간 무효화), 그리고 핫 프로모션 같은 급등을 미리 채워 대비하는 워밍업까지 정리합니다.]]></summary>
+        <content type="html"><![CDATA[<p>선물하기·상품 진열처럼 <strong>읽기가 폭주하는</strong> 서비스에서는, Redis 한 대를 앞에 둬도 어느 순간 그 Redis 자체가 병목이 됩니다. 이 글은 로컬 캐시(L1)를 Redis(L2) 앞에 두는 <strong>다층 캐싱</strong>으로 읽기 폭주를 버티는 방법, 그때 생기는 정합성 문제(인스턴스 간 무효화), 그리고 핫 프로모션 같은 급등을 미리 채워 대비하는 워밍업까지 정리합니다.</p>
 <mark>다층 캐싱의 핵심은 "가장 빠르고 가까운 캐시에서 최대한 많이 끝내, 뒤 계층으로 가는 요청 자체를 줄이는 것"입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-redis-하나로는-부족한가">왜 Redis 하나로는 부족한가<a href="https://johnycho.dev/blog/multi-layer-caching#%EC%99%9C-redis-%ED%95%98%EB%82%98%EB%A1%9C%EB%8A%94-%EB%B6%80%EC%A1%B1%ED%95%9C%EA%B0%80" class="hash-link" aria-label="왜 Redis 하나로는 부족한가에 대한 직접 링크" title="왜 Redis 하나로는 부족한가에 대한 직접 링크">​</a></h2>
 <p>Redis는 충분히 빠르지만, <strong>네트워크 너머의 원격 저장소</strong>입니다. 조회할 때마다 애플리케이션 → Redis 왕복(RTT)이 발생하고, 초당 수십만 건 읽기면 이 왕복 비용과 대역폭이 쌓입니다. 게다가 인기 선물 상품 하나에 트래픽이 몰리면 그 키(핫키)를 담당하는 Redis 노드의 CPU가 포화됩니다 — 아무리 캐시 히트율이 높아도, "네트워크 왕복"과 "한 키 집중"은 남습니다.</p>
@@ -1352,8 +1352,8 @@
         <id>https://johnycho.dev/blog/large-scale-payment-distributed-lock</id>
         <link href="https://johnycho.dev/blog/large-scale-payment-distributed-lock"/>
         <updated>2026-08-21T12:00:00.000Z</updated>
-        <summary type="html"><![CDATA[결제는 "같은 계정·같은 주문에 동시에 여러 요청이 들어오는" 동시성 문제가 가장 잘 드러나는 도메인입니다. 사용자의 재시도 한 번, 무상태 인스턴스 여러 대가 겹치면 중복 결제나 잔액 오류로 이어집니다. 이 글은 대규모 결제에서 분산 락을 어떻게 절제해서, 그리고 안전하게 쓰는지를 정리합니다. (카카오페이의 수천만 결제와 분산락 노하우 발표를 보고 개념을 제 언어로 다시 정리한 글입니다.)]]></summary>
-        <content type="html"><![CDATA[<p>결제는 "같은 계정·같은 주문에 동시에 여러 요청이 들어오는" 동시성 문제가 가장 잘 드러나는 도메인입니다. 사용자의 재시도 한 번, 무상태 인스턴스 여러 대가 겹치면 중복 결제나 잔액 오류로 이어집니다. 이 글은 대규모 결제에서 <strong>분산 락</strong>을 어떻게 절제해서, 그리고 안전하게 쓰는지를 정리합니다. (카카오페이의 <a href="https://www.youtube.com/watch?v=4wGTavSyLxE" target="_blank" rel="noopener noreferrer">수천만 결제와 분산락 노하우 발표</a>를 보고 개념을 제 언어로 다시 정리한 글입니다.)</p>
+        <summary type="html"><![CDATA[결제는 "같은 계정·같은 주문에 동시에 여러 요청이 들어오는" 동시성 문제가 가장 잘 드러나는 도메인입니다. 사용자의 재시도 한 번, 무상태 인스턴스 여러 대가 겹치면 중복 결제나 잔액 오류로 이어집니다. 이 글은 대규모 결제에서 분산 락을 어떻게 절제해서, 그리고 안전하게 쓰는지를 정리합니다.]]></summary>
+        <content type="html"><![CDATA[<p>결제는 "같은 계정·같은 주문에 동시에 여러 요청이 들어오는" 동시성 문제가 가장 잘 드러나는 도메인입니다. 사용자의 재시도 한 번, 무상태 인스턴스 여러 대가 겹치면 중복 결제나 잔액 오류로 이어집니다. 이 글은 대규모 결제에서 <strong>분산 락</strong>을 어떻게 절제해서, 그리고 안전하게 쓰는지를 정리합니다.</p>
 <mark>결제 동시성의 핵심은 "같은 자원(계정·주문)에 대한 동시 변경"을 직렬화하는 것입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-결제에-동시성-제어가-필요한가">왜 결제에 동시성 제어가 필요한가<a href="https://johnycho.dev/blog/large-scale-payment-distributed-lock#%EC%99%9C-%EA%B2%B0%EC%A0%9C%EC%97%90-%EB%8F%99%EC%8B%9C%EC%84%B1-%EC%A0%9C%EC%96%B4%EA%B0%80-%ED%95%84%EC%9A%94%ED%95%9C%EA%B0%80" class="hash-link" aria-label="왜 결제에 동시성 제어가 필요한가에 대한 직접 링크" title="왜 결제에 동시성 제어가 필요한가에 대한 직접 링크">​</a></h2>
 <p>한 사용자가 결제 버튼을 두 번 누르거나, 네트워크 지연으로 클라이언트가 재시도하면 같은 결제 요청이 두 번 들어옵니다. 잔액을 여러 요청이 동시에 차감하면 잔액이 음수가 되고, 포인트가 이중 적립됩니다. API 서버가 여러 대라서 <strong>한 JVM 안의 락(<code>synchronized</code>)으로는 막을 수 없습니다</strong> — 서로 다른 서버의 요청은 같은 락 객체를 공유하지 않기 때문입니다. 그래서 여러 노드가 공유하는 <strong>분산 락</strong>이 필요합니다.</p>
