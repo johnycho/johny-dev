@@ -208,6 +208,8 @@ export function AnimatedLineChart({
   trend,
   step = false,
   legend,
+  marker,
+  markerLabel = '임계점',
 }: Common & {
   data: number[];
   data2?: number[];
@@ -219,6 +221,8 @@ export function AnimatedLineChart({
   trend?: [number, number];
   step?: boolean;
   legend?: [string, string];
+  marker?: number;
+  markerLabel?: string;
 }) {
   const draw = React.useCallback(
     (ctx: CanvasRenderingContext2D, w: number, h: number, t: number) => {
@@ -235,6 +239,25 @@ export function AnimatedLineChart({
       });
       const sx = (i: number) => x0 + (x1 - x0) * (i / (data.length - 1));
       const sy = (v: number) => y0 + (y1 - y0) * (v / yMax);
+
+      // 세로 마커선(임계점 등) — 점선 + 라벨
+      if (typeof marker === 'number') {
+        const mx = sx(marker);
+        ctx.save();
+        ctx.strokeStyle = pal.muted;
+        ctx.setLineDash([4, 4]);
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(mx, y0);
+        ctx.lineTo(mx, y1);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = pal.muted;
+        ctx.font = FONT;
+        ctx.textAlign = 'left';
+        ctx.fillText(markerLabel, mx + 5, y1 + 11);
+        ctx.restore();
+      }
 
       if (trend) {
         ctx.strokeStyle = pal.trend;
@@ -286,7 +309,7 @@ export function AnimatedLineChart({
       drawLine(data, c1, step);
       if (data2) drawLine(data2, c2, false);
     },
-    [data, data2, yMax, unit, yLabel, xLabel, color, color2, tone, tone2, title, trend, step, legend],
+    [data, data2, yMax, unit, yLabel, xLabel, color, color2, tone, tone2, title, trend, step, legend, marker, markerLabel],
   );
   const ref = useCanvas(draw, height);
   return <canvas ref={ref} style={{width: '100%', height, display: 'block', margin: '1rem auto 1.9rem'}} aria-label={title} />;
