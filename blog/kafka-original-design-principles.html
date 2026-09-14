@@ -11,8 +11,8 @@
 
 <link rel="search" type="application/opensearchdescription+xml" title="조니의 개발 블로그" href="/opensearch.xml">
 
-<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.c58bc0ca.css">
-<script src="/assets/js/runtime~main.a5981d3b.js" defer="defer"></script>
+<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.7adddcf7.css">
+<script src="/assets/js/runtime~main.743d3c62.js" defer="defer"></script>
 <script src="/assets/js/main.7d3c8402.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -65,7 +65,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-브로커는-상태를-갖지-않는다--오프셋을-컨슈머가-관리">5. 브로커는 상태를 갖지 않는다 — 오프셋을 컨슈머가 관리<a href="#5-브로커는-상태를-갖지-않는다--오프셋을-컨슈머가-관리" class="hash-link" aria-label="5. 브로커는 상태를 갖지 않는다 — 오프셋을 컨슈머가 관리에 대한 직접 링크" title="5. 브로커는 상태를 갖지 않는다 — 오프셋을 컨슈머가 관리에 대한 직접 링크">​</a></h2>
 <p>전통적 MQ는 브로커가 &quot;이 소비자가 어디까지 받았나&quot;를 추적하고, 소비 확인(ack)을 받아 메시지를 지웁니다. 이 방식은 복잡한 상태 관리를 요구하고 디스크 쓰기를 유발합니다. 카프카는 이 책임을 <strong>컨슈머 쪽으로 넘깁니다.</strong> 각 컨슈머(그룹)가 <strong>자신의 오프셋</strong>을 들고 있고, 브로커는 그 위치의 데이터를 돌려줄 뿐입니다(원논문 시점엔 ZooKeeper에 저장·조정).</p>
 <p>그럼 삭제는 어떻게 할까요? &quot;누가 다 읽었는지&quot;를 브로커가 모르니, <strong>시간 기반 보존 정책</strong>(원논문 기본 7일)으로 일정 시간이 지난 메시지를 자동으로 버립니다. 컨슈머 상태를 추적할 필요가 없습니다.</p>
-<p>이 <strong>무상태 브로커(stateless broker)</strong> 는 부수 효과로 <strong>리와인드(되감기)</strong> 를 공짜로 줍니다. 브로커가 소비 상태를 안 들고 있으니, 컨슈머는 언제든 원하는 오프셋으로 돌아가 다시 읽을 수 있습니다. 논문이 든 사례는 셋입니다.</p>
+<p>이 <strong>무상태 브로커(stateless broker)</strong> 는 부수 효과로 <strong>리와인드(되감기)</strong> 를 공짜로 줍니다. 브로커가 소비 상태를 안 들고 있으니, 컨슈머는 언제든 원하는 오프셋으로 돌아가 다시 읽을 수 있습니다. 논문이 든 사례는 세 가지입니다.</p>
 <ol>
 <li>컨슈머 코드에 버그가 있어 <strong>수정 후 재처리</strong>할 때.</li>
 <li><strong>ETL 작업이 실패</strong>해 특정 시점부터 다시 처리할 때.</li>
@@ -99,7 +99,7 @@
 <p>논문은 카프카를 당시 대표 MQ인 <strong>ActiveMQ 5.4·RabbitMQ 2.4</strong>와 직접 비교합니다(장비 2대, 8코어·16GB·1Gbit 네트워크, 한 대는 브로커·한 대는 프로듀서/컨슈머, 메시지 200바이트).</p>
 <table><thead><tr><th>지표</th><th>Kafka</th><th>RabbitMQ</th><th>ActiveMQ</th></tr></thead><tbody><tr><td>프로듀서(배치 1)</td><td>초당 5만</td><td>—</td><td>—</td></tr><tr><td>프로듀서(배치 50)</td><td><strong>초당 40만</strong></td><td>약 3.7만</td><td>약 3만</td></tr><tr><td>컨슈머</td><td><strong>초당 2.2만</strong></td><td>약 5천</td><td>약 5천</td></tr></tbody></table>
 <p>배치 50 기준 프로듀서는 <strong>ActiveMQ의 13배</strong>가 넘고, 컨슈머는 <strong>4배 이상</strong>입니다(RabbitMQ·ActiveMQ는 배치 전송 API가 없어 배치 1로 가정).</p>
-<p><strong>프로듀서가 빠른 이유</strong> 셋:</p>
+<p><strong>프로듀서가 빠른 이유</strong> 세 가지:</p>
 <ul>
 <li><strong>비동기 전송</strong>: 프로듀서가 브로커의 ack를 기다리지 않고 보냅니다(배치 50에서 1Gbit 링크가 거의 포화).</li>
 <li><strong>작은 메시지 오버헤드</strong>: 카프카는 메시지당 오버헤드가 9바이트인데, ActiveMQ는 JMS 규격의 무거운 헤더 + B-트리 인덱스 유지 비용으로 144바이트를 씁니다.</li>
