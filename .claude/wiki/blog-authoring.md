@@ -45,8 +45,25 @@
   - **해결: 괄호·따옴표는 그대로 볼드 안에 두고, 닫는 `**` 뒤에 한 칸 띄운다** — 볼드 뒤에 공백이 오면 강조가 정상적으로 닫혀 적용된다. 예: `**복제본(read replica)** 을`, `**무상태(stateless)** 여야`, `**"무상태를 조금 포기"** 하는`. (볼드 밖으로 글로스를 빼내지 말 것 — 괄호·따옴표까지 볼드에 포함되게 유지한다.)
 - 작성 후 코드블록 밖 본문에 위험 패턴이 없는지 스캔한다(스킬 6절).
 
-## 4) 다이어그램·시각화 — Mermaid + Canvas 컴포넌트
-- **구조/흐름도는 Mermaid**: ASCII 아트 대신 **` ```mermaid ` 코드블록**으로 그린다(한글은 코드블록에서 2칸 폭이라 ASCII 열 정렬이 깨짐). Mermaid는 `docusaurus.config.ts`에 활성화됨(`markdown.mermaid: true`). 노드 라벨 줄바꿈은 `<br/>`. 단순 화살표 한 줄(`A → B → C`)이면 굳이 그리지 않아도 된다.
+## 4) 다이어그램·시각화 — 우선순위: C4-PlantUML → PlantUML → Mermaid(최후)
+- **도구 우선순위(중요).** ① **C4-PlantUML로 표현 가능하면 무조건 C4-PlantUML**(시스템 컨텍스트·컨테이너·컴포넌트, 시스템 간 연동, 필요 시 배포 `C4_Deployment`·런타임 상호작용 `C4_Dynamic`). ② C4로 안 되면 **PlantUML로 표현 가능한 건 최대한 PlantUML**(시퀀스·클래스/ER·상태·액티비티·컴포넌트 등 — PlantUML이 지원하는 다이어그램은 거의 다). ③ **Mermaid는 최후 수단** — PlantUML로도 마땅치 않을 때만. 지표·추이는 Canvas 컴포넌트.
+- **C4-PlantUML / PlantUML 모두 Kroki로 렌더해 정적 SVG로 넣는다**(C4는 `c4plantuml`, 일반 PlantUML은 `plantuml` 엔드포인트). 접이식 코드 + 이미지 패턴은 아래 절차와 동일하며, C4 개념은 [C4 모델 글](../../blog/2026-09-22-c4-model-architecture-diagram.mdx) 참고.
+- **Mermaid를 쓸 때**: **` ```mermaid ` 코드블록**으로 그린다(ASCII 아트 금지 — 한글은 코드블록에서 2칸 폭이라 열 정렬이 깨짐). Mermaid는 `docusaurus.config.ts`에 활성화됨(`markdown.mermaid: true`). 노드 라벨 줄바꿈은 `<br/>`. 단순 화살표 한 줄(`A → B → C`)이면 굳이 그리지 않아도 된다. (Mermaid의 `C4Context` 등 C4 타입은 실험적이라 라벨이 겹쳐 깨지므로 **쓰지 않는다.** C4는 반드시 C4-PlantUML로.)
+  - 절차: ① `.puml` 작성 — **C4**면 `!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml`(또는 `C4_Container.puml`·`C4_Component.puml`) + `LAYOUT_LEFT_RIGHT()`(가로 배치); **일반 PlantUML**(시퀀스·클래스·ER·상태 등)이면 include 없이 그냥 작성 → ② 렌더: C4는 `curl -X POST https://kroki.io/c4plantuml/svg ...`, 일반 PlantUML은 `.../plantuml/svg ...` (`-o static/img/c4/<name>.svg`, HTTP 200·`<svg` 시작 확인, 오류면 문법 고쳐 재시도) → ③ 본문엔 **접이식 코드 + 이미지**로 삽입:
+
+    ```
+    <details>
+    <summary>C4-PlantUML 코드</summary>
+
+    ​```plantuml
+    <소스>
+    ​```
+
+    </details>
+
+    ![C4 …](/img/c4/<name>.svg)
+    ```
+  - 이미지 `alt`는 **C4 다이어그램은 `C4 `로, 일반 PlantUML 다이어그램은 `PlantUML `로 시작**시킨다 — `custom.css`의 `img[alt^="C4 "], img[alt^="PlantUML "]` 규칙이 본문 폭에 맞춰 흰 배경 카드로 표시한다(Docusaurus가 경로를 `/assets`로 해싱하므로 alt로 스코프). 코드 레벨(레벨 4)은 C4가 아니라 일반 `plantuml` 클래스 다이어그램으로 그린다. SVG 교체 후 반영이 안 보이면 `npm run clear` 후 재빌드/재기동.
 - **시간에 따른 값·패턴은 애니메이션 Canvas 컴포넌트를 적극 활용**한다. 지표 추이(메모리 톱니/계단, 트래픽 곡선), 분포(응답시간 꼬리), 두 지표의 상관(캐시 히트율↓+DB 부하↑), 큐 발산 같은 "움직임이 의미 있는" 시각화는 정적 그림보다 **직접 만든 canvas 컴포넌트**가 이해를 돕는다.
   - 재사용 컴포넌트: [`src/components/blog/MonitorCharts.tsx`](../../src/components/blog/MonitorCharts.tsx) — `AnimatedLineChart`(선·듀얼선·계단`step`·추세선`trend`·범례`legend`), `AnimatedBars`(막대). 의존성 없이 SSR 안전(그리기는 클라이언트 `useEffect`에서만).
   - .mdx에서 `import {AnimatedLineChart, AnimatedBars} from '@site/src/components/blog/MonitorCharts';` 후 JSX로 사용. 새 시각화 유형이 필요하면 이 파일에 컴포넌트를 추가해 재사용한다.
