@@ -120,38 +120,52 @@ protected void doReadPage() {
 
 **맞춘 경우 (fetch = chunk = 200)** — 한 조회로 잠근 200건이 그 청크 트랜잭션 안에서 처리·커밋됩니다.
 
-```mermaid
-%%{init: {'sequence': {'actorMargin': 210}}}%%
-sequenceDiagram
-  participant R as Reader
-  participant DB as DB
-  participant W as Writer
-  Note over R,W: 청크 트랜잭션 T
-  R->>DB: FOR UPDATE 조회 → 200건 잠금
-  R->>W: read() ×200
-  W->>DB: UPDATE 200건
-  Note over R,W: 커밋 T → 200건 락 해제 (처리 완료라 안전)
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+participant "Reader" as R
+participant "DB" as DB
+participant "Writer" as W
+note over R,W: 청크 트랜잭션 T
+R -> DB : FOR UPDATE 조회 → 200건 잠금
+R -> W : read() ×200
+W -> DB : UPDATE 200건
+note over R,W: 커밋 T → 200건 락 해제 (처리 완료라 안전)
+@enduml
 ```
+
+</details>
+
+![PlantUML fetch=chunk 정렬 시 한 트랜잭션 내 락 유지](/img/c4/pu-batch-seq1.svg)
 
 **다르게 둔 경우 (fetch = 500, chunk = 200)** — 한 조회로 500건을 잠갔는데, 첫 청크가 커밋되며 아직 처리하지 않은 300건의 락까지 풀립니다.
 
-```mermaid
-%%{init: {'sequence': {'actorMargin': 210}}}%%
-sequenceDiagram
-  participant R as Reader
-  participant DB as DB
-  participant W as Writer
-  participant X as 다른 요청
-  Note over R,W: 청크 트랜잭션 A
-  R->>DB: FOR UPDATE 조회 → 500건 잠금
-  R->>W: read() ×200
-  W->>DB: UPDATE 200건
-  Note over R,W: 커밋 A → 500건 락 전부 해제 (미처리 300건 포함)
-  X->>DB: 락 풀린 201~500행 수정 (끼어듦)
-  Note over R,W: 청크 트랜잭션 B
-  R->>W: read() ×200 (남은 201~400)
-  W->>DB: UPDATE — 이미 다른 요청이 바꾼 뒤
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+participant "Reader" as R
+participant "DB" as DB
+participant "Writer" as W
+participant "다른 요청" as X
+note over R,W: 청크 트랜잭션 A
+R -> DB : FOR UPDATE 조회 → 500건 잠금
+R -> W : read() ×200
+W -> DB : UPDATE 200건
+note over R,W: 커밋 A → 500건 락 전부 해제 (미처리 300건 포함)
+X -> DB : 락 풀린 201~500행 수정 (끼어듦)
+note over R,W: 청크 트랜잭션 B
+R -> W : read() ×200 (남은 201~400)
+W -> DB : UPDATE — 이미 다른 요청이 바꾼 뒤
+@enduml
 ```
+
+</details>
+
+![PlantUML fetch>chunk 시 조기 락 해제와 다른 요청 인터리브](/img/c4/pu-batch-seq2.svg)
 
 `fetch`가 `chunk`보다 크면, 한 조회로 잠근 행이 여러 청크 트랜잭션에 걸칩니다. 첫 청크가 커밋되는 순간 **아직 처리하지 않은 행의 락까지 함께 풀려**, 그 사이 다른 요청이 끼어들 수 있어 안전장치가 깨집니다. 그래서 "한 번의 `FOR UPDATE` 조회 = 한 청크"가 되도록 두 값을 같게 맞춥니다.
 

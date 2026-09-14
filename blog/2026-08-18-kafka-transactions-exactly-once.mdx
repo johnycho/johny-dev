@@ -23,15 +23,31 @@ EOS는 두 기능이 함께 받쳐줍니다.
 
 <mark>해법은 "결과 쓰기"와 "읽은 위치(오프셋) 커밋"을 **같은 트랜잭션 안에** 넣는 것입니다.</mark> 오프셋 커밋을 컨슈머가 따로 하지 않고, 프로듀서의 `sendOffsetsToTransaction`으로 트랜잭션에 포함시킵니다.
 
-```mermaid
-flowchart LR
-    A["토픽 A<br/>consume"] --> P["처리(process)"]
-    P --> W["토픽 B로 결과 전송"]
-    P --> O["읽은 오프셋을<br/>트랜잭션에 추가"]
-    W & O --> C{"commit / abort"}
-    C -->|commit| OK["결과·오프셋 함께 확정"]
-    C -->|abort| RB["둘 다 취소 → 재처리"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:토픽 A consume;
+:처리 (process);
+fork
+  :토픽 B로 결과 전송;
+fork again
+  :읽은 오프셋을 트랜잭션에 추가;
+end fork
+if (commit / abort) then (commit)
+  :결과·오프셋 함께 확정;
+else (abort)
+  :둘 다 취소 → 재처리;
+endif
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML read-process-write와 commit/abort 분기](/img/c4/pu-kafka-eos.svg)
 
 commit되면 결과와 오프셋이 함께 확정되고, 중간에 실패해 abort되면 **둘 다 없던 일**이 되어 그 배치를 다시 처리합니다. 그래서 "한 번 처리한 효과"가 정확히 한 번만 남습니다.
 

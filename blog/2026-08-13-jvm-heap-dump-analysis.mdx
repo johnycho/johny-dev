@@ -89,14 +89,25 @@ MAT 화면의 용어가 낯설어서 막히는 경우가 많은데, 넷만 알�
 
 MAT로 여는 순서는 대략 이렇습니다.
 
-```mermaid
-flowchart TB
-    D[".hprof 열기"] --> S["Leak Suspects<br/>자동 리포트"]
-    S --> T["Dominator Tree<br/>유지 크기 큰 순"]
-    T --> H["Histogram<br/>클래스별 인스턴스 수"]
-    H --> P["Path to GC Roots<br/>(soft/weak 제외)"]
-    P --> F["원인 코드 특정"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:.hprof 열기;
+:Leak Suspects 자동 리포트;
+:Dominator Tree 유지 크기 큰 순;
+:Histogram 클래스별 인스턴스 수;
+:Path to GC Roots (soft/weak 제외);
+:원인 코드 특정;
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML MAT 힙 덤프 분석 절차](/img/c4/pu-mat-procedure.svg)
 
 1. **Leak Suspects 리포트** — MAT가 자동으로 "이게 수상하다"를 짚어줍니다. 대개 여기서 방향이 잡힙니다.
 2. **도미네이터 트리** — 유지 크기 큰 순으로 정렬. 맨 위에 있는 게 메모리를 가장 많이 차지한 객체입니다.

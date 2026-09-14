@@ -57,12 +57,28 @@ flowchart LR
 
 가장 추상화된 그림. 우리 시스템을 가운데 두고, 상호작용하는 **사용자·외부 시스템**만 그립니다. 기술 세부는 모두 생략해 비개발자도 이해할 수 있습니다. **시스템을 그리는 가장 좋은 출발점**입니다.
 
-```mermaid
-flowchart TB
-  U["고객<br/>(계좌 보유자)"] -->|계좌 조회·결제| IB["인터넷 뱅킹 시스템<br/>(우리가 만드는 것)"]
-  IB -->|계좌 정보 조회·결제| CB["코어 뱅킹 시스템<br/>(외부)"]
-  IB -->|메일 발송| EM["이메일 서비스<br/>(외부)"]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(customer, "고객", "은행 계좌를 가진 고객")
+System(ib, "인터넷 뱅킹 시스템", "계좌 조회·결제를 제공")
+System_Ext(core, "코어 뱅킹 시스템", "계좌·거래 처리")
+System_Ext(email, "이메일 서비스", "알림 발송")
+
+Rel(customer, ib, "계좌 조회·결제")
+Rel(ib, core, "계좌 정보 조회·결제")
+Rel(ib, email, "메일 발송")
+@enduml
 ```
+
+</details>
+
+![C4 시스템 컨텍스트 다이어그램](/img/c4/context.svg)
 
 박스마다 **제목 + 설명**을, 화살표마다 **관계를 설명하는 라벨**을 붙이는 게 핵심입니다. **모든 개발팀에 권장**됩니다.
 
@@ -70,14 +86,29 @@ flowchart TB
 
 시스템 경계 안으로 한 겹 들어가, 어떤 **실행 단위**가 있고 책임이 어떻게 나뉘는지, 그리고 **기술 선택과 통신 프로토콜**을 표현합니다.
 
-```mermaid
-flowchart TB
-  U["고객"] -->|HTTPS| SPA["UI 앱 (SPA)<br/>JavaScript·Angular"]
-  SPA -->|JSON/HTTPS| BE["백엔드 앱<br/>Java·Spring Boot"]
-  BE -->|MySQL 프로토콜| DB[("데이터베이스<br/>MySQL")]
-  BE -->|S3 API| S3["명세서 저장소<br/>AWS S3"]
-  BE -->|호출| CB["코어 뱅킹 (외부)"]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(customer, "고객")
+System_Boundary(ib, "인터넷 뱅킹 시스템") {
+  Container(spa, "UI 앱", "JavaScript·Angular", "SPA")
+  Container(api, "백엔드 앱", "Java·Spring Boot", "REST API")
+  ContainerDb(db, "데이터베이스", "MySQL", "사용자·로그")
+}
+Rel(customer, spa, "사용", "HTTPS")
+Rel(spa, api, "호출", "JSON/HTTPS")
+Rel(api, db, "읽기·쓰기", "MySQL")
+@enduml
 ```
+
+</details>
+
+![C4 컨테이너 다이어그램](/img/c4/container.svg)
 
 컨텍스트와 달리 **API·HTTPS·MySQL 프로토콜** 같은 기술 통신이 드러납니다. 다만 **클러스터링·로드밸런싱·장애조치 같은 배포 관점은 여기 넣지 않습니다**(환경마다 다르므로 뒤의 디플로이먼트 다이어그램으로). 역시 **모든 개발팀에 권장**됩니다.
 
@@ -85,22 +116,73 @@ flowchart TB
 
 컨테이너 하나(여기선 **백엔드 앱**)를 열어 내부 컴포넌트를 봅니다.
 
-```mermaid
-flowchart TB
-  subgraph BE["백엔드 앱 컨테이너 (하나의 프로세스)"]
-    LOGIN["로그인 API"] --> SEC["시큐리티 컴포넌트"]
-    SUM["계좌요약 API"] --> SEC
-    STMT["명세서 API"] --> STMTC["명세서 컴포넌트"]
-    SEC --> DBc[("MySQL")]
-    STMTC --> S3c["S3 저장소"]
-  end
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(customer, "고객")
+Container_Boundary(be, "백엔드 앱") {
+  Component(login, "로그인 API")
+  Component(summary, "계좌요약 API")
+  Component(stmt, "명세서 API")
+  Component(sec, "시큐리티 컴포넌트", "", "로그인·토큰 검증")
+  Component(stmtc, "명세서 컴포넌트", "", "명세서 생성")
+}
+ContainerDb(db, "데이터베이스", "MySQL")
+System_Ext(s3, "명세서 저장소", "AWS S3")
+
+Rel(customer, login, "요청")
+Rel(login, sec, "검증 위임")
+Rel(summary, sec, "검증 위임")
+Rel(stmt, stmtc, "위임")
+Rel(sec, db, "읽기·쓰기")
+Rel(stmtc, s3, "파일 읽기·쓰기")
+@enduml
 ```
+
+</details>
+
+![C4 컴포넌트 다이어그램](/img/c4/component.svg)
 
 핵심은 이 컴포넌트들이 **독립 배포 단위가 아니라** 백엔드라는 **한 컨테이너·한 프로세스** 안의 논리적 역할이라는 점입니다. 컴포넌트 레벨은 **필수는 아니며**, 가치가 있을 때만 그립니다. 자주 바뀌므로 **장기 문서화는 자동화 도구**로 생성하는 편이 낫습니다.
 
 ### 레벨 4 — 코드
 
-컴포넌트를 코드로 어떻게 구현했는지 — 과거 UML의 **클래스/ER 다이어그램** 수준입니다. 인터페이스·클래스·꼭 필요한 메서드·호출 관계 **정도까지만** 표현하고, 너무 세밀한 건 생략합니다. 변경이 잦으니 **IDE 등으로 자동 생성**하길 권합니다(필수 아님).
+컴포넌트를 코드로 어떻게 구현했는지 — 과거 UML의 **클래스/ER 다이어그램** 수준입니다(그래서 C4-PlantUML이 아니라 일반 PlantUML 클래스 다이어그램으로 그립니다). 예로 앞의 **코어 뱅킹 어댑터** 컴포넌트를 열어 보면:
+
+<details>
+<summary>PlantUML 클래스 다이어그램 코드</summary>
+
+```plantuml
+@startuml
+hide empty members
+package "코어 뱅킹 어댑터" {
+  interface CoreBankingClient {
+    +getAccount(id) : Account
+    +transfer(req) : Result
+  }
+  class CoreBankingAdapter
+  class Connection
+  class BankAccountRequest
+  class BankAccountResponse
+
+  CoreBankingClient <|.. CoreBankingAdapter
+  CoreBankingAdapter --> Connection : 사용
+  Connection --> BankAccountRequest : 생성
+  Connection --> BankAccountResponse : 반환
+}
+@enduml
+```
+
+</details>
+
+![C4 코드(클래스) 다이어그램](/img/c4/code.svg)
+
+인터페이스·클래스·꼭 필요한 메서드·호출 관계 **정도까지만** 표현하고, 너무 세밀한 건 생략합니다. 변경이 잦으니 **IDE 등으로 자동 생성**하길 권합니다(필수 아님).
 
 ## 보완 다이어그램 셋
 
@@ -118,6 +200,18 @@ flowchart TB
 
 절대적 공식은 아니고, **"누구와 어떤 다이어그램으로 소통할지"** 에 맞춰 고르면 됩니다.
 
+## 다이어그램을 코드로 — C4-PlantUML
+
+앞서 각 레벨 그림 위에 실은 코드가 보여 주듯, C4는 아예 **다이어그램을 코드로 작성**하기 좋은 모델입니다(위 그림들은 모두 그 코드를 렌더한 것). 코드로 두면 **Git으로 버전 관리**하고, PR에서 리뷰하고, 요소가 바뀔 때 손으로 다시 그리지 않아도 됩니다. 위 예시는 **C4-PlantUML**(PlantUML에 C4 매크로를 얹은 것)로, 레벨에 따라 `C4_Context.puml`·`C4_Container.puml`·`C4_Component.puml`을 include하고 `Person`·`System`·`Container`·`Component`·`Rel` 매크로만 바꿔 쓰면 됩니다.
+
+도구는 취향껏 고르면 됩니다.
+
+- **C4-PlantUML** — PlantUML에 C4 매크로를 얹은 것. 배치가 정교하고 IDE·CI 생태계가 넓습니다.
+- **Mermaid** — `C4Context` 등 C4 타입을 지원해 코드 블록으로 바로 렌더되지만, C4는 실험적이라 자동 배치가 다소 거칠 수 있습니다.
+- **Structurizr** — C4를 만든 사이먼 브라운의 공식 도구. **하나의 DSL 모델**에서 컨텍스트·컨테이너·컴포넌트 뷰를 **자동으로 여러 장** 뽑아 줍니다(모델 한 번, 뷰 여러 개).
+
+<mark>다이어그램을 코드로 두면 설계 그림이 문서가 아니라 **버전 관리되는 산출물**이 됩니다 — 바뀔 때마다 새로 그리는 부담이 사라집니다.</mark>
+
 ## 다이어그램 체크리스트 & 자주 하는 실수
 
 공식 사이트가 제안하는 점검 항목 — 점수용이 아니라 빠뜨리기 쉬운 걸 짚는 용도입니다.
@@ -126,7 +220,7 @@ flowchart TB
 - **모든 요소에 이름**이 있나? **색·도형·아이콘·선(실선/점선/화살표)에 의미**가 있나?
 - **모든 화살표에 관계를 설명하는 라벨**이 붙어 있나?
 
-특히 자주 하는 실수 셋:
+특히 자주 하는 실수 세 가지:
 
 1. **한 다이어그램에 여러 추상화 레벨을 섞는다.**
 2. **화살표에 설명(라벨)이 없다.**

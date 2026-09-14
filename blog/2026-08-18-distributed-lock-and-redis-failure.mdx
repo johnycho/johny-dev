@@ -14,13 +14,28 @@ date: 2026-08-18T12:00:00
 
 인스턴스 3대가 같은 자원(예: 재고, 포인트, "이번 배치를 한 번만 실행")을 동시에 건드린다고 해봅시다. 각 서버의 `ReentrantLock`은 **자기 프로세스 안 스레드끼리만** 막을 뿐, 서버 사이 경쟁은 못 막습니다. 결국 세 서버가 동시에 "재고 1개"를 팔아버리는 식의 문제가 납니다.
 
-```mermaid
-flowchart TD
-    S1["인스턴스 1"] --> R["공유 락<br/>(Redis 등 외부 저장소)"]
-    S2["인스턴스 2"] --> R
-    S3["인스턴스 3"] --> R
-    R --> C["한 번에 하나만 임계 구역 진입"]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Container(s1, "인스턴스 1", "애플리케이션 서버")
+Container(s2, "인스턴스 2", "애플리케이션 서버")
+Container(s3, "인스턴스 3", "애플리케이션 서버")
+ContainerDb(redis, "공유 락", "Redis 등 외부 저장소", "한 번에 하나만 임계 구역 진입")
+
+Rel(s1, redis, "락 획득 시도")
+Rel(s2, redis, "락 획득 시도")
+Rel(s3, redis, "락 획득 시도")
+@enduml
 ```
+
+</details>
+
+![C4 여러 인스턴스가 공유하는 Redis 락](/img/c4/redis-lock-1.svg)
 
 <mark>분산락은 "여러 노드가 함께 보는 하나의 락"을 외부 저장소(Redis 등)에 둬서, 전체에서 한 번에 하나만 임계 구역에 들어가게 하는 것</mark>입니다.
 
@@ -56,14 +71,30 @@ UPDATE product SET stock = stock - 1 WHERE id = ? AND stock > 0;
 1. **가용성** — Redis에 장애가 나면 락을 못 잡아 그 기능이 멈춥니다.
 2. **안전성(상호배제)** — HA로 살려도, <mark>복제가 비동기라 페일오버 순간 방금 잡은 락이 사라질 수 있습니다.</mark>
 
-```mermaid
-flowchart LR
-    A["클라이언트 A<br/>마스터에 락 획득"] --> M["마스터"]
-    M -. 복제 전 다운 .-> X["마스터 장애"]
-    X --> N["복제본이 새 마스터로<br/>(락 기록 없음)"]
-    N --> B["클라이언트 B<br/>같은 락 획득 성공"]
-    B --> D["A·B 동시 진입 → 상호배제 위반"]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Container(ca, "클라이언트 A", "애플리케이션")
+Container(cb, "클라이언트 B", "애플리케이션")
+ContainerDb(master, "마스터", "Redis", "복제 전 다운 → 마스터 장애")
+ContainerDb(replica, "복제본 → 새 마스터", "Redis", "락 기록 없음")
+
+Rel(ca, master, "락 획득")
+Rel(master, replica, "복제 (비동기)")
+Rel_Up(replica, master, "페일오버로 승격")
+Rel(cb, replica, "같은 락 획득 성공")
+Rel(cb, ca, "A·B 동시 진입 → 상호배제 위반", "충돌")
+@enduml
 ```
+
+</details>
+
+![C4 Redis 마스터·복제 페일오버 시 락 이중 획득](/img/c4/redis-lock-2.svg)
 
 즉 Sentinel·Cluster로 가용성은 올려도, **락의 상호배제까지 100% 보장되진 않습니다.** 여러 독립 마스터의 과반 획득을 요구하는 **Redlock**은 이 위험을 줄이려는 시도지만, GC 정지·시계 문제 등으로 완벽하진 않다는 논쟁이 있고 구성도 무겁습니다.
 

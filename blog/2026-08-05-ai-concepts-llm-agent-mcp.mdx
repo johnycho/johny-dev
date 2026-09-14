@@ -92,14 +92,25 @@ flowchart LR
 
 **에이전트(agent)** 는 <mark>LLM이 도구를 반복해서 쓰며 스스로 다음 할 일을 정해 목표까지 가는 것</mark>입니다. "도구 호출 → 결과 확인 → 다음 도구 호출"을 목표를 이룰 때까지 루프로 돕니다.
 
-```mermaid
-flowchart TD
-    G["목표: 버그 고치기"] --> L["LLM이 다음 행동 결정"]
-    L --> T["도구 실행<br/>(파일 읽기·수정·테스트)"]
-    T --> C{"목표 달성?"}
-    C -- 아니오 --> L
-    C -- 예 --> D["완료"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:목표 - 버그 고치기;
+repeat
+  :LLM이 다음 행동 결정;
+  :도구 실행 (파일 읽기·수정·테스트);
+repeat while (목표 달성?) is (아니오) not (예)
+:완료;
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML 에이전트 루프 — 판단·도구 실행·목표 달성 반복](/img/c4/pu-agent-loop.svg)
 
 다만 "무조건 에이전트로 만들면 좋다"는 아닙니다. 단계가 단순하면 한 번의 호출로 충분하고, 정해진 순서가 있으면 우리가 흐름을 짜는 편이 안전합니다. <mark>에이전트는 "미리 다 정해두기 어렵고, 여러 단계를 거쳐야 하는" 열린 문제에 어울립니다.</mark> AI 코딩 어시스턴트가 대표적인 에이전트인데, 이걸 실무 절차에 맞게 길들이는 이야기는 [AI 엔지니어링 하네스](./ai-engineering-harness) 글에서 다뤘습니다.
 
@@ -109,12 +120,31 @@ flowchart TD
 
 **MCP(Model Context Protocol, 모델 컨텍스트 프로토콜)** 는 이 문제를 푸는 **표준 규격**입니다. <mark>AI와 외부 도구·데이터를 연결하는 방식을 하나로 통일한 "AI용 USB-C" 같은 것</mark>입니다. USB-C 케이블 하나로 여러 기기를 꽂듯, MCP를 따르면 어떤 AI든 어떤 도구든 같은 방식으로 연결됩니다.
 
-```mermaid
-flowchart LR
-    HOST["AI 앱<br/>(MCP 클라이언트)"] -- 표준 규격 --> S1["MCP 서버: GitHub"]
-    HOST -- 표준 규격 --> S2["MCP 서버: 사내 DB"]
-    HOST -- 표준 규격 --> S3["MCP 서버: 슬랙"]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_LEFT_RIGHT()
+
+System(app, "AI 앱", "MCP 클라이언트 — 표준 규격으로 외부 도구 연결")
+
+System_Ext(github, "GitHub", "MCP 서버 — 이슈 조회·PR 생성")
+System_Ext(db, "사내 DB", "MCP 서버 — 사내 데이터 조회")
+System_Ext(slack, "슬랙", "MCP 서버 — 메시지 전송")
+
+Rel(app, github, "표준 규격(MCP)")
+Rel(app, db, "표준 규격(MCP)")
+Rel(app, slack, "표준 규격(MCP)")
+
+@enduml
 ```
+
+</details>
+
+![C4 AI 앱과 MCP 서버 연동 구성](/img/c4/ai-mcp.svg)
 
 용어를 정리하면 이렇습니다.
 

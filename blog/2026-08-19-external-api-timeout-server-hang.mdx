@@ -36,14 +36,25 @@ public void placeOrder(...) {
 
 외부 API가 느려지자 이런 연쇄가 일어났습니다.
 
-```mermaid
-flowchart TB
-    S["외부 API 느려짐"] --> T["요청마다 최대 30초 대기"]
-    T --> W["Tomcat 워커 스레드 + DB 커넥션을<br/>30초씩 점유"]
-    W --> P["피크에 요청이 쌓이며<br/>스레드·커넥션 풀 고갈"]
-    P --> H["새 요청을 못 받음 → 서버 전체 Hang"]
-    H --> K["헬스체크 실패 → K8s가 Pod 재시작"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:외부 API 느려짐;
+:요청마다 최대 30초 대기;
+:Tomcat 워커 스레드 + DB 커넥션을 30초씩 점유;
+:피크에 요청이 쌓이며 스레드·커넥션 풀 고갈;
+:새 요청을 못 받음 → 서버 전체 Hang;
+:헬스체크 실패 → K8s가 Pod 재시작;
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML 느린 외부 API로 인한 서버 행 연쇄](/img/c4/pu-api-hang.svg)
 
 <mark>느린 외부 호출 하나가 요청마다 공유 자원(스레드·DB 커넥션)을 30초씩 붙잡고, 피크에 그게 쌓이며 풀이 바닥나 서버 전체가 멈춘 것</mark>입니다. 특히 트랜잭션 안에서 호출해 **DB 커넥션까지** 30초씩 물고 있었던 게 컸습니다.
 

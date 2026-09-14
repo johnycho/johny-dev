@@ -100,13 +100,28 @@ GC를 고르는 기준은 사실상 이 둘의 저울질입니다.
 
 간단한 결정 흐름으로 보면 이렇습니다.
 
-```mermaid
-flowchart TD
-    A{"정지 시간이<br/>가장 중요?"} -->|예| Z["ZGC / Shenandoah"]
-    A -->|아니오| B{"지연은 무관,<br/>처리량이 최우선?"}
-    B -->|예| P["Parallel GC"]
-    B -->|아니오| G["G1 (기본)"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+if (정지 시간이 가장 중요?) then (예)
+  :ZGC / Shenandoah;
+else (아니오)
+  if (지연은 무관, 처리량이 최우선?) then (예)
+    :Parallel GC;
+  else (아니오)
+    :G1 (기본);
+  endif
+endif
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML GC 선택 결정 트리](/img/c4/pu-gc-select.svg)
 
 ## 버전·기본값 주의
 

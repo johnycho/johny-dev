@@ -114,17 +114,28 @@ description: 티켓을 분석하고 작업 계획을 작성한다. 승인 전까
 
 작업(티켓) 하나는 정해진 슬래시 커맨드를 따라 한 방향으로 흐릅니다.
 
-```mermaid
-flowchart LR
-    A["새 작업"] --> P["/create-plan<br/>분석·계획"]
-    P --> S["/start-work<br/>워크트리·브랜치"]
-    S --> I["구현"]
-    I --> R["/review<br/>격리 리뷰"]
-    R --> PR["/create-pr"]
-    PR --> M["/merge-pr"]
-    M --> D["/deploy"]
-    D --> F["/finish-ticket<br/>기록·정리"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:새 작업;
+:/create-plan 분석·계획;
+:/start-work 워크트리·브랜치;
+:구현;
+:/review 격리 리뷰;
+:/create-pr;
+:/merge-pr;
+:/deploy;
+:/finish-ticket 기록·정리;
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML 티켓 워크플로 루프](/img/c4/pu-ticket-workflow.svg)
 
 <mark>작업 하나가 계획 → 구현 → 리뷰 → PR → 배포 → 마무리까지 정해진 커맨드를 따라 흐른다.</mark> 각 단계가 끝날 때마다 `CONTEXT.md`의 상태 필드가 즉시 갱신되므로, 중간에 세션이 끊겨도 다음 세션이 "어디까지 왔는지"를 파일에서 그대로 읽습니다.
 

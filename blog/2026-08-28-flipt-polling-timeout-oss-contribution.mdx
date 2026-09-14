@@ -148,20 +148,27 @@ match self.mode {
 
 기본 설정에는 `connect_timeout(10s)`만 있고 **전체 요청 타임아웃이 없습니다.** 그래서 연결은 정상적으로 맺어졌는데 서버가 응답을 끝까지 보내지 못하면(과부하로 느려진 서버, 응답을 지연시키는 프록시 등), `fetch().await`가 **완료되지 않고 계속 대기합니다.** 재시도 미들웨어도 도움이 되지 않습니다 — 재시도는 에러가 발생해야 동작하는데, 이 경우는 에러 없이 대기만 이어지기 때문입니다.
 
-```mermaid
-%%{init: {'sequence': {'actorMargin': 210}}}%%
-sequenceDiagram
-  box 클라이언트 SDK (같은 프로세스)
-    participant P as 폴링 루프
-    participant C as HTTP 클라이언트
-  end
-  participant S as Flipt 서버 (원격)
-  P->>C: 1. fetch() 호출
-  C->>S: 2. GET snapshot (연결 OK)
-  S-->>C: 3. header만, body 지연
-  Note over C: 전체 타임아웃 없음
-  Note over P: 무한 대기 → 다음 주기 못 감
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+box "클라이언트 SDK (같은 프로세스)"
+  participant "폴링 루프" as P
+  participant "HTTP 클라이언트" as C
+end box
+participant "Flipt 서버 (원격)" as S
+P -> C : 1. fetch() 호출
+C -> S : 2. GET snapshot (연결 OK)
+S --> C : 3. header만, body 지연
+note over C: 전체 타임아웃 없음
+note over P: 무한 대기 → 다음 주기 못 감
+@enduml
 ```
+
+</details>
+
+![PlantUML 폴링 루프가 fetch에서 무한 대기하는 타임아웃 사각지대](/img/c4/pu-flipt-seq.svg)
 
 메인테이너가 재현하지 못한 이유도 이걸로 설명됩니다 — 재현하려면 "연결은 받아 주되 응답을 멈추는" 서버가 필요했습니다.
 

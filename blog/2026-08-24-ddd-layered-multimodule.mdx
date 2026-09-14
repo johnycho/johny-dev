@@ -127,13 +127,29 @@ public class OrderJpaRepository implements OrderRepository {
 
 모든 화살표가 `domain`을 향하고, `domain`은 아무것도 의존하지 않는 것이 목표입니다.
 
-```mermaid
-flowchart TD
-  S["실행 서비스<br/>프레젠테이션(Controller)"] --> A[application]
-  S --> I[infrastructure]
-  A --> D[domain]
-  I --> D
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+skinparam componentStyle rectangle
+skinparam defaultFontName sans-serif
+
+rectangle "실행 서비스\n프레젠테이션(Controller)" as S
+rectangle "application" as A
+rectangle "infrastructure" as I
+rectangle "domain" as D
+
+S ..> A
+S ..> I
+A ..> D
+I ..> D
+@enduml
 ```
+
+</details>
+
+![PlantUML 모든 레이어가 domain을 향하는 의존 방향](/img/c4/pu-ddd-layers.svg)
 
 모든 계층이 `domain`을 향해 의존하고, `domain`은 아무것도 의존하지 않습니다. 그래서 도메인 코드는 어떤 실행 환경(API든 배치든)에도 그대로 재사용됩니다.
 
@@ -143,22 +159,33 @@ flowchart TD
 
 "주문 취소" 요청이 들어왔을 때 계층을 지나는 큰 흐름입니다.
 
-```mermaid
-sequenceDiagram
-  participant W as Controller(실행 서비스)
-  participant A as application
-  participant I as infrastructure
-  participant D as domain 엔티티
-  participant DB as DB
-  W->>A: 1. 유스케이스 호출 cancel(id)
-  A->>I: 2. 리포지토리 인터페이스로 조회 findById
-  I->>DB: 3. SELECT
-  DB-->>I: 4. row
-  I-->>A: 5. Order 엔티티
-  A->>D: 6. 도메인 규칙 order.cancel()
-  A->>I: 7. 저장 save(order)
-  I->>DB: 8. UPDATE
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+skinparam defaultFontName sans-serif
+
+participant "Controller(실행 서비스)" as W
+participant "application" as A
+participant "infrastructure" as I
+participant "domain 엔티티" as D
+participant "DB" as DB
+
+W ->> A : 1. 유스케이스 호출 cancel(id)
+A ->> I : 2. 리포지토리 인터페이스로 조회 findById
+I ->> DB : 3. SELECT
+DB -->> I : 4. row
+I -->> A : 5. Order 엔티티
+A ->> D : 6. 도메인 규칙 order.cancel()
+A ->> I : 7. 저장 save(order)
+I ->> DB : 8. UPDATE
+@enduml
 ```
+
+</details>
+
+![PlantUML cancel(id) 요청이 레이어를 거쳐 DB까지 이동하는 순서](/img/c4/pu-ddd-seq.svg)
 
 1. **Controller**(실행 서비스)가 요청을 받아 `application` 유스케이스를 호출합니다.
 2. `application`은 `domain`의 **리포지토리 인터페이스**로 조회를 요청합니다(실제 구현은 `infrastructure`가 담당).

@@ -84,11 +84,25 @@ public class OrderPersistenceAdapter implements SaveOrderPort {
 
 화살표 방향이 핵심입니다. 유스케이스(`app-domain`의 `application/service`)도 `app-persistence`도 **둘 다 `app-domain`의 포트(인터페이스)를 향합니다.** 그래서 유스케이스가 `app-persistence`를 import하는 일이 없고, 실제 구현체를 꽂아 주는 것은 실행 앱(조립 지점)이 DI로 합니다.
 
-```mermaid
-flowchart LR
-  UC["유스케이스<br/>PlaceOrderService"] -->|의존| PORT["SaveOrderPort<br/>(인터페이스)"]
-  ADP["영속성 어댑터<br/>OrderPersistenceAdapter"] -->|구현| PORT
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+skinparam defaultFontName sans-serif
+
+interface "SaveOrderPort\n(인터페이스)" as PORT
+class "유스케이스\nPlaceOrderService" as UC
+class "영속성 어댑터\nOrderPersistenceAdapter" as ADP
+
+UC ..> PORT : 의존
+ADP ..|> PORT : 구현
+@enduml
 ```
+
+</details>
+
+![PlantUML 유스케이스가 포트에 의존하고 어댑터가 포트를 구현](/img/c4/pu-hex-port.svg)
 
 유스케이스와 어댑터가 **둘 다 인터페이스(포트)를 향합니다.** 유스케이스는 `app-persistence`를 import하지 않고, 실제 구현체는 실행 앱이 DI로 꽂아 줍니다. 그래서 저장소를 JPA에서 다른 것으로 바꿔도 유스케이스·도메인 코드는 그대로입니다.
 
@@ -156,11 +170,26 @@ root/
 
 모든 화살표가 안쪽(도메인)을 향합니다. 어댑터는 포트를 구현할 뿐, 도메인이 어댑터를 의존하지 않습니다.
 
-```mermaid
-flowchart LR
-  IN["인바운드 어댑터<br/>(컨트롤러 등)"] ==>|호출| CORE["도메인 + 유스케이스<br/>(포트 정의)"]
-  OUT["아웃바운드 어댑터<br/>(DB · 외부 API)"] ==>|포트 구현| CORE
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+skinparam componentStyle rectangle
+skinparam defaultFontName sans-serif
+
+component "인바운드 어댑터\n(컨트롤러 등)" as IN
+component "도메인 + 유스케이스\n(포트 정의)" as CORE
+component "아웃바운드 어댑터\n(DB · 외부 API)" as OUT
+
+IN ==> CORE : 호출
+OUT ==> CORE : 포트 구현
+@enduml
 ```
+
+</details>
+
+![PlantUML 인바운드·아웃바운드 어댑터가 코어를 향하는 의존 방향](/img/c4/pu-hex-adapters.svg)
 
 화살표가 **둘 다 안쪽(도메인)을 향한다**는 게 핵심입니다. 인바운드 어댑터는 도메인의 유스케이스를 호출하고, 아웃바운드 어댑터는 도메인의 포트를 구현합니다. 어느 쪽도 도메인이 바깥을 의존하지 않으므로, DB를 바꾸거나 외부 API를 교체해도 도메인·유스케이스 코드는 그대로입니다.
 
@@ -168,19 +197,30 @@ flowchart LR
 
 "주문 생성" 요청의 큰 흐름입니다.
 
-```mermaid
-sequenceDiagram
-  participant IN as 인바운드 어댑터(web)
-  participant C as application core
-  participant OUT as 아웃바운드 어댑터(app-persistence)
-  participant DB as DB
-  IN->>C: 1. in 포트 호출 place(order)
-  C->>OUT: 2. out 포트 호출 save(order)
-  OUT->>DB: 3. INSERT
-  DB-->>OUT: 4. 결과
-  OUT-->>C: 5. 반환
-  C-->>IN: 6. 응답
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+skinparam defaultFontName sans-serif
+
+participant "인바운드 어댑터(web)" as IN
+participant "application core" as C
+participant "아웃바운드 어댑터(app-persistence)" as OUT
+participant "DB" as DB
+
+IN ->> C : 1. in 포트 호출 place(order)
+C ->> OUT : 2. out 포트 호출 save(order)
+OUT ->> DB : 3. INSERT
+DB -->> OUT : 4. 결과
+OUT -->> C : 5. 반환
+C -->> IN : 6. 응답
+@enduml
 ```
+
+</details>
+
+![PlantUML place(order) 요청이 in·out 포트를 거쳐 DB까지 이동하는 순서](/img/c4/pu-hex-seq.svg)
 
 1. **인바운드 어댑터**(웹 컨트롤러)가 요청을 받아 **in 포트**(유스케이스)를 호출합니다.
 2. `app-domain` 모듈의 유스케이스(`application/service`)가 도메인 규칙을 처리하고, 저장이 필요하면 **out 포트**(인터페이스)를 호출합니다.

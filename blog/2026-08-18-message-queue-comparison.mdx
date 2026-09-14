@@ -79,15 +79,32 @@ flowchart TB
 
 각 큐가 "무엇을 잘하도록 설계됐는지"를 보면 선택이 분명해집니다. 큰 갈림길을 먼저 그림으로 보면 이렇습니다.
 
-```mermaid
-flowchart TD
-    Q1{"메시지를 다시 재생?"} -->|예| K["로그 기반<br/>Kafka·Kinesis·MSK"]
-    Q1 -->|아니오| Q2{"정교한 라우팅·작업 큐가 필요?<br/>(우선순위·조건 분기·건별 ack)"}
-    Q2 -->|예| R["RabbitMQ"]
-    Q2 -->|아니오| Q3{"운영은 맡기고 싶다?"}
-    Q3 -->|예| S["SQS (+SNS)<br/>(관리형 단순 큐)"]
-    Q3 -->|아니오| Q["자체 호스팅 단순 큐<br/>(Redis·NATS 등)"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+if (메시지를 다시 재생?) then (예)
+  :로그 기반\nKafka·Kinesis·MSK;
+else (아니오)
+  if (정교한 라우팅·작업 큐가 필요?\n(우선순위·조건 분기·건별 ack)) then (예)
+    :RabbitMQ;
+  else (아니오)
+    if (운영은 맡기고 싶다?) then (예)
+      :SQS (+SNS)\n(관리형 단순 큐);
+    else (아니오)
+      :자체 호스팅 단순 큐\n(Redis·NATS 등);
+    endif
+  endif
+endif
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML 메시지 큐 선택 결정 트리](/img/c4/pu-mq-select.svg)
 
 **RabbitMQ는 라우팅·작업 큐 제어가 필요할 때만** 고르는 자리입니다. 맨 아래(재생·라우팅 요구가 없고 관리형도 싫을 때)는 Redis·NATS 같은 가벼운 자체 호스팅 큐로 충분합니다. 특히 많이 저울질하는 셋을 시나리오로 봅니다.
 

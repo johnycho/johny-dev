@@ -34,14 +34,25 @@ java.lang.OutOfMemoryError: unable to create native thread:
 - **OkHttpClient를 호출마다 새로 생성** — `OkHttpClient`는 자체 `Dispatcher`(스레드 풀)와 커넥션 풀을 가집니다. 요청마다 새로 만들면 스레드 풀도 계속 생겨 **회수되지 않고 누적**됩니다.
 - **비동기 `enqueue`를 상한 없이 + retry 증폭** — 실패가 재시도로 늘어나 대기·실행 스레드가 더 쌓입니다.
 
-```mermaid
-flowchart TB
-    A["호출마다 새 OkHttpClient 생성"] --> B["매번 새 Dispatcher(스레드 풀) 생성"]
-    B --> C["스레드가 회수 안 되고 누적"]
-    R["retry로 실패 호출 증폭"] --> C
-    C --> D["몇 시간 뒤 네이티브 스레드 한도 도달"]
-    D --> E["unable to create native thread → OOMKilled"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:호출마다 새 OkHttpClient 생성;
+:매번 새 Dispatcher(스레드 풀) 생성;
+:retry로 실패 호출 증폭;
+:스레드가 회수 안 되고 누적;
+:몇 시간 뒤 네이티브 스레드 한도 도달;
+:unable to create native thread → OOMKilled;
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML OkHttpClient 남발로 인한 스레드 누적 OOM](/img/c4/pu-oom-thread.svg)
 
 <mark>트래픽이 그대로여도, 스레드가 조금씩 누적되면 몇 시간에 걸쳐 한도에 부딪힙니다 — 그래서 배포 직후가 아니라 반나절쯤 지나 터진 것</mark>입니다.
 

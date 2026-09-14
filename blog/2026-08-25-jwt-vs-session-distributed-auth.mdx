@@ -18,12 +18,33 @@ date: 2026-08-25T09:00:00
 
 문제는 서버가 여러 대일 때입니다. A 서버에서 로그인해 세션이 A 메모리에 생겼는데, 다음 요청이 로드밸런서를 거쳐 B 서버로 가면 B는 그 세션을 모릅니다. 로그인이 풀린 것처럼 보입니다.
 
-```mermaid
-flowchart LR
-  C[클라이언트] --> LB[로드밸런서]
-  LB -->|로그인 요청| A["A 서버<br/>세션 저장됨"]
-  LB -->|다음 요청| B["B 서버<br/>세션 없음 → 인증 실패"]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(client, "클라이언트")
+Container(lb, "로드밸런서", "", "요청 분산")
+Container(serverA, "A 서버", "", "세션 저장됨")
+Container(serverB, "B 서버", "", "세션 없음 → 인증 실패")
+
+Rel(client, lb, "요청")
+Rel(lb, serverA, "로그인 요청")
+Rel(lb, serverB, "다음 요청")
+
+note right of serverA
+  세션이 A에만 있음
+end note
+
+@enduml
 ```
+
+</details>
+
+![C4 세션이 A 서버 로컬 메모리에만 있어 B 서버로 요청이 가면 인증 실패](/img/c4/jwt-session-1.svg)
 
 <mark>세션이 특정 서버의 로컬 메모리에만 있으면, 요청이 다른 서버로 분산되는 순간 인증 상태가 끊깁니다.</mark>
 
@@ -79,14 +100,32 @@ spec:
 
 세션을 서버 메모리가 아니라 **모든 서버가 공유하는 외부 저장소**(주로 Redis)에 둡니다. 어느 서버로 요청이 가든 같은 Redis를 조회하므로 로그인이 유지됩니다. Spring Session 같은 도구가 이 방식을 표준으로 지원합니다.
 
-```mermaid
-flowchart LR
-  C[클라이언트] --> LB[로드밸런서]
-  LB --> A[A 서버]
-  LB --> B[B 서버]
-  A --> R[(공유 세션 스토어<br/>Redis)]
-  B --> R
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(client, "클라이언트")
+Container(lb, "로드밸런서", "", "요청 분산")
+Container(serverA, "A 서버")
+Container(serverB, "B 서버")
+ContainerDb(store, "세션 저장소 (Redis)", "", "공유 세션 스토어")
+
+Rel(client, lb, "요청")
+Rel(lb, serverA, "분산")
+Rel(lb, serverB, "분산")
+Rel(serverA, store, "세션 조회")
+Rel(serverB, store, "세션 조회")
+
+@enduml
 ```
+
+</details>
+
+![C4 모든 서버가 공유 Redis 세션 스토어를 조회해 어느 서버로 가도 로그인 유지](/img/c4/jwt-session-2.svg)
 
 - 장점: 서버는 무상태(stateless)에 가까워지고, 어느 서버로 붙어도 동일하게 동작합니다. 로그아웃·강제 만료가 즉시 반영됩니다.
 - 한계: 요청마다 세션 스토어를 조회하니 **네트워크 왕복이 한 번 더** 생기고, 세션 스토어가 멈추면 인증 전체가 흔들립니다. 스토어를 HA로 이중화해야 합니다.

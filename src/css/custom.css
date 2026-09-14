@@ -1158,6 +1158,80 @@ html[data-theme='dark'] .mermaid {
   height: auto !important;
   margin: 0 auto;
 }
+/* C4-PlantUML 정적 SVG만 골라 본문 폭보다 넓게 표시.
+   Docusaurus가 이미지 경로를 /assets로 해싱하므로 alt 기준으로 선택(다른 이미지·Mermaid 무영향) */
+/* 블로그 본문 접이식(details) — 파란 info 박스 대신 담백한 코드 토글 카드.
+   summary padding·화살표(::before)는 Docusaurus 기본을 그대로 두고(정렬 유지),
+   박스 색·테두리와 화살표 색(decoration-color)만 사이트 팔레트로 맞춘다. */
+.markdown details.alert {
+  --docusaurus-details-decoration-color: var(--site-accent);
+  --ifm-alert-background-color: var(--site-code-bg);
+  --ifm-alert-background-color-highlight: transparent;
+  --ifm-alert-border-color: var(--site-card-border);
+  background: var(--site-code-bg);
+  border: 1px solid var(--site-card-border);
+  border-left: 1px solid var(--site-card-border); /* alert의 굵은 좌측 테두리 제거 */
+  border-radius: 10px;
+  box-shadow: none;
+  margin: 1.2rem 0;
+  padding: 0; /* alert 기본 패딩(≈1.25rem) 제거 — 왼쪽 여백 축소 */
+}
+.markdown details.alert > summary {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--site-accent);
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 0.85rem;
+}
+.markdown details.alert > div { padding: 0 0.85rem 0.85rem; } /* 내용(코드) 좌·우·하 여백 동일 */
+/* 펼침 내용과 summary 사이 간격 축소(기본 margin-top 1rem + padding-top 1rem → 과도) */
+.markdown details.alert [class*="collapsibleContent"] {
+  margin-top: 0.35rem;
+  padding-top: 0.55rem;
+}
+/* 코드블록 하단 기본 margin 제거 — 하단 여백은 위 div padding(0.85rem)으로 좌우와 동일하게 */
+.markdown details.alert [class*="collapsibleContent"] > :last-child { margin-bottom: 0; }
+.markdown details.alert > summary::-webkit-details-marker { display: none; }
+/* 회전 셰브런 — 닫힘 ›(오른쪽) → 열림 ⌄(아래). flex align-items로 세로 중앙 정렬 */
+.markdown details.alert > summary::before {
+  content: "";
+  position: relative;
+  top: -1px;
+  left: -1px;
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border: 0;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+.markdown details.alert[open] > summary::before {
+  top: -2px;
+  left: 0;
+  transform: rotate(45deg);
+}
+
+img[alt^="C4 "],
+img[alt^="PlantUML "] {
+  display: block;
+  /* 자연 크기로 표시하되 본문 폭·높이를 넘지 않게(비율 유지). width 강제 확대 안 함 →
+     세로로 긴 다이어그램이 과도하게 커지지 않음 */
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 620px;
+  margin: 1.5rem auto 2.5rem;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1rem;
+  box-sizing: border-box;
+}
 
 /* ============================================================= */
 /*  Glorious Terminal (기존 컴포넌트 유지)                          */

@@ -40,14 +40,29 @@ session.setAttribute("user", user);   // 세션 복제 시점엔 트랜잭션이
 
 자바 직렬화는 **참조로 도달 가능한 모든 객체**를 통째로 직렬화합니다. 엔티티는 양방향 연관·컬렉션으로 얽혀 있어, 하나를 직렬화하려다 연결된 그래프가 줄줄이 끌려옵니다.
 
-```mermaid
-flowchart LR
-    U["User 직렬화 시작"] --> O["orders"]
-    O --> I["orderItems"]
-    I --> P["product"]
-    P --> C["category → ..."]
-    U --> T["team → members → ..."]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+object "User 직렬화 시작" as U
+object "orders" as O
+object "orderItems" as I
+object "product" as P
+object "category → ..." as C
+object "team → members → ..." as T
+
+U --> O
+O --> I
+I --> P
+P --> C
+U --> T
+@enduml
 ```
+
+</details>
+
+![PlantUML User 엔티티에서 연관을 타고 딸려오는 객체 그래프](/img/c4/pu-entity-graph.svg)
 
 <mark>User 하나 저장하려다 주문·상품·팀까지, 사실상 DB의 절반이 세션·캐시로 딸려갈 수 있습니다.</mark> `transient`로 끊을 수 있지만, 연관마다 챙겨야 해 관리 부담이 큽니다.
 

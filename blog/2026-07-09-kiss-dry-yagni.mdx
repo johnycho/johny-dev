@@ -124,14 +124,29 @@ public Report generate(ReportType type) {
 
 그래서 충돌할 때의 기본값이 중요합니다. <mark>원칙이 충돌하면 기본값은 "일단 단순하게(KISS·YAGNI) 두고, 중복이 실제로 아플 때 통합한다(DRY)"이다.</mark>
 
-```mermaid
-flowchart TD
-    A["중복 코드 발견"] --> B{"정말 같은 지식인가?"}
-    B -->|"예"| C{"세 번 이상 반복됐나?"}
-    B -->|"아니오 (우연한 중복)"| D["그대로 둔다 · KISS"]
-    C -->|"예"| E["공통화 · DRY"]
-    C -->|"아직"| F["일단 미룬다 · YAGNI"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:중복 코드 발견;
+if (정말 같은 지식인가?) then (예)
+  if (세 번 이상 반복됐나?) then (예)
+    :공통화 · DRY;
+  else (아직)
+    :일단 미룬다 · YAGNI;
+  endif
+else (아니오 (우연한 중복))
+  :그대로 둔다 · KISS;
+endif
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML 삼세번 규칙 결정 트리](/img/c4/pu-kiss-decision.svg)
 
 ---
 

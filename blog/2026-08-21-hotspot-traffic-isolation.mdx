@@ -42,14 +42,27 @@ flowchart LR
 
 대응의 출발점은 "지금 어느 방이 튀는지"를 초 단위로 아는 것입니다. 요청량을 **방 단위로 집계**하다가 임곗값을 넘으면 그 방을 "핫 챗"으로 표시합니다. 앞서 본 **조회(이벤트) 폭증** 패턴은 조회 요청을 Kafka로 모아 집계하고, 임곗값을 넘긴 방을 Redis에 마킹하는 식으로 감지합니다.
 
-```mermaid
-flowchart LR
-  Q[요청 이벤트] --> A[방 단위 초 집계]
-  A --> C{임곗값 초과?}
-  C -->|예| H[핫 챗 마킹]
-  C -->|아니오| N[일반 처리]
-  H --> T[스로틀링 대상]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:요청 이벤트;
+:방 단위 초 집계;
+if (임곗값 초과?) then (예)
+  :핫 챗 마킹;
+  :스로틀링 대상;
+else (아니오)
+  :일반 처리;
+endif
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML 핫 챗 감지 파이프라인 — 임곗값 초과 시 마킹](/img/c4/pu-hotchat-detect.svg)
 
 구현을 보면, API가 요청될 때마다 Kafka로 이벤트를 보내고, 퍼블리시 서버가 이를 소비해 **각 방이 최근 몇 초 동안 몇 건을 요청했는지**를 실시간으로 셉니다. 이때 초 단위 버킷을 만들어 두고, 판정할 때 **최근 N초치 버킷을 합산**하는 방식이 단순합니다 — 초 단위 카운트는 구성 요소이고, 실제 기준은 "최근 몇 초 동안의 합"입니다.
 
@@ -198,16 +211,42 @@ if (!allowJoin(roomId)) return reject();
 
 문제는 서버가 요청을 처리하는 **스레드가 한정**돼 있다는 점입니다. 핫 샤드의 DB 응답이 느려지면, 그 응답을 기다리는 스레드가 반환되지 못하고 계속 쌓입니다. 모든 샤드가 **하나의 공용 스레드 풀**을 함께 쓰고 있으면, 이 대기 스레드가 풀을 다 차지해 버려 — 멀쩡한 다른 샤드로 갈 요청도 실행할 스레드가 없어 **함께 멈춥니다**(한 줄에 갇힘, head-of-line blocking). 한 샤드의 지연이 서비스 전체 장애로 번지는 것입니다.
 
-```mermaid
-flowchart LR
-  R[요청] --> RT{방 ID로 샤드 라우팅}
-  RT -->|샤드 0| B0[샤드 0 전용 풀]
-  RT -->|샤드 1 · 핫| B1[샤드 1 전용 풀 · 가득참 → 거절]
-  RT -->|샤드 2| B2[샤드 2 전용 풀]
-  B0 --> D0[(샤드 0)]
-  B1 --> D1[(샤드 1)]
-  B2 --> D2[(샤드 2)]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_LEFT_RIGHT()
+
+Person(req, "요청", "채팅방 요청")
+
+System_Boundary(app, "애플리케이션") {
+  Container(router, "샤드 라우터", "방 ID로 샤드 라우팅", "hash(roomId)로 샤드 결정")
+  Container(pool0, "샤드 0 전용 풀", "벌크헤드", "격리된 스레드 풀")
+  Container(pool1, "샤드 1 전용 풀 (핫)", "벌크헤드", "가득 차면 즉시 거절")
+  Container(pool2, "샤드 2 전용 풀", "벌크헤드", "격리된 스레드 풀")
+}
+
+ContainerDb(d0, "샤드 0", "MySQL/Redis", "샤드 0 데이터스토어")
+ContainerDb(d1, "샤드 1", "MySQL/Redis", "샤드 1 데이터스토어")
+ContainerDb(d2, "샤드 2", "MySQL/Redis", "샤드 2 데이터스토어")
+
+Rel(req, router, "요청")
+Rel(router, pool0, "샤드 0")
+Rel(router, pool1, "샤드 1 (핫)")
+Rel(router, pool2, "샤드 2")
+Rel(pool0, d0, "쿼리")
+Rel(pool1, d1, "쿼리")
+Rel(pool2, d2, "쿼리")
+
+@enduml
 ```
+
+</details>
+
+![C4 샤드별 전용 풀로 격리한 벌크헤드 구성](/img/c4/hotspot-bulkhead.svg)
 
 핵심 원리는 **샤드마다 자원을 미리 몫으로 나눠 주는 것**입니다. 그러면 핫 샤드가 자기 몫을 다 써도 그 피해가 자기 몫 안에 갇혀, 다른 샤드 몫은 손대지 못합니다. 이 "몫 나누기"를 자원별로 구현한 두 장치가 벌크헤드와 서킷 브레이커입니다.
 

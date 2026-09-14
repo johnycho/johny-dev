@@ -14,13 +14,36 @@ date: 2026-08-18T14:00:00
 
 전통적인 MVC(블로킹) 앱에서 요청 하나가 흘러가는 경로를 보면 풀이 어디에 있는지 보입니다.
 
-```mermaid
-flowchart LR
-    C["클라이언트"] --> T["Tomcat 요청 스레드<br/>(server.tomcat.threads)"]
-    T --> H["HikariCP 커넥션<br/>(DB 대기)"]
-    T --> A["@Async 작업 풀<br/>(ThreadPoolTaskExecutor)"]
-    S["@Scheduled"] --> SC["스케줄러 풀<br/>(ThreadPoolTaskScheduler)"]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_LEFT_RIGHT()
+
+Person(client, "클라이언트", "웹 요청을 보내는 사용자")
+
+System_Boundary(app, "스프링부트 애플리케이션") {
+  Container(tomcat, "Tomcat 요청 스레드 풀", "server.tomcat.threads", "웹 요청을 받아 처리하는 워커 스레드")
+  Container(async, "@Async 작업 풀", "ThreadPoolTaskExecutor", "비동기 작업 실행")
+  Container(scheduler, "스케줄러 풀", "ThreadPoolTaskScheduler", "@Scheduled 정기 작업 실행")
+}
+
+ContainerDb(db, "데이터베이스", "MySQL", "HikariCP 커넥션 풀로 접근")
+
+Rel(client, tomcat, "요청 전송")
+Rel(tomcat, db, "HikariCP 커넥션으로 DB 접근")
+Rel(tomcat, async, "@Async 작업 위임")
+Rel(scheduler, db, "정기 작업 실행")
+
+@enduml
 ```
+
+</details>
+
+![C4 스프링부트 런타임 스레드 풀과 DB 구성](/img/c4/thread-pools.svg)
 
 <mark>이 풀들의 크기가 서로 맞지 않으면, 한 곳이 병목이 돼 나머지가 그 앞에서 대기합니다.</mark> 그래서 개별 튜닝이 아니라 "함께" 맞춰야 합니다.
 

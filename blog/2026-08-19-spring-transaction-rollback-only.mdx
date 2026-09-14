@@ -42,15 +42,31 @@ public void signUp(SignUpRequest req) {
 
 핵심은 `grantSignupCoupon`도 `@Transactional`(기본 전파 `REQUIRED`)이라는 점입니다.
 
-```mermaid
-flowchart TB
-    A["signUp() 트랜잭션 시작"] --> B["user 저장"]
-    B --> C["grantSignupCoupon() — 같은 트랜잭션에 참여"]
-    C -->|외부 실패로 예외| D["스프링이 트랜잭션을<br/>rollback-only로 표시"]
-    D --> E["바깥 try-catch가 예외를 삼킴"]
-    E --> F["정상처럼 커밋 시도"]
-    F --> G["이미 rollback-only → 커밋 거부<br/>UnexpectedRollbackException + 전체 롤백"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:signUp() 트랜잭션 시작;
+:user 저장;
+:grantSignupCoupon() — 같은 트랜잭션에 참여;
+if (외부 실패로 예외?) then (예)
+  :스프링이 트랜잭션을 rollback-only로 표시;
+  :바깥 try-catch가 예외를 삼킴;
+  :정상처럼 커밋 시도;
+  :이미 rollback-only → 커밋 거부\nUnexpectedRollbackException + 전체 롤백;
+  stop
+else (아니오)
+  :정상 커밋;
+  stop
+endif
+@enduml
 ```
+
+</details>
+
+![PlantUML rollback-only 전파 흐름 — 예외·롤백 표시·커밋 거부](/img/c4/pu-rollback-only.svg)
 
 <mark>내부 `@Transactional`이 던진 예외는, 바깥에서 잡아 삼켜도 트랜잭션에 남긴 "rollback-only" 표시까지 지우지는 못합니다.</mark> 그래서 커밋 시점에 스프링이 "이 트랜잭션은 롤백만 가능"이라며 거부하고, 저장한 user까지 전부 롤백됩니다.
 

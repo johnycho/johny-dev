@@ -25,13 +25,28 @@ CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
 `add(e)`는 사실 여러 단계입니다 — 대략 ① 공간이 부족하면 내부 배열을 늘리고(리사이즈) ② `elementData[size] = e` 로 넣고 ③ `size++`. 이 셋은 한 덩어리로 묶여 있지 않아, 여러 스레드가 동시에 하면 이렇게 어긋납니다.
 
-```mermaid
-flowchart TB
-    A["스레드 A: size=5 읽음"] --> C["A: elementData[5]=x"]
-    B["스레드 B: size=5 읽음"] --> D["B: elementData[5]=y (x 덮어씀)"]
-    C --> E["size++ → 6"]
-    D --> F["size++ → 6 (하나는 유실, 6이어야 할 게 7이었어야)"]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+fork
+  :스레드 A: size=5 읽음;
+  :A: elementData[5]=x;
+  :size++ → 6;
+fork again
+  :스레드 B: size=5 읽음;
+  :B: elementData[5]=y (x 덮어씀);
+  :size++ → 6 (하나는 유실, 7이어야 할 게 6);
+end fork
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML ArrayList 동시 add 레이스로 데이터 유실](/img/c4/pu-arraylist-race.svg)
 
 - **덮어쓰기 손실** — 두 스레드가 같은 `size`를 읽어 같은 칸에 써, 하나가 사라집니다.
 - **size 경합** — `size++`가 겹쳐 실제보다 작게 세어집니다(개수가 모자람).

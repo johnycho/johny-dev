@@ -18,11 +18,26 @@ import {AnimatedLineChart, AnimatedBars} from '@site/src/components/blog/Monitor
 
 한 곳으로 모든 요청이 모이고, 하나의 DB가 모든 읽기·쓰기를 받습니다.
 
-```mermaid
-flowchart LR
-  C[클라이언트] --> A[API 서버]
-  A --> D[(데이터베이스)]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(client, "클라이언트")
+Container(api, "API 서버")
+ContainerDb(db, "데이터베이스")
+
+Rel(client, api, "요청")
+Rel(api, db, "읽기·쓰기")
+@enduml
 ```
+
+</details>
+
+![C4 단일 구조: 클라이언트–API 서버–데이터베이스](/img/c4/scaling-1.svg)
 
 장점은 단순함입니다. 배포·디버깅·트랜잭션이 모두 쉽습니다. 한계는 두 가지입니다. 트래픽이 커지면 한 대의 CPU·메모리·디스크가 곧 상한에 닿고, 그 한 대가 멈추면 서비스 전체가 멈춥니다(단일 장애점, SPOF: Single Point Of Failure). <mark>단순 구조의 진짜 약점은 성능보다 "한 곳이 멈추면 전부 멈춘다"는 점입니다.</mark>
 
@@ -58,19 +73,38 @@ API 서버와 DB를 다른 장비로 분리합니다. 이렇게 나누면 **자�
 
 API 서버를 여러 대로 늘리고, 앞에 로드밸런서를 둬서 요청을 분산합니다.
 
-```mermaid
-flowchart LR
-  C[클라이언트] --> LB[로드밸런서]
-  LB --> A1[API 인스턴스 1]
-  LB --> A2[API 인스턴스 2]
-  LB --> A3[API 인스턴스 3]
-  A1 --> D[(DB)]
-  A2 --> D
-  A3 --> D
-  A1 -. 세션·상태 .-> S[(Redis<br/>세션 저장소)]
-  A2 -.-> S
-  A3 -.-> S
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(client, "클라이언트")
+Container(lb, "로드밸런서")
+Container(api1, "API 인스턴스 1")
+Container(api2, "API 인스턴스 2")
+Container(api3, "API 인스턴스 3")
+ContainerDb(db, "DB")
+ContainerDb(redis, "Redis 세션 저장소")
+
+Rel(client, lb, "요청")
+Rel(lb, api1, "분산")
+Rel(lb, api2, "분산")
+Rel(lb, api3, "분산")
+Rel(api1, db, "읽기·쓰기")
+Rel(api2, db, "읽기·쓰기")
+Rel(api3, db, "읽기·쓰기")
+Rel(api1, redis, "세션·상태")
+Rel(api2, redis, "세션·상태")
+Rel(api3, redis, "세션·상태")
+@enduml
 ```
+
+</details>
+
+![C4 로드밸런서로 분산되는 다중 API 인스턴스와 공유 Redis 세션 저장소](/img/c4/scaling-2.svg)
 
 전제가 있습니다. API가 **무상태**(stateless)여야 어느 인스턴스로 요청이 가도 같은 결과를 냅니다. 세션·로그인 상태·임시 데이터를 서버 메모리에 두면, 다음 요청이 다른 인스턴스로 갔을 때 그 상태를 찾지 못합니다. 그래서 상태를 서버 밖으로 뺍니다 — 세션은 Redis 같은 공유 저장소나 토큰(JWT)으로 옮깁니다.
 
@@ -125,14 +159,30 @@ public void updateProduct(Product p) {
 
 **읽기 전용 복제본**(read replica)을 두고 쓰기는 primary, 읽기는 replica로 보냅니다. 더 나아가 **CQRS**(Command Query Responsibility Segregation)로 쓰기 모델과 읽기 모델을 분리해, 조회에 최적화된 별도 저장소를 두기도 합니다.
 
-```mermaid
-flowchart LR
-  A[API 서버] -->|쓰기| P[(Primary DB)]
-  A -->|읽기| R1[(Replica 1)]
-  A -->|읽기| R2[(Replica 2)]
-  P -. 복제 .-> R1
-  P -. 복제 .-> R2
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Container(api, "API 서버")
+ContainerDb(primary, "Primary DB")
+ContainerDb(r1, "Replica 1")
+ContainerDb(r2, "Replica 2")
+
+Rel(api, primary, "쓰기")
+Rel(api, r1, "읽기")
+Rel(api, r2, "읽기")
+Rel(primary, r1, "복제")
+Rel(primary, r2, "복제")
+@enduml
 ```
+
+</details>
+
+![C4 쓰기는 Primary, 읽기는 Replica로 분리하고 Primary가 Replica로 복제](/img/c4/scaling-3.svg)
 
 이렇게 하면 **읽기 처리량이 복제본 수만큼 늘어납니다** — 아래 그래프처럼 복제본이 늘수록 감당할 수 있는 읽기량이 커집니다. 특히 읽기가 쓰기보다 훨씬 많은 서비스일수록 효과가 큽니다.
 
@@ -178,14 +228,31 @@ UPDATE coupon_stock
 
 무거운 후처리를 **메시지 큐**로 넘겨 뒤에서 처리합니다.
 
-```mermaid
-flowchart LR
-  A[API 서버] -->|이벤트 발행| Q[(메시지 큐)]
-  Q --> W1[컨슈머 1]
-  Q --> W2[컨슈머 2]
-  W1 --> D[(DB)]
-  W2 --> D
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Container(api, "API 서버")
+ContainerQueue(queue, "메시지 큐")
+Container(w1, "컨슈머 1")
+Container(w2, "컨슈머 2")
+ContainerDb(db, "DB")
+
+Rel(api, queue, "이벤트 발행")
+Rel(queue, w1, "소비")
+Rel(queue, w2, "소비")
+Rel(w1, db, "쓰기")
+Rel(w2, db, "쓰기")
+@enduml
 ```
+
+</details>
+
+![C4 API가 메시지 큐로 이벤트를 발행하고 컨슈머들이 소비해 DB에 기록](/img/c4/scaling-4.svg)
 
 이렇게 비동기로 분리하는 이유는 세 가지입니다. 큐가 **버퍼** 역할을 해 피크 트래픽을 흡수하고(생산 속도와 소비 속도를 분리), 발신자와 수신자의 **결합도가 낮아**지며, 실패한 작업을 **재시도**하기 쉽습니다.
 
@@ -203,12 +270,28 @@ flowchart LR
 
 정합성 과제는 **DB 커밋과 메시지 발행의 원자성**입니다. "DB에 주문 저장 + 큐에 이벤트 발행"을 각각 하면, 하나만 성공하고 다른 하나가 실패할 때 유실이나 중복이 생깁니다. 이 둘은 서로 다른 시스템이라 하나의 트랜잭션으로 묶을 수 없습니다. 표준 해법이 **Outbox 패턴**입니다 — 이벤트를 같은 DB 트랜잭션 안에서 Outbox 테이블에 함께 기록하고, 별도 릴레이가 그 테이블을 읽어 큐로 발행합니다.
 
-```mermaid
-flowchart LR
-  A[API 서버] -->|1 같은 트랜잭션| D[(DB<br/>업무 테이블 + Outbox 테이블)]
-  RELAY[Outbox 릴레이] -->|2 Outbox 폴링| D
-  RELAY -->|3 발행| Q[(메시지 큐)]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Container(api, "API 서버")
+ContainerDb(db, "DB", "업무 테이블 + Outbox 테이블")
+Container(relay, "Outbox 릴레이")
+ContainerQueue(queue, "메시지 큐")
+
+Rel(api, db, "1 같은 트랜잭션")
+Rel(relay, db, "2 Outbox 폴링")
+Rel(relay, queue, "3 발행")
+@enduml
 ```
+
+</details>
+
+![C4 Outbox 패턴: 같은 트랜잭션으로 DB에 기록 후 릴레이가 폴링해 큐로 발행](/img/c4/scaling-5.svg)
 
 ```java
 @Transactional
@@ -229,13 +312,30 @@ Outbox로 "정확히 한 번" 효과를 내는 방법은 [Kafka Outbox와 정확
 
 데이터를 나눕니다. 먼저 한 DB 안에서 테이블을 쪼개는 **파티셔닝**, 그다음 여러 DB로 분산하는 **샤딩**입니다.
 
-```mermaid
-flowchart LR
-  A[API 서버] --> RT{샤드 라우터}
-  RT -->|해시 0| S0[(샤드 0)]
-  RT -->|해시 1| S1[(샤드 1)]
-  RT -->|해시 2| S2[(샤드 2)]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Container(api, "API 서버")
+Container(router, "샤드 라우터")
+ContainerDb(s0, "샤드 0")
+ContainerDb(s1, "샤드 1")
+ContainerDb(s2, "샤드 2")
+
+Rel(api, router, "라우팅")
+Rel(router, s0, "해시 0")
+Rel(router, s1, "해시 1")
+Rel(router, s2, "해시 2")
+@enduml
 ```
+
+</details>
+
+![C4 샤드 라우터가 해시로 요청을 여러 샤드에 분산](/img/c4/scaling-6.svg)
 
 이렇게 하면 **쓰기 부하와 저장 용량이 샤드 수만큼 분산**됩니다. 관건은 **샤드 키** 선택입니다 — 특정 샤드에만 트래픽이 몰리면(핫스팟) 나눈 의미가 없습니다.
 

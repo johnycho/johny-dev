@@ -30,14 +30,33 @@ date: 2026-09-11T09:00:00
 
 <mark>수백만 요청을 좌석 DB로 직접 보내지 말고, 대기열로 "입장 가능한 만큼만" 통과시켜 DB가 감당할 속도로 유입을 고릅니다.</mark>
 
-```mermaid
-flowchart LR
-  U["수십만~수백만"] -->|ZADD| Q["대기열<br/>Redis Sorted Set"]
-  Q -->|스케줄러 N명씩| A["입장 허가<br/>Active(TTL)"]
-  A --> G["좌석 원자 처리<br/>Lua: 잔여 확인·차감"]
-  G -->|성공분만| MQ["메시지 큐"]
-  MQ --> DB[("좌석/주문 DB")]
+<details>
+<summary>C4-PlantUML 코드</summary>
+
+```plantuml
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+LAYOUT_LEFT_RIGHT()
+
+Person(users, "사용자", "수십만~수백만")
+System_Boundary(sys, "예매 시스템") {
+  ContainerDb(queue, "대기열", "Redis Sorted Set", "도착 순서로 정렬")
+  Container(sched, "입장 허가 스케줄러", "Active + TTL", "N명씩 통과")
+  Container(seat, "좌석 원자 처리", "Redis Lua", "잔여 확인·차감")
+  ContainerQueue(mq, "메시지 큐", "", "DB 쓰기 완충")
+  ContainerDb(db, "좌석/주문 DB", "RDB", "최종 정합성")
+}
+Rel(users, queue, "대기열 진입", "ZADD")
+Rel(queue, sched, "앞에서 N명 꺼냄")
+Rel(sched, seat, "입장자만")
+Rel(seat, mq, "성공분만")
+Rel(mq, db, "순차 기록")
+@enduml
 ```
+
+</details>
+
+![C4 예매 시스템 컨테이너 — 대기열·입장·좌석처리·MQ·DB](/img/c4/ticketing-flow.svg)
 
 ## 1. 대기열 — 왜 MQ가 아니라 Redis Sorted Set인가
 
@@ -174,4 +193,4 @@ UPDATE seat
 - **최종 정합성**: DB 조건부 UPDATE가 "한 좌석 한 번"을 보장. Redis HA + 안전한 실패로 장애 대비.
 - **대기열 HA·샤딩**: 복제 → Sentinel → 클러스터로 확장. 샤딩 시 전역 순위는 글로벌 카운터·분산 타임스탬프·통계적 추정 중 오차 허용도로 선택.
 
-예매 시스템의 어려움은 "빠르게"와 "정확하게"가 충돌하는 데 있습니다. 대기열과 메시지 큐로 **속도를 두 겹으로 고르고**, 원자적 좌석 처리와 DB 조건부 갱신으로 **정확성**을 지키면, 폭발적 동시접속에도 "한 좌석은 한 사람에게"를 지킬 수 있습니다.
+예매 시스템의 어려움은 "빠르게"와 "정확하게"가 충돌하는 데 있습니다. 대기열과 메시지 큐로 **유입 속도를 두 단계로 조절하고**, 원자적 좌석 처리와 DB 조건부 갱신으로 **정확성**을 지키면, 폭발적 동시접속에도 "한 좌석은 한 사람에게"를 지킬 수 있습니다.

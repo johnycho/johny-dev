@@ -37,13 +37,27 @@ RedisCacheManagerBuilderCustomizer cacheTtl() {
 
 이 구조에서 <mark>위험은 언제나 "캐시에 없을 때(miss)"에 발생합니다.</mark> miss 하나가 DB를 한 번 치는 건 괜찮지만, **같은 상품에 miss가 동시에 몰리면** DB가 같은 쿼리를 수천 번 받습니다.
 
-```mermaid
-flowchart TD
-    U["요청 급증"] --> C{"캐시에 있나?"}
-    C -- 있음 --> H["캐시로 응답 (DB 무사)"]
-    C -- 없음(miss) --> D["DB 조회"]
-    D -->|"같은 상품에 동시 다발 miss"| DB[("DB에 같은 쿼리<br/>수천 번 → 과부하")]
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+start
+:요청 급증;
+if (캐시에 있나?) then (있음)
+  :캐시로 응답 (DB 무사);
+else (없음(miss))
+  :DB 조회;
+  :같은 상품에 동시 다발 miss;
+  :DB에 같은 쿼리\n수천 번 → 과부하;
+endif
+stop
+@enduml
 ```
+
+</details>
+
+![PlantUML 캐시 히트·미스에 따른 DB 부하 흐름](/img/c4/pu-cache-decision.svg)
 
 ## 케이스 1 — 평소 조용하다 갑자기 몰림 (핫키 급등)
 
