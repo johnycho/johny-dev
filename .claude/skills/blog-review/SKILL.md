@@ -38,4 +38,4 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
 
 ## 참고
 - 규칙 원본: [word-choice.md](../../wiki/word-choice.md) · [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md)
-- 작성 스킬: [blog-post](../blog-post/SKILL.md) · [spring-update-post](../spring-update-post/SKILL.md) · [java-jdk-trend-post](../java-jdk-trend-post/SKILL.md) · [backend-trend-post](../backend-trend-post/SKILL.md)
+- 작성 스킬: [blog-post](../blog-post/SKILL.md) · [trend-post-spring](../trend-post-spring/SKILL.md) · [trend-post-java](../trend-post-java/SKILL.md) · [trend-post-backend](../trend-post-backend/SKILL.md)

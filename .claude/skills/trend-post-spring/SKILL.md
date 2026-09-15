@@ -1,5 +1,5 @@
 ---
-name: spring-update-post
+name: trend-post-spring
 description: Spring Boot 3.2.0 이후의 주목할 변화·동향을 공식 소스(release-calendar·spring.io/blog·GitHub releases)로 조사해 주제별 블로그 게시글(blog/*.mdx)로 작성한다. 주제를 안 주면 후보를 제안하고 고르게 한다. "스프링부트 동향 글 하나 써줘", "스프링부트 업데이트 글 추가", "3.x 변화 정리 포스트", "가상 스레드/구조적 로깅 글" 등의 요청에 사용.
 ---
 

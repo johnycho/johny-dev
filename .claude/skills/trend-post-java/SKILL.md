@@ -1,6 +1,6 @@
 ---
-name: java-jdk-trend-post
-description: Java/JDK 최신 동향(신버전 기능·JEP·preview/incubator·GraalVM·LTS 등)을 johny-dev 기술 블로그 글(blog/*.mdx)로 작성한다. "자바 최신 동향 글 써줘", "JDK 25 뭐 바뀌었는지", "이 JEP로 블로그", "가상 스레드/패턴 매칭 정리해줘" 등의 요청에 사용. (스프링은 `/spring-update-post`, 그 외 백엔드 일반은 `/backend-trend-post`.)
+name: trend-post-java
+description: Java/JDK 최신 동향(신버전 기능·JEP·preview/incubator·GraalVM·LTS 등)을 johny-dev 기술 블로그 글(blog/*.mdx)로 작성한다. "자바 최신 동향 글 써줘", "JDK 25 뭐 바뀌었는지", "이 JEP로 블로그", "가상 스레드/패턴 매칭 정리해줘" 등의 요청에 사용. (스프링은 `/trend-post-spring`, 그 외 백엔드 일반은 `/trend-post-backend`.)
 ---
 
 # Java/JDK 동향 블로그 작성 스킬
@@ -53,4 +53,4 @@ Java 언어·JDK·JVM의 변화(신버전 기능, JEP, preview/incubator, GraalV
 
 ## 참고
 - 게시글 형식·다이어그램·MDX: [blog-authoring.md](../../wiki/blog-authoring.md) · 단어 순화: [word-choice.md](../../wiki/word-choice.md)
-- 스프링은 [spring-update-post](../spring-update-post/SKILL.md), 그 외 백엔드 일반은 [backend-trend-post](../backend-trend-post/SKILL.md).
+- 스프링은 [trend-post-spring](../trend-post-spring/SKILL.md), 그 외 백엔드 일반은 [trend-post-backend](../trend-post-backend/SKILL.md).

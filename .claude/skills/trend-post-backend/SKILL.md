@@ -1,6 +1,6 @@
 ---
-name: backend-trend-post
-description: 백엔드 관련 최신 동향·참고할 만한 내용(GeekNews 등 애그리게이터에서 발굴)을 johny-dev 기술 블로그 글(blog/*.mdx)로 작성한다. "백엔드 동향 글 써줘", "이 기사/주제로 블로그 만들어줘", "요즘 백엔드 뭐가 뜨는지 정리해줘" 등의 요청에 사용. (스프링 전용 업데이트 글은 `/spring-update-post` 를 쓴다.)
+name: trend-post-backend
+description: 백엔드 관련 최신 동향·참고할 만한 내용(GeekNews 등 애그리게이터에서 발굴)을 johny-dev 기술 블로그 글(blog/*.mdx)로 작성한다. "백엔드 동향 글 써줘", "이 기사/주제로 블로그 만들어줘", "요즘 백엔드 뭐가 뜨는지 정리해줘" 등의 요청에 사용. (스프링 전용 업데이트 글은 `/trend-post-spring` 를 쓴다.)
 ---
 
 # 백엔드 동향 블로그 작성 스킬
@@ -19,7 +19,7 @@ description: 백엔드 관련 최신 동향·참고할 만한 내용(GeekNews �
    - **안 줬으면** 백엔드 동향을 훑어 후보를 제안하고 고르게 한다(`AskUserQuestion` 권장). 발굴 소스:
      - **GeekNews** — https://news.hada.io/ (한국 백엔드·인프라·언어·DB 화제)
      - **Hacker News** — https://news.ycombinator.com/ (원문/토론)
-     - 각 프로젝트 공식 릴리스·블로그(예: PostgreSQL·Redis·Kafka·Kubernetes·GraalVM·언어 릴리스 등). **Java/JDK 자체 동향**(신버전·JEP·preview 기능)은 별도 스킬 [java-jdk-trend-post](../java-jdk-trend-post/SKILL.md)를 쓴다.
+     - 각 프로젝트 공식 릴리스·블로그(예: PostgreSQL·Redis·Kafka·Kubernetes·GraalVM·언어 릴리스 등). **Java/JDK 자체 동향**(신버전·JEP·preview 기능)은 별도 스킬 [trend-post-java](../trend-post-java/SKILL.md)를 쓴다.
    - 후보는 백엔드 실무 임팩트가 큰 것(성능·운영·아키텍처·DX·보안) 위주로 3~4개, 각 후보에 "무엇을·왜 볼 만한지" 한 줄.
    - **중복 방지(저장소 전체)**: 후보 확정 전 `blog/*.mdx`의 제목·슬러그·태그(겹칠 것 같으면 본문도)를 훑어 이미 다룬 주제·각도인지 확인한다. 겹치면 각도를 달리하거나 링크로 넘기고, 완전히 겹치면 후보에서 뺀다.
 
@@ -46,4 +46,4 @@ description: 백엔드 관련 최신 동향·참고할 만한 내용(GeekNews �
 ## 참고
 - 게시글 형식·다이어그램·MDX: [blog-authoring.md](../../wiki/blog-authoring.md)
 - 단어 순화: [word-choice.md](../../wiki/word-choice.md) · 커밋 정책: [git-account.md](../../wiki/git-account.md)
-- 스프링 부트 전용 업데이트 글은 [spring-update-post 스킬](../spring-update-post/SKILL.md)을 쓴다(주제가 스프링이면 그쪽).
+- 스프링 부트 전용 업데이트 글은 [trend-post-spring 스킬](../trend-post-spring/SKILL.md)을 쓴다(주제가 스프링이면 그쪽).

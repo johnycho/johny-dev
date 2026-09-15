@@ -1,6 +1,6 @@
 # Wiki · 스프링 부트 업데이트 시리즈 (3.2.0 이후)
 
-Spring Boot 3.2.0 **이후**의 주목할 변화·동향을 **주제별**로 다루는 연재 글의 참조 규칙. 절차는 [spring-update-post 스킬](../skills/spring-update-post/SKILL.md)(`/spring-update-post`) 참고. 게시글 자체의 형식·MDX 규칙은 [blog-authoring.md](./blog-authoring.md)를 그대로 따른다.
+Spring Boot 3.2.0 **이후**의 주목할 변화·동향을 **주제별**로 다루는 연재 글의 참조 규칙. 절차는 [trend-post-spring 스킬](../skills/trend-post-spring/SKILL.md)(`/trend-post-spring`) 참고. 게시글 자체의 형식·MDX 규칙은 [blog-authoring.md](./blog-authoring.md)를 그대로 따른다.
 
 ## 1) 목적과 범위
 - **기준점**: Spring Boot **3.2.0(2023-11)** 이후에 등장한 변화만 다룬다. 그 이전부터 있던 기능은 "3.2 이후에 의미가 달라진 경우"에만.
@@ -65,5 +65,5 @@ Spring Boot 3.2.0 **이후**의 주목할 변화·동향을 **주제별**로 다
 - 코드 예제는 Java/Kotlin + `application.yml` 조합. 버전에 종속적인 설정은 어느 버전부터인지 명시.
 
 ## 관련
-- 절차: [spring-update-post 스킬](../skills/spring-update-post/SKILL.md)
+- 절차: [trend-post-spring 스킬](../skills/trend-post-spring/SKILL.md)
 - 형식: [blog-authoring.md](./blog-authoring.md) · 커밋 정책: [git-account.md](./git-account.md)
