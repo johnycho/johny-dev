@@ -11,6 +11,10 @@
   - `title`: 제목. 콜론(`:`) 등 특수문자가 있으면 큰따옴표로 감싼다.
   - `authors: [ johnycho ]` — 저자는 `blog/authors.yml`에 등록된 것만. 현재 `johnycho` 하나.
   - `tags: [ ... ]` — `blog/tags.yml`에 정의된 태그만 사용(7절).
+  - `description`: **(권장·SEO)** 검색 결과·소셜 카드에 노출될 1~2문장 요약. **약 150자 이내**로 글의 주제와 **핵심 키워드**를 담는다. 생략하면 truncate 앞 본문에서 자동 추출되지만, 직접 쓰면 노출 문구 품질이 올라간다.
+  - `image`: (선택·SEO) 소셜 공유(OG) 대표 이미지 경로(`/img/...`). 생략하면 사이트 기본 카드(`img/social-card.jpg`)를 쓴다.
+  - `keywords`: (선택·SEO) 글 고유 키워드 배열. 태그로 충분하면 생략.
+  - **참고**: 게시글 페이지에는 `BlogPosting` 구조화 데이터(JSON-LD: 제목·날짜·저자·태그·대표 이미지·URL)가 **자동 주입**된다(`src/theme/BlogPostItem`). 사이트 전역 `WebSite`/`Person` JSON-LD·사이트맵·기본 메타(description/keywords/robots)는 [`docusaurus.config.ts`](../../docusaurus.config.ts)에서 관리하므로 글에서 따로 넣지 않는다.
 - 프론트매터 바로 다음: `<!-- truncate -->` → (빈 줄) → 본문. truncate가 목록 카드의 요약 경계.
   - **본문 첫머리에 `<br /><br />` 등 여백을 넣지 않는다** — 글 맨 위에 빈 줄이 생겨 어색하다. truncate 다음 빈 줄 하나 두고 바로 인트로 문단으로 시작.
   - `@site/...` 컴포넌트를 쓰면 `import` 문은 프론트매터와 `<!-- truncate -->` 사이(맨 위)에 둔다.

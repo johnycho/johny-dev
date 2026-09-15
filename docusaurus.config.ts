@@ -39,6 +39,45 @@ const config: Config = {
   },
   themes: ['@docusaurus/theme-mermaid'],
 
+  // SEO: 사이트 전역 구조화 데이터(JSON-LD) — 검색엔진 리치 결과·사이트링크 검색창용
+  headTags: [
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: '조니의 개발 블로그',
+        alternateName: 'Johny Dev',
+        url: 'https://johnycho.dev/',
+        inLanguage: 'ko',
+        publisher: {
+          '@type': 'Person',
+          name: 'johnycho',
+          url: 'https://johnycho.dev/about',
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: 'https://johnycho.dev/search?q={search_term_string}',
+          'query-input': 'required name=search_term_string',
+        },
+      }),
+    },
+    {
+      tagName: 'script',
+      attributes: {type: 'application/ld+json'},
+      innerHTML: JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: 'johnycho',
+        url: 'https://johnycho.dev/about',
+        image: 'https://github.com/johnycho.png',
+        sameAs: ['https://github.com/johnycho'],
+        jobTitle: '백엔드 개발자',
+      }),
+    },
+  ],
+
   presets: [
     [
       'classic',
@@ -74,6 +113,14 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
+        // SEO: 사이트맵(검색엔진 크롤링 유도). preset 기본 플러그인에 옵션만 명시.
+        sitemap: {
+          lastmod: 'date',
+          changefreq: 'weekly',
+          priority: 0.5,
+          ignorePatterns: ['/search'],
+          filename: 'sitemap.xml',
+        },
       } satisfies Preset.Options,
     ],
   ],
@@ -94,12 +141,19 @@ const config: Config = {
         },
       },
     },
-    // 네이버 SEO 설정
+    // SEO: 사이트 기본 메타(페이지별 값이 없을 때 쓰이는 기본값)
     metadata: [
+      {name: 'naver-site-verification', content: 'a65c47dcb20d7111ecf322e7def1006c7e83100d'},
+      {name: 'robots', content: 'index, follow'},
+      {name: 'author', content: 'johnycho'},
       {
-        name: 'naver-site-verification',
-        content: 'a65c47dcb20d7111ecf322e7def1006c7e83100d',
-      }
+        name: 'keywords',
+        content: '백엔드, 자바, 스프링, 스프링 부트, JPA, MySQL, Redis, Kafka, 시스템 설계, 아키텍처, 성능, 모니터링, 개발 블로그',
+      },
+      {
+        name: 'description',
+        content: '실무에서 부딪힌 문제와 해결 과정을 기록하는 백엔드 개발 블로그 — 자바·스프링·데이터베이스·메시징·시스템 설계.',
+      },
     ],
     // 링크 공유용 소셜 카드(OG) — index-banner에서 노트북 중심으로 크롭(1200×630)
     image: 'img/social-card.jpg',
