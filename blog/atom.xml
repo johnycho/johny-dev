@@ -1638,7 +1638,7 @@
 <p>그래서 "이 서비스는 최대 몇 개의 컨슈머 인스턴스로 확장할 것인가"를 먼저 정하고, 그 이상으로 파티션을 둡니다. <mark>미래에 컨슈머를 늘릴 계획이 있다면, 그 목표 인스턴스 수를 파티션 수에 미리 반영합니다.</mark></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="기준-3--순서와-키-카디널리티">기준 3 — 순서와 키 카디널리티<a href="https://johnycho.dev/blog/kafka-partition-count#%EA%B8%B0%EC%A4%80-3--%EC%88%9C%EC%84%9C%EC%99%80-%ED%82%A4-%EC%B9%B4%EB%94%94%EB%84%90%EB%A6%AC%ED%8B%B0" class="hash-link" aria-label="기준 3 — 순서와 키 카디널리티에 대한 직접 링크" title="기준 3 — 순서와 키 카디널리티에 대한 직접 링크">​</a></h2>
 <p>순서가 중요한 데이터라면 파티션 수를 마음대로 키울 수 없습니다. 순서는 <strong>키 단위</strong>로만 지켜지고, 그 키가 어느 파티션으로 갈지는 해시로 정해지기 때문입니다.</p>
-<p>여기서 <strong>키 카디널리티</strong>(키 값의 가짓수)를 확인해야 합니다. 키 종류가 파티션 수보다 훨씬 많아야 파티션에 고르게 흩어집니다. 반대로 키가 몇 개뿐이면, 특정 파티션에만 메시지가 몰리는 <strong>핫 파티션</strong>이 생겨 파티션을 늘려도 병렬 처리가 되지 않습니다. 예를 들어 키를 "지역 코드"로 잡았는데 지역이 5개뿐이면, 파티션을 20개 만들어도 실제로는 5개만 일합니다.</p>
+<p>여기서 <strong>키 카디널리티</strong>(키 값의 가짓수)를 확인해야 합니다. 키 종류가 파티션 수보다 훨씬 많아야 파티션에 고르게 분산됩니다. 반대로 키가 몇 개뿐이면, 특정 파티션에만 메시지가 몰리는 <strong>핫 파티션</strong>이 생겨 파티션을 늘려도 병렬 처리가 되지 않습니다. 예를 들어 키를 "지역 코드"로 잡았는데 지역이 5개뿐이면, 파티션을 20개 만들어도 실제로는 5개만 일합니다.</p>
 <p><mark>파티션을 고르게 쓰려면 키 카디널리티가 파티션 수보다 충분히 커야 하고, 특정 키에 트래픽이 몰리지 않아야 합니다.</mark> 순서·전달 보장과 파티션의 관계는 <a href="https://johnycho.dev/blog/kafka-delivery-semantics">Kafka 전달 보장</a>에서 이어집니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="기준-4--여유정렬-그리고-과다의-비용">기준 4 — 여유·정렬, 그리고 과다의 비용<a href="https://johnycho.dev/blog/kafka-partition-count#%EA%B8%B0%EC%A4%80-4--%EC%97%AC%EC%9C%A0%EC%A0%95%EB%A0%AC-%EA%B7%B8%EB%A6%AC%EA%B3%A0-%EA%B3%BC%EB%8B%A4%EC%9D%98-%EB%B9%84%EC%9A%A9" class="hash-link" aria-label="기준 4 — 여유·정렬, 그리고 과다의 비용에 대한 직접 링크" title="기준 4 — 여유·정렬, 그리고 과다의 비용에 대한 직접 링크">​</a></h2>
 <p>앞의 기준으로 최소 개수를 구했다면, 두 가지를 더 봅니다.</p>
