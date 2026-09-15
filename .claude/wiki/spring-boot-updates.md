@@ -49,7 +49,7 @@ Spring Boot 3.2.0 **이후**의 주목할 변화·동향을 **주제별**로 다
 - [ ] CDS/AOT 시작 속도 (3.3) — 시작 시간·메모리 절감, 언제 효과 있나
 - [ ] 관측성(Observability) 강화 (3.3+) — Micrometer `@SpanTag`, Prometheus 1.x. ⚠️ 기존 `kafka-distributed-tracing` 글과 겹침 → 트레이싱 개념은 그 글로 링크하고, Spring Boot 자동설정·메트릭 관점으로 각도를 좁힐 것
 - [ ] 서비스 커넥션·Docker Compose·Testcontainers 개발 경험 (3.1→3.4)
-- [ ] Spring Boot 4.0 마이그레이션 — 모듈화(작은 jar)·JSpecify null-safety·Java 25·API 버저닝·Jakarta EE 11
+- [x] Spring Boot 4.0 핵심 — 모듈화·null-safety·API 버저닝·HTTP Service Client (3.x 이후 첫 major) — `blog/2026-10-05-spring-boot-4-highlights.mdx`
 - [ ] HTTP Service Client / API 버저닝 (4.0)
 
 ## 5) 시리즈 컨벤션

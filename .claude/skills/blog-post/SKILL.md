@@ -35,5 +35,7 @@ description: 마크다운 초안(예: ~/Downloads/*.md)이나 주제를 johny-de
 
 7. **검증**: `npm run build` 로 MDX 컴파일 확인. 필요 시 `npm start` 로 렌더 확인.
 
+8. **리뷰(필수)**: 작성·수정 후 반드시 [`blog-review` 스킬](../blog-review/SKILL.md)(`/blog-review`)로 규칙(단어 순화·작성·MDX·다이어그램·코드 정렬·인용) 검토 후 지적 사항을 반영한다.
+
 ## 커밋
 - 커밋·푸시는 [git 계정 정책](../../wiki/git-account.md)에 따라 **johnycho** 계정으로 (`gh auth switch --user johnycho`). hook이 자동 검증한다.

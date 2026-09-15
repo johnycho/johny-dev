@@ -81,6 +81,7 @@
 ## 6) 검증
 - `npm run build` 로 MDX 컴파일 성공 확인(빌드 실패 시 MDX 파싱 오류 위치가 표시됨).
 - 필요 시 `npm start` 로컬 서버로 목록/본문 렌더 확인.
+- **작성·수정 후에는 반드시 [`blog-review` 스킬](../skills/blog-review/SKILL.md)(`/blog-review`)로 검토한다.** 단어 순화·작성·MDX·다이어그램·코드 정렬·인용 정합성 등을 규칙에 비추어 점검하고, 지적 사항을 반영한 뒤 마무리한다(커밋 전 필수 단계).
 
 ## 관련
 - 저자 설정: `blog/authors.yml` · 태그 설정: `blog/tags.yml`
