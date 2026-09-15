@@ -1,0 +1,173 @@
+---
+slug: spring-boot-4-highlights
+title: "Spring Boot 4.0 — 모듈화·null-safety·API 버저닝, 무엇이 달라졌나"
+authors: [ johnycho ]
+tags: [ spring ]
+date: 2026-10-05T09:00:00
+---
+
+<!-- truncate -->
+
+**Spring Boot 4.0.0**(2025-11-20 GA)은 3.x 이후 첫 major입니다. 자바 최소 버전은 **17을 유지**하되 **Java 25를 1급으로 지원**하고, 기반은 **Spring Framework 7 · Jakarta EE 11 · Kotlin 2.2 · Jackson 3**로 올라갔습니다. 릴리스 노트를 관통하는 큰 변화는 세 가지입니다 — **코드베이스 모듈화(작은 jar)**, **JSpecify null-safety**, 그리고 **API 버저닝·HTTP Service Client** 자동설정.
+
+<mark>4.0은 기능 추가보다 "구조를 정리한" 릴리스입니다 — jar를 쪼개고, 널 가능성을 타입으로 드러내고, REST 관례를 프레임워크가 떠안습니다.</mark>
+
+## 1. 모듈화 — 하나의 뚱뚱한 jar를 쪼갰다
+
+가장 큰 구조 변화입니다. 배경은 이렇습니다. 모든 자동설정을 담아 두던 **`spring-boot-autoconfigure` jar 하나**가 계속 커졌습니다 — 2014년 1.0에선 182KiB였는데 3.5에선 **약 2MiB**입니다. 내가 안 쓰는 기술의 자동설정까지 전부 들어 있으니, 클래스패스가 무거워지고 IDE 자동완성 후보도 지저분해졌습니다.
+
+4.0은 이 거대한 jar를 **기술별 모듈**로 나눴습니다. 애플리케이션은 자기가 쓰는 자동설정 모듈만 로드합니다.
+
+- **스타터 이름 정리**: 일관성을 위해 일부 스타터가 이름이 바뀌었습니다. 대표적으로 `spring-boot-starter-web` → **`spring-boot-starter-webmvc`**.
+- **새 스타터**: 예전엔 jar만 넣으면 자동설정되던 것들도 명시적 스타터를 갖습니다. 예: Flyway는 이제 **`spring-boot-starter-flyway`**.
+- **패키지 재배치**: 자동설정 클래스가 `org.springframework.boot.<module>` 형태로 옮겨졌습니다. 자동설정 클래스나 커스터마이저를 **직접 import**하던 코드는 패키지를 고쳐야 합니다.
+- **테스트 자동설정도 분리**: `@AutoConfigureDataJdbc` 같은 슬라이스 애너테이션이 모듈에 맞춰 이동했습니다(예: `spring-boot-data-jdbc-test`). 각 스타터는 `-test` 변형을 갖습니다(예: `spring-boot-starter-webmvc-test`).
+
+```groovy
+// 기존(3.x)
+implementation 'org.springframework.boot:spring-boot-starter-web'
+// 4.0
+implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+implementation 'org.springframework.boot:spring-boot-starter-flyway' // 이전엔 flyway-core만 넣으면 됐음
+```
+
+마이그레이션 부담을 줄이려고 **"classic" 스타터**가 제공됩니다. 이건 예전처럼 관련 모듈을 한꺼번에 끌고 와, **일단 올려서 돌린 뒤** 필요한 모듈만 선택적으로 추려 가는 경로입니다.
+
+<mark>모듈화의 대가는 "의존성 이름·패키지를 손봐야 한다"는 것이고, 얻는 건 얇고 명확한 클래스패스입니다 — classic 스타터로 우선 띄우고 점진 전환하는 게 현실적입니다.</mark>
+
+## 2. JSpecify null-safety — NPE를 컴파일 타임으로 당긴다
+
+4.0은 포트폴리오 전반에 **JSpecify** 널 가능성 애너테이션을 적용했습니다. Spring API가 "여기는 null이 올 수 있다/없다"를 **타입 수준으로 선언**하므로, 그 정보를 도구가 읽어 NPE 위험을 미리 알려 줍니다.
+
+- **`@NullMarked`**(패키지 단위): 그 패키지의 모든 타입을 기본 **non-null**로 본다. 예외만 `@Nullable`로 표시.
+- **`@Nullable`**: null이 올 수 있는 반환값·파라미터·필드.
+
+```java
+// package-info.java — 이 패키지는 기본 non-null
+@NullMarked
+package com.example.order;
+
+import org.jspecify.annotations.NullMarked;
+```
+
+```java
+@NullMarked
+public class OrderService {
+    // 반환이 null일 수 있음을 타입으로 명시
+    public @Nullable Order findLatest(String userId) { ... }
+}
+```
+
+효과는 두 단계입니다. **IDE**(IntelliJ IDEA 2025.3+가 1급 지원)가 널 처리 누락을 경고하고 퀵픽스를 제안합니다. 더 강하게는 **NullAway**를 컴파일러 플러그인으로 붙여 **널 계약 위반을 컴파일 에러**로 막을 수 있습니다(Java 25 권장, 또는 JDK 21.0.8+에 옵션). 런타임에 터지던 NPE를 빌드에서 잡는 셈입니다.
+
+<mark>null-safety의 핵심은 "널 가능성을 주석이 아니라 타입으로 드러내는 것" — IDE 경고로 시작해, 팀이 준비되면 NullAway로 빌드에서 강제합니다.</mark>
+
+## 3. API 버저닝 — 프레임워크가 버전 라우팅을 떠안는다
+
+그동안 REST API 버저닝(`/v1`, `Accept` 헤더, 쿼리 파라미터 등)은 각자 구현했습니다. 4.0은 Spring MVC·WebFlux 모두에 **API 버저닝 자동설정**을 넣었습니다. `spring.mvc.apiversion.*`(WebFlux는 `spring.webflux.apiversion.*`) 프로퍼티로 **버전을 어디서 읽을지**(헤더·쿼리·경로 등)를 정하고, 매핑에 버전을 지정하면 프레임워크가 라우팅합니다.
+
+```java
+@GetMapping(path = "/orders/{id}", version = "1.1")
+public OrderV11 getV11(@PathVariable String id) { ... }
+```
+
+같은 URL이라도 요청의 버전에 따라 다른 핸들러로 보내지므로, 버전 분기 코드를 컨트롤러 안에 두지 않아도 됩니다(정확한 프로퍼티 키·동작은 [4.0 릴리스 노트](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Release-Notes) 참고).
+
+## 4. HTTP Service Client — 인터페이스만 선언하면 클라이언트가 된다
+
+`@HttpExchange` 기반 **HTTP 인터페이스 클라이언트**(선언형 REST 클라이언트)에 대한 **자동설정**이 들어왔습니다. 인터페이스로 원격 API 계약만 선언하면, 프레임워크가 구현체(프록시)를 만들어 빈으로 등록합니다.
+
+```java
+@HttpExchange("https://api.example.com")
+public interface PaymentClient {
+    @GetExchange("/payments/{id}")
+    Payment get(@PathVariable String id);
+}
+```
+
+`RestClient`(3.2 도입)를 밑단으로 쓰면서, 반복적인 호출 코드를 인터페이스 선언으로 대체합니다.
+
+## 그 밖에
+
+**Jackson 3**가 기본이 됐고, **Jackson 2는 deprecated** 형태로만 남습니다. 핵심은 **패키지·좌표가 통째로 바뀐다**는 점입니다 — `com.fasterxml.jackson.*` → **`tools.jackson.*`**. 다만 **애너테이션(`com.fasterxml.jackson.annotation.*`)은 그대로**라 `@JsonProperty` 같은 건 안 고쳐도 됩니다. `ObjectMapper`를 직접 설정하던 코드는 새 패키지 + `JsonMapper.builder()`로 옮깁니다.
+
+```java
+// Jackson 2 — 예외가 checked라 throws/try-catch 필요
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+ObjectMapper mapper = new ObjectMapper();
+String json = mapper.writeValueAsString(order);      // throws JsonProcessingException
+Order back = mapper.readValue(json, Order.class);    // throws JsonProcessingException
+```
+
+```java
+// Jackson 3 — 패키지가 tools.jackson, 빌더 방식, 예외는 unchecked
+import tools.jackson.databind.json.JsonMapper;
+
+JsonMapper mapper = JsonMapper.builder()
+                              .findAndAddModules()   // JavaTimeModule 등 자동 등록
+                              .build();
+
+String json = mapper.writeValueAsString(order);      // 직렬화 — throws 선언 없음
+Order back = mapper.readValue(json, Order.class);    // 역직렬화
+// 예외(JacksonException)가 RuntimeException이 돼, throws·try-catch 강제가 사라짐
+// @JsonProperty 등 애너테이션 import는 그대로(com.fasterxml.jackson.annotation)
+```
+
+대량으로 바꿔야 하면 **OpenRewrite의 Jackson 2→3 레시피**로 import·좌표를 자동 변환할 수 있습니다.
+
+**관측성** — OTLP로 메트릭·트레이스를 내보내는 **OpenTelemetry 스타터**가 추가돼, 예전처럼 브리지를 손수 붙이지 않고 스타터 + 엔드포인트 설정만으로 시작합니다(트레이싱 개념·TraceId 전파는 [Kafka 분산 추적](./kafka-distributed-tracing) 참고).
+
+```yaml
+management:
+  otlp:
+    metrics:
+      export:
+        url: http://collector:4318/v1/metrics
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://collector:4318/v1/traces
+```
+
+**Kotlin 2.2** 베이스라인(코틀린 1 지원 종료) — Spring API의 JSpecify 널 정보가 코틀린 타입으로 그대로 전달됩니다. null 가능한 반환은 코틀린에서 `?` 타입이 되어, 안 풀면 컴파일이 막힙니다.
+
+```kotlin
+// Spring API가 @Nullable로 선언한 값은 코틀린에서 nullable 타입(Order?)
+val order: Order? = repository.findByIdOrNull(id)
+val name = order.customerName        // ✗ 컴파일 에러 — null 가능
+val name = order?.customerName ?: "-" // ✓
+```
+
+**Gradle 9** 지원, 그리고 테스트에서 컨트롤러를 실제 HTTP처럼 검증하는 **`RestTestClient`**(Spring Framework 7)가 들어왔습니다. 그동안 리액티브(WebFlux) 테스트엔 요청→응답을 매끄럽게 이어 쓰는 `WebTestClient`가 있었는데, `RestTestClient`는 **그 체이닝 스타일을 일반 MVC 앱에서** 쓰게 한 것입니다(WebFlux 의존성 없이). `MockMvc`보다 읽기 쉽습니다.
+
+```java
+RestTestClient client = RestTestClient.bindToServer()
+                                      .baseUrl("http://localhost:8080")
+                                      .build();
+
+client.get().uri("/orders/{id}", 1)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody().jsonPath("$.id").isEqualTo(1);
+```
+
+## 언제·어떻게 올릴까
+
+4.0은 major라 **모듈 이름·패키지·Jackson 3** 같은 breaking이 있습니다. 판단 기준:
+
+- **지금 신규 프로젝트**라면 4.0으로 시작해 Java 25·null-safety 이점을 처음부터 챙긴다.
+- **운영 중인 3.x**라면 3.5(3.x의 마지막 라인)에서 안정화해 두고, 4.0 마이그레이션은 **classic 스타터로 우선 기동 → 모듈·Jackson 3·패키지 import를 순차 정리**하는 방식이 안전하다.
+- null-safety는 **IDE 경고부터** 켜서 익숙해진 뒤, 팀 합의가 되면 NullAway로 빌드 강제 단계로 올린다.
+
+## 정리
+
+- **모듈화**: `spring-boot-autoconfigure`를 기술별 모듈로 분리(작은 jar). 스타터 rename(`web`→`webmvc`)·새 스타터(`flyway`)·패키지 이동. classic 스타터로 점진 전환.
+- **JSpecify null-safety**: `@NullMarked`/`@Nullable`로 널 가능성을 타입에 명시 → IDE 경고 → NullAway로 컴파일 강제.
+- **API 버저닝**: `spring.mvc.apiversion.*` 자동설정 + 매핑의 `version` 속성.
+- **HTTP Service Client**: `@HttpExchange` 인터페이스 자동설정으로 선언형 REST 클라이언트.
+- 기반: **Java 17(25 1급) · Spring Framework 7 · Jakarta EE 11 · Jackson 3 · Kotlin 2.2**.
+
+<mark>4.0은 "새 기능"보다 "구조 정리"의 릴리스입니다 — 마이그레이션 비용은 있지만, 얇아진 jar·타입 수준 null-safety·프레임워크가 떠안은 REST 관례는 장기적으로 유지보수를 줄입니다.</mark>
