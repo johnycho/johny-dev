@@ -187,13 +187,25 @@ t --> t2 : 쌓임
 ```plantuml
 @startuml
 skinparam defaultTextAlignment center
-title 검수 상태 흐름 — 택배 송장처럼
+title 검수 상태 흐름 — 상태값 예시 (택배 송장처럼)
 
-[*] --> 검수대기
-검수대기 --> 검품대기 : 개수 확인 (CI)
-검품대기 --> 확정대기 : 품질 확인 (QI)
-확정대기 --> 입고완료 : 확정
-입고완료 --> [*]
+state "검수대기\nWAITING_FOR_CI" as ci
+state "검품대기\nWAITING_FOR_QI" as qi
+state "확정대기\nWAITING_FOR_CONFIRMATION" as conf
+state "입고완료\nFULL_RECEIVED" as full
+state "부분입고\nPARTIAL_RECEIVED" as partial
+state "보류\nHOLD" as hold
+state "반려\nDISALLOW" as disallow
+
+[*] --> ci
+ci --> qi : 개수 확인 (CI)
+qi --> conf : 품질 확인 (QI)
+conf --> full : 전량 정상 확정
+conf --> partial : 일부만 정상 확정
+qi --> hold : 판단 보류
+qi --> disallow : 입고 거부
+full --> [*]
+partial --> [*]
 @enduml
 ```
 
@@ -201,7 +213,7 @@ title 검수 상태 흐름 — 택배 송장처럼
 
 ![PlantUML 검수 상태 흐름](/img/c4/scm-inspection.svg)
 
-시스템은 이 상태값을 보고 "다음에 뭘 해야 하는지" 판단합니다.
+시스템은 이 상태값을 보고 "다음에 뭘 해야 하는지" 판단합니다. 정상 흐름은 `검수대기 → 검품대기 → 확정대기 → 입고완료`이고, 품질검사(QI)에서 문제가 있으면 **보류(HOLD)** 나 **반려(DISALLOW)** 로, 일부만 정상이면 **부분입고(PARTIAL_RECEIVED)** 로 갈립니다. (상태값 이름은 예시입니다.)
 
 ### ⑤ 인터페이스 테이블 = 시스템 사이의 우편함
 
