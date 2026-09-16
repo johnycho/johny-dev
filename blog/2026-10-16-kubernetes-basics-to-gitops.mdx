@@ -162,6 +162,47 @@ spec:
 
 <mark>매니지드 쿠버네티스는 "쿠버네티스를 운영하는 일" 자체를 클라우드에 맡기고, 팀은 애플리케이션 배포·운영에만 집중하게 해 줍니다.</mark>
 
+이 글에서 다루는 AWS 인프라를 한 장으로 보면 이렇습니다. 개발자·CI가 이미지를 **ECR(Elastic Container Registry, 컨테이너 이미지 저장소)** 에 올리고 매니페스트를 **Git**에 커밋하면, **EKS(Elastic Kubernetes Service, 매니지드 쿠버네티스)** 안의 ArgoCD가 이를 감지해 **워커 노드(EC2, Elastic Compute Cloud 가상 서버)** 에 배포하고, 노드는 ECR에서 이미지를, **Secrets Manager**에서 시크릿을 가져옵니다. 각 요소는 이어지는 절에서 자세히 다룹니다.
+
+<details>
+<summary>PlantUML 코드 (AWS 아이콘)</summary>
+
+```plantuml
+@startuml
+!include <awslib14/AWSCommon>
+!include <awslib14/Groups/AWSCloud>
+!include <awslib14/Containers/ElasticKubernetesService>
+!include <awslib14/Containers/ElasticContainerRegistry>
+!include <awslib14/SecurityIdentityCompliance/SecretsManager>
+!include <awslib14/Compute/EC2>
+!include <awslib14/General/User>
+title EKS·GitOps 인프라 관계도
+
+User(dev, "개발자 / CI", "")
+rectangle "매니페스트 저장소 (Git)" as git
+
+AWSCloudGroup(aws){
+  ElasticContainerRegistry(ecr, "ECR", "컨테이너 이미지")
+  SecretsManager(sm, "Secrets Manager", "앱 시크릿")
+  ElasticKubernetesService(eks, "EKS 클러스터", "ArgoCD 포함")
+  EC2(nodea, "Worker Node · 가용영역 A", "Pod x2")
+  EC2(nodec, "Worker Node · 가용영역 C", "Pod x1")
+}
+
+dev --> ecr : 이미지 push
+dev --> git : 매니페스트 commit
+eks --> git : ArgoCD가 변경 감지
+eks --> nodea : 배포
+eks --> nodec : 배포
+nodea --> ecr : 이미지 pull
+nodea --> sm : 시크릿 로드
+@enduml
+```
+
+</details>
+
+![PlantUML EKS·GitOps AWS 인프라 관계도](/img/c4/k8s-aws.svg)
+
 ## 배포를 GitOps로 — "배포 = Git 커밋"
 
 가장 크게 달라진 지점이 배포 방식입니다. 클러스터에 직접 `kubectl apply` 하지 않고, **모든 배포를 Git 커밋으로** 합니다. 이 방식을 **GitOps**라 하고, 도구로 **ArgoCD**를 씁니다.
