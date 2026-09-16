@@ -23,7 +23,7 @@ CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
 ## 왜 깨지나 — `ArrayList.add`는 원자적이지 않다
 
-`add(e)`는 사실 여러 단계입니다 — 대략 ① 공간이 부족하면 내부 배열을 늘리고(리사이즈) ② `elementData[size] = e` 로 넣고 ③ `size++`. 이 셋은 한 덩어리로 묶여 있지 않아, 여러 스레드가 동시에 하면 이렇게 어긋납니다.
+`add(e)`는 사실 여러 단계입니다 — 대략 ① 공간이 부족하면 내부 배열을 늘리고(리사이즈) ② `elementData[size] = e` 로 넣고 ③ `size++`. 이 셋은 하나로 묶여 있지 않아, 여러 스레드가 동시에 하면 이렇게 틀어집니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -124,7 +124,7 @@ ids.parallelStream().forEach(id -> {
 3) 쓰기   : count[0] = 6
 ```
 
-두 스레드가 거의 동시에 이 셋을 하면 이렇게 어긋납니다 — A와 B가 **둘 다 5를 읽고**, 둘 다 6을 써서, 두 번 증가했는데 결과는 6(한 번이 유실).
+두 스레드가 거의 동시에 이 셋을 하면 이렇게 틀어집니다 — A와 B가 **둘 다 5를 읽고**, 둘 다 6을 써서, 두 번 증가했는데 결과는 6(한 번이 유실).
 
 | 시점 | 스레드 A | 스레드 B | count[0] |
 |---|---|---|---|

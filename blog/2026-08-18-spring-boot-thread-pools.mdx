@@ -100,7 +100,7 @@ ThreadPoolTaskExecutor taskExecutor() {
 }
 ```
 
-`CallerRunsPolicy`는 가득 찼을 때 호출한 스레드가 직접 실행해 유입 속도를 늦추는 **자연스러운 백프레셔(backpressure)**가 됩니다. 반대로 기본 `AbortPolicy`는 예외를 던져 빠르게 실패합니다.
+`CallerRunsPolicy`는 가득 찼을 때 호출한 스레드가 직접 실행해 유입 속도를 늦추는 **자연스러운 백프레셔(backpressure)** 가 됩니다. 반대로 기본 `AbortPolicy`는 예외를 던져 빠르게 실패합니다.
 
 ## 3. @Scheduled 스케줄러 — ThreadPoolTaskScheduler
 

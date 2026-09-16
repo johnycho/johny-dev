@@ -136,7 +136,7 @@ Redisson도 **Spring Boot 스타터**가 있어 통합이 쉽고, Spring Cache �
 
 - <mark>`RedisTemplate`은 "명령", Redisson은 "분산 객체·동시성 도구"</mark> — 추상화 레벨이 다르다.
 - 단순 캐시·명령은 `RedisTemplate`, 분산 락·리미터·풍부한 컬렉션은 Redisson이 편하다.
-- 직접 만들기 까다로운 기능(락·리미터·블룸필터)일수록 Redisson의 값어치가 커진다.
+- 직접 만들기 까다로운 기능(락·리미터·블룸필터)일수록 Redisson의 가치가 커진다.
 - 둘은 공존 가능 — 대부분은 `RedisTemplate`로 캐시하고, 필요한 지점만 Redisson으로.
 
 명령·자료구조 자체가 궁금하면 [Redis 자료구조 총정리](./redis-data-structures), 대용량에서의 주의점은 [대용량 Redis 대응](./redis-large-scale-pitfalls)을 함께 보세요.
