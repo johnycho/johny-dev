@@ -8,7 +8,7 @@ date: 2026-10-05T09:00:00
 
 <!-- truncate -->
 
-**Spring Boot 4.0.0**(2025-11-20 GA)은 3.x 이후 첫 major입니다. 자바 최소 버전은 **17을 유지**하되 **Java 25를 1급으로 지원**하고, 기반은 **Spring Framework 7 · Jakarta EE 11 · Kotlin 2.2 · Jackson 3**로 올라갔습니다. 릴리스 노트를 관통하는 큰 변화는 세 가지입니다 — **코드베이스 모듈화(작은 jar)**, **JSpecify null-safety**, 그리고 **API 버저닝·HTTP Service Client** 자동설정.
+**Spring Boot 4.0.0**(2025-11-20 GA)은 3.x 이후 첫 major입니다. 자바 최소 버전은 **17을 유지**하되 **Java 25를 공식 지원**하고, 기반은 **Spring Framework 7 · Jakarta EE 11 · Kotlin 2.2 · Jackson 3**로 올라갔습니다. 릴리스 노트를 관통하는 큰 변화는 세 가지입니다 — **코드베이스 모듈화(작은 jar)**, **JSpecify null-safety**, 그리고 **API 버저닝·HTTP Service Client** 자동설정.
 
 <mark>4.0은 기능 추가보다 "구조를 정리한" 릴리스입니다 — jar를 쪼개고, 널 가능성을 타입으로 드러내고, REST 관례를 프레임워크가 떠안습니다.</mark>
 
@@ -58,7 +58,7 @@ public class OrderService {
 }
 ```
 
-효과는 두 단계입니다. **IDE**(IntelliJ IDEA 2025.3+가 1급 지원)가 널 처리 누락을 경고하고 퀵픽스를 제안합니다. 더 강하게는 **NullAway**를 컴파일러 플러그인으로 붙여 **널 계약 위반을 컴파일 에러**로 막을 수 있습니다(Java 25 권장, 또는 JDK 21.0.8+에 옵션). 런타임에 터지던 NPE를 빌드에서 잡는 셈입니다.
+효과는 두 단계입니다. **IDE**(IntelliJ IDEA 2025.3+가 정식 지원)가 널 처리 누락을 경고하고 퀵픽스를 제안합니다. 더 강하게는 **NullAway**를 컴파일러 플러그인으로 붙여 **널 계약 위반을 컴파일 에러**로 막을 수 있습니다(Java 25 권장, 또는 JDK 21.0.8+에 옵션). 런타임에 터지던 NPE를 빌드에서 잡는 셈입니다.
 
 <mark>null-safety의 핵심은 "널 가능성을 주석이 아니라 타입으로 드러내는 것" — IDE 경고로 시작해, 팀이 준비되면 NullAway로 빌드에서 강제합니다.</mark>
 
@@ -168,6 +168,6 @@ client.get().uri("/orders/{id}", 1)
 - **JSpecify null-safety**: `@NullMarked`/`@Nullable`로 널 가능성을 타입에 명시 → IDE 경고 → NullAway로 컴파일 강제.
 - **API 버저닝**: `spring.mvc.apiversion.*` 자동설정 + 매핑의 `version` 속성.
 - **HTTP Service Client**: `@HttpExchange` 인터페이스 자동설정으로 선언형 REST 클라이언트.
-- 기반: **Java 17(25 1급) · Spring Framework 7 · Jakarta EE 11 · Jackson 3 · Kotlin 2.2**.
+- 기반: **Java 17(25 공식 지원) · Spring Framework 7 · Jakarta EE 11 · Jackson 3 · Kotlin 2.2**.
 
 <mark>4.0은 "새 기능"보다 "구조 정리"의 릴리스입니다 — 마이그레이션 비용은 있지만, 얇아진 jar·타입 수준 null-safety·프레임워크가 떠안은 REST 관례는 장기적으로 유지보수를 줄입니다.</mark>

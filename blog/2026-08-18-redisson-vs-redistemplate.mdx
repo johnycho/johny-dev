@@ -112,7 +112,7 @@ Redis의 기본 자료구조엔 "필드별 TTL"이 없는데, Redisson은 `RMapC
 | 항목 | RedisTemplate (Spring Data Redis) | Redisson |
 |---|---|---|
 | 추상화 | 명령 중심(`opsForX`) | 객체·동시성 프리미티브 |
-| 분산 락/세마포어/리미터 | 내장 없음(직접·Spring Integration) | 1급 지원 |
+| 분산 락/세마포어/리미터 | 내장 없음(직접·Spring Integration) | 내장 지원 |
 | 자료구조 | raw 명령에 밀착 | `java.util` 인터페이스 구현 |
 | 직렬화 | `RedisSerializer`(String·JSON·JDK) | 코덱(JSON·Kryo 등) |
 | 런타임 | Lettuce/Jedis | Netty |
