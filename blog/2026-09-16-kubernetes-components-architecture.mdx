@@ -144,6 +144,8 @@ spec:
 
 <mark>Service는 L4(포트 단위 파드 부하 분산), Ingress는 L7(도메인·경로 라우팅 + TLS 종료)입니다 — Ingress는 규칙일 뿐이라, 이를 실행하는 Ingress Controller(파드)가 있어야 실제로 동작합니다.</mark>
 
+<ArchifyEmbed src="/diagrams/k8s-ingress-path.html" title="외부 트래픽 경로 Ingress→Service→파드 (인터랙티브)" height="440px" />
+
 ## 오브젝트는 무엇인가 — 부품이 다루는 대상
 
 지금까지가 **클러스터를 이루는 부품(프로세스)** 이라면, 우리가 `kubectl`로 만드는 **Pod·Deployment·Service** 등은 그 부품들이 **다루는 대상(리소스)** 입니다. 아주 짧게만 정리합니다.
