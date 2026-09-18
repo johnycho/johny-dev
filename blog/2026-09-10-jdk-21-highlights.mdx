@@ -1,0 +1,100 @@
+---
+slug: jdk-21-highlights
+title: "JDK 21(LTS) — JDK 17에서 무엇이 달라졌나: 가상 스레드와 패턴 매칭 완성"
+authors: [ johnycho ]
+tags: [ java ]
+date: 2026-09-10T11:00:00
+description: "JDK 17 다음 LTS인 JDK 21을 기준으로, 그 사이(18~21)에 정식이 된 가상 스레드·패턴 매칭 switch·레코드 패턴·시퀀스드 컬렉션과 Generational ZGC 등 런타임 변화를 실무 관점으로 정리한다."
+---
+
+<!-- truncate -->
+
+**JDK 21**은 2023-09-19 GA한 **LTS**로, **JDK 17 다음 LTS**입니다. 17 → 21 사이(18~21)에서 가장 크게 달라진 것은 두 가지입니다 — **가상 스레드가 정식**이 되어 동시성 모델이 바뀌었고, JDK 17에서 preview였던 **패턴 매칭이 완성**되어 `record`·`sealed`와 맞물려 데이터 분기가 간결해졌습니다.
+
+<mark>17 → 21의 핵심은 **가상 스레드(동시성)** 와 **패턴 매칭 switch + 레코드 패턴(데이터 분기)** 이 정식이 된 것 — 앞의 [JDK 17](/blog/jdk-17-highlights)에서 `record`·`sealed`가 정식이 됐고, 21에서 그 위의 분기 문법이 완성됩니다.</mark>
+
+## 1. 가상 스레드 — 경량 스레드 정식 (JEP 444, 정식)
+
+OS 스레드에 1:1로 묶이던 기존 스레드와 달리, **가상 스레드**는 JVM이 관리하는 경량 스레드라 **수백만 개**를 만들어도 부담이 적습니다. I/O 대기가 많은 서버에서 "스레드 풀 크기"라는 제약을 사실상 없앱니다.
+
+```java
+// 요청마다 가상 스레드 하나 — 블로킹 코드를 그대로 쓰면서 높은 동시성
+try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+    executor.submit(() -> handle(request));
+}
+```
+
+실무에서 **언제 이득이고 무엇을 조심해야 하는지**(블로킹 vs CPU 바운드, 풀 크기, 핀 고정 등)는 별도 글에서 자세히 다뤘습니다 → [가상 스레드, 실무에서 언제 쓰나](/blog/virtual-threads-in-production).
+
+## 2. 패턴 매칭 switch — 타입별 분기 완성 (JEP 441, 정식)
+
+JDK 17에서 preview였던 기능이 정식이 됐습니다. `switch`에서 **타입으로 분기하고 바로 바인딩**합니다. [JDK 17의 `sealed`](/blog/jdk-17-highlights)와 함께 쓰면 **모든 경우를 다뤘는지 컴파일러가 검사**합니다(누락 시 컴파일 에러 — `default` 없이도 안전).
+
+```java
+// Shape는 JDK 17 예시의 sealed 인터페이스 (Circle/Rectangle/Triangle)
+double area = switch (shape) {
+    case Circle c    -> Math.PI * c.r() * c.r();
+    case Rectangle r -> r.w() * r.h();
+    case Triangle t  -> t.base() * t.height() / 2;
+    // sealed라 세 경우가 전부 → default 불필요
+};
+```
+
+가드(`when`)로 조건도 붙일 수 있고, `null`도 `case null`로 명시적으로 다룹니다.
+
+## 3. 레코드 패턴 — 분해(deconstruction) (JEP 440, 정식)
+
+`record`를 매칭하면서 **필드를 바로 꺼내** 변수로 바인딩합니다. 중첩 구조도 한 번에 분해됩니다.
+
+```java
+record Point(int x, int y) {}
+record Line(Point from, Point to) {}
+
+// 중첩 record를 한 번에 분해
+if (obj instanceof Line(Point(var x1, var y1), Point(var x2, var y2))) {
+    double len = Math.hypot(x2 - x1, y2 - y1);
+}
+```
+
+패턴 매칭 `switch`와 합치면, "종류를 나누고 + 값을 꺼내는" 코드가 한 줄로 정리됩니다.
+
+## 4. 시퀀스드 컬렉션 — 첫·끝 원소 표준 API (JEP 431, 정식)
+
+`List`는 순서가 있고 `LinkedHashSet`도 순서가 있는데, "첫 원소/마지막 원소"를 꺼내는 방법이 컬렉션마다 제각각(`list.get(0)`, `deque.getFirst()`…)이었습니다. **`SequencedCollection`** 인터페이스가 이를 통일합니다.
+
+```java
+list.getFirst();          // list.get(0) 대신
+list.getLast();           // list.get(list.size() - 1) 대신
+list.reversed();          // 역순 뷰
+```
+
+`List`·`Deque`·`LinkedHashSet` 등이 공통 메서드(`getFirst`/`getLast`/`addFirst`/`addLast`/`reversed`)를 갖게 되어, 순서 있는 컬렉션을 다루는 코드가 일관돼집니다.
+
+<mark>여기까지가 코드에 바로 쓰는 정식 기능입니다 — 가상 스레드·패턴 매칭 switch·레코드 패턴·시퀀스드 컬렉션 모두 `--enable-preview` 없이 씁니다.</mark>
+
+## 5. 런타임 — Generational ZGC·보안 API
+
+- **Generational ZGC(JEP 439, 정식).** [JDK 17에서 정식이 된 ZGC](/blog/jdk-17-highlights)에 **세대(generational) 모드**가 더해졌습니다. "대부분의 객체는 금방 죽는다"는 약한 세대 가설을 활용해 젊은 객체만 자주 청소하므로, 같은 저지연 목표에서 **힙 여유·처리량**이 오릅니다. (JDK 21에선 플래그로 켰고, 이후 기본이 됩니다.)
+  ```bash
+  java -XX:+UseZGC -XX:+ZGenerational -jar app.jar
+  ```
+- **Key Encapsulation Mechanism API(JEP 452, 정식).** 양자 내성 암호(PQC)로 가는 길목의 표준 키 교환 API가 추가됐습니다.
+
+## 아직 preview — JDK 21 시점 기준
+
+아래는 JDK 21에서 **preview**라 `--enable-preview`가 필요했고, 일부는 이후 버전에서 정식이 됩니다.
+
+- **String Templates**(JEP 430, preview) — 문자열 보간(`STR."..."`). 이후 설계가 재검토되어 제거됐으니 **운영에 넣지 말 것**.
+- **구조적 동시성**(JEP 453, preview) — 여러 하위 작업을 한 단위로 묶어 실패·취소를 함께 다룸. 가상 스레드와 짝.
+- **Scoped Values**(JEP 446, preview → JDK 25에서 정식) — `ThreadLocal`의 불변·범위 한정 대안.
+- **이름 없는 패턴·변수**(JEP 443, preview) — 안 쓰는 바인딩을 `_`로.
+- **Foreign Function & Memory API**(JEP 442, 3차 preview → JDK 22 정식) — 네이티브 코드·메모리 접근.
+
+## 정리 — 17에서 21로
+
+- **동시성**: **가상 스레드 정식**(JEP 444) — I/O 바운드 서버의 동시성 상한을 사실상 제거([실무 판단은 별도 글](/blog/virtual-threads-in-production)).
+- **데이터 분기**: 패턴 매칭 `switch`(441) + 레코드 패턴(440)이 정식이 되어, [17의 `record`·`sealed`](/blog/jdk-17-highlights)와 함께 "종류 나누고 값 꺼내기"가 간결해짐.
+- **컬렉션·런타임**: 시퀀스드 컬렉션(431), Generational ZGC(439), KEM API(452).
+- LTS라 지원이 길고, 대부분 소스 호환이라 17에서 넘어갈 명분이 큽니다. 다음 목적지는 최신 LTS인 JDK 25입니다.
+
+<mark>JDK 21의 가치는 **가상 스레드로 동시성 모델이 바뀐 것**과, 17에서 시작된 패턴 매칭이 완성되어 **데이터 중심 코드가 한층 더 간결해진 것**에 있습니다.</mark>

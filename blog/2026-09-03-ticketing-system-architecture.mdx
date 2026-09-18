@@ -58,6 +58,10 @@ Rel(mq, db, "순차 기록")
 
 ![C4 예매 시스템 컨테이너 — 대기열·입장·좌석처리·MQ·DB](/img/c4/ticketing-flow.svg)
 
+import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
+
+<ArchifyEmbed src="/diagrams/ticketing-architecture.html" title="예매 시스템 구성 (인터랙티브)" height="560px" />
+
 ## 1. 대기열 — 왜 MQ가 아니라 Redis Sorted Set인가
 
 대기열은 "먼저 온 순서대로, 서버가 감당할 만큼만 입장"을 담당합니다. Redis의 **Sorted Set(정렬 집합)** 에 점수(score)를 **도착 순번**으로 넣으면, 자동으로 순서대로 정렬됩니다.

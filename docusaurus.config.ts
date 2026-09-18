@@ -48,7 +48,15 @@ const config: Config = {
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: '조니의 개발 블로그',
-        alternateName: 'Johny Dev',
+        alternateName: [
+          '조니 블로그',
+          '조니 개발블로그',
+          '조니의 개발블로그',
+          '조니 개발 블로그',
+          '조니 기술블로그',
+          'Johny Dev',
+          'johny-dev',
+        ],
         url: 'https://johnycho.dev/',
         inLanguage: 'ko',
         publisher: {
@@ -148,12 +156,13 @@ const config: Config = {
       {name: 'author', content: 'johnycho'},
       {
         name: 'keywords',
-        content: '백엔드, 자바, 스프링, 스프링 부트, JPA, MySQL, Redis, Kafka, 시스템 설계, 아키텍처, 성능, 모니터링, 개발 블로그',
+        content: '조니 블로그, 조니 개발블로그, 조니의 개발블로그, 조니 개발 블로그, 조니 기술블로그, 개발블로그, 기술블로그, 백엔드, 자바, 스프링, 스프링 부트, JPA, MySQL, Redis, Kafka, 시스템 설계, 아키텍처, 성능, 모니터링',
       },
       {
         name: 'description',
-        content: '실무에서 부딪힌 문제와 해결 과정을 기록하는 백엔드 개발 블로그 — 자바·스프링·데이터베이스·메시징·시스템 설계.',
+        content: '조니의 개발블로그(조니 블로그) — 실무에서 부딪힌 문제와 해결 과정을 기록하는 백엔드 기술블로그. 자바·스프링·데이터베이스·메시징·시스템 설계.',
       },
+      {property: 'og:site_name', content: '조니의 개발 블로그'},
     ],
     // 링크 공유용 소셜 카드(OG) — index-banner에서 노트북 중심으로 크롭(1200×630)
     image: 'img/social-card.jpg',

@@ -22,6 +22,9 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 │   ├── trend-post-java/SKILL.md     · Java/JDK 동향(JEP·신버전·preview → OpenJDK 검증) 게시글 (/trend-post-java)
 │   ├── trend-post-backend/SKILL.md  · 백엔드 최신 동향(GeekNews 등 발굴 → 1차 소스 검증) 게시글 (/trend-post-backend)
 │   ├── trend-post-ai/SKILL.md       · AI 개발 활용 동향(LLM 방법론·도구·MCP·하네스 → 공식 소스 검증) 게시글 (/trend-post-ai)
+│   ├── diagram-static/SKILL.md      · 정적 다이어그램(C4-PlantUML→PlantUML→Mermaid, Kroki SVG) (/diagram-static)
+│   ├── chart-canvas/SKILL.md        · 지표·추이 Canvas 애니메이션(MonitorCharts) (/chart-canvas)
+│   ├── diagram-archify/SKILL.md     · 인터랙티브 다이어그램(archify → iframe 임베드) (/diagram-archify)
 │   ├── blog-review/SKILL.md         · 작성한 글을 단어·작성·MDX·다이어그램 규칙으로 검토·피드백 (/blog-review)
 │   ├── resume-verify/SKILL.md      · 소개 페이지·이력서 PDF 수정·검증(+Rezumi 피드백·PDF 검증) (/resume-verify)
 │   └── deploy-utils/SKILL.md       · tools/johny-utils Vercel 프로덕션 배포 (/deploy-utils)
@@ -32,6 +35,7 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 
 ## 사용
 - **게시글 작성**: `/blog-post` 스킬 호출 또는 "블로그 글 추가해줘" → skill이 wiki 규칙을 따름.
+- **다이어그램·시각화**: 대상에 맞게 골라 쓴다 — 정적(구조·시퀀스·상태…)은 `/diagram-static`, 지표·추이 애니메이션은 `/chart-canvas`, 아키텍처·구조의 인터랙티브 탐색은 `/diagram-archify`(적합하면 적극 적용). 선택 기준은 [blog-authoring.md](wiki/blog-authoring.md) 4절.
 - **스프링 부트 시리즈**: `/trend-post-spring` 호출 또는 "스프링부트 업데이트 글 써줘" → 공식 소스 조사 후 blog-authoring 규칙대로 작성.
 - **백엔드 동향 글**: `/trend-post-backend` 호출 또는 "백엔드 동향 글 써줘/이 기사로 블로그" → GeekNews 등에서 주제 발굴 → **1차 소스로 사실 검증** 후 johny-dev 톤으로 작성(스프링 전용은 위 스킬).
 - **Java/JDK 동향 글**: `/trend-post-java` 호출 또는 "자바 최신 동향/이 JEP로 블로그" → OpenJDK JEP·Inside Java 등 1차 소스로 검증(preview/final·버전 명시) 후 작성.

@@ -1,0 +1,138 @@
+---
+slug: jdk-17-highlights
+title: "JDK 17(LTS) — JDK 11에서 무엇이 달라졌나: 정식이 된 언어 기능과 런타임"
+authors: [ johnycho ]
+tags: [ java ]
+date: 2026-09-10T10:00:00
+description: "JDK 11 다음 LTS인 JDK 17을 기준으로, 그 사이(12~17)에 정식이 된 언어 기능(records·sealed·pattern matching·text blocks·switch expression)과 런타임·GC·제거된 것들을 실무 관점으로 정리한다."
+---
+
+<!-- truncate -->
+
+**JDK 17**은 2021-09-14 GA한 **LTS**(장기 지원) 버전으로, **JDK 11 다음 LTS**입니다. 오래 11에 머물던 팀이 다음으로 올릴 목적지였죠. 11 → 17 사이에는 여섯 개 버전(12~17)이 지나가며, 여러 언어 기능이 **preview를 거쳐 정식(final)** 이 됐습니다. 이 글은 11에서 넘어올 때 **바로 쓸 수 있는 정식 기능**과 런타임 변화 위주로 정리합니다.
+
+<mark>11 → 17의 핵심은 새 문법 하나가 아니라, `records`·`sealed`·`pattern matching`이 **함께 정식이 되어** 데이터 모델링 방식이 바뀐 것입니다 — 셋을 묶으면 "값을 담고, 종류를 제한하고, 종류별로 분기"가 간결해집니다.</mark>
+
+## 1. Record — 데이터 클래스 보일러플레이트 제거 (JEP 395, JDK 16 정식)
+
+불변 데이터를 담는 클래스는 생성자·`getter`·`equals`·`hashCode`·`toString`으로 수십 줄이 되곤 했습니다. **`record`** 는 이걸 한 줄로 줄입니다.
+
+```java
+// 기존 — 필드 3개에 보일러플레이트 수십 줄
+// JDK 16+ — 한 줄. equals/hashCode/toString/생성자/접근자 자동 생성
+public record Point(int x, int y) {}
+
+Point p = new Point(1, 2);
+p.x();               // 접근자는 필드명과 동일 (getX 아님)
+```
+
+- 필드는 **불변(final)** 이고, `equals`/`hashCode`는 **값 기반**으로 자동 생성됩니다.
+- 생성자에서 검증만 넣고 싶으면 **compact 생성자**를 씁니다.
+
+```java
+public record Range(int lo, int hi) {
+    public Range {                        // 파라미터 목록 없는 compact 생성자
+        if (lo > hi) throw new IllegalArgumentException("lo > hi");
+    }
+}
+```
+
+<mark>DTO·값 객체·이벤트 메시지처럼 "데이터를 담기만 하는" 타입에 먼저 적용하면, 코드에서 의도만 남고 잡음이 사라집니다.</mark>
+
+## 2. Sealed 클래스 — 상속 계층을 봉인 (JEP 409, JDK 17 정식)
+
+`abstract` 클래스나 인터페이스를 누가 상속·구현할지 **명시적으로 제한**합니다. "이 타입의 하위 종류는 이게 전부다"를 컴파일러가 보장하죠.
+
+```java
+// permits로 허용된 세 종류만 Shape를 구현할 수 있다
+public sealed interface Shape permits Circle, Rectangle, Triangle {}
+
+public record Circle(double r) implements Shape {}
+public record Rectangle(double w, double h) implements Shape {}
+public record Triangle(double base, double height) implements Shape {}
+```
+
+하위 타입이 **닫혀 있으니**, 뒤에서 볼 패턴 매칭 `switch`에서 **모든 경우를 다뤘는지 컴파일러가 검사**할 수 있습니다(누락 시 컴파일 에러). `record` + `sealed`는 함수형 언어의 대수적 데이터 타입(ADT)에 해당합니다.
+
+## 3. instanceof 패턴 매칭 — 검사와 캐스팅을 한 번에 (JEP 394, JDK 16 정식)
+
+`instanceof`로 타입을 확인한 뒤 다시 캐스팅하던 중복이 사라집니다.
+
+```java
+// 기존
+if (obj instanceof String) {
+    String s = (String) obj;
+    return s.length();
+}
+
+// JDK 16+ — 검사 통과 시 바로 바인딩
+if (obj instanceof String s) {
+    return s.length();       // s는 이미 String
+}
+```
+
+## 4. Switch 식과 Text Block — 표현식·여러 줄 문자열 (JEP 361 · 378)
+
+**Switch 식**(JEP 361, JDK 14 정식)은 `switch`를 **값을 돌려주는 식**으로 쓰게 하고, `->` 화살표로 fall-through·`break` 실수를 없앱니다.
+
+```java
+int days = switch (month) {
+    case JAN, MAR, MAY, JUL, AUG, OCT, DEC -> 31;
+    case APR, JUN, SEP, NOV -> 30;
+    case FEB -> isLeap ? 29 : 28;
+};
+```
+
+**Text Block**(JEP 378, JDK 15 정식)은 `"""`로 여러 줄 문자열을 이스케이프·연결 없이 그대로 씁니다.
+
+```java
+String json = """
+    {
+      "id": 1,
+      "name": "kim"
+    }
+    """;
+```
+
+SQL·JSON·HTML을 코드에 담을 때 `\n`·`+` 범벅이 사라집니다.
+
+## 5. 친절한 NullPointerException (JEP 358, JDK 14)
+
+NPE가 났을 때 **어느 변수·어느 호출이 null이었는지**를 메시지에 담아 줍니다. 긴 체이닝에서 원인 지목이 빨라집니다.
+
+```
+Cannot invoke "String.length()" because "<local1>.name" is null
+```
+
+<mark>여기까지가 코드에 바로 쓰는 정식 기능입니다 — `record`·`sealed`·`instanceof` 패턴·switch 식·text block 모두 `--enable-preview` 없이 씁니다.</mark>
+
+## 6. 런타임 — GC·플랫폼·제거된 것들
+
+언어 기능 외에, 코드를 바꾸지 않고 얻는 런타임·플랫폼 변화도 큽니다.
+
+- **ZGC·Shenandoah 정식화(JDK 15).** 정지 시간이 짧은(ms 단위) 저지연 GC 두 가지가 실험 딱지를 떼고 **production-ready**가 됐습니다. 큰 힙에서 GC 지연이 문제라면 선택지가 넓어집니다.
+  ```bash
+  java -XX:+UseZGC -jar app.jar
+  ```
+- **macOS/AArch64 포트(JEP 391, JDK 17).** Apple Silicon(M1)에서 네이티브로 동작합니다.
+- **JDK 내부 강한 캡슐화(JEP 403, JDK 17).** `sun.*` 같은 내부 API 접근이 기본 차단됩니다. 오래된 라이브러리가 내부 API에 기대고 있었다면 **11 → 17 이관에서 가장 먼저 걸리는 지점**이니, 실행 시 `InaccessibleObjectException`·리플렉션 경고를 미리 점검해야 합니다.
+- **제거·지원 종료.** Nashorn 자바스크립트 엔진 제거(JEP 372, JDK 15), RMI Activation 제거(JEP 407, JDK 17), Applet API 제거 예고, **Security Manager 지원 종료 예고**(JEP 411, JDK 17).
+
+<mark>11 → 17 이관에서 코드 자체보다 자주 발목을 잡는 건 **내부 API 강한 캡슐화와 제거된 모듈**입니다 — 언어 기능은 대부분 소스 호환이라, 이관 리스크는 의존 라이브러리 쪽에서 먼저 확인하는 게 순서입니다.</mark>
+
+## 아직 preview — JDK 17 시점 기준
+
+아래는 JDK 17에서 **preview/incubator**라 `--enable-preview`가 필요했고, 이후 버전에서 정식이 됩니다(괄호에 정식 버전 표기).
+
+- **패턴 매칭 `switch`**(preview, → JDK 21에서 정식)
+- **Foreign Function & Memory API**(incubator, → JDK 22 정식)
+- **Vector API**(incubator, 이후 계속 incubator)
+
+## 정리 — 11에서 17로
+
+- **바로 쓰는 정식 기능**: `record`(JEP 395), `sealed`(409), `instanceof` 패턴(394), switch 식(361), text block(378), 친절한 NPE(358).
+- **런타임**: ZGC·Shenandoah 정식, Apple Silicon 네이티브, **JDK 내부 강한 캡슐화**(이관 시 최우선 점검).
+- **제거**: Nashorn·RMI Activation, Security Manager 지원 종료 예고.
+- LTS라 지원이 길고, 언어 기능은 대부분 소스 호환이라 11에서 넘어갈 명분이 큽니다. 그다음 목적지는 JDK 21, 그리고 최신 LTS인 JDK 25입니다.
+
+<mark>JDK 17의 가치는 `record`·`sealed`·패턴 매칭이 함께 정식이 되어 **데이터 중심 코드가 간결해진 것**과, 저지연 GC·Apple Silicon 같은 런타임 성숙에 있습니다.</mark>

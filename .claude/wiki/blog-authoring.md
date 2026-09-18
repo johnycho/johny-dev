@@ -52,35 +52,21 @@
   - **해결: 괄호·따옴표는 그대로 볼드 안에 두고, 닫는 `**` 뒤에 한 칸 띄운다** — 볼드 뒤에 공백이 오면 강조가 정상적으로 닫혀 적용된다. 예: `**복제본(read replica)** 을`, `**무상태(stateless)** 여야`, `**"무상태를 조금 포기"** 하는`. (볼드 밖으로 글로스를 빼내지 말 것 — 괄호·따옴표까지 볼드에 포함되게 유지한다.)
 - 작성 후 코드블록 밖 본문에 위험 패턴이 없는지 스캔한다(스킬 6절).
 
-## 4) 다이어그램·시각화 — 우선순위: C4-PlantUML → PlantUML → Mermaid(최후)
-- **도구 우선순위(중요).** ① **C4-PlantUML로 표현 가능하면 무조건 C4-PlantUML**(시스템 컨텍스트·컨테이너·컴포넌트, 시스템 간 연동, 필요 시 배포 `C4_Deployment`·런타임 상호작용 `C4_Dynamic`). ② C4로 안 되면 **PlantUML로 표현 가능한 건 최대한 PlantUML**(시퀀스·클래스/ER·상태·액티비티·컴포넌트 등 — PlantUML이 지원하는 다이어그램은 거의 다). ③ **Mermaid는 최후 수단** — PlantUML로도 마땅치 않을 때만. 지표·추이는 Canvas 컴포넌트.
-- **C4-PlantUML / PlantUML 모두 Kroki로 렌더해 정적 SVG로 넣는다**(C4는 `c4plantuml`, 일반 PlantUML은 `plantuml` 엔드포인트). 접이식 코드 + 이미지 패턴은 아래 절차와 동일하며, C4 개념은 [C4 모델 글](../../blog/2026-09-22-c4-model-architecture-diagram.mdx) 참고.
-- **인프라(클라우드·플랫폼) 다이어그램은 그 인프라의 실제 아이콘을 쓴다.** AWS·GCP·Kubernetes 등 인프라 구성·관계도는 draw.io처럼 **컴포넌트 아이콘으로** 그린다 — PlantUML 표준 아이콘 라이브러리를 `!include`로 불러 쓰고 `plantuml` 엔드포인트로 렌더한다(alt는 `PlantUML `로 시작). 예: AWS `!include <awslib14/AWSCommon>` + `<awslib14/Compute/EC2>`·`<awslib14/Containers/ElasticKubernetesService>`·`<awslib14/Containers/ElasticContainerRegistry>`·`<awslib14/SecurityIdentityCompliance/SecretsManager>` 등, 그룹은 `<awslib14/Groups/AWSCloud>`. (쿠버네티스는 `<kubernetes/...>`, 기타 로고는 `<logos/...>`.)
-  - **Kroki 주의(경험칙)**: ① 아이콘·그룹·엣지 라벨 각각은 한글로도 잘 렌더되지만, **`RegionGroup`/`AvailabilityZoneGroup` 같은 중첩 그룹 + 라벨 달린 그룹-횡단 엣지**를 함께 쓰면 400이 난다 → **그룹은 얕게**(단일 `AWSCloudGroup`) 두고 AZ 등은 노드 설명(`"Worker Node · 가용영역 A"`)으로 표기. ② 엣지 라벨의 괄호는 문제될 수 있으니 피한다. 렌더 실패 시 조각별로 이진 탐색해 원인 줄을 찾는다.
-- **Mermaid를 쓸 때**: **` ```mermaid ` 코드블록**으로 그린다(ASCII 아트 금지 — 한글은 코드블록에서 2칸 폭이라 열 정렬이 깨짐). Mermaid는 `docusaurus.config.ts`에 활성화됨(`markdown.mermaid: true`). 노드 라벨 줄바꿈은 `<br/>`. 단순 화살표 한 줄(`A → B → C`)이면 굳이 그리지 않아도 된다. (Mermaid의 `C4Context` 등 C4 타입은 실험적이라 라벨이 겹쳐 깨지므로 **쓰지 않는다.** C4는 반드시 C4-PlantUML로.)
-  - 절차: ① `.puml` 작성 — **C4**면 `!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml`(또는 `C4_Container.puml`·`C4_Component.puml`) + `LAYOUT_LEFT_RIGHT()`(가로 배치); **일반 PlantUML**(시퀀스·클래스·ER·상태 등)이면 include 없이 그냥 작성 → ② 렌더: C4는 `curl -X POST https://kroki.io/c4plantuml/svg ...`, 일반 PlantUML은 `.../plantuml/svg ...` (`-o static/img/c4/<name>.svg`, HTTP 200·`<svg` 시작 확인, 오류면 문법 고쳐 재시도) → ③ 본문엔 **접이식 코드 + 이미지**로 삽입:
+## 4) 다이어그램·시각화 — 방식 선택 후 해당 스킬로
 
-    ```
-    <details>
-    <summary>C4-PlantUML 코드</summary>
+세 가지 방식이 있다. **대상에 맞게 골라 해당 스킬의 절차를 따른다**(상세는 각 스킬 문서).
 
-    ​```plantuml
-    <소스>
-    ​```
+| 대상 | 방식 | 스킬 |
+|---|---|---|
+| 구조·시퀀스·클래스/ER·상태·액티비티·인프라 (정적) | C4-PlantUML → PlantUML → Mermaid(최후), Kroki로 정적 SVG | [diagram-static](../skills/diagram-static/SKILL.md) — **기본값** |
+| 지표·추이·분포·상관·발산 ("움직임이 의미 있는") | 직접 만든 Canvas 애니메이션 컴포넌트(MonitorCharts) | [chart-canvas](../skills/chart-canvas/SKILL.md) |
+| 아키텍처·구조에서 **인터랙티브 탐색**이 이해를 돕는 경우 | archify(typed IR → 인터랙티브 HTML, iframe 임베드) | [diagram-archify](../skills/diagram-archify/SKILL.md) |
 
-    </details>
+- **archify는 적합하면 적극 적용한다.** 블로그에 아키텍처·구성요소·데이터 흐름·상태 다이어그램이 나오면 **먼저 archify 적용을 검토**하고, 인터랙티브 탐색(노드 포커스·hover 관계 흐름·뷰 전환)이 이해를 도우면 적용한다. 단순한 그림(화살표 몇 개·표로 충분)은 diagram-static이 가볍다.
+- **SEO·프린트**: archify 인터랙티브는 iframe이라 본문으로 색인되지 않는다. 검색 노출이 중요한 핵심 다이어그램은 **정적 SVG(diagram-static)를 위에 함께 두고** 그 아래 인터랙티브를 붙이는 이중 제공을 고려한다.
+- **도구 GUI 화면은 "오리지널 목업"으로 재현**한다(스크린샷 복사·핫링크 금지). 재사용 컴포넌트 [`src/components/blog/MatMockup.tsx`](../../src/components/blog/MatMockup.tsx)(MAT 창 목업) 패턴(공통 창틀 + 뷰별 데이터 배열)으로 새 도구 화면을 추가하고, 캡션에 "실제 스크린샷 아님" 명시. 테마는 사이트 변수(`--site-*`), 좁은 화면은 `overflow-x:auto`.
+- **저작권(시각자료 공통)**: 다른 글의 이미지·애니메이션이나 도구 스크린샷을 복사/핫링크하지 말 것. 같은 개념·화면은 **직접 구현한 컴포넌트(canvas/목업)로 재현**하고, 원문·도구는 **링크로만** 참조한다.
 
-    ![C4 …](/img/c4/<name>.svg)
-    ```
-  - 이미지 `alt`는 **C4 다이어그램은 `C4 `로, 일반 PlantUML 다이어그램은 `PlantUML `로 시작**시킨다 — `custom.css`의 `img[alt^="C4 "], img[alt^="PlantUML "]` 규칙이 본문 폭에 맞춰 흰 배경 카드로 표시한다(Docusaurus가 경로를 `/assets`로 해싱하므로 alt로 스코프). 코드 레벨(레벨 4)은 C4가 아니라 일반 `plantuml` 클래스 다이어그램으로 그린다. SVG 교체 후 반영이 안 보이면 `npm run clear` 후 재빌드/재기동.
-- **시간에 따른 값·패턴은 애니메이션 Canvas 컴포넌트를 적극 활용**한다. 지표 추이(메모리 톱니/계단, 트래픽 곡선), 분포(응답시간 꼬리), 두 지표의 상관(캐시 히트율↓+DB 부하↑), 큐 발산 같은 "움직임이 의미 있는" 시각화는 정적 그림보다 **직접 만든 canvas 컴포넌트**가 이해를 돕는다.
-  - 재사용 컴포넌트: [`src/components/blog/MonitorCharts.tsx`](../../src/components/blog/MonitorCharts.tsx) — `AnimatedLineChart`(선·듀얼선·계단`step`·추세선`trend`·범례`legend`), `AnimatedBars`(막대). 의존성 없이 SSR 안전(그리기는 클라이언트 `useEffect`에서만).
-  - .mdx에서 `import {AnimatedLineChart, AnimatedBars} from '@site/src/components/blog/MonitorCharts';` 후 JSX로 사용. 새 시각화 유형이 필요하면 이 파일에 컴포넌트를 추가해 재사용한다.
-  - 애니메이션은 부드럽게(정점 사이 보간 + easing). 과용은 금물 — 정적 표/Mermaid로 충분한 곳엔 쓰지 않는다.
-- **도구 GUI 화면은 "오리지널 목업"으로 재현**한다. IDE·프로파일러·대시보드 등 특정 도구의 화면을 예시로 보여줄 때, 스크린샷을 복사/핫링크하지 말고 **창틀·탭·표를 HTML/CSS로 직접 그린 목업 컴포넌트**로 재현한다(캡션에 "실제 스크린샷 아님" 명시).
-  - 재사용 컴포넌트: [`src/components/blog/MatMockup.tsx`](../../src/components/blog/MatMockup.tsx) — MAT(Memory Analyzer) 창 목업(`MatDominatorTree`·`MatHistogram`·`MatPathToGCRoots`). 창틀+탭 공통 `Chrome` + 표/트리. 새 도구 화면이 필요하면 같은 패턴(공통 창틀 + 뷰별 데이터 배열)으로 컴포넌트를 추가한다.
-  - 테마 대응은 사이트 변수(`--site-card-bg`·`--site-fg`·`--site-accent`·`--site-card-border` 등)를 쓰고, 좁은 화면은 가로 스크롤(`overflow-x:auto`)로.
-- **저작권(시각자료 공통)**: 다른 글의 이미지·애니메이션이나 도구의 스크린샷을 복사/핫링크하지 말 것. 같은 개념·화면은 **직접 구현한 컴포넌트(canvas/목업)로 재현**하고, 원문·도구는 **링크로만** 참조한다. (본인이 직접 캡처했거나 권한이 확인된 이미지만 출처 표기 후 임베드)
 
 ## 5) 태그(tags) — `blog/tags.yml` 등록분만
 현재 등록된 태그: `java`, `jpa`, `spring`, `mysql`, `redis`, `kafka`, `monitoring`, `system-design`, `architecture`, `ai`.
