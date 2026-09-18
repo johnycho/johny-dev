@@ -96,6 +96,10 @@ Rel(cb, ca, "A·B 동시 진입 → 상호배제 위반", "충돌")
 
 ![C4 Redis 마스터·복제 페일오버 시 락 이중 획득](/img/c4/redis-lock-2.svg)
 
+import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
+
+<ArchifyEmbed src="/diagrams/distributed-lock-failover.html" title="Redis 페일오버 시 락 이중 획득 (인터랙티브)" height="520px" />
+
 즉 Sentinel·Cluster로 가용성은 올려도, **락의 상호배제까지 100% 보장되진 않습니다.** 여러 독립 마스터의 과반 획득을 요구하는 **Redlock**은 이 위험을 줄이려는 시도지만, GC 정지·시계 문제 등으로 완벽하진 않다는 논쟁이 있고 구성도 무겁습니다.
 
 ## 그래서 Redis 장애에도 견디게 하려면
