@@ -53,7 +53,7 @@ start
 :grantSignupCoupon() — 같은 트랜잭션에 참여;
 if (외부 실패로 예외?) then (예)
   :스프링이 트랜잭션을 rollback-only로 표시;
-  :바깥 try-catch가 예외를 삼킴;
+  :외부 try-catch가 예외를 삼킴;
   :정상처럼 커밋 시도;
   :이미 rollback-only → 커밋 거부\nUnexpectedRollbackException + 전체 롤백;
   stop
@@ -68,11 +68,11 @@ endif
 
 ![PlantUML rollback-only 전파 흐름 — 예외·롤백 표시·커밋 거부](/img/c4/pu-rollback-only.svg)
 
-<mark>내부 `@Transactional`이 던진 예외는, 바깥에서 잡아 삼켜도 트랜잭션에 남긴 "rollback-only" 표시까지 지우지는 못합니다.</mark> 그래서 커밋 시점에 스프링이 "이 트랜잭션은 롤백만 가능"이라며 거부하고, 저장한 user까지 전부 롤백됩니다.
+<mark>내부 `@Transactional`이 던진 예외는, 외부에서 잡아 삼켜도 트랜잭션에 남긴 "rollback-only" 표시까지 지우지는 못합니다.</mark> 그래서 커밋 시점에 스프링이 "이 트랜잭션은 롤백만 가능"이라며 거부하고, 저장한 user까지 전부 롤백됩니다.
 
 ## 왜 스프링은 이렇게 동작하나
 
-`REQUIRED` 전파에서 내부 메서드는 **새 트랜잭션이 아니라 바깥 트랜잭션에 참여**합니다(물리적으로 하나). 이 참여 구간에서 예외가 터지면, 스프링은 트랜잭션을 **rollback-only**로 표시합니다(`globalRollbackOnParticipationFailure` 기본값).
+`REQUIRED` 전파에서 내부 메서드는 **새 트랜잭션이 아니라 상위 트랜잭션에 참여**합니다(물리적으로 하나). 이 참여 구간에서 예외가 터지면, 스프링은 트랜잭션을 **rollback-only**로 표시합니다(`globalRollbackOnParticipationFailure` 기본값).
 
 <mark>즉 "예외를 잡았으니 없던 일"이 아니라, 트랜잭션은 이미 오염돼 커밋할 수 없는 상태가 된 것입니다.</mark> 그래서 잡아도 소용이 없고, 커밋 때 `UnexpectedRollbackException`으로 드러납니다.
 
@@ -89,7 +89,7 @@ public void signUp(SignUpRequest req) {
 }
 ```
 
-**방법 2 — 선택적 작업을 별도 트랜잭션으로(`REQUIRES_NEW`).** 내부를 독립 트랜잭션으로 떼면, 내부 실패가 바깥을 오염시키지 않습니다.
+**방법 2 — 선택적 작업을 별도 트랜잭션으로(`REQUIRES_NEW`).** 내부를 독립 트랜잭션으로 떼면, 내부 실패가 외부를 오염시키지 않습니다.
 
 ```java
 @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -101,7 +101,7 @@ public void grantSignupCoupon(User user) { ... }
 ## 정리
 
 - `REQUIRED` 전파에서 **내부 `@Transactional`의 예외는 트랜잭션을 rollback-only로 표시**한다.
-- 바깥에서 `try-catch`로 삼켜도 표시는 남아, **커밋 때 `UnexpectedRollbackException`** 으로 전체가 롤백된다.
+- 외부에서 `try-catch`로 삼켜도 표시는 남아, **커밋 때 `UnexpectedRollbackException`** 으로 전체가 롤백된다.
 - 해결은 **실패해도 되는 작업(외부 호출 등)을 트랜잭션 밖 또는 `REQUIRES_NEW`로 분리**하는 것.
 - <mark>예외를 "잡았다"가 아니라 트랜잭션 "경계"를 나눴는지가 핵심입니다.</mark>
 
@@ -111,5 +111,5 @@ public void grantSignupCoupon(User user) { ... }
 |---|---|
 | rollback-only | 트랜잭션이 "롤백만 가능"으로 표시된 상태 |
 | UnexpectedRollbackException | rollback-only인데 커밋을 시도해 나는 예외 |
-| REQUIRED | 바깥 트랜잭션이 있으면 거기에 참여(기본 전파) |
+| REQUIRED | 상위 트랜잭션이 있으면 거기에 참여(기본 전파) |
 | REQUIRES_NEW | 항상 새 트랜잭션을 열어 독립 처리 |

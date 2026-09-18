@@ -11,7 +11,7 @@ description: "Spring Boot 4로 올리며 Hibernate가 6.2 → 7.x로 함께 올�
 
 [Spring Boot 4로 올리는 작업](/blog/spring-boot-4-highlights) 중, 특정 엔티티에서 **읽기만 했는데 커밋 시점에 UPDATE가 나가고 `version`이 1씩 오르는** 현상이 생겼습니다. 낙관적 락 충돌 알람이 분당 여러 건씩 올라왔죠. 코드는 엔티티를 조회해 상태만 판정할 뿐 어떤 필드도 대입하지 않는데도요. 범인은 **`@JdbcTypeCode(SqlTypes.JSON)` 컬럼의 dirty check 방식이 Hibernate 6.2 → 7.x에서 바뀐 것**이었습니다.
 
-<mark>Hibernate 7.x는 JSON 컬럼의 스냅샷을 "직렬화 → 역직렬화"로 deep copy해서 뜬다 — 값 객체에 `equals`가 없으면 참조 비교로 떨어져, 조회만 해도 매 flush마다 dirty로 판정된다.</mark>
+<mark>Hibernate 7.x는 flush마다 JSON 컬럼 값을 **직렬화했다가 다시 역직렬화해** 스냅샷을 만든다(deep copy). 이때 값 객체에 `equals`가 없으면 **값이 같아도 서로 다른 객체로 취급**되어, 조회만 했는데도 매번 변경(dirty)으로 판정된다.</mark>
 
 ## 현상
 
@@ -35,7 +35,7 @@ Hibernate는 엔티티를 로딩할 때 필드별 **스냅샷**을 떠 두고, f
 | 스냅샷 생성 | 리스트 껍데기만 새로, 원소는 **같은 참조** | JSON으로 **직렬화 → 역직렬화**(deep copy) → 원소까지 **전부 새 인스턴스** |
 | 비교 결과 | `areEqual = true` → UPDATE 없음 | `areEqual = false` → 매 flush마다 UPDATE |
 
-문제의 값 객체(`OrderItem`)에는 `equals`/`hashCode`가 없었습니다. 비교는 `Object.equals`, 즉 **참조 비교**로 떨어집니다. 6.2 초기 버전은 스냅샷이 원본과 참조를 공유해 **우연히** 통과했고, 7.x는 매번 다른 인스턴스라 통과할 수 없습니다.
+문제의 값 객체(`OrderItem`)에는 `equals`/`hashCode`가 없었습니다. 그러면 비교가 `Object.equals`, 즉 **참조(주소) 비교**로 이뤄집니다. 6.2 초기 버전은 스냅샷이 원본과 참조를 공유해 **우연히** 통과했고, 7.x는 매번 다른 인스턴스라 통과할 수 없습니다.
 
 <mark>결함(값 객체에 `equals` 부재)은 원래 있었고, 버전업이 그것을 드러냈을 뿐이다 — 6.2 초기 버전이 참조를 공유하며 결함을 가려 주고 있었다.</mark>
 

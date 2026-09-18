@@ -14,6 +14,7 @@
    - `schema_version:1`, `diagram_type:"architecture"`
    - `meta`: `{ title, quality_profile:"showcase", views:[{id,label,focus:[id…],note}] }`
    - `components:[{ id, type, label, sublabel?, pos:[x,y], size:[w,h], tag? }]` — **type enum**: `external·backend·database·cloud·security·messagebus·frontend`
+     - **⚠️ type은 legend에 그 이름 그대로 노출된다 — 색 구분용으로 아무거나 고르지 말고 의미에 맞게 쓴다.** 예: 도메인/코어·유스케이스·일반 프로세스=`backend`, DB·저장소=`database`, 외부 사용자/시스템=`external`, 외부 API 클라이언트=`external`, 메시지 큐=`messagebus`, UI/프런트=`frontend`, 클라우드 관리형 서비스(CDN·S3 등)만=`cloud`. **쿠버네티스 Pod·컨테이너 런타임·Service, 도메인 모듈 등은 `cloud`가 아니다(→ `backend`).** 같은 색이 겹쳐도 위치·경계(boundary)로 구분되므로, 억지 색 분리보다 정확한 타입이 우선.
    - `boundaries:[{ kind, label, wraps:[id…] }]` — **kind enum**: `region · security-group`(라벨로 의미 표현)
    - `connections:[{ id, from, to, label?, variant?("emphasis"/"dashed"/"security"), labelAt?:[x,y] }]`
    - `cards:[{ dot("cyan"/"emerald"/"rose"…), title, items:[…] }]`

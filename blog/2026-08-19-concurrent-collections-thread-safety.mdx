@@ -50,7 +50,7 @@ stop
 
 - **덮어쓰기 손실** — 두 스레드가 같은 `size`를 읽어 같은 칸에 써, 하나가 사라집니다.
 - **size 경합** — `size++`가 겹쳐 실제보다 작게 세어집니다(개수가 모자람).
-- **리사이즈 레이스** — 늘리는 도중 다른 스레드가 옛 배열을 참조해 `null` 구멍이나 `ArrayIndexOutOfBoundsException`.
+- **리사이즈 레이스** — 늘리는 도중 다른 스레드가 옛 배열을 참조해 `null`이 섞이거나 `ArrayIndexOutOfBoundsException`.
 
 <mark>`ArrayList`는 단일 스레드용이라, 동시 `add`에서는 "가끔" 조용히 데이터가 사라집니다 — 매번이 아니라 가끔이라 더 찾기 어렵습니다.</mark>
 

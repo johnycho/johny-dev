@@ -78,7 +78,7 @@ store-service/src/main/java/com/example/
 └── config/
 ```
 
-여러 서비스가 겹쳐 쓰는 도메인·응용은 `shared-domain`·`shared-service-infra` 모듈로 빼서 재사용합니다. 핵심은 **리포지토리 인터페이스를 `domain` 패키지에 두고, 그 구현을 `infrastructure` 패키지에 두는 것**입니다. 그러면 `application`·`domain`은 JPA·MyBatis 같은 기술을 모른 채 인터페이스에만 의존하고, 기술 세부는 `infrastructure`에서 갈아 끼울 수 있습니다.
+여러 서비스가 겹쳐 쓰는 도메인·응용은 `shared-domain`·`shared-service-infra` 모듈로 빼서 재사용합니다. 핵심은 **리포지토리 인터페이스를 `domain` 패키지에 두고, 그 구현을 `infrastructure` 패키지에 두는 것**입니다. 그러면 `application`·`domain`은 JPA·MyBatis 같은 기술을 모른 채 인터페이스에만 의존하고, 기술 세부는 `infrastructure`에서 교체할 수 있습니다.
 
 - **presentation**: 컨트롤러(요청·응답 처리).
 - **application**: 유스케이스 조립(트랜잭션 경계·여러 도메인 오케스트레이션).
@@ -125,7 +125,7 @@ public class OrderJpaRepository implements OrderRepository {
 
 ## 의존성 방향
 
-모든 화살표가 `domain`을 향하고, `domain`은 아무것도 의존하지 않는 것이 목표입니다.
+**application도 infrastructure도 `domain`을 향해 의존**하고, `domain`은 아무것도 의존하지 않는 것이 목표입니다(의존성 역전, DIP). application은 infrastructure를 참조하지 않고, infrastructure가 domain의 인터페이스를 구현합니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -135,21 +135,24 @@ public class OrderJpaRepository implements OrderRepository {
 skinparam componentStyle rectangle
 skinparam defaultFontName sans-serif
 
-rectangle "실행 서비스\n프레젠테이션(Controller)" as S
+rectangle "프레젠테이션\n(Controller)" as P
 rectangle "application" as A
 rectangle "infrastructure" as I
 rectangle "domain" as D
 
-S ..> A
-S ..> I
-A ..> D
-I ..> D
+P ..> A : 호출·의존
+A ..> D : 의존(인터페이스)
+I ..> D : 인터페이스 구현
 @enduml
 ```
 
 </details>
 
 ![PlantUML 모든 레이어가 domain을 향하는 의존 방향](/img/c4/pu-ddd-layers.svg)
+
+import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
+
+<ArchifyEmbed src="/diagrams/ddd-layered-dependency.html" title="DDD 레이어드 의존 방향 DIP (인터랙티브)" height="460px" />
 
 모든 계층이 `domain`을 향해 의존하고, `domain`은 아무것도 의존하지 않습니다. 그래서 도메인 코드는 어떤 실행 환경(API든 배치든)에도 그대로 재사용됩니다.
 
@@ -227,4 +230,4 @@ DB 접근·웹 공통 설정·외부 클라이언트·메시징·관측·테스�
 | 멀티모듈 | 한 저장소를 여러 빌드 단위(모듈)로 나눠 의존성 경계를 강제하는 구성 |
 | 바운디드 컨텍스트 | 하나의 일관된 도메인 경계(주문·회원·결제 등 단위) |
 | 레이어드 아키텍처 | domain·application·infrastructure로 수직 분리한 계층 구조 |
-| 의존성 역전(DIP) | 인터페이스를 도메인이 소유하고 구현을 바깥에 둬, 의존 방향을 도메인으로 뒤집는 것 |
+| 의존성 역전(DIP) | 인터페이스를 도메인이 소유하고 구현을 외부에 둬, 의존 방향을 도메인으로 뒤집는 것 |
