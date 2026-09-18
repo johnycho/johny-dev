@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.7adddcf7.css">
-<script src="/assets/js/runtime~main.cea50699.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.cb83cc48.js" defer="defer"></script>
 <script src="/assets/js/main.56f8b069.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -44,7 +44,7 @@
 <p>이 오브젝트들은 <strong>Namespace(네임스페이스)</strong> 로 나눠 담아 환경(dev·stg·운영)이나 팀별로 격리합니다. 그리고 이 모든 파드는 실제 서버인 <strong>노드(Node)</strong> 위에서 동작하고, 노드들의 묶음이 <strong>클러스터</strong>입니다.</p>
 <mark>파드는 언제든 사라질 수 있는 일회성 단위이고, Deployment가 &quot;선언한 개수&quot;를 유지하며, Service가 그 앞에서 변하지 않는 진입점을 제공합니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="쿠버네티스의-핵심-철학--선언형과-원하는-상태">쿠버네티스의 핵심 철학 — 선언형과 원하는 상태<a href="#쿠버네티스의-핵심-철학--선언형과-원하는-상태" class="hash-link" aria-label="쿠버네티스의 핵심 철학 — 선언형과 원하는 상태에 대한 직접 링크" title="쿠버네티스의 핵심 철학 — 선언형과 원하는 상태에 대한 직접 링크">​</a></h2>
-<p>쿠버네티스를 관통하는 사고방식이 하나 있습니다. <strong>명령형이 아니라 선언형</strong>이라는 점입니다.</p>
+<p>쿠버네티스의 핵심 사고방식이 하나 있습니다. <strong>명령형이 아니라 선언형</strong>이라는 점입니다.</p>
 <ul>
 <li><strong>명령형(예전 방식)</strong>: &quot;컨테이너를 켜라&quot;, &quot;하나 더 띄워라&quot;처럼 <strong>단계를 직접 지시</strong>합니다.</li>
 <li><strong>선언형(쿠버네티스)</strong>: &quot;이 서비스는 항상 <strong>레플리카 3개</strong>여야 한다&quot;처럼 <strong>원하는 상태(desired state)</strong> 만 적어 둡니다. 그러면 쿠버네티스가 현재 상태와 비교해, 부족하면 채우고 남으면 줄여 <strong>끊임없이 그 상태로 맞춥니다.</strong> 이 반복 과정을 <strong>reconciliation(조정) 루프</strong>라고 합니다.</li>

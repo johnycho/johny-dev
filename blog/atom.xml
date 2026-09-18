@@ -124,7 +124,7 @@
 <p>이 오브젝트들은 <strong>Namespace(네임스페이스)</strong> 로 나눠 담아 환경(dev·stg·운영)이나 팀별로 격리합니다. 그리고 이 모든 파드는 실제 서버인 <strong>노드(Node)</strong> 위에서 동작하고, 노드들의 묶음이 <strong>클러스터</strong>입니다.</p>
 <mark>파드는 언제든 사라질 수 있는 일회성 단위이고, Deployment가 "선언한 개수"를 유지하며, Service가 그 앞에서 변하지 않는 진입점을 제공합니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="쿠버네티스의-핵심-철학--선언형과-원하는-상태">쿠버네티스의 핵심 철학 — 선언형과 원하는 상태<a href="https://johnycho.dev/blog/kubernetes-basics-to-gitops#%EC%BF%A0%EB%B2%84%EB%84%A4%ED%8B%B0%EC%8A%A4%EC%9D%98-%ED%95%B5%EC%8B%AC-%EC%B2%A0%ED%95%99--%EC%84%A0%EC%96%B8%ED%98%95%EA%B3%BC-%EC%9B%90%ED%95%98%EB%8A%94-%EC%83%81%ED%83%9C" class="hash-link" aria-label="쿠버네티스의 핵심 철학 — 선언형과 원하는 상태에 대한 직접 링크" title="쿠버네티스의 핵심 철학 — 선언형과 원하는 상태에 대한 직접 링크">​</a></h2>
-<p>쿠버네티스를 관통하는 사고방식이 하나 있습니다. <strong>명령형이 아니라 선언형</strong>이라는 점입니다.</p>
+<p>쿠버네티스의 핵심 사고방식이 하나 있습니다. <strong>명령형이 아니라 선언형</strong>이라는 점입니다.</p>
 <ul>
 <li><strong>명령형(예전 방식)</strong>: "컨테이너를 켜라", "하나 더 띄워라"처럼 <strong>단계를 직접 지시</strong>합니다.</li>
 <li><strong>선언형(쿠버네티스)</strong>: "이 서비스는 항상 <strong>레플리카 3개</strong>여야 한다"처럼 <strong>원하는 상태(desired state)</strong> 만 적어 둡니다. 그러면 쿠버네티스가 현재 상태와 비교해, 부족하면 채우고 남으면 줄여 <strong>끊임없이 그 상태로 맞춥니다.</strong> 이 반복 과정을 <strong>reconciliation(조정) 루프</strong>라고 합니다.</li>
@@ -1236,8 +1236,13 @@
         <id>https://johnycho.dev/blog/spring-boot-4-highlights</id>
         <link href="https://johnycho.dev/blog/spring-boot-4-highlights"/>
         <updated>2026-09-09T12:00:00.000Z</updated>
-        <summary type="html"><![CDATA[Spring Boot 4.0.0(2025-11-20 GA)은 3.x 이후 첫 major입니다. 자바 최소 버전은 17을 유지하되 Java 25를 공식 지원하고, 기반은 Spring Framework 7 · Jakarta EE 11 · Kotlin 2.2 · Jackson 3로 올라갔습니다. 릴리스 노트를 관통하는 큰 변화는 세 가지입니다 — 코드베이스 모듈화(작은 jar), JSpecify null-safety, 그리고 API 버저닝·HTTP Service Client 자동설정.]]></summary>
-        <content type="html"><![CDATA[<p><strong>Spring Boot 4.0.0</strong>(2025-11-20 GA)은 3.x 이후 첫 major입니다. 자바 최소 버전은 <strong>17을 유지</strong>하되 <strong>Java 25를 공식 지원</strong>하고, 기반은 <strong>Spring Framework 7 · Jakarta EE 11 · Kotlin 2.2 · Jackson 3</strong>로 올라갔습니다. 릴리스 노트를 관통하는 큰 변화는 세 가지입니다 — <strong>코드베이스 모듈화(작은 jar)</strong>, <strong>JSpecify null-safety</strong>, 그리고 <strong>API 버저닝·HTTP Service Client</strong> 자동설정.</p>
+        <summary type="html"><![CDATA[Spring Boot 4.0.0(2025-11-20 GA)은 3.x 이후 첫 major입니다. 자바 최소 버전은 17을 유지하되 Java 25를 공식 지원하고, 기반은 Spring Framework 7 · Jakarta EE 11 · Kotlin 2.2 · Jackson 3로 올라갔습니다. 릴리스 노트에서 주목할 만한 큰 변화는 세 가지입니다.]]></summary>
+        <content type="html"><![CDATA[<p><strong>Spring Boot 4.0.0</strong>(2025-11-20 GA)은 3.x 이후 첫 major입니다. 자바 최소 버전은 <strong>17을 유지</strong>하되 <strong>Java 25를 공식 지원</strong>하고, 기반은 <strong>Spring Framework 7 · Jakarta EE 11 · Kotlin 2.2 · Jackson 3</strong>로 올라갔습니다. 릴리스 노트에서 주목할 만한 큰 변화는 세 가지입니다.</p>
+<ul>
+<li><strong>코드베이스 모듈화</strong> — 작은 jar로 분리</li>
+<li><strong>JSpecify null-safety</strong></li>
+<li><strong>API 버저닝·HTTP Service Client 자동설정</strong></li>
+</ul>
 <mark>4.0은 기능 추가보다 "구조를 정리한" 릴리스입니다 — jar를 쪼개고, 널 가능성을 타입으로 드러내고, REST 관례를 프레임워크가 떠안습니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-모듈화--하나의-뚱뚱한-jar를-쪼갰다">1. 모듈화 — 하나의 뚱뚱한 jar를 쪼갰다<a href="https://johnycho.dev/blog/spring-boot-4-highlights#1-%EB%AA%A8%EB%93%88%ED%99%94--%ED%95%98%EB%82%98%EC%9D%98-%EB%9A%B1%EB%9A%B1%ED%95%9C-jar%EB%A5%BC-%EC%AA%BC%EA%B0%B0%EB%8B%A4" class="hash-link" aria-label="1. 모듈화 — 하나의 뚱뚱한 jar를 쪼갰다에 대한 직접 링크" title="1. 모듈화 — 하나의 뚱뚱한 jar를 쪼갰다에 대한 직접 링크">​</a></h2>
 <p>가장 큰 구조 변화입니다. 배경은 이렇습니다. 모든 자동설정을 담아 두던 <strong><code>spring-boot-autoconfigure</code> jar 하나</strong>가 계속 커졌습니다 — 2014년 1.0에선 182KiB였는데 3.5에선 <strong>약 2MiB</strong>입니다. 내가 안 쓰는 기술의 자동설정까지 전부 들어 있으니, 클래스패스가 무거워지고 IDE 자동완성 후보도 지저분해졌습니다.</p>
