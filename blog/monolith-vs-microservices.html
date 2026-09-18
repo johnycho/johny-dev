@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.7adddcf7.css">
-<script src="/assets/js/runtime~main.7b7b6875.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9932b1ab.js" defer="defer"></script>
 <script src="/assets/js/main.56f8b069.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -71,7 +71,7 @@
 <p>주의할 안티패턴이 있습니다.</p>
 <ul>
 <li><strong>재시도 폭풍</strong> — 게이트웨이 3회 + 서비스 3회면 한 클릭에 9번 호출. 재시도는 <strong>한 계층에서만</strong>.</li>
-<li><strong>타임아웃 불일치</strong> — 바깥(호출하는 쪽, 예: 게이트웨이)이 1초, 안쪽(호출받는 쪽, 예: 서비스·DB)이 5초면, 바깥이 포기한 뒤에도 안쪽은 계속 일해 <strong>좀비 프로세스</strong>가 됩니다. <strong>타임아웃은 안쪽이 더 짧아야</strong> 합니다(<a href="/blog/server-monitoring-analysis">타임아웃 예산</a> 참고).</li>
+<li><strong>타임아웃 불일치</strong> — 외부(호출하는 쪽, 예: 게이트웨이)이 1초, 안쪽(호출받는 쪽, 예: 서비스·DB)이 5초면, 외부가 포기한 뒤에도 안쪽은 계속 일해 <strong>좀비 프로세스</strong>가 됩니다. <strong>타임아웃은 안쪽이 더 짧아야</strong> 합니다(<a href="/blog/server-monitoring-analysis">타임아웃 예산</a> 참고).</li>
 <li><strong>과도하게 넓은 서킷</strong> — 하나의 서킷을 모두가 공유하면 한 의존성 장애가 전체를 차단합니다. 서킷은 <strong>의존성 단위로 잘게</strong> 나눕니다.</li>
 </ul>
 <p>관련해서 장애가 확산되지 않게 막는 큰 그림은 <a href="/blog/fault-tolerance-high-availability">내결함성과 고가용성</a>에서 다뤘습니다.</p>

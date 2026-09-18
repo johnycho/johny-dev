@@ -5211,16 +5211,16 @@ body { display: block !important; }
         <text data-detail="fine" x="370" y="180" class="t-backend" font-size="7" text-anchor="middle">nginx·ALB 등</text>
         </g>
 
-        <g id="node-svc" data-node-id="svc" data-node-label="Service" tabindex="0" role="button" aria-label="Focus Service, 고정 진입점 · L4, Architecture component" aria-pressed="false" data-node-kind="cloud" data-node-sublabel="고정 진입점 · L4" data-node-tag="kube-proxy" data-node-context="Architecture component">
+        <g id="node-svc" data-node-id="svc" data-node-label="Service" tabindex="0" role="button" aria-label="Focus Service, 고정 진입점 · L4, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="고정 진입점 · L4" data-node-tag="kube-proxy" data-node-context="Architecture component">
           <title>Service · 고정 진입점 · L4 · Architecture component · kube-proxy</title>
           <rect x="560" y="118" width="170" height="64" rx="6" class="c-mask"/>
-          <rect x="560" y="118" width="170" height="64" rx="6" class="c-cloud" stroke-width="1.5"/>
-          <g aria-hidden="true" data-semantic-sigil="cloud" class="semantic-sigil s-cloud" transform="translate(566 124) scale(0.6875)">
-            <path d="M4.3 12.5h7.3a2.4 2.4 0 0 0 .2-4.8 4 4 0 0 0-7.5-1.3A3.1 3.1 0 0 0 4.3 12.5Z"/>
+          <rect x="560" y="118" width="170" height="64" rx="6" class="c-backend" stroke-width="1.5"/>
+          <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(566 124) scale(0.6875)">
+            <path d="M6 3 3 8l3 5M10 3l3 5-3 5"/>
           </g>
           <text data-node-label="" data-detail-anchor="" x="645" y="148" class="t-primary" font-size="11" font-weight="600" text-anchor="middle">Service</text>
         <text data-detail="context" x="645" y="164" class="t-muted" font-size="9" text-anchor="middle">고정 진입점 · L4</text>
-        <text data-detail="fine" x="645" y="174" class="t-cloud" font-size="7" text-anchor="middle">kube-proxy</text>
+        <text data-detail="fine" x="645" y="174" class="t-backend" font-size="7" text-anchor="middle">kube-proxy</text>
         </g>
 
         <g id="node-podA" data-node-id="podA" data-node-label="파드 A" tabindex="0" role="button" aria-label="Focus 파드 A, 컨테이너, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="컨테이너" data-node-context="Architecture component">
@@ -5270,13 +5270,9 @@ body { display: block !important; }
             <rect x="40" y="331" width="16" height="10" rx="2.5" class="c-backend" stroke-width="1"/>
             <text x="62" y="340" class="t-muted" font-size="10" font-weight="500">Backend</text>
           </g>
-          <g data-legend-semantic-kind="cloud" data-legend-kind="cloud" data-legend-label="Cloud" data-legend-x="140" data-legend-baseline="340" data-legend-width="68">
-            <rect x="140" y="331" width="16" height="10" rx="2.5" class="c-cloud" stroke-width="1"/>
-            <text x="162" y="340" class="t-muted" font-size="10" font-weight="500">Cloud</text>
-          </g>
-          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External" data-legend-x="230" data-legend-baseline="340" data-legend-width="83">
-            <rect x="230" y="331" width="16" height="10" rx="2.5" class="c-external" stroke-width="1"/>
-            <text x="252" y="340" class="t-muted" font-size="10" font-weight="500">External</text>
+          <g data-legend-semantic-kind="external" data-legend-kind="external" data-legend-label="External" data-legend-x="140" data-legend-baseline="340" data-legend-width="83">
+            <rect x="140" y="331" width="16" height="10" rx="2.5" class="c-external" stroke-width="1"/>
+            <text x="162" y="340" class="t-muted" font-size="10" font-weight="500">External</text>
           </g>
         </g>
       </svg>

@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.7adddcf7.css">
-<script src="/assets/js/runtime~main.7b7b6875.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9932b1ab.js" defer="defer"></script>
 <script src="/assets/js/main.56f8b069.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -27,7 +27,7 @@
 <ul>
 <li><strong>덮어쓰기 손실</strong> — 두 스레드가 같은 <code>size</code>를 읽어 같은 칸에 써, 하나가 사라집니다.</li>
 <li><strong>size 경합</strong> — <code>size++</code>가 겹쳐 실제보다 작게 세어집니다(개수가 모자람).</li>
-<li><strong>리사이즈 레이스</strong> — 늘리는 도중 다른 스레드가 옛 배열을 참조해 <code>null</code> 구멍이나 <code>ArrayIndexOutOfBoundsException</code>.</li>
+<li><strong>리사이즈 레이스</strong> — 늘리는 도중 다른 스레드가 옛 배열을 참조해 <code>null</code>이 섞이거나 <code>ArrayIndexOutOfBoundsException</code>.</li>
 </ul>
 <mark><code>ArrayList</code>는 단일 스레드용이라, 동시 <code>add</code>에서는 &quot;가끔&quot; 조용히 데이터가 사라집니다 — 매번이 아니라 가끔이라 더 찾기 어렵습니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="해결--공유하지-말고-결과를-모아-병합-권장">해결 ① 공유하지 말고, 결과를 모아 병합 (권장)<a href="#해결--공유하지-말고-결과를-모아-병합-권장" class="hash-link" aria-label="해결 ① 공유하지 말고, 결과를 모아 병합 (권장)에 대한 직접 링크" title="해결 ① 공유하지 말고, 결과를 모아 병합 (권장)에 대한 직접 링크">​</a></h2>

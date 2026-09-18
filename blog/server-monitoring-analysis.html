@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.7adddcf7.css">
-<script src="/assets/js/runtime~main.7b7b6875.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9932b1ab.js" defer="defer"></script>
 <script src="/assets/js/main.56f8b069.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -72,9 +72,9 @@
 <p><strong>캐시 스탬피드(cache stampede)</strong> — 캐시 히트율이 급락하면서 DB 부하가 동시에 튀는 패턴. DB가 갑자기 느려진 게 아니라, 인기 키의 캐시가 만료돼 다들 동시에 원본을 다시 만들며 몰린 것입니다. <mark>두 지표가 <strong>거울처럼 엇갈리는 순간</strong>이 신호입니다 — 히트율이 뚝 떨어지는 그때 DB 부하가 급등합니다.</mark></p>
 <canvas style="width:100%;height:190px;display:block;margin:1rem auto 1.9rem" aria-label="캐시 스탬피드 — 히트율 급락과 DB 부하 급등이 동시에"></canvas>
 <p>완화책은 만료 시점 분산(지터), 재생성 잠금(한 요청만 원본 조회), 백그라운드 갱신 등입니다.</p>
-<p><strong>타임아웃 예산(timeout budget)</strong> — 하나의 요청이 게이트웨이 → 백엔드 → DB처럼 여러 계층을 거칠 때, 각 계층의 타임아웃을 <strong>바깥일수록 길게, 안쪽일수록 짧게</strong> 차등 설정하는 것입니다. 요청 하나에 허용된 전체 시간(예산)을 계층들이 나눠 갖되, <strong>안쪽이 항상 바깥보다 먼저 끊기도록</strong> 조금씩 여유를 남깁니다. 모든 계층에 같은 값을 주면, 바깥이 기다리다 포기한 뒤에도 안쪽은 그 사실을 모른 채 계속 일해 자원을 낭비합니다.</p>
+<p><strong>타임아웃 예산(timeout budget)</strong> — 하나의 요청이 게이트웨이 → 백엔드 → DB처럼 여러 계층을 거칠 때, 각 계층의 타임아웃을 <strong>외부일수록 길게, 안쪽일수록 짧게</strong> 차등 설정하는 것입니다. 요청 하나에 허용된 전체 시간(예산)을 계층들이 나눠 갖되, <strong>안쪽이 항상 외부보다 먼저 끊기도록</strong> 조금씩 여유를 남깁니다. 모든 계층에 같은 값을 주면, 외부가 기다리다 포기한 뒤에도 안쪽은 그 사실을 모른 채 계속 일해 자원을 낭비합니다.</p>
 <!-- -->
-<p>안쪽(DB)이 먼저 끊겨야, 바깥(게이트웨이)이 <strong>&quot;안쪽이 시간 초과됐다&quot;는 명확한 실패 응답</strong>을 제때 받아 정상적으로 처리(에러 반환·대체 동작)할 수 있습니다. 반대로 바깥이 먼저 끊기면, 이미 손을 놓은 요청을 안쪽은 모른 채 계속 처리해 자원만 낭비합니다.</p>
+<p>안쪽(DB)이 먼저 끊겨야, 외부(게이트웨이)가 <strong>&quot;안쪽이 시간 초과됐다&quot;는 명확한 실패 응답</strong>을 제때 받아 정상적으로 처리(에러 반환·대체 동작)할 수 있습니다. 반대로 외부가 먼저 끊기면, 이미 손을 놓은 요청을 안쪽은 모른 채 계속 처리해 자원만 낭비합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-세-가지-시간--평시장애-중장애-후">5. 세 가지 시간 — 평시·장애 중·장애 후<a href="#5-세-가지-시간--평시장애-중장애-후" class="hash-link" aria-label="5. 세 가지 시간 — 평시·장애 중·장애 후에 대한 직접 링크" title="5. 세 가지 시간 — 평시·장애 중·장애 후에 대한 직접 링크">​</a></h2>
 <p>같은 지표라도 <strong>언제 보느냐</strong>에 따라 읽는 법이 다릅니다. 예를 들어 하루 트래픽은 대개 이런 &quot;정상 곡선&quot;을 그립니다 — 이 모양을 외워둬야 오늘의 이상이 눈에 들어옵니다.</p>
 <canvas style="width:100%;height:190px;display:block;margin:1rem auto 1.9rem" aria-label="평시 트래픽 — 이 &#x27;정상 곡선&#x27;을 외워둬야 이상이 보인다"></canvas>

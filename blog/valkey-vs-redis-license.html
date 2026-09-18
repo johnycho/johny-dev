@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.7adddcf7.css">
-<script src="/assets/js/runtime~main.7b7b6875.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9932b1ab.js" defer="defer"></script>
 <script src="/assets/js/main.56f8b069.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -43,7 +43,7 @@
 <li><strong>매니지드로 쓰는 대다수</strong> — 클라우드 매니지드(ElastiCache 등)를 쓴다면, 콘솔에서 고르는 문제입니다. <strong>가격·성능이 유리한 Valkey</strong> 쪽이 기본 후보가 되는 경우가 많습니다. 애플리케이션 코드 변경은 사실상 없습니다.</li>
 <li><strong>라이선스가 중요한 조직</strong> — 사내 배포·재배포·SaaS 임베드 등으로 <strong>라이선스 조건이 걸리는</strong> 곳이라면, <strong>BSD(Valkey)</strong> 가 가장 자유롭습니다. Redis의 AGPLv3는 오픈소스지만 네트워크 사용까지 소스 공개 의무가 미치는 조항이 있어 상용 임베드 시 검토가 필요합니다.</li>
 <li><strong>Redis 전용 신기능이 필요</strong> — <strong>벡터 셋</strong> 같은 Redis Inc. 주도 기능이 꼭 필요하면 Redis 8을 봅니다. AI/검색 쪽에서 Redis가 밀고 있는 영역입니다.</li>
-<li><strong>드롭인 교체</strong> — 기존 Redis(7.2 계열)를 쓰고 있고 라이선스·비용만 정리하고 싶다면, Valkey는 <strong>거의 드롭인(drop-in — 코드·설정을 바꾸지 않고 그대로 갈아 끼울 수 있는 대체)</strong> 입니다. 클라이언트(<a href="/blog/redisson-vs-redistemplate">Redisson·RedisTemplate</a>)도 그대로 붙습니다.</li>
+<li><strong>드롭인 교체</strong> — 기존 Redis(7.2 계열)를 쓰고 있고 라이선스·비용만 정리하고 싶다면, Valkey는 <strong>거의 드롭인(drop-in — 코드·설정을 바꾸지 않고 그대로 교체할 수 있는 대체)</strong> 입니다. 클라이언트(<a href="/blog/redisson-vs-redistemplate">Redisson·RedisTemplate</a>)도 그대로 붙습니다.</li>
 </ul>
 <mark>애플리케이션 입장에선 &quot;무엇을 쓰든 명령어는 같다&quot;가 핵심이라, 선택은 성능 경쟁보다 라이선스·비용·필요 기능으로 결정하는 게 맞습니다.</mark>
 <p>Redis의 자료구조 자체(무엇을 언제 쓰나)는 <a href="/blog/redis-data-structures">Redis 자료구조 10가지</a>에서, 싱글스레드인데 빠른 이유는 <a href="/blog/redis-single-thread-fast">Redis는 왜 싱글스레드인데 빠른가</a>에서 다뤘습니다 — 이 내용은 Valkey에도 그대로 적용됩니다.</p>
