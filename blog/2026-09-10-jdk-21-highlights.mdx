@@ -74,7 +74,7 @@ list.reversed();          // 역순 뷰
 
 ## 5. 런타임 — Generational ZGC·보안 API
 
-- **Generational ZGC(JEP 439, 정식).** [JDK 17에서 정식이 된 ZGC](/blog/jdk-17-highlights)에 **세대(generational) 모드**가 더해졌습니다. "대부분의 객체는 금방 죽는다"는 약한 세대 가설을 활용해 젊은 객체만 자주 청소하므로, 같은 저지연 목표에서 **힙 여유·처리량**이 오릅니다. (JDK 21에선 플래그로 켰고, 이후 기본이 됩니다.)
+- **Generational ZGC(JEP 439, 정식).** [JDK 17에서 정식이 된 ZGC](/blog/jdk-17-highlights)에 **세대(generational) 모드**가 더해졌습니다. "대부분의 객체는 금방 죽는다"는 약한 세대 가설을 활용해 젊은 객체만 자주 청소하므로, 같은 저지연 목표에서 **힙 여유·처리량**이 오릅니다. (JDK 21에선 `-XX:+ZGenerational` 플래그로 켜야 하고, **JDK 23부터는 세대 모드가 ZGC 기본값이라 플래그가 필요 없습니다**(JEP 474). JDK 25에서는 비세대 모드가 제거됐습니다(JEP 490).)
   ```bash
   java -XX:+UseZGC -XX:+ZGenerational -jar app.jar
   ```
