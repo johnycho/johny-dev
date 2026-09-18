@@ -9,7 +9,7 @@
         <generator>https://github.com/jpmonette/feed</generator>
         <language>ko</language>
         <item>
-            <title><![CDATA[조회만 했는데 UPDATE가 나간다 — Hibernate 7 JSON 컬럼 dirty check 회귀]]></title>
+            <title><![CDATA[조회만 했는데 UPDATE가 나간다 — Hibernate 7 JSON 컬럼 dirty check 동작 변경]]></title>
             <link>https://johnycho.dev/blog/hibernate-json-column-phantom-update</link>
             <guid>https://johnycho.dev/blog/hibernate-json-column-phantom-update</guid>
             <pubDate>Fri, 18 Sep 2026 09:00:00 GMT</pubDate>

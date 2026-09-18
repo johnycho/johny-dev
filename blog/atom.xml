@@ -8,7 +8,7 @@
     <subtitle>조니의 개발 블로그 Blog</subtitle>
     <icon>https://johnycho.dev/img/favicon.png</icon>
     <entry>
-        <title type="html"><![CDATA[조회만 했는데 UPDATE가 나간다 — Hibernate 7 JSON 컬럼 dirty check 회귀]]></title>
+        <title type="html"><![CDATA[조회만 했는데 UPDATE가 나간다 — Hibernate 7 JSON 컬럼 dirty check 동작 변경]]></title>
         <id>https://johnycho.dev/blog/hibernate-json-column-phantom-update</id>
         <link href="https://johnycho.dev/blog/hibernate-json-column-phantom-update"/>
         <updated>2026-09-18T09:00:00.000Z</updated>
