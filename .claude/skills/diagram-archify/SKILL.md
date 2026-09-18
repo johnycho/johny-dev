@@ -38,12 +38,13 @@
 
 ## 레이아웃·여백 주의 (경험칙)
 
-- **위쪽 빈 띠(top padding) 방지 — IR 좌표를 위로 붙인다.** archify는 viewBox를 대략 `0 0 W H`(원점 0)로 잡으므로, 노드를 `pos:[x, 120]`처럼 아래에서 시작하면 **상단에 그만큼(예: ~90px) 빈 띠**가 생긴다. **최상단 콘텐츠(경계 라벨 포함)가 y≈0 근처**에 오도록 좌표를 올린다. 확인: 렌더된 HTML에서 `viewBox`와 `<rect y="…">` 최소값을 보면 상단 여백이 보인다(최소 y가 크면 그만큼 띄워진 것 → 전체 `pos` y를 그만큼 빼서 재렌더).
+- **위쪽 빈 띠(top padding) 방지 — IR 좌표를 위로 붙인다.** archify는 viewBox를 대략 `0 0 W H`(원점 0)로 잡으므로, 노드를 `pos:[x, 120]`처럼 아래에서 시작하면 **상단에 그만큼(예: ~90px) 빈 띠**가 생긴다. **최상단 노드/경계가 y≈0 근처**에 오도록 **전체 `pos` y를 동일하게 빼서(평행이동) 재렌더**한다 — 평행이동은 상대 배치를 바꾸지 않으므로 "배치 유지"와 상충하지 않는다(예: scm은 전체 y −60으로 viewBox 488→428).
+  - **주의**: `<rect y>` **최소값만 보면 오판**한다 — 좌상단 장식 요소가 y≈5에 있어 최소 y는 작아도, **실제 노드/영역(region)은 y≈60~90부터** 시작해 그 사이가 빈 띠일 수 있다. 최소 y가 아니라 **실제 노드/region이 시작하는 y**를 기준으로 판단한다(예매·scm처럼 최상단 노드가 아래에 있으면 그 값만큼 전체를 위로).
 - **세로 중앙정렬로 인한 상단 여백**은 [inject-embed-css.mjs](./inject-embed-css.mjs)가 처리한다 — `body{display:block}` + `.container/.diagram-container`를 `flex-start`로 상단 정렬(중앙정렬 해제). 재렌더 후 이 스크립트를 반드시 다시 돌린다.
 - **높이 무한 증가(떨림)**: archify 기본 `.container{height:100dvh}`를 주입 CSS가 `height:auto`로 해제하고, `ArchifyEmbed`는 **연속 ResizeObserver를 쓰지 않고** 로드 후 몇 번만 측정해 고정(상한 1400px)한다 — 되먹임 루프 방지.
 - **상하 여백 대칭**: iframe 높이 버퍼는 `+1px`만(위=컨테이너 패딩, 아래=컨테이너 패딩). `scrolling="no"`+overflow hidden이라 스크롤바는 안 생긴다.
 - **가로 폭 초과 → 가독성 실패**: 노드를 한 줄로 너무 많이 늘어놓으면 `composition/desktop-readability`로 검증 실패한다. **2행 스네이크 배치**(예: 위 3개 → 아래 3개 역방향)로 폭을 줄인다.
-- **임베드 아래 본문과의 간격**: iframe이 바로 아래 문단과 붙어 보이지 않도록 `ArchifyEmbed`가 **하단 여백(`margin: .5rem 0 1.75rem`)** 을 준다. 별도로 빈 줄을 넣을 필요는 없다(간격이 부족하면 컴포넌트의 margin 값을 조정).
+- **임베드 아래 본문과의 간격**: iframe이 바로 아래 문단과 붙어 보이지 않도록 `ArchifyEmbed`가 **하단 여백만(`margin: 0 0 1.75rem`)** 준다. **상단 여백은 두지 않는다**(위에 상단 margin을 주면 정적 SVG와의 사이에 불필요한 빈 공간이 생겨 "위쪽 여백" 지적이 나옴). 별도로 빈 줄을 넣을 필요는 없다(간격이 부족하면 하단 margin 값만 조정).
 
 ## 검증
 - `npm run build`(onBrokenLinks:throw로 링크 검증) 통과 확인. 산출물 `build/diagrams/<name>.html` 존재 확인. 작성·수정 후 [blog-review](../blog-review/SKILL.md).

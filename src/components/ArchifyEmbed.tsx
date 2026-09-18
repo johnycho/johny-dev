@@ -89,8 +89,8 @@ function Frame({src, title, height = '560px'}: Props) {
         borderRadius: '8px',
         display: 'block',
         overflow: 'hidden',
-        // 바로 아래 본문과 너무 붙지 않도록 하단 여백 확보
-        margin: '0.5rem 0 1.75rem',
+        // 바로 아래 본문과 너무 붙지 않도록 하단 여백만(상단 여백은 두지 않음)
+        margin: '0 0 1.75rem',
       }}
     />
   );
