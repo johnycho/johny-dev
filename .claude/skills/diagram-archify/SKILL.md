@@ -43,6 +43,7 @@
 - **높이 무한 증가(떨림)**: archify 기본 `.container{height:100dvh}`를 주입 CSS가 `height:auto`로 해제하고, `ArchifyEmbed`는 **연속 ResizeObserver를 쓰지 않고** 로드 후 몇 번만 측정해 고정(상한 1400px)한다 — 되먹임 루프 방지.
 - **상하 여백 대칭**: iframe 높이 버퍼는 `+1px`만(위=컨테이너 패딩, 아래=컨테이너 패딩). `scrolling="no"`+overflow hidden이라 스크롤바는 안 생긴다.
 - **가로 폭 초과 → 가독성 실패**: 노드를 한 줄로 너무 많이 늘어놓으면 `composition/desktop-readability`로 검증 실패한다. **2행 스네이크 배치**(예: 위 3개 → 아래 3개 역방향)로 폭을 줄인다.
+- **임베드 아래 본문과의 간격**: iframe이 바로 아래 문단과 붙어 보이지 않도록 `ArchifyEmbed`가 **하단 여백(`margin: .5rem 0 1.75rem`)** 을 준다. 별도로 빈 줄을 넣을 필요는 없다(간격이 부족하면 컴포넌트의 margin 값을 조정).
 
 ## 검증
 - `npm run build`(onBrokenLinks:throw로 링크 검증) 통과 확인. 산출물 `build/diagrams/<name>.html` 존재 확인. 작성·수정 후 [blog-review](../blog-review/SKILL.md).
