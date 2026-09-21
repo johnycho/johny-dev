@@ -4981,15 +4981,20 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
 html, body { height: auto !important; min-height: 0 !important; overflow: hidden !important; margin: 0 !important; padding: 0 !important; }
 /* body의 flex/grid 세로 중앙정렬 해제 → 위쪽 여백 넓어짐 방지(내용은 위에서 시작) */
 body { display: block !important; }
-.container { max-width: none !important; width: 100% !important; height: auto !important; min-height: 0 !important; padding: .75rem !important; gap: .5rem !important;
+.container { max-width: none !important; width: 100% !important; height: auto !important; min-height: 0 !important; padding: .5rem !important; gap: .5rem !important;
   justify-content: flex-start !important; align-items: stretch !important; }
 /* 내부 패널 박스 제거(이중 박스 방지), 배경은 body 테마색 유지. 세로는 위 정렬, 가로는 중앙 */
 .diagram-container { flex: 0 0 auto !important; min-height: 0 !important; padding: 0 !important;
   align-items: flex-start !important; justify-content: center !important;
   border: 0 !important; border-radius: 0 !important; background: transparent !important; box-shadow: none !important; }
 .diagram-container::before, .diagram-container::after { display: none !important; }
-/* 본문 폭 채우기(벡터라 확대해도 선명) */
-.diagram-container svg { width: 100% !important; max-width: none !important; height: auto !important; display: block !important; margin: 0 auto; }
+/* 본문 폭 채우기(벡터라 확대해도 선명). 넓은 그림(data-wide-diagram)도 min-width를 눌러 모바일에서 안 잘리게 */
+.diagram-container svg,
+.diagram-container[data-wide-diagram="true"] > svg,
+.diagram-container[data-wide-diagram="true"] svg {
+  width: 100% !important; max-width: none !important; min-width: 0 !important; height: auto !important; display: block !important; margin: 0 auto;
+}
+.diagram-container[data-wide-diagram="true"] { overflow: hidden !important; }
 /* cards 축소 */
 .cards { gap: .5rem !important; margin-top: .5rem !important; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important; }
 .card { padding: .55rem .7rem !important; }

@@ -1229,7 +1229,7 @@ img[alt^="PlantUML "] {
   margin: 1.5rem auto 2.5rem;
   background: #ffffff;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0.5rem;
   box-sizing: border-box;
 }
 

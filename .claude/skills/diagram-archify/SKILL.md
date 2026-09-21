@@ -23,7 +23,7 @@
    - 라벨끼리 근접 → 좌표 조정, 또는 **보조 연결은 라벨을 빼거나 연결 자체를 삭제**(경계·카드가 역할을 설명).
    - `ok ...` 나올 때까지 반복.
 4. **렌더** — `archify render architecture x.json static/diagrams/<name>.html`(자체완결 HTML).
-5. **임베드 CSS 주입(필수)** — `node .claude/skills/diagram-archify/inject-embed-css.mjs static/diagrams/<name>.html`. **archify로 재렌더할 때마다 다시 실행**(재렌더 시 주입 CSS가 사라짐). 편집 크롬 숨김·hover 흐름 유지·본문 폭 채움·단일 박스·cards 축소를 적용(멱등).
+5. **임베드 CSS 주입(필수)** — `node .claude/skills/diagram-archify/inject-embed-css.mjs static/diagrams/<name>.html`. **archify로 재렌더할 때마다 다시 실행**(재렌더 시 주입 CSS가 사라짐). 적용(멱등): 편집 크롬 숨김·hover 흐름 유지·본문 폭 채움(넓은 그림 `min-width:0`로 모바일 잘림 방지)·단일 박스·cards 축소.
    - overview-map(미니맵)이나 cards를 표시/숨김하려면 스크립트의 `HIDE` 목록에서 해당 선택자를 뺀다.
 6. **블로그 삽입** — 컴포넌트로 임베드(다크/라이트 동기화·자동 높이·단일 테두리 박스 처리):
    ```mdx
