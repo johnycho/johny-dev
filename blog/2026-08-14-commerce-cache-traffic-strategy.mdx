@@ -14,12 +14,12 @@ import {AnimatedLineChart} from '@site/src/components/blog/MonitorCharts';
 
 ## 전제 — "전량 캐싱"이 아니라 "요청 오는 것만"
 
-상품 전체를 못 담으니, 실제로는 이렇게 씁니다.
+상품 전체를 저장할 수는 없으니, 실제로는 이렇게 씁니다.
 
 - **요청 시 채우기(lazy/read-through)**: 캐시에 없으면 DB에서 읽어 캐시에 넣고 응답. 자주 조회되는 상품만 자연히 캐시에 남습니다.
 - **밀어내기(eviction)**: 메모리가 차면 `allkeys-lfu`(자주 안 쓰는 것부터) 정책으로 정리.
 
-Spring Boot(Spring Data Redis)라면 이 read-through는 `@Cacheable` 한 줄로 표현됩니다 — 캐시에 없을 때만 메서드가 실행되고 결과가 캐시에 담깁니다.
+Spring Boot(Spring Data Redis)라면 이 read-through는 `@Cacheable` 한 줄로 표현됩니다 — 캐시에 없을 때만 메서드가 실행되고 결과가 캐시에 저장됩니다.
 
 ```java
 @Cacheable(cacheNames = "product", key = "#id")

@@ -494,7 +494,7 @@ gc -> c1 : 리밸런스 시작 — C2 파티션 재배정
 
 ![PlantUML 컨슈머 그룹 리밸런싱 흐름](/img/c4/kf-rebalance.svg)
 
-리밸런싱을 **어떻게** 하느냐가 안정성을 크게 가릅니다.
+리밸런싱을 **어떻게** 하느냐가 안정성을 크게 좌우합니다.
 
 - **eager(기본, RangeAssignor 등)** — 리밸런스가 시작되면 **모든 컨슈머가 자기 파티션을 전부 반납**하고, 다시 배정받을 때까지 **전원이 멈춥니다(stop-the-world).** 멤버 하나가 잠깐 재시작해도 그룹 전체가 처리를 멈추는 게 문제입니다.
 - **cooperative-sticky(CooperativeStickyAssignor)** — **옮겨야 할 파티션만** 반납하고, 나머지는 계속 처리합니다(incremental). 리밸런스를 두 번에 나눠 하지만 전체 정지가 없어 훨씬 부드럽습니다. 협력적 리밸런싱을 쓰려면 `partition.assignment.strategy`를 이 assignor로 바꿉니다.

@@ -112,7 +112,7 @@ private List<OrderItem> items;
 
 ### ② 값 객체에 `equals`/`hashCode`
 
-제자리 수정을 허용해야 한다면, JSON에 담기는 값 객체에 `equals`/`hashCode`를 정의합니다. 스냅샷이 새 인스턴스여도 값이 같으면 동일로 판정되어 유령 UPDATE가 사라집니다.
+제자리 수정을 허용해야 한다면, JSON에 저장되는 값 객체에 `equals`/`hashCode`를 정의합니다. 스냅샷이 새 인스턴스여도 값이 같으면 동일로 판정되어 유령 UPDATE가 사라집니다.
 
 ```java
 @Override

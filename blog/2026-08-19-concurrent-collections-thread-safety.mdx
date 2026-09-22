@@ -80,7 +80,7 @@ List<Result> results = ids.stream()
 | `CopyOnWriteArrayList` | **읽기가 대부분, 쓰기가 드물 때**(쓰기마다 통째 복사라 비쌈) |
 | `Collections.synchronizedList(...)` | 리스트 전체에 락을 걸 때(간단하지만 경합 큼) |
 
-`ConcurrentLinkedQueue`는 락 없이(내부적으로 CAS로) 동시 `add`를 안전하게 처리합니다. 여러 스레드가 동시에 담아도 유실이 없고, 별도 동기화도 필요 없습니다. 다 담은 뒤 한 번에 읽어 리스트로 옮기면 됩니다.
+`ConcurrentLinkedQueue`는 락 없이(내부적으로 CAS로) 동시 `add`를 안전하게 처리합니다. 여러 스레드가 동시에 넣어도 유실이 없고, 별도 동기화도 필요 없습니다. 다 넣은 뒤 한 번에 읽어 리스트로 옮기면 됩니다.
 
 ```java
 Queue<Result> results = new ConcurrentLinkedQueue<>();
@@ -102,7 +102,7 @@ synchronized (results) {
 
 이렇게 순회를 통째로 잠그면 그 동안 모든 쓰기가 막혀 느려지고, 순회할 때마다 직접 잠가 줘야 해 번거롭습니다. <mark>그래서 값을 담기만 하고 마지막에 한 번 읽는 수집이라면, 이런 손이 가는 `synchronizedList`보다 다음이 낫습니다.</mark>
 
-- **`ConcurrentLinkedQueue`로 담기** — 직접 락을 걸 필요가 없어 담는 코드가 단순합니다.
+- **`ConcurrentLinkedQueue`로 넣기** — 직접 락을 걸 필요가 없어 넣는 코드가 단순합니다.
 - **공유 컬렉션을 아예 두지 않기** — 해결 ①처럼 각자 결과를 반환하고, 마지막에 한 스레드가 모읍니다.
 
 ## 비슷한 실수 — 람다 안의 `int[]` 카운터도 원자적이지 않다
@@ -144,7 +144,7 @@ ids.parallelStream().forEach(id -> { if (call(id).ok()) count.increment(); });
 
 ## 정리
 
-- `ArrayList`·평범한 컬렉션은 단일 스레드용 — **동시 `add`는 조용한 데이터 손실**을 부른다.
+- `ArrayList`·평범한 컬렉션은 단일 스레드용 — **동시 `add`는 조용한 데이터 손실**을 유발한다.
 - **가장 먼저 "공유를 없애라"** — 결과를 반환해 한 스레드가 모으면 문제가 사라진다.
 - 꼭 공유하면 `ConcurrentLinkedQueue`·`ConcurrentHashMap` 등 **동시성 자료구조**를.
 - 람다 안 `int[]` 카운터도 비원자 — 카운터는 `AtomicInteger`·`LongAdder`.

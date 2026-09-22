@@ -64,7 +64,7 @@ async fn handle_polling(&mut self, sender: &mpsc::Sender<...>) -> Result<(), Err
     let result = match self.fetch().await {   // ① 서버에서 가져오기
         Ok(Some(resp)) => /* JSON 파싱 */,     //    성공+새 데이터 → 문서를 result에
         Ok(None) => return Ok(()),             //    성공했지만 변경 없음 → 보낼 것 없이 종료
-        Err(e) => Err(e),                      // ② 실패해도 "에러를 result에" 담을 뿐
+        Err(e) => Err(e),                      // ② 실패해도 "에러를 result에" 저장할 뿐
     };
     sender.send(result).await                  // ③ 그 result를 소비자에게 전달
         .map_err(|_| Error::Internal("failed to send result".into()))  // ④ 전달 실패 시에만 Err
@@ -81,7 +81,7 @@ async fn handle_polling(&mut self, sender: &mpsc::Sender<...>) -> Result<(), Err
 
 ④가 왜 "클라이언트 종료일 때만"인지, 코드 흐름을 따라가 보겠습니다.
 
-- **함수가 `Err`를 반환하는 경로는 `send` 하나뿐입니다.** `handle_polling`은 결과(성공 문서 또는 에러)를 `result`에 담고, 맨 마지막에 `sender.send(result)`로 내보냅니다. 이 `send`의 성공/실패가 그대로 함수의 반환값이 됩니다. fetch·JSON 파싱 에러는 여기서 함수를 끝내지 않고 `result`에 담겨 전송될 뿐이라, 그 자체로는 함수를 `Err`로 만들지 않습니다.
+- **함수가 `Err`를 반환하는 경로는 `send` 하나뿐입니다.** `handle_polling`은 결과(성공 문서 또는 에러)를 `result`에 저장하고, 맨 마지막에 `sender.send(result)`로 내보냅니다. 이 `send`의 성공/실패가 그대로 함수의 반환값이 됩니다. fetch·JSON 파싱 에러는 여기서 함수를 끝내지 않고 `result`에 저장돼 전송될 뿐이라, 그 자체로는 함수를 `Err`로 만들지 않습니다.
 - **`send`는 수신자가 닫혔을 때만 실패합니다.** 이 채널은 용량이 정해진(bounded) 채널이라, 큐가 가득 차면 `send`는 에러를 내지 않고 **자리가 빌 때까지 대기**합니다. `send`가 `Err`를 돌려주는 유일한 조건은 **받는 쪽(수신자)이 닫혔을 때**입니다.
 - **그 수신자는 클라이언트가 종료될 때 닫힙니다.** 폴링을 시작할 때 만든 채널의 수신자를 엔진(소비자)이 들고 결과를 소비하는데, 클라이언트를 정리하면 이 수신자도 함께 사라집니다.
 
@@ -104,7 +104,7 @@ let (tx, rx) = mpsc::channel(100);
 //     따라서 rx는 클라이언트(엔진)가 정리될 때 함께 사라진다 → 그때만 send가 실패.
 ```
 
-정리하면 이렇게 갈립니다.
+정리하면 이렇게 나뉩니다.
 
 - **fetch가 에러남** → 에러는 소비자에게 전달되고, `handle_polling`은 `Ok`를 반환 → 루프는 `break` 없이 **계속 돕니다.**
 - **클라이언트가 종료됨** → `send` 실패 → `Err` 반환 → `break`. (이땐 끝나는 게 맞습니다.)

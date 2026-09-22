@@ -8,7 +8,7 @@ date: 2026-09-02T09:00:00
 
 <!-- truncate -->
 
-카프카를 쓰다 보면 "왜 이렇게 만들었지?" 싶은 지점이 있습니다. 브로커가 컨슈머 상태를 안 들고 있고, 메시지를 지우지도 않고, 디스크에 쓰는데도 빠릅니다. 이 선택들은 우연이 아니라 **2011년 원논문**([Kafka: a Distributed Messaging System for Log Processing](https://notes.stephenholiday.com/Kafka.pdf), Jay Kreps 외)에 이미 담긴 설계 원칙에서 나옵니다. 논문의 흐름(배경 → 설계 원칙 → 분산 조율 → 성능 비교 → 트레이드오프)을 따라 카프카를 만든 핵심 원칙을 하나씩 다시 정리합니다.
+카프카를 쓰다 보면 "왜 이렇게 만들었지?" 싶은 지점이 있습니다. 브로커가 컨슈머 상태를 안 들고 있고, 메시지를 지우지도 않고, 디스크에 쓰는데도 빠릅니다. 이 선택들은 우연이 아니라 **2011년 원논문**([Kafka: a Distributed Messaging System for Log Processing](https://notes.stephenholiday.com/Kafka.pdf), Jay Kreps 외)에 이미 제시된 설계 원칙에서 나옵니다. 논문의 흐름(배경 → 설계 원칙 → 분산 조율 → 성능 비교 → 트레이드오프)을 따라 카프카를 만든 핵심 원칙을 하나씩 다시 정리합니다.
 
 <mark>카프카의 설계는 "메시지 큐를 잘 만들자"가 아니라 "대량 로그를 높은 처리량으로 흘려보내자"에서 출발합니다. 그 목표가 아래 모든 선택을 설명합니다.</mark>
 

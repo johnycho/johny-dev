@@ -8,7 +8,7 @@ date: 2026-08-18T09:00:00
 
 <!-- truncate -->
 
-Spring에서 Redis를 다룰 때 흔히 두 갈래를 만납니다 — Spring Data Redis의 **`RedisTemplate`**, 그리고 별도 클라이언트인 **Redisson**. 같은 Redis를 쓰지만 결이 다릅니다. <mark>`RedisTemplate`은 Redis "명령"에 거의 1:1로 대응하는 저수준 래퍼이고, Redisson은 분산 락·컬렉션 같은 걸 "자바 객체"로 감싼 고수준 클라이언트입니다.</mark> 어떤 상황에 무엇을 고르면 좋은지 비교합니다. (자료구조 기본은 [Redis 자료구조 총정리](./redis-data-structures), 분산락 배경은 [Redis 분산락](./redis-distributed-lock) 참고)
+Spring에서 Redis를 다룰 때 흔히 두 가지를 만납니다 — Spring Data Redis의 **`RedisTemplate`**, 그리고 별도 클라이언트인 **Redisson**. 같은 Redis를 쓰지만 결이 다릅니다. <mark>`RedisTemplate`은 Redis "명령"에 거의 1:1로 대응하는 저수준 래퍼이고, Redisson은 분산 락·컬렉션 같은 걸 "자바 객체"로 감싼 고수준 클라이언트입니다.</mark> 어떤 상황에 무엇을 고르면 좋은지 비교합니다. (자료구조 기본은 [Redis 자료구조 총정리](./redis-data-structures), 분산락 배경은 [Redis 분산락](./redis-distributed-lock) 참고)
 
 ## 결론부터
 
@@ -81,7 +81,7 @@ try {
 
 ## 같은 작업, 두 방식 — ② 레이트리미터
 
-**RedisTemplate**은 `INCR` + `EXPIRE`(또는 Lua)로 카운팅 로직을 직접 짭니다. **Redisson**은 객체 하나로 끝납니다.
+**RedisTemplate**은 `INCR` + `EXPIRE`(또는 Lua)로 카운팅 로직을 직접 작성합니다. **Redisson**은 객체 하나로 끝납니다.
 
 ```java
 RRateLimiter limiter = redisson.getRateLimiter("api:rate");
