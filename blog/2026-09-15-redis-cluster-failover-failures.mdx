@@ -25,6 +25,53 @@ Redis Cluster는 데이터를 여러 마스터(샤드)에 나눠 저장하는데
 - **슬롯** = 키를 나눈 논리적 칸(16384개). **한 마스터 노드가 여러 슬롯(범위)을 담당**하고, 그 마스터의 **레플리카 노드는 같은 슬롯의 복사본**을 갖습니다. (마스터 1 + 레플리카들 = **샤드**, 한 슬롯 범위를 담당)
 - 즉 **슬롯은 논리적 구획, 노드는 실제 서버**입니다. 마스터 노드가 죽으면 그 노드가 담당하던 슬롯이 서비스되지 않고, 레플리카가 승격해야 그 슬롯을 이어받습니다.
 
+그림으로 보면 이렇습니다. 전체 16384개 슬롯을 **샤드들이 범위로 나눠** 맡고, 한 샤드는 **마스터 1대 + 레플리카(복사본)** 로 이뤄집니다.
+
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+skinparam defaultTextAlignment center
+skinparam rectangle {
+  BackgroundColor #F4F6FB
+  BorderColor #556080
+}
+title Redis Cluster — 16384 슬롯을 샤드들이 나눠 담당
+
+rectangle "전체 해시 슬롯: 0 ~ 16383 (16384칸)\n키 -> CRC16 -> 슬롯 번호" as slots #EEF3FB
+
+rectangle "샤드1 = 슬롯 0-5460 담당" as sh1 #E9F2E9 {
+  rectangle "마스터 M1\n(슬롯 원본)" as m1
+  rectangle "레플리카 R1\n(같은 슬롯 복사본)" as r1
+  m1 --> r1 : 실시간 복제
+}
+rectangle "샤드2 = 슬롯 5461-10922 담당" as sh2 #E9F2E9 {
+  rectangle "마스터 M2\n(슬롯 원본)" as m2
+  rectangle "레플리카 R2\n(같은 슬롯 복사본)" as r2
+  m2 --> r2 : 실시간 복제
+}
+rectangle "샤드3 = 슬롯 10923-16383 담당" as sh3 #E9F2E9 {
+  rectangle "마스터 M3\n(슬롯 원본)" as m3
+  rectangle "레플리카 R3\n(같은 슬롯 복사본)" as r3
+  m3 --> r3 : 실시간 복제
+}
+
+slots --> m1
+slots --> m2
+slots --> m3
+
+legend bottom
+  샤드 = 마스터 1 + 레플리카(들), 한 슬롯 범위를 담당
+  마스터가 죽으면 레플리카가 승격해 그 슬롯 범위를 이어받음
+endlegend
+@enduml
+```
+
+</details>
+
+![PlantUML Redis Cluster 슬롯·샤드·노드 관계](/img/c4/redis-cluster-slots.svg)
+
 그 밖의 규칙은 이렇습니다.
 
 - 어떤 키가 어느 슬롯에 속하는지는 **`CRC16(key) % 16384`** 로 정해집니다.

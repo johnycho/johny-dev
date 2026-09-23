@@ -118,7 +118,7 @@ G is 실행
 ## 종류별로 — 어떻게 세차하나
 
 **Serial GC** — 작업자 **한 명**이 차를 세워 놓고 혼자 세차합니다.<br />
-- 원리: GC 스레드 **하나**가 모든 작업을 합니다. Young은 살아 있는 객체만 다른 영역으로 **복사(copy)** 해 통째로 비우고, Old는 **표시(mark) → 제거(sweep) → 압축(compact)** 순으로 정리합니다. 작업 내내 앱을 멈춥니다(STW).
+- 원리: GC 스레드 **하나**가 모든 작업을 합니다. Young은 살아 있는 객체만 다른 영역으로 **복사(copy)** 한 뒤 Eden 영역을 회수하고, Old는 **마킹(mark) → 제거(sweep) → 압축(compact)** 순으로 정리합니다. 작업 내내 앱을 멈춥니다(STW).
 - 특징: 단순·가벼움. 힙이 작으면 충분. 힙이 크면 정지가 길어짐.
 - 언제: 아주 작은 앱, CLI 도구, 메모리 적은 환경.
 - 플래그: `-XX:+UseSerialGC`
@@ -128,14 +128,17 @@ G is 실행
 
 ```plantuml
 @startuml
-title Serial GC — 앱을 멈추고(STW) 스레드 1개가 정리
+title Serial GC — 앱을 멈추고(STW) 스레드 1개가 순서대로 정리
 |앱|
 start
 :실행 중 객체 생성;
 |#FFDDDD|GC · STW (스레드 1개)|
-:앱 전체 정지;
-:Young 살아있는 객체만 복사;
-:Old 표시 → 정리 → 압축;
+:Young(Eden+Survivor)\n살아 있는 객체를 복사(copy)해 Survivor/Old로 이동, Eden 비움;
+:Old\n마킹(mark) → 정리(sweep) → 압축(compact);
+note right
+  스레드 하나가 Young → Old를
+  순서대로 처리 (병렬 없음)
+end note
 |앱|
 :정지 해제 · 실행 재개;
 stop
@@ -147,21 +150,26 @@ stop
 ![PlantUML Serial GC 동작](/img/c4/pu-gc-serial.svg)
 
 **Parallel GC** — 작업자 **여러 명**이 차를 세워 놓고 **한꺼번에 빠르게** 세차합니다.<br />
-- 원리: Serial과 같은 방식(Young 복사, Old 표시-정리-압축)을 **여러 스레드가 병렬로** 처리합니다. 여전히 작업 중엔 앱을 멈추지만, 병렬이라 한 번의 정리가 빨리 끝나 **총 처리량**이 높습니다.
-- 특징: 멈추긴 하지만 **총 처리량이 가장 좋음**. 대신 한 번 멈추면 길 수 있음.
+- 원리: Serial과 같은 방식(Young 복사, Old 마킹-정리-압축)을 **멀티 스레드가 병렬로** 처리합니다. 같은 양을 나눠 처리하니 **GC에 쓰는 전체 시간이 줄어** 처리량이 높습니다. 다만 **정지 시간 상한을 목표로 잡지는 않아서**, 세대가 차면 그 세대 전체를 한 번의 STW로 수거합니다.
+- 참고: 예전(**JDK 7 업데이트 4**, 즉 `7u4`·2012년 이전)엔 **Young만 병렬**이고 Old는 단일 스레드였지만, **`7u4`부터 `-XX:+UseParallelGC`가 `UseParallelOldGC`를 함께 켜서** Young·Old를 모두 병렬로 수거합니다(Young만 병렬로 두려면 `-XX:-UseParallelOldGC`).
+- 특징: **총 처리량(GC에 쓰는 전체 시간)이 가장 좋음**. 대신 정지 시간을 목표로 잡지 않아, **큰 힙에선 한 번의 정지(특히 Full GC)가 길어질 수 있음**.
 - 언제: **지연은 상관없고 처리량이 중요한 배치**·백그라운드 작업.
 - 플래그: `-XX:+UseParallelGC`
+
+> **`JDK 7u4`란?**
+>
+> `JDK 7u4`는 "JDK 7 Update 4", 즉 **Java 7의 4번째 업데이트 릴리스**(2012년)입니다. 메이저 버전은 **7**이고 `u4`는 그 안의 **마이너 업데이트 번호**입니다. 그래서 "`7u4` 이전"은 **Java 6, 그리고 Java 7 초기(u1~u3)까지**를 가리킵니다 — 같은 Java 7이라도 업데이트 번호에 따라 기본 동작(여기선 Old 세대 병렬 여부)이 달라집니다.
 
 <details>
 <summary>PlantUML 코드</summary>
 
 ```plantuml
 @startuml
-title Parallel GC — STW 중 여러 스레드가 병렬로 정리
+title Parallel GC — STW 중 멀티 스레드가 Young·Old를 병렬로 정리
 |앱|
 start
 :실행 중 객체 생성;
-|#FFDDDD|GC · STW (여러 스레드)|
+|#FFDDDD|GC · STW (멀티 스레드)|
 fork
   :스레드1;
 fork again
@@ -171,7 +179,12 @@ fork again
 fork again
   :스레드4;
 end fork
-:병렬로 빠르게 정리;
+:Young(Eden+Survivor)\n살아 있는 객체를 복사(copy)해 Survivor/Old로 이동, Eden 비움;
+:Old\n마킹(mark) → 정리(sweep) → 압축(compact);
+note right
+  Young·Old 모두 위 멀티 스레드가
+  나눠 병렬 처리 (JDK 7u4+)
+end note
 |앱|
 :정지 해제 · 실행 재개;
 stop
@@ -183,7 +196,7 @@ stop
 ![PlantUML Parallel GC 동작](/img/c4/pu-gc-parallel.svg)
 
 **G1 GC (기본값)** — 차를 **여러 구역으로 나눠** 더러운 곳부터 조금씩 세차합니다.<br />
-- 원리: 힙을 같은 크기의 **작은 구역(region) 수천 개**로 나누고, 백그라운드에서 어느 구역에 죽은 객체가 많은지 표시합니다(concurrent marking). 그다음 **죽은 객체가 많은 구역부터(garbage first)** 골라 산 객체만 다른 구역으로 복사해 회수합니다. 한 번에 **일부 구역만** 처리해 정지 시간을 목표치(`MaxGCPauseMillis`) 안에 맞춥니다.
+- 원리: 힙을 같은 크기의 **작은 구역(region) 수천 개**로 나누고, 백그라운드에서 어느 구역에 죽은 객체가 많은지 마킹합니다(concurrent marking). 그다음 **죽은 객체가 많은 구역부터(garbage first)** 골라 살아 있는 객체만 다른 구역으로 복사해 회수합니다. 한 번에 **일부 구역만** 처리해 정지 시간을 목표치(`MaxGCPauseMillis`) 안에 맞춥니다.
 - 특징: **정지 시간과 처리량의 균형**. "정지를 이 정도로 맞춰 줘"라는 목표를 줄 수 있음.
 - 언제: **대부분의 일반 서비스**(고민되면 우선 이것).
 - 플래그: `-XX:+UseG1GC` (JDK 9부터 기본), 목표 정지 `-XX:MaxGCPauseMillis=100`
@@ -203,8 +216,8 @@ G1의 **구역(region)** 개념을 그림으로 보면 이렇습니다. 힙을 �
       O | <b>회수</b> | E | O | <b>회수</b> | .
       . | E | <b>회수</b> | O | S | <b>회수</b>
     }
-    E=Eden  S=Survivor  O=Old  .=빈 구역  |  <b>회수</b>=죽은 객체가 많아 정리할 구역
-    → 죽은 객체가 많은 구역부터 골라 산 객체만 옮기고 통째로 회수 (garbage first)
+    E=Eden  S=Survivor  O=Old  .=미사용 구역  |  <b>회수</b>=죽은 객체가 많아 정리할 구역
+    → 죽은 객체가 많은 구역부터 골라 살아 있는 객체만 옮기고 한꺼번에 회수 (garbage first)
   }
 }
 @endsalt
@@ -214,8 +227,42 @@ G1의 **구역(region)** 개념을 그림으로 보면 이렇습니다. 힙을 �
 
 ![PlantUML G1 구역(region)과 garbage first](/img/c4/pu-gc-g1-regions.svg)
 
+**G1의 동작 과정** — 크게 세 단계입니다.
+
+1. **Young GC (STW·짧음)** — Eden 구역이 가득 채워지면 발생합니다. 살아 있는 객체만 Survivor/Old 구역으로 **복사(evacuation)** 하고 Eden 영역을 회수합니다. 대부분의 회수는 여기서 끝납니다.
+2. **동시 마킹(Concurrent Marking)** — Old 사용량이 임계치(기본 45%)를 넘으면 시작합니다. **앱과 동시에** 객체 그래프를 따라가며 구역마다 **죽은 객체가 얼마나 있는지** 계산합니다. 시작·마무리에만 아주 짧은 STW(Initial Mark·Remark)가 발생하고, Cleanup에서 객체가 하나도 없는 구역은 곧바로 회수합니다.
+3. **Mixed GC (STW)** — 마킹이 끝나면 이후 Young GC가 Young 구역 + **죽은 객체가 많은 Old 구역 일부**를 **함께** 회수합니다(그래서 "mixed"). **죽은 객체가 많은 구역부터(garbage first)** 고르고, 목표 정지 시간(`MaxGCPauseMillis`, 기본 200ms) 안에 끝낼 만큼만 골라 회수합니다. G1은 예측 모델로 "몇 구역을 회수해야 목표를 지킬까"를 계산합니다.
+
+> 공간이 정말 부족하면 전체를 멈추는 **Full GC**가 실행되는데, 이건 피해야 할 상황입니다(대개 힙을 늘리거나 튜닝으로 예방).
+
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+title G1 GC 동작 흐름 — Young GC → 동시 마킹 → Mixed GC
+start
+:Eden 구역이 가득 채워짐;
+:Young GC [STW · 짧음]\n살아 있는 객체를 Survivor/Old 구역으로 복사하고 Eden 영역을 회수;
+if (Old 사용량이 임계치를 넘었나? 기본 45퍼센트) then (예)
+  :동시 마킹 Concurrent Marking 시작;
+  :Initial Mark [아주 짧은 STW];
+  :Concurrent Mark [앱과 동시]\n구역별 죽은 객체 양 계산;
+  :Remark · Cleanup [짧은 STW]\n객체 없는 구역은 즉시 회수;
+  :Mixed GC [STW]\nYoung + 죽은 객체 많은 Old 구역 일부를\n함께 회수 garbage first;
+else (아니오)
+  :Young GC만 계속 반복;
+endif
+stop
+@enduml
+```
+
+</details>
+
+![PlantUML G1 GC 동작 흐름](/img/c4/pu-gc-g1-cycle.svg)
+
 **ZGC** — 차를 거의 **세우지 않고** 달리는 중에 세차합니다.<br />
-- 원리: 표시와 객체 이동(relocation)을 **대부분 앱과 동시에(concurrent)** 진행합니다. 참조 포인터에 표식을 넣어 두고 그 참조를 **읽는 순간 위치를 바로잡는**(load barrier) 방식이라, 객체를 옮기는 도중에도 앱이 계속 돌 수 있습니다. 그래서 힙이 커져도 정지가 거의 안 늘어납니다.
+- 원리: 마킹과 객체 이동(relocation)을 **대부분 앱과 동시에(concurrent)** 진행합니다. 참조 포인터에 표식을 넣어 두고 그 참조를 **읽는 순간 위치를 바로잡는**(load barrier) 방식이라, 객체를 옮기는 도중에도 앱이 계속 돌 수 있습니다. 그래서 힙이 커져도 정지가 거의 안 늘어납니다.
 - 특징: 힙이 수십~수백 GB로 커도 **정지가 수 ms 이하**. 최신 저지연 방식.
 - 언제: **정지 시간 목표(SLO)가 엄격한** 대용량·저지연 서비스.
 - 플래그: `-XX:+UseZGC` (JDK 15 정식화. 세대 구분(generational) ZGC는 JDK 21 도입 → JDK 23부터 기본)
@@ -242,7 +289,7 @@ note over App, GC : 앱은 멈추지 않음 — 정지 수 ms 이하
 ![PlantUML ZGC 동작 — load barrier](/img/c4/pu-gc-zgc.svg)
 
 **Shenandoah** — ZGC처럼 차를 **거의 세우지 않는** 저지연 방식(OpenJDK 계열).<br />
-- 원리: 표시와 압축(compaction)을 **앱과 동시에** 수행합니다. 객체마다 이동 위치를 가리키는 전달 포인터(forwarding pointer)와 배리어를 두어, 옮기는 중에도 참조가 항상 올바른 객체를 가리키게 합니다. 접근 방식은 다르지만 목표(힙 크기와 무관한 짧은 정지)는 ZGC와 같습니다.
+- 원리: 마킹과 압축(compaction)을 **앱과 동시에** 수행합니다. 객체마다 새 위치를 가리키는 **전달 포인터(forwarding pointer)** 를 두고, 앱이 그 객체를 **읽을 때 JVM이 자동으로 끼워 넣는 검사 코드(배리어)** 가 전달 포인터를 따라가 항상 올바른(옮겨진) 객체로 연결합니다. 접근 방식은 다르지만 목표(힙 크기와 무관한 짧은 정지)는 ZGC와 같습니다.
 - 특징: 힙 크기와 무관하게 짧은 정지. ZGC의 대안.
 - 언제: 저지연이 필요하고 OpenJDK 배포판을 쓸 때.
 - 플래그: `-XX:+UseShenandoahGC`
