@@ -70,7 +70,7 @@ logging:
         node-name: pod-a1      # 어느 인스턴스에서 나온 로그인지
 ```
 
-<mark>`name`을 안 적으면 `spring.application.name`을, `version`을 안 적으면 `spring.application.version`을 자동으로 가져다 씁니다.</mark> 즉 애플리케이션 이름을 이미 설정해 뒀다면 대부분 저절로 채워집니다. (Graylog를 쓴다면 `logging.structured.gelf.host`로 이름을 지정합니다.)
+<mark>`name`을 안 적으면 `spring.application.name`을, `version`을 안 적으면 `spring.application.version`을 자동으로 가져다 씁니다.</mark> 즉 어플리케이션 이름을 이미 설정해 뒀다면 대부분 저절로 채워집니다. (Graylog를 쓴다면 `logging.structured.gelf.host`로 이름을 지정합니다.)
 
 ## 로그마다 값 하나씩 더 붙이기 — MDC와 Fluent API
 
@@ -172,7 +172,7 @@ logging:
 ## 정리
 
 - 구조적 로깅은 **3.4.0(2024-11-21)** 부터 Spring Boot 내장 — `logging.structured.format.console`/`file`에 `ecs`·`gelf`·`logstash` 중 하나만 넣으면 JSON 로그가 나갑니다.
-- 서비스 공통 항목은 `logging.structured.ecs.service.*`(이름·버전은 애플리케이션 설정을 자동 상속), 요청별 값은 **MDC**(요청 전체)와 **Fluent API**(한 줄)로 붙입니다.
+- 서비스 공통 항목은 `logging.structured.ecs.service.*`(이름·버전은 어플리케이션 설정을 자동 상속), 요청별 값은 **MDC**(요청 전체)와 **Fluent API**(한 줄)로 붙입니다.
 - 항목 구성은 `logging.structured.json.*`로 손보고, 안 맞으면 형식을 직접 만들어 클래스 이름으로 지정합니다.
 - **3.5.0(2025-05-22)** 에서 스택트레이스·컨텍스트 제어가 더해졌습니다.
 

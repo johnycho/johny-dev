@@ -22,9 +22,9 @@ date: 2026-08-18T12:00:00
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 LAYOUT_LEFT_RIGHT()
 
-Container(s1, "인스턴스 1", "애플리케이션 서버")
-Container(s2, "인스턴스 2", "애플리케이션 서버")
-Container(s3, "인스턴스 3", "애플리케이션 서버")
+Container(s1, "인스턴스 1", "어플리케이션 서버")
+Container(s2, "인스턴스 2", "어플리케이션 서버")
+Container(s3, "인스턴스 3", "어플리케이션 서버")
 ContainerDb(redis, "공유 락", "Redis 등 외부 저장소", "한 번에 하나만 임계 구역 진입")
 
 Rel(s1, redis, "락 획득 시도")
@@ -79,8 +79,8 @@ UPDATE product SET stock = stock - 1 WHERE id = ? AND stock > 0;
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 LAYOUT_LEFT_RIGHT()
 
-Container(ca, "클라이언트 A", "애플리케이션")
-Container(cb, "클라이언트 B", "애플리케이션")
+Container(ca, "클라이언트 A", "어플리케이션")
+Container(cb, "클라이언트 B", "어플리케이션")
 ContainerDb(master, "마스터", "Redis", "복제 전 다운 → 마스터 장애")
 ContainerDb(replica, "복제본 → 새 마스터", "Redis", "락 기록 없음")
 

@@ -8,7 +8,7 @@ date: 2026-08-24T09:00:00
 
 <!-- truncate -->
 
-서비스가 커지면 하나의 거대한 모듈로는 빌드가 느려지고, 계층 간 의존성이 뒤엉키며, 책임 경계가 허물어집니다. 여러 실행 서비스(API·배치·스케줄러 등)와 공통 도메인을 **한 저장소의 멀티모듈**로 관리하되, 각 도메인을 **도메인·애플리케이션·인프라 레이어**로 나누는 DDD 기반 레이어드 멀티모듈 구성을 정리합니다. DDD는 [에릭 에반스(Eric Evans)](https://www.domainlanguage.com/)가 2003년 저서 『Domain-Driven Design: Tackling Complexity in the Heart of Software』에서 정립한 접근이고, 도메인을 계층으로 나누는 레이어드 구성은 [마틴 파울러의 PoEAA](https://martinfowler.com/eaaCatalog/) 등에서도 정리된 고전적 패턴입니다.
+서비스가 커지면 하나의 거대한 모듈로는 빌드가 느려지고, 계층 간 의존성이 뒤엉키며, 책임 경계가 허물어집니다. 여러 실행 서비스(API·배치·스케줄러 등)와 공통 도메인을 **한 저장소의 멀티모듈**로 관리하되, 각 도메인을 **도메인·어플리케이션·인프라 레이어**로 나누는 DDD 기반 레이어드 멀티모듈 구성을 정리합니다. DDD는 [에릭 에반스(Eric Evans)](https://www.domainlanguage.com/)가 2003년 저서 『Domain-Driven Design: Tackling Complexity in the Heart of Software』에서 정립한 접근이고, 도메인을 계층으로 나누는 레이어드 구성은 [마틴 파울러의 PoEAA](https://martinfowler.com/eaaCatalog/) 등에서도 정리된 고전적 패턴입니다.
 
 <mark>멀티모듈은 책임·의존성 경계를 물리적으로 강제하고, 레이어드는 그 경계 안에서 의존성이 도메인 쪽으로만 향하게 만듭니다.</mark>
 

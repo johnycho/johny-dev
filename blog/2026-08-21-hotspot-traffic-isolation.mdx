@@ -222,7 +222,7 @@ LAYOUT_LEFT_RIGHT()
 
 Person(req, "요청", "채팅방 요청")
 
-System_Boundary(app, "애플리케이션") {
+System_Boundary(app, "어플리케이션") {
   Container(router, "샤드 라우터", "방 ID로 샤드 라우팅", "hash(roomId)로 샤드 결정")
   Container(pool0, "샤드 0 전용 풀", "벌크헤드", "격리된 스레드 풀")
   Container(pool1, "샤드 1 전용 풀 (핫)", "벌크헤드", "가득 차면 즉시 거절")

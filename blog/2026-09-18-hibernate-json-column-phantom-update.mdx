@@ -157,7 +157,7 @@ Hibernate가 deep-copy 방식으로 바뀐 버전(6.2 후기·6.3·6.4 이상, 7
 
 ## 곁가지 — 같은 전환에서 나온 다른 JSON 이슈
 
-원인은 다르지만 걸리는 자리가 같은(`@JdbcTypeCode(JSON)` 컬럼) 건이 하나 더 있습니다. **Spring Boot 4는 애플리케이션 JSON 라이브러리를 Jackson 3로 바꾸지만, Hibernate의 JSON 컬럼 매퍼는 여전히 Jackson 2 기반**입니다. 이 과정에서 `spring-boot-starter-web`이 `jackson-datatype-jsr310`을 더 이상 전이(transitive) 의존성으로 넘겨주지 않는 경우가 있어, JSON 컬럼 안에 `LocalDate`/`LocalDateTime`이 있으면 `Java 8 date/time type not supported`로 실패할 수 있습니다.
+원인은 다르지만 걸리는 자리가 같은(`@JdbcTypeCode(JSON)` 컬럼) 건이 하나 더 있습니다. **Spring Boot 4는 어플리케이션 JSON 라이브러리를 Jackson 3로 바꾸지만, Hibernate의 JSON 컬럼 매퍼는 여전히 Jackson 2 기반**입니다. 이 과정에서 `spring-boot-starter-web`이 `jackson-datatype-jsr310`을 더 이상 전이(transitive) 의존성으로 넘겨주지 않는 경우가 있어, JSON 컬럼 안에 `LocalDate`/`LocalDateTime`이 있으면 `Java 8 date/time type not supported`로 실패할 수 있습니다.
 
 ```gradle
 implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
