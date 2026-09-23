@@ -13,11 +13,6 @@ spring:
   permalink: /spring
   description: Spring tag description
 
-mysql:
-  label: MySQL
-  permalink: /mysql
-  description: MySQL tag description
-
 redis:
   label: Redis
   permalink: /redis
@@ -28,10 +23,10 @@ kafka:
   permalink: /kafka
   description: Kafka tag description
 
-monitoring:
-  label: 모니터링
-  permalink: /monitoring
-  description: 모니터링·관측성(로그·트레이스·메트릭) 관련 글
+operations:
+  label: 운영
+  permalink: /operations
+  description: 운영·모니터링·관측성(로그·트레이스·메트릭) 관련 글
 
 system-design:
   label: 설계
@@ -59,6 +54,6 @@ git:
   description: Git·버전 관리·브랜치 전략 관련 글
 
 database:
-  label: 데이터베이스
-  permalink: /database
+  label: DB
+  permalink: /db
   description: 관계형 DB·트랜잭션·격리 수준 등 데이터베이스 일반 관련 글
