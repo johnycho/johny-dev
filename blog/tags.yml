@@ -57,3 +57,8 @@ git:
   label: Git
   permalink: /git
   description: Git·버전 관리·브랜치 전략 관련 글
+
+database:
+  label: 데이터베이스
+  permalink: /database
+  description: 관계형 DB·트랜잭션·격리 수준 등 데이터베이스 일반 관련 글

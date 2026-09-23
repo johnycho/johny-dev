@@ -252,7 +252,7 @@ new RepositoryItemReaderBuilder<Long>()
 
 > △: `JdbcCursorItemReader`는 OFFSET이 아니라 단일 커서 스트리밍이라 스킵 자체는 없지만, 락(세 번째 열)에서 탈락합니다.
 
-표에 없는 나머지 구현체도 마찬가지입니다. `JpaCursorItemReader`·`HibernateCursorItemReader`·`StoredProcedureItemReader`(그리고 생태계의 `MyBatisCursorItemReader`)는 **커서형**이라 제약 2에, `HibernatePagingItemReader`·`MyBatisPagingItemReader`는 **페이징형**이라 제약 1에 걸립니다. 게다가 전부 쿼리를 문자열이나 매퍼 statement로 받아서 제약 3까지 그대로입니다. 즉 내장 Reader는 결국 **커서형과 페이징형 두 계열**로 나뉘는데, 커서형은 락이 안 묶이고 페이징형은 스킵이 발생하고, 어느 쪽도 이미 만든 쿼리 메서드를 그대로 부르지 못합니다.
+표에 없는 나머지 구현체도 마찬가지입니다. `JpaCursorItemReader`·`HibernateCursorItemReader`·`StoredProcedureItemReader`(그리고 생태계의 `MyBatisCursorItemReader`)는 **커서형**이라 제약 2에, `HibernatePagingItemReader`·`MyBatisPagingItemReader`는 **페이징형**이라 제약 1에 걸립니다. 또한 전부 쿼리를 문자열이나 매퍼 statement로 받아서 제약 3까지 그대로입니다. 즉 내장 Reader는 결국 **커서형과 페이징형 두 계열**로 나뉘는데, 커서형은 락이 안 묶이고 페이징형은 스킵이 발생하고, 어느 쪽도 이미 만든 쿼리 메서드를 그대로 부르지 못합니다.
 
 그러니 정확히는 "내장 Reader가 부족하다"가 아니라, <mark>키셋 커서 + 청크 트랜잭션에 묶인 락 + 기존 쿼리 재사용, 이 셋을 동시에 만족하는 내장 Reader가 없다</mark>는 것입니다.
 

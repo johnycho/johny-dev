@@ -47,7 +47,7 @@ flowchart LR
 
 이 캐시는 **힙(메모리)** 을 점유합니다. 컨텍스트 하나가 크기가 커서(DB 관련 빈을 전부 포함합니다) 여러 개 누적되면 **힙이 곧 한계를 넘어 OOM**이 발생합니다.
 
-게다가 Spring은 컨텍스트를 웬만하면 **안 버립니다**(최대 32개까지 계속 보관). <mark>한 번 만든 컨텍스트는 테스트가 끝날 때까지 캐시에 계속 남아 있습니다.</mark>
+또한 Spring은 컨텍스트를 웬만하면 **안 버립니다**(최대 32개까지 계속 보관). <mark>한 번 만든 컨텍스트는 테스트가 끝날 때까지 캐시에 계속 남아 있습니다.</mark>
 
 > **공식 문서 근거.** [컨텍스트 캐시](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/caching.html)의 기본 최대 크기는 **32**이고, 이 한계에 도달하면 **LRU(가장 오래 안 쓴 것부터)** 방식으로 오래된 컨텍스트를 닫아 제거합니다. 이 값은 JVM 시스템 프로퍼티 `spring.test.context.cache.maxSize`로 조정할 수 있습니다.
 
