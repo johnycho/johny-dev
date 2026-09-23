@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.ed53adf6.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.1cdc3f09.js" defer="defer"></script>
 <script src="/assets/js/main.e7ce9702.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -24,7 +24,7 @@
 <ul>
 <li><strong>트래픽(Traffic)</strong> — 얼마나 들어오나. 서비스 유형별로 재는 단위가 다릅니다 — 웹은 초당 요청 수(RPS), 스트리밍은 동시 세션·네트워크 I/O, DB·캐시는 초당 트랜잭션(TPS). 과부하형 장애에서는 <strong>트래픽이 나머지 셋의 선행 신호</strong>라, 스파이크를 먼저 잡으면 지연·에러·포화가 번지기 전에 손쓸 수 있습니다.</li>
 <li><strong>지연 시간(Latency)</strong> — 얼마나 느린가. 평균이 아니라 백분위수(P95/P99)로 보고(§2), <strong>성공 응답과 실패 응답의 지연을 반드시 분리</strong>합니다. 실패가 아주 빠르게 반환되면, 섞어 볼 때 전체 지연이 되레 좋아 보이는 착시가 생깁니다.</li>
-<li><strong>에러(Errors)</strong> — 얼마나 실패하나. <code>4xx</code>/<code>5xx</code> 구분을 넘어, 구글 SRE는 셋으로 나눕니다. <strong>명시적 실패</strong>(HTTP 500처럼 프로토콜 레벨 오류), <strong>묵시적 실패</strong>(200을 줬지만 내용이 틀림 — E2E 테스트·애플리케이션 레벨 검증이라야 잡힘), <strong>정책적 실패</strong>(응답은 왔지만 SLO 초과 — 예: &quot;1초 내&quot; 목표인데 1.5초). 결과가 성공이어도 <strong>비즈니스 목표 기준</strong>으로는 실패일 수 있습니다.</li>
+<li><strong>에러(Errors)</strong> — 얼마나 실패하나. <code>4xx</code>/<code>5xx</code> 구분을 넘어, 구글 SRE는 셋으로 나눕니다. <strong>명시적 실패</strong>(HTTP 500처럼 프로토콜 레벨 오류), <strong>묵시적 실패</strong>(200을 줬지만 내용이 틀림 — E2E 테스트·어플리케이션 레벨 검증이라야 잡힘), <strong>정책적 실패</strong>(응답은 왔지만 SLO 초과 — 예: &quot;1초 내&quot; 목표인데 1.5초). 결과가 성공이어도 <strong>비즈니스 목표 기준</strong>으로는 실패일 수 있습니다.</li>
 <li><strong>포화도(Saturation)</strong> — 자원이 얼마나 찼나. CPU·메모리·스레드/커넥션 풀·큐 길이·디스크 I/O·네트워크 대역폭. 많은 시스템이 <strong>100%가 되기 전에</strong> 이미 느려지므로(사용률이 오를수록 큐가 급증), CPU 80% 같은 <strong>목표 사용률</strong>을 미리 정해 그 선에서 경보합니다.</li>
 </ul>
 <p><mark>앞의 셋(트래픽·지연·에러)은 &quot;사용자의 증상&quot;, 포화도는 &quot;원인 후보&quot;입니다.</mark> 그래서 증상 셋을 먼저 읽고, 포화도·리소스로 내려가며 원인 범위를 줄입니다.</p>

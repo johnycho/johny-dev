@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.ed53adf6.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.1cdc3f09.js" defer="defer"></script>
 <script src="/assets/js/main.e7ce9702.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -53,8 +53,8 @@
 <li><strong>제로카피(zero-copy)</strong>: 보통 파일을 네트워크로 보낼 때 <strong>네 번의 복사</strong>(스토리지→페이지 캐시→앱 버퍼→커널 버퍼→소켓)와 <strong>두 번의 시스템 콜</strong>이 일어납니다. 카프카는 리눅스 <code>sendfile</code>로 앱 버퍼를 거치는 두 번의 복사를 없애, <strong>복사 2회·시스템 콜 1회</strong>로 줄입니다. CPU 사용량이 크게 낮아지고, 같은 메시지를 여러 컨슈머 그룹이 소비하는 <strong>멀티 구독</strong> 환경에서 효과가 극대화됩니다.</li>
 <li><strong>OS 페이지 캐시에 위임</strong>: 카프카는 메시지를 자체 프로세스 메모리에 캐싱하지 않고 <strong>OS 페이지 캐시</strong>에 맡깁니다. 그래서 ⑴ 이중 캐싱(더블 버퍼링)이 없고, ⑵ <strong>브로커 프로세스가 종료돼도 OS 캐시는 남아</strong> 재시작 후에도 캐시가 유지되며, ⑶ JVM 힙에 데이터를 이고 지지 않으니 <strong>GC 부담이 거의 없습니다</strong>(JVM 언어인 스칼라로 구현하고도 높은 성능을 낸 이유).</li>
 </ul>
-<p>한 가지 현재 관점의 주의: <strong>SSL/TLS</strong>를 켜면 데이터를 애플리케이션 레벨에서 암호화해야 하므로 반드시 앱 버퍼를 거쳐야 하고, 그러면 <code>sendfile</code>을 쓸 수 없어 <strong>제로카피가 제한</strong>됩니다. 암호화 구간에서는 이 최적화를 포기하는 셈입니다.</p>
-<mark>카프카는 데이터를 애플리케이션 메모리에 쌓지 않고 OS(페이지 캐시·<code>sendfile</code>)에 맡겨, 디스크 기반인데도 메모리 시스템에 가까운 처리량을 냅니다.</mark>
+<p>한 가지 현재 관점의 주의: <strong>SSL/TLS</strong>를 켜면 데이터를 어플리케이션 레벨에서 암호화해야 하므로 반드시 앱 버퍼를 거쳐야 하고, 그러면 <code>sendfile</code>을 쓸 수 없어 <strong>제로카피가 제한</strong>됩니다. 암호화 구간에서는 이 최적화를 포기하는 셈입니다.</p>
+<mark>카프카는 데이터를 어플리케이션 메모리에 쌓지 않고 OS(페이지 캐시·<code>sendfile</code>)에 맡겨, 디스크 기반인데도 메모리 시스템에 가까운 처리량을 냅니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-push가-아니라-pull--소비를-컨슈머가-주도한다">4. push가 아니라 pull — 소비를 컨슈머가 주도한다<a href="#4-push가-아니라-pull--소비를-컨슈머가-주도한다" class="hash-link" aria-label="4. push가 아니라 pull — 소비를 컨슈머가 주도한다에 대한 직접 링크" title="4. push가 아니라 pull — 소비를 컨슈머가 주도한다에 대한 직접 링크">​</a></h2>
 <p>브로커가 컨슈머에게 밀어 넣는(push) 방식이 아니라, <strong>컨슈머가 필요할 때 가져가는(pull)</strong> 방식입니다. 언뜻 사소해 보이지만 효과가 큽니다.</p>
 <ul>

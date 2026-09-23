@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.ed53adf6.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.1cdc3f09.js" defer="defer"></script>
 <script src="/assets/js/main.e7ce9702.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -36,7 +36,7 @@
 <p>특정 키(예: 인기 상품, 전역 설정)에 읽기가 집중되면, 클러스터라도 그 키가 있는 <strong>한 노드</strong>만 과부하가 됩니다. 자료구조가 아니라 <strong>분포</strong>가 문제입니다.</p>
 <p><strong>대처</strong>:</p>
 <ul>
-<li><strong>애플리케이션 로컬 캐시</strong>(짧은 TTL)로 Redis 앞단에서 흡수.</li>
+<li><strong>어플리케이션 로컬 캐시</strong>(짧은 TTL)로 Redis 앞단에서 흡수.</li>
 <li>읽기는 <strong>복제본(replica)</strong> 으로 분산.</li>
 <li>값이 잘 안 바뀌면 키를 여러 벌 복제해 분산(<code>hotkey:1</code>~<code>hotkey:N</code> 랜덤 읽기).</li>
 </ul>

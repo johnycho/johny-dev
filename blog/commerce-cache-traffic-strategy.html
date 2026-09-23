@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.ed53adf6.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.1cdc3f09.js" defer="defer"></script>
 <script src="/assets/js/main.e7ce9702.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -35,7 +35,7 @@
 <p><strong>무엇이 문제</strong>: 그 키가 캐시에 없으면 초반에 DB로 몰리고, 캐시에 올라간 뒤에도 그 키가 있는 <strong>Redis 한 노드</strong>만 과열됩니다(핫키).</p>
 <p><strong>대응</strong>:</p>
 <ul>
-<li><strong>로컬(인메모리) 캐시</strong>를 애플리케이션 서버 앞단에 둔다 — TTL 몇 초짜리라도, 서버당 그 상품 조회를 대부분 흡수합니다.</li>
+<li><strong>로컬(인메모리) 캐시</strong>를 어플리케이션 서버 앞단에 둔다 — TTL 몇 초짜리라도, 서버당 그 상품 조회를 대부분 흡수합니다.</li>
 <li><strong>요청 병합(single-flight)</strong>: 같은 상품에 대한 동시 요청을 <strong>하나로 묶어</strong> 원본 조회는 1번만 하고, 나머지는 그 결과를 공유받습니다.</li>
 <li><strong>읽기 복제본(replica)</strong> 으로 읽기를 분산.</li>
 <li>값이 잘 안 바뀌면 <strong>핫키를 여러 벌 복제</strong>해 여러 노드로 분산(<code>product:123#1</code>~<code>#N</code> 중 랜덤 읽기).</li>

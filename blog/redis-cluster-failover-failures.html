@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.ed53adf6.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.1cdc3f09.js" defer="defer"></script>
 <script src="/assets/js/main.e7ce9702.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -131,7 +131,7 @@
 <li><strong>재시도는 멱등·짧게</strong> — 일시적 <code>MOVED</code>·타임아웃은 짧은 재시도로 넘어가지만, 멱등하지 않은 쓰기의 재시도는 중복을 낳을 수 있어 신중히.</li>
 <li><strong>지표로 감시</strong> — Redis 커맨드 지연·커넥션 오류·<code>master_link_status</code>를 대시보드에 올려, failover가 실제로 매끄럽게 넘어가는지 확인합니다.</li>
 </ul>
-<mark>클라이언트 설정(토폴로지 갱신 + 짧은 타임아웃)과 애플리케이션 방어(캐시 폴백·서킷 브레이커)를 함께 갖춰야, 몇 초의 failover 창이 서비스 장애로 번지지 않습니다.</mark>
+<mark>클라이언트 설정(토폴로지 갱신 + 짧은 타임아웃)과 어플리케이션 방어(캐시 폴백·서킷 브레이커)를 함께 갖춰야, 몇 초의 failover 창이 서비스 장애로 번지지 않습니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="실무-대비-체크리스트">실무 대비 체크리스트<a href="#실무-대비-체크리스트" class="hash-link" aria-label="실무 대비 체크리스트에 대한 직접 링크" title="실무 대비 체크리스트에 대한 직접 링크">​</a></h2>
 <ul>
 <li><strong>마스터는 홀수·최소 3(권장 5), AZ에 고르게</strong> — 한 AZ 장애에도 <strong>과반 마스터</strong>가 남아 투표가 성립하게. 레플리카만 늘리는 것으로는 과반 문제가 안 풀립니다.</li>
