@@ -10,28 +10,28 @@ import {AnimatedBars} from '@site/src/components/blog/MonitorCharts';
 
 <!-- truncate -->
 
-가비지 컬렉터(GC)는 앱이 안 쓰는 객체를 대신 정리해 주는 일입니다. **앱을 달리는 자동차**에 비유하면 GC는 그 차를 **세차**하는 셈이라, 세차 방식이 여러 가지고 "차를 얼마나 세우느냐 vs 얼마나 빨리 세차하느냐"가 성능을 좌우합니다. <mark>겁먹을 필요 없이 딱 하나의 축만 기억하면 됩니다 — "세차를 빠르게 끝내기(처리량)" vs "세차하느라 차를 세우는 시간 줄이기(정지 시간)".</mark> 이 글은 이 축을 기준으로 GC 종류를 최대한 쉽게 풀어 봅니다. (실제 튜닝 상황은 [JVM 튜닝 시나리오](./jvm-tuning-scenarios) 참고)
+가비지 컬렉터(GC)는 앱이 안 쓰는 객체를 대신 정리해 주는 일입니다. **앱을 달리는 자동차**에 비유하면 GC는 그 차를 **세차**하는 셈이라, 세차 방식이 여러 가지고 "차를 얼마나 세우느냐 vs 얼마나 빨리 세차하느냐"가 성능을 좌우합니다. <mark>핵심 기준은 하나입니다 — "세차를 빠르게 끝내기(처리량)" vs "세차하느라 차를 세우는 시간 줄이기(정지 시간)".</mark> 이 글은 이 기준으로 GC 종류를 최대한 쉽게 풀어 봅니다. (실제 튜닝 상황은 [JVM 튜닝 시나리오](./jvm-tuning-scenarios) 참고)
 
 ## GC가 하는 일 — 1분 복습
 
-객체는 대부분 **금방 안 쓰게 됩니다**(잠깐 쓰고 버려지는 임시 객체가 많음). GC는 이 성질을 이용해 메모리를 두 구역으로 나눠 관리합니다.
+객체는 대부분 **생성 직후 짧게 쓰이고 버려집니다**(임시 객체가 많습니다). GC는 이 성질을 이용해 메모리를 두 구역으로 나눠 관리합니다.
 
 ```mermaid
 flowchart LR
-    N["새 객체"] --> Y["Young<br/>(막 생긴 것)"]
+    N["새 객체"] --> Y["Young<br/>(새로 생성된 객체)"]
     Y -->|Minor GC<br/>자주·빠름| X["회수"]
-    Y -->|승격| O["Old<br/>(오래된 것)"]
+    Y -->|승격| O["Old<br/>(오래 살아남은 객체)"]
     O -->|Full GC<br/>가끔·무거움| X
 ```
 
-- **Young 세차(Minor GC)** — 막 생긴 부분을 **자주, 빠르게** 세차. 대부분 여기서 끝.
-- **Old 세차(Major/Full GC)** — 오래 남은 부분까지 **가끔 크게** 세차. 무겁고 느림.
+- **Minor GC (Young 영역)** — 새로 생성된 영역을 **자주, 빠르게** 정리합니다. 대부분 여기서 끝납니다.
+- **Major/Full GC (Old 영역)** — 오래 남은 영역까지 **가끔 크게** 정리합니다. 무겁고 느립니다.
 
 <mark>"오래된 부분까지 크게 하는 Full GC"가 길어질 때가 문제라, GC 종류마다 이걸 어떻게 다루느냐가 달라집니다.</mark> 세차하려고 **달리던 차(앱)를 잠깐 세우는 것**을 **stop-the-world(STW)** 라고 부릅니다.
 
-## 핵심 축 하나 — 처리량 vs 정지 시간
+## 핵심 기준 하나 — 처리량 vs 정지 시간
 
-GC를 고르는 기준은 사실상 이 둘의 저울질입니다.
+GC를 고르는 기준은 사실상 이 둘 사이의 **트레이드오프**입니다.
 
 - **처리량(throughput)** — 같은 시간에 앱이 실제 일한 비율. GC에 시간을 적게 뺏길수록 높음.
 - **정지 시간(pause)** — 세차하느라 차(앱)가 멈추는 시간. 짧을수록 사용자가 느끼는 지연이 작음.
@@ -53,39 +53,244 @@ GC를 고르는 기준은 사실상 이 둘의 저울질입니다.
   tone="accent2"
 />
 
-<mark>둘 다 최고인 방식은 없습니다 — 처리량을 높이면 정지가 다소 길어지고, 정지를 줄이면 처리량이 약간 낮아집니다.</mark> 그래서 "내 서비스가 무엇을 더 중요하게 여기나"가 선택의 출발점입니다.
+<mark>둘을 동시에 만족하는 방식은 없습니다 — 처리량을 높이면 정지가 다소 길어지고, 정지를 줄이면 처리량이 약간 낮아집니다.</mark> 그래서 "내 서비스가 무엇을 더 중요하게 여기나"가 선택의 출발점입니다.
+
+### 정지 시간이 어떻게 다른지 — STW 타임라인
+
+같은 시간 축 위에 **앱이 도는 구간**과 **GC 때문에 멈추는 구간(정지)** 을 함께 그려 보면 방식 차이가 한눈에 보입니다.
+
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+title GC 방식별 정지(STW) 타임라인 — 실행 vs 정지(GC)
+scale 1 as 11 pixels
+concise "Serial" as S
+concise "Parallel" as P
+concise "G1" as G
+concise "ZGC/Shenandoah" as Z
+
+@0
+S is 실행
+P is 실행
+G is 실행
+Z is 실행
+@2
+G is 정지
+@3
+S is 정지
+P is 정지
+G is 실행
+@5
+G is 정지
+@6
+P is 실행
+G is 실행
+@8
+S is 실행
+G is 정지
+@9
+G is 실행
+@10
+P is 정지
+@11
+G is 정지
+@12
+G is 실행
+@13
+S is 정지
+P is 실행
+@14
+G is 정지
+@15
+G is 실행
+@16
+@enduml
+```
+
+</details>
+
+![PlantUML GC 방식별 STW(정지) 타임라인](/img/c4/pu-gc-stw-timeline.svg)
+
+<mark>Parallel은 총 정지 시간이 짧아 처리량이 유리하고, ZGC·Shenandoah는 **한 번의 정지**가 가장 짧습니다(막대가 끊기지 않고 이어짐 = 앱과 **동시에** 정리). G1은 그 사이의 균형입니다.</mark> STW 방식(Serial·Parallel·G1)은 "멈추고 → 정리 → 다시 실행"을 반복하지만, 동시(concurrent) 방식(ZGC·Shenandoah)은 앱을 멈추지 않고 GC가 나란히 돕니다.
 
 ## 종류별로 — 어떻게 세차하나
 
-**Serial GC** — 정비공 **한 명**이 차를 세워 놓고 혼자 세차합니다.<br />
-- 특징: 단순·가벼움. 힙이 작으면 충분. 힙이 크면 멈춤이 길어짐.
+**Serial GC** — 작업자 **한 명**이 차를 세워 놓고 혼자 세차합니다.<br />
+- 원리: GC 스레드 **하나**가 모든 작업을 합니다. Young은 살아 있는 객체만 다른 영역으로 **복사(copy)** 해 통째로 비우고, Old는 **표시(mark) → 제거(sweep) → 압축(compact)** 순으로 정리합니다. 작업 내내 앱을 멈춥니다(STW).
+- 특징: 단순·가벼움. 힙이 작으면 충분. 힙이 크면 정지가 길어짐.
 - 언제: 아주 작은 앱, CLI 도구, 메모리 적은 환경.
 - 플래그: `-XX:+UseSerialGC`
 
-**Parallel GC** — 정비공 **여러 명**이 차를 세워 놓고 **한꺼번에 빠르게** 세차합니다.<br />
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+title Serial GC — 앱을 멈추고(STW) 스레드 1개가 정리
+|앱|
+start
+:실행 중 객체 생성;
+|#FFDDDD|GC · STW (스레드 1개)|
+:앱 전체 정지;
+:Young 살아있는 객체만 복사;
+:Old 표시 → 정리 → 압축;
+|앱|
+:정지 해제 · 실행 재개;
+stop
+@enduml
+```
+
+</details>
+
+![PlantUML Serial GC 동작](/img/c4/pu-gc-serial.svg)
+
+**Parallel GC** — 작업자 **여러 명**이 차를 세워 놓고 **한꺼번에 빠르게** 세차합니다.<br />
+- 원리: Serial과 같은 방식(Young 복사, Old 표시-정리-압축)을 **여러 스레드가 병렬로** 처리합니다. 여전히 작업 중엔 앱을 멈추지만, 병렬이라 한 번의 정리가 빨리 끝나 **총 처리량**이 높습니다.
 - 특징: 멈추긴 하지만 **총 처리량이 가장 좋음**. 대신 한 번 멈추면 길 수 있음.
 - 언제: **지연은 상관없고 처리량이 중요한 배치**·백그라운드 작업.
 - 플래그: `-XX:+UseParallelGC`
 
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+title Parallel GC — STW 중 여러 스레드가 병렬로 정리
+|앱|
+start
+:실행 중 객체 생성;
+|#FFDDDD|GC · STW (여러 스레드)|
+fork
+  :스레드1;
+fork again
+  :스레드2;
+fork again
+  :스레드3;
+fork again
+  :스레드4;
+end fork
+:병렬로 빠르게 정리;
+|앱|
+:정지 해제 · 실행 재개;
+stop
+@enduml
+```
+
+</details>
+
+![PlantUML Parallel GC 동작](/img/c4/pu-gc-parallel.svg)
+
 **G1 GC (기본값)** — 차를 **여러 구역으로 나눠** 더러운 곳부터 조금씩 세차합니다.<br />
+- 원리: 힙을 같은 크기의 **작은 구역(region) 수천 개**로 나누고, 백그라운드에서 어느 구역에 죽은 객체가 많은지 표시합니다(concurrent marking). 그다음 **죽은 객체가 많은 구역부터(garbage first)** 골라 산 객체만 다른 구역으로 복사해 회수합니다. 한 번에 **일부 구역만** 처리해 정지 시간을 목표치(`MaxGCPauseMillis`) 안에 맞춥니다.
 - 특징: **정지 시간과 처리량의 균형**. "정지를 이 정도로 맞춰 줘"라는 목표를 줄 수 있음.
-- 언제: **대부분의 일반 서비스**(고민되면 이걸로).
+- 언제: **대부분의 일반 서비스**(고민되면 우선 이것).
 - 플래그: `-XX:+UseG1GC` (JDK 9부터 기본), 목표 정지 `-XX:MaxGCPauseMillis=100`
 
+G1의 **구역(region)** 개념을 그림으로 보면 이렇습니다. 힙을 작은 구역들로 나누고, 죽은 객체가 많은 구역부터 골라 회수합니다.
+
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startsalt
+{
+  {+
+    <b>힙을 같은 크기의 작은 구역(region)으로 나눔</b>
+    {#
+      E | O | O | . | S | E
+      O | <b>회수</b> | E | O | <b>회수</b> | .
+      . | E | <b>회수</b> | O | S | <b>회수</b>
+    }
+    E=Eden  S=Survivor  O=Old  .=빈 구역  |  <b>회수</b>=죽은 객체가 많아 정리할 구역
+    → 죽은 객체가 많은 구역부터 골라 산 객체만 옮기고 통째로 회수 (garbage first)
+  }
+}
+@endsalt
+```
+
+</details>
+
+![PlantUML G1 구역(region)과 garbage first](/img/c4/pu-gc-g1-regions.svg)
+
 **ZGC** — 차를 거의 **세우지 않고** 달리는 중에 세차합니다.<br />
+- 원리: 표시와 객체 이동(relocation)을 **대부분 앱과 동시에(concurrent)** 진행합니다. 참조 포인터에 표식을 넣어 두고 그 참조를 **읽는 순간 위치를 바로잡는**(load barrier) 방식이라, 객체를 옮기는 도중에도 앱이 계속 돌 수 있습니다. 그래서 힙이 커져도 정지가 거의 안 늘어납니다.
 - 특징: 힙이 수십~수백 GB로 커도 **정지가 수 ms 이하**. 최신 저지연 방식.
 - 언제: **정지 시간 목표(SLO)가 엄격한** 대용량·저지연 서비스.
-- 플래그: `-XX:+UseZGC` (JDK 21부터 세대 구분 방식이 기본)
+- 플래그: `-XX:+UseZGC` (JDK 15 정식화. 세대 구분(generational) ZGC는 JDK 21 도입 → JDK 23부터 기본)
+
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+title ZGC — load barrier로 이동 중에도 앱이 멈추지 않음
+participant "앱 스레드" as App
+participant "load barrier" as LB
+participant "GC 스레드" as GC
+GC -> GC : 살아있는 객체를 새 위치로 이동 (앱과 동시)
+App -> LB : 참조를 읽음
+LB -> LB : 옛 주소면 새 주소로 교정
+LB --> App : 항상 올바른 객체 반환
+note over App, GC : 앱은 멈추지 않음 — 정지 수 ms 이하
+@enduml
+```
+
+</details>
+
+![PlantUML ZGC 동작 — load barrier](/img/c4/pu-gc-zgc.svg)
 
 **Shenandoah** — ZGC처럼 차를 **거의 세우지 않는** 저지연 방식(OpenJDK 계열).<br />
+- 원리: 표시와 압축(compaction)을 **앱과 동시에** 수행합니다. 객체마다 이동 위치를 가리키는 전달 포인터(forwarding pointer)와 배리어를 두어, 옮기는 중에도 참조가 항상 올바른 객체를 가리키게 합니다. 접근 방식은 다르지만 목표(힙 크기와 무관한 짧은 정지)는 ZGC와 같습니다.
 - 특징: 힙 크기와 무관하게 짧은 정지. ZGC의 대안.
 - 언제: 저지연이 필요하고 OpenJDK 배포판을 쓸 때.
 - 플래그: `-XX:+UseShenandoahGC`
 
-**Epsilon** — **아예 세차하지 않는** 방식(세차 없음).<br />
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+title Shenandoah — forwarding pointer로 이동 중 참조 교정
+participant "앱 스레드" as App
+participant "객체 + 전달 포인터" as Obj
+participant "GC 스레드" as GC
+GC -> Obj : 새 위치로 복사하고 전달 포인터 설정 (앱과 동시)
+App -> Obj : 객체 접근
+Obj --> App : 전달 포인터 따라 새 위치로 연결
+note over App, GC : 힙 크기와 무관하게 짧은 정지
+@enduml
+```
+
+</details>
+
+![PlantUML Shenandoah 동작 — forwarding pointer](/img/c4/pu-gc-shenandoah.svg)
+
+**Epsilon** — **아예 세차하지 않는** 방식(세차 안 함).<br />
+- 원리: 메모리를 **할당만 하고 회수는 전혀 하지 않습니다.** 힙이 다 차면 그대로 종료합니다. GC 오버헤드가 0이라, 순수 실행 성능이나 할당량을 재는 실험에만 씁니다.
 - 특징: 메모리가 차면 그냥 종료. 오직 성능 측정·아주 짧게 실행되고 끝나는 작업용.
 - 언제: 벤치마크·실험. 일반 서비스엔 쓰지 않음.
 - 플래그: `-XX:+UseEpsilonGC`
+
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+title Epsilon — 회수 없이 할당만, 힙이 차면 종료
+start
+repeat
+  :객체 할당 (GC 안 함 · 오버헤드 0);
+repeat while (힙에 여유 있음?) is (예) not (아니오)
+:힙이 가득 참 → OutOfMemoryError로 종료;
+stop
+@enduml
+```
+
+</details>
+
+![PlantUML Epsilon 동작](/img/c4/pu-gc-epsilon.svg)
 
 ## 상황별로 무엇을 고를까
 
@@ -127,11 +332,11 @@ stop
 
 - **JDK 9부터 기본 GC는 G1**입니다(그 이전 기본은 Parallel). 특별한 이유 없이 옛 플래그로 Parallel을 강제하고 있지 않은지 확인하세요.
 - **ZGC/Shenandoah**는 비교적 최신이라 JDK 버전과 배포판(OpenJDK 등)을 확인해야 합니다.
-- <mark>대부분은 기본 G1로 충분하고, "정지가 목표를 깬다"가 지표로 확인될 때만 ZGC/Shenandoah로 옮기면 됩니다.</mark> 지표 보는 법은 [서버 지표 읽기](./server-monitoring-analysis).
+- <mark>대부분은 기본 G1로 충분하고, "정지가 목표치를 넘는다"가 지표로 확인될 때만 ZGC/Shenandoah로 옮기면 됩니다.</mark> 지표 보는 법은 [서버 지표 읽기](./server-monitoring-analysis).
 
 ## 정리
 
-- GC 선택은 **처리량 vs 정지 시간** 저울질 하나로 요약된다.
+- GC 선택은 **처리량 vs 정지 시간** 트레이드오프 하나로 요약된다.
 - **Serial**(작은 앱)·**Parallel**(처리량 배치)·**G1**(균형·기본)·**ZGC/Shenandoah**(저지연)·**Epsilon**(측정용).
 - 고민되면 **G1**, 지연이 중요하면 **ZGC**, 배치면 **Parallel**.
 - <mark>먼저 기본값으로 두고, 문제를 지표로 확인한 뒤 바꾸는 순서가 정답입니다.</mark>
@@ -142,9 +347,9 @@ GC가 트래픽에 밀려 나빠지는 양상은 [트래픽이 늘면 어디부�
 
 | 용어 | 쉬운 뜻 |
 |---|---|
-| Young / Old | 막 생긴 객체 구역 / 오래 살아남은 구역 |
-| Minor GC | Young을 자주·빠르게 세차 |
-| Major/Full GC | Old까지 크게 세차(무겁고 느림) |
+| Young / Old | 새로 생성된 객체 구역 / 오래 살아남은 구역 |
+| Minor GC | Young 영역을 자주·빠르게 세차 |
+| Major/Full GC | Old 영역까지 크게 세차(무겁고 느림) |
 | stop-the-world | 세차하느라 차(앱)를 잠깐 멈추는 구간 |
 | 처리량 | 같은 시간에 앱이 실제 일한 비율 |
 | 정지 시간 | 세차로 차(앱)가 멈추는 시간(짧을수록 좋음) |

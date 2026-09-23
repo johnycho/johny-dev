@@ -178,7 +178,7 @@ L = λ × W
 | `@Async` 작업이 병렬로 안 돌고 큐만 쌓임 | `queue-capacity` 유한하게 + `max-size` ↑ |
 | 비동기 작업 폭주로 메모리 위험 | 유한 큐 + `CallerRunsPolicy`(백프레셔) |
 | 스케줄 작업이 서로 밀림 | `spring.task.scheduling.pool.size` ↑ |
-| WebFlux에서 전체가 가끔 멈춤 | 블로킹 코드를 `boundedElastic`로 분리 |
+| WebFlux에서 전체가 가끔 정지 | 블로킹 코드를 `boundedElastic`로 분리 |
 
 ## 정리
 

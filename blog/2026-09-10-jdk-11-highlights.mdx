@@ -15,7 +15,7 @@ description: "JDK 8 다음 LTS인 JDK 11을 기준으로, 그 사이(9~11)에 �
 
 ## 1. 모듈 시스템 (JPMS, JEP 261 · JDK 9)
 
-JDK 9의 가장 큰 변화입니다. 그동안 클래스패스에 JAR을 늘어놓기만 하면 됐지만, **모듈 시스템(Project Jigsaw)** 은 코드 묶음의 **의존성과 공개 범위를 명시**하게 합니다. `module-info.java`로 "무엇을 필요로 하고(`requires`) 무엇을 공개하는지(`exports`)"를 선언합니다.
+JDK 9의 가장 큰 변화입니다. 그동안 클래스패스에 JAR을 나열하기만 하면 됐지만, **모듈 시스템(Project Jigsaw)** 은 코드 묶음의 **의존성과 공개 범위를 명시**하게 합니다. `module-info.java`로 "무엇을 필요로 하고(`requires`) 무엇을 공개하는지(`exports`)"를 선언합니다.
 
 ```java
 // module-info.java
