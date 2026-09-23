@@ -96,8 +96,7 @@
             <name>Johny Cho</name>
             <uri>https://github.com/johnycho</uri>
         </author>
-        <category label="데이터베이스" term="데이터베이스"/>
-        <category label="MySQL" term="MySQL"/>
+        <category label="DB" term="DB"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[Spring 트랜잭션 전파(Propagation) — 언제 새로 열리고 언제 참여하나]]></title>
@@ -160,7 +159,7 @@
             <uri>https://github.com/johnycho</uri>
         </author>
         <category label="Spring" term="Spring"/>
-        <category label="데이터베이스" term="데이터베이스"/>
+        <category label="DB" term="DB"/>
     </entry>
     <entry>
         <title type="html"><![CDATA[DB 트랜잭션 격리 수준 — 이상 현상부터 DB별 구현·스프링 적용까지]]></title>
@@ -265,7 +264,7 @@
             <name>Johny Cho</name>
             <uri>https://github.com/johnycho</uri>
         </author>
-        <category label="데이터베이스" term="데이터베이스"/>
+        <category label="DB" term="DB"/>
         <category label="Spring" term="Spring"/>
     </entry>
     <entry>
@@ -351,7 +350,7 @@
             <name>Johny Cho</name>
             <uri>https://github.com/johnycho</uri>
         </author>
-        <category label="데이터베이스" term="데이터베이스"/>
+        <category label="DB" term="DB"/>
         <category label="설계" term="설계"/>
     </entry>
     <entry>

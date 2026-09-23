@@ -93,8 +93,7 @@
 </li>
 <li>SERIALIZABLE에서는 <strong>읽기가 쓰기를 막고(대기)</strong>, <strong>읽고 나서 각자 쓰면 데드락</strong>이 납니다. 강한 일관성이 꼭 필요한 곳에만 씁니다.</li>
 </ul>]]></content:encoded>
-            <category>데이터베이스</category>
-            <category>MySQL</category>
+            <category>DB</category>
         </item>
         <item>
             <title><![CDATA[Spring 트랜잭션 전파(Propagation) — 언제 새로 열리고 언제 참여하나]]></title>
@@ -153,7 +152,7 @@
 <li>격리 수준과 함께 보려면 <a href="https://johnycho.dev/blog/db-isolation-levels">DB 트랜잭션 격리 수준</a>을 참고하세요.</li>
 </ul>]]></content:encoded>
             <category>Spring</category>
-            <category>데이터베이스</category>
+            <category>DB</category>
         </item>
         <item>
             <title><![CDATA[DB 트랜잭션 격리 수준 — 이상 현상부터 DB별 구현·스프링 적용까지]]></title>
@@ -254,7 +253,7 @@
 <li>스프링 <code>@Transactional</code>의 기본은 <strong>DB 기본값</strong>을 따르므로, 격리에 의존하는 로직은 <strong>수준을 명시</strong>한다.</li>
 <li>격리 수준으로 <strong>읽기 일관성</strong>을 잡고, <strong>동시 갱신 경합(lost update)</strong> 은 잠금으로 따로 막는다.</li>
 </ul>]]></content:encoded>
-            <category>데이터베이스</category>
+            <category>DB</category>
             <category>Spring</category>
         </item>
         <item>
@@ -336,7 +335,7 @@
 </li>
 <li>세 DB는 <strong>트랜잭션 격리 수준의 기본값과 구현</strong>도 다릅니다 — 이 주제는 별도 글에서 코드와 함께 다룹니다.</li>
 </ul>]]></content:encoded>
-            <category>데이터베이스</category>
+            <category>DB</category>
             <category>설계</category>
         </item>
         <item>
