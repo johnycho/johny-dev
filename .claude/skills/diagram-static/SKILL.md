@@ -40,6 +40,8 @@ C4 개념은 [C4 모델 글](../../../blog/2026-09-04-c4-model-architecture-diag
 - **` ```mermaid ` 코드블록**으로 그린다(ASCII 아트 금지 — 한글은 코드블록에서 2칸 폭이라 열 정렬이 깨짐). `docusaurus.config.ts`에 활성화됨(`markdown.mermaid: true`).
 - 노드 라벨 줄바꿈은 `<br/>`. 단순 화살표 한 줄(`A → B → C`)이면 굳이 그리지 않는다.
 - **`C4Context` 등 Mermaid의 C4 타입은 쓰지 않는다**(실험적이라 라벨이 겹쳐 깨짐). C4는 반드시 A의 C4-PlantUML로.
+- **git 커밋 그래프는 `gitGraph`** — Git 브랜치 흐름(분기·병합·태그)은 PlantUML로 마땅치 않으니 mermaid `gitGraph`를 쓴다. 주의: `merge`는 **양쪽 브랜치가 갈라져 있어야**(fast-forward 불가) 하므로, 독립 커밋 없이 상류를 그대로 내려받는 **환경 브랜치 승격**은 gitGraph로 표현 못 한다(그럴 땐 `flowchart` 또는 각 브랜치에 승격 커밋을 준다). `commit id:`/`tag:` 문자열엔 **공백을 넣지 않는다**(파싱 깨짐).
 
 ## 검증
-- `npm run build`로 렌더 확인. 작성·수정 후 [blog-review](../blog-review/SKILL.md)로 다이어그램 규칙(우선순위·alt 접두어·Mermaid C4 금지) 점검.
+- `npm run build`로 렌더 확인. **단, 빌드는 mermaid(특히 `gitGraph`·`flowchart`)의 문법 오류를 못 잡는다 — 브라우저에서만 깨진다.** 복잡한 mermaid는 발행 전 **Kroki로 문법 검증**한다: `curl -s -o /dev/null -w "%{http_code}" -X POST https://kroki.io/mermaid/svg --data-binary @diagram.mmd` → `200`이면 통과, `400`이면 문법 오류. (PlantUML도 동일하게 `kroki.io/plantuml/svg`로 검증 — 조건문 안 중첩 괄호 등 주의.)
+- 작성·수정 후 [blog-review](../blog-review/SKILL.md)로 다이어그램 규칙(우선순위·alt 접두어·Mermaid C4 금지) 점검.

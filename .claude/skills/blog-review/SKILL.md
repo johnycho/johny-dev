@@ -5,7 +5,7 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
 
 # 블로그 리뷰 스킬 (규칙 기반 검토·피드백)
 
-작성/수정한 게시글이 johny-dev 규칙을 지키는지 **자동 스캔 + 사람 판단**으로 검토하고, **분류별 피드백**을 준다. 규칙 원본을 먼저 읽고 그대로 기준으로 삼는다: [word-choice.md](../../wiki/word-choice.md) · [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md). 스프링/자바 동향 글이면 [spring-boot-updates.md](../../wiki/spring-boot-updates.md) 기준도 함께 본다.
+작성/수정한 게시글이 johny-dev 규칙을 지키는지 **자동 스캔 + 사람 판단**으로 검토하고, **분류별 피드백**을 준다. 규칙 원본을 먼저 읽고 그대로 기준으로 삼는다: [word-choice.md](../../wiki/word-choice.md)(단어) · [phrasing-style.md](../../wiki/phrasing-style.md)(문장·표현) · [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md). 스프링/자바 동향 글이면 [spring-boot-updates.md](../../wiki/spring-boot-updates.md) 기준도 함께 본다.
 
 ## 기본 동작
 - **검토·피드백이 기본**이다. 파일을 함부로 고치지 않는다. 수정은 리포트를 보여 준 뒤 **사용자가 원한 항목만** 적용한다.
@@ -23,6 +23,7 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
    - **볼드 렌더(필수)**: 닫는 `**`가 `)`·`]` 뒤 + 한글 조사 앞이면 CommonMark flanking 규칙상 안 닫혀 `**`가 그대로 보인다(blog-authoring 48-49절). **실행**: `grep -rnE '[)\]]\*\*[가-힣]' blog/*.mdx` — 걸리면 **괄호를 볼드 안에 둔 채 닫는 `**` 뒤에 한 칸 띄운다**(예: `**…(gloss)** 을`). 글로스를 볼드 밖으로 빼지 말 것.
    - **다이어그램 우선순위**(blog-authoring 4절): 시스템/서비스 **구조**인데 `mermaid`로 그린 게 있으면 **C4-PlantUML 권장**으로 지적. `C4Context` 등 mermaid의 C4 타입 사용 금지. 시퀀스·클래스·상태 등은 **PlantUML 우선**(Mermaid는 최후). 렌더 이미지 `alt`는 C4=`C4 `, 일반 PlantUML=`PlantUML `로 시작하는지.
    - **메서드 체이닝 정렬**(common-authoring 1절): 이어지는 `.`이 첫 줄 "마지막 호출"의 `.` 아래로 세로 정렬됐는지(문 시작 고정 들여쓰기면 위반).
+   - **문장·표현 스타일**: [phrasing-style.md](../../wiki/phrasing-style.md)의 **규칙 목록 전체를 매번 다시 읽어** 각 패턴에 걸리는 문장을 찾는다(모호한 정성 표현·모순처럼 읽히는 진술·문장 조각/명사화·부정확한 근거 링크·보충 노트 형식·위치). 단어 grep과 달리 **체크리스트를 처음부터 끝까지 훑는다**.
 
 3. **내용 검토** (읽고 판단):
    - **각도**: 이 글이 답하는 질문(주제 문장)이 분명한가. 나열식이 아니라 그 질문을 향해 전개되나.
@@ -34,8 +35,8 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
 
 4. **리포트 작성**: 위 결과를 **분류별**(지양어 / MDX·렌더 / 프론트매터·구조 / 다이어그램 / 코드 정렬 / 인용·사실 / 링크·중복 / 문장 품질)로 묶어, 각 항목에 [위치·문제·제안·심각도]를 적는다. 문제 없으면 "이상 없음"도 분류별로 밝힌다. 끝에 **"어떤 항목을 수정할까요?"** 로 마무리.
 
-5. **(선택) 수정 적용**: 사용자가 고르면 해당 항목만 고치고 `npm run build`로 검증한다. 지양어를 실제로 고쳤고 규칙에 새로 반영할 표현이면 `word-choice.md`에도 한 행 추가.
+5. **(선택) 수정 적용**: 사용자가 고르면 해당 항목만 고치고 `npm run build`로 검증한다. 규칙에 새로 반영할 게 있으면 **개별 단어는 `word-choice.md`, 문장·표현 스타일은 `phrasing-style.md`** 표에 한 행 추가.
 
 ## 참고
-- 규칙 원본: [word-choice.md](../../wiki/word-choice.md) · [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md)
+- 규칙 원본: [word-choice.md](../../wiki/word-choice.md) · [phrasing-style.md](../../wiki/phrasing-style.md) · [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md)
 - 작성 스킬: [blog-post](../blog-post/SKILL.md) · [trend-post-spring](../trend-post-spring/SKILL.md) · [trend-post-java](../trend-post-java/SKILL.md) · [trend-post-backend](../trend-post-backend/SKILL.md)
