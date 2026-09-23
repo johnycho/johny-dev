@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.102f5a83.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.13a8d5be.js" defer="defer"></script>
 <script src="/assets/js/main.56f8b069.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -84,7 +84,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="워치독의-이면--락이-안-풀려-무한-대기하는-경우">워치독의 이면 — 락이 안 풀려 무한 대기하는 경우<a href="#워치독의-이면--락이-안-풀려-무한-대기하는-경우" class="hash-link" aria-label="워치독의 이면 — 락이 안 풀려 무한 대기하는 경우에 대한 직접 링크" title="워치독의 이면 — 락이 안 풀려 무한 대기하는 경우에 대한 직접 링크">​</a></h2>
 <p>워치독은 편리하지만 주의할 점이 있습니다. <mark>워치독은 &quot;소유 프로세스가 살아 있는 한&quot; 락을 계속 연장하므로, 그 프로세스가 살아 있는 채로 멈추면 락이 영원히 안 풀립니다.</mark></p>
 <ul>
-<li><strong>소유자가 살아있는 채 멈춤</strong> — 긴 GC 정지, 비즈니스 로직 데드락, <code>unlock()</code> 누락(예외 경로에서 <code>finally</code>가 빠짐) 등. 워치독이 계속 연장 → 락 영구 점유. 이때 대기 측이 <code>lock()</code>(무한 블로킹)이면 <strong>영원히 대기</strong>합니다.</li>
+<li><strong>소유자가 살아있는 채 정지</strong> — 긴 GC 정지, 비즈니스 로직 데드락, <code>unlock()</code> 누락(예외 경로에서 <code>finally</code>가 빠짐) 등. 워치독이 계속 연장 → 락 영구 점유. 이때 대기 측이 <code>lock()</code>(무한 블로킹)이면 <strong>영원히 대기</strong>합니다.</li>
 <li><strong>소유자가 종료되면(crash)</strong> — 워치독이 멈춰 남은 lease(기본 30초)만 지나면 자동 해제됩니다. 즉 프로세스가 완전히 종료되는 건 시간 안에 자가 치유되고, <strong>&quot;종료되지 않고 멈춘&quot; 경우가 진짜 문제</strong>입니다.</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="대응">대응<a href="#대응" class="hash-link" aria-label="대응에 대한 직접 링크" title="대응에 대한 직접 링크">​</a></h3>

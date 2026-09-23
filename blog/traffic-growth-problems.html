@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.102f5a83.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.13a8d5be.js" defer="defer"></script>
 <script src="/assets/js/main.56f8b069.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -53,7 +53,7 @@ CPU가 차면 런 큐가 길어지고, 힙 압박으로 <strong>GC가 자주·�
 <p>트래픽 증가의 가장 무서운 형태는 <strong>스스로 커지는 실패</strong>입니다.</p>
 <ul>
 <li><strong>재시도 폭풍(retry storm)</strong> — 느려진 서비스에 클라이언트가 재시도하면, 그 재시도가 부하를 더 키워 더 느려지는 악순환.</li>
-<li><strong>연쇄 장애(cascading failure)</strong> — 한 컴포넌트가 느려지면 그걸 기다리는 상류가 함께 밀리고, 스레드가 묶여 옆 기능까지 멈춤.</li>
+<li><strong>연쇄 장애(cascading failure)</strong> — 한 컴포넌트가 느려지면 그걸 기다리는 상류가 함께 밀리고, 스레드가 묶여 옆 기능까지 정지.</li>
 <li><strong>동시 쇄도(thundering herd)</strong> — 캐시 만료·재시작 직후 수많은 요청이 한꺼번에 몰림.</li>
 </ul>
 <p><mark>이걸 막으려면 &quot;실패를 빨리, 국소적으로&quot; 만들어야 합니다 — 타임아웃·서킷 브레이커·백오프·로드 셰딩.</mark> 관련 개념은 <a href="/blog/fault-tolerance-high-availability">내결함성과 고가용성</a>.</p>

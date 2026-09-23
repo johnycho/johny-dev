@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.102f5a83.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.13a8d5be.js" defer="defer"></script>
 <script src="/assets/js/main.56f8b069.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -23,7 +23,7 @@
 <p>상황을 이해하려면 &quot;JVM이 메모리를 어디에 쓰는지&quot;만 알면 됩니다. <strong>집</strong>에 비유하면 쉽습니다.</p>
 <ul>
 <li><strong>힙(heap)</strong> — 물건이 쌓이는 <strong>방</strong>. 우리가 <code>new</code>로 만든 객체가 여기 놓입니다. 방이 꽉 차면 상황 2.</li>
-<li><strong>GC(가비지 컬렉션)</strong> — 안 쓰는 물건을 치워 주는 <strong>로봇 청소기</strong>. 돌리는 짧은 순간엔 방을 못 쓰는데(잠깐 문이 잠김), 이 멈춤이 <strong>stop-the-world(STW)</strong> 입니다. 이 멈춤이 길면 상황 1.</li>
+<li><strong>GC(가비지 컬렉션)</strong> — 안 쓰는 물건을 치워 주는 <strong>로봇 청소기</strong>. 돌리는 짧은 순간엔 방을 못 쓰는데(잠깐 문이 잠김), 이 정지가 <strong>stop-the-world(STW)</strong> 입니다. 이 정지가 길면 상황 1.</li>
 <li><strong>Metaspace</strong> — 물건이 아니라 그 물건의 <strong>설계도</strong>(클래스)를 보관하는 작은 책꽂이. 방과는 별개 공간이라, 설계도 종류가 계속 늘면 여기가 차서 상황 3.</li>
 <li><strong>네이티브(힙 밖) 메모리</strong> — 방 말고도 쓰는 <strong>베란다·창고</strong>(연장·상자 = 스레드 스택·버퍼 등). 집 전체 평수(=컨테이너 메모리)엔 방 + 베란다가 <strong>전부</strong> 포함돼서, 합이 넘으면 상황 4.</li>
 </ul>

@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.102f5a83.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.13a8d5be.js" defer="defer"></script>
 <script src="/assets/js/main.56f8b069.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -75,7 +75,7 @@
 <p>한 가지 주의할 점 — 이 식은 <strong>W가 일정할 때</strong> 성립합니다. 그런데 포화에 가까워지면 대기가 늘어 W(체류시간)가 스스로 커지고, 그러면 필요한 L도 함께 불어나는 악순환이 됩니다. 그래서 계산값에 딱 맞추지 말고 <strong>여유를 두고 <a href="/blog/traffic-growth-problems">임계점 곡선</a> 앞에서</strong> 잡아야 합니다.</p>
 <p>그리고 <strong>큐는 짧게</strong> 잡습니다. 큐가 길면 처리는 안 되고 지연만 쌓여, 결국 타임아웃으로 몰립니다(<a href="/blog/traffic-growth-problems">임계점 곡선</a>). 마지막으로 <mark>Tomcat 스레드 ↔ Hikari 풀 ↔ 다운스트림 한도를 한 세트로 맞춰야</mark> 한 곳만 먼저 한계에 닿는 일을 막습니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="상황별-요약">상황별 요약<a href="#상황별-요약" class="hash-link" aria-label="상황별 요약에 대한 직접 링크" title="상황별 요약에 대한 직접 링크">​</a></h2>
-<table><thead><tr><th>상황·증상</th><th>조절할 풀</th></tr></thead><tbody><tr><td>요청이 몰려 처리 스레드가 부족(IO 대기 많음)</td><td><code>server.tomcat.threads.max</code> ↑ + Hikari·다운스트림 동반</td></tr><tr><td>커넥션 얻으려 스레드가 대기·타임아웃</td><td><code>spring.datasource.hikari.maximum-pool-size</code> 조정</td></tr><tr><td><code>@Async</code> 작업이 병렬로 안 돌고 큐만 쌓임</td><td><code>queue-capacity</code> 유한하게 + <code>max-size</code> ↑</td></tr><tr><td>비동기 작업 폭주로 메모리 위험</td><td>유한 큐 + <code>CallerRunsPolicy</code>(백프레셔)</td></tr><tr><td>스케줄 작업이 서로 밀림</td><td><code>spring.task.scheduling.pool.size</code> ↑</td></tr><tr><td>WebFlux에서 전체가 가끔 멈춤</td><td>블로킹 코드를 <code>boundedElastic</code>로 분리</td></tr></tbody></table>
+<table><thead><tr><th>상황·증상</th><th>조절할 풀</th></tr></thead><tbody><tr><td>요청이 몰려 처리 스레드가 부족(IO 대기 많음)</td><td><code>server.tomcat.threads.max</code> ↑ + Hikari·다운스트림 동반</td></tr><tr><td>커넥션 얻으려 스레드가 대기·타임아웃</td><td><code>spring.datasource.hikari.maximum-pool-size</code> 조정</td></tr><tr><td><code>@Async</code> 작업이 병렬로 안 돌고 큐만 쌓임</td><td><code>queue-capacity</code> 유한하게 + <code>max-size</code> ↑</td></tr><tr><td>비동기 작업 폭주로 메모리 위험</td><td>유한 큐 + <code>CallerRunsPolicy</code>(백프레셔)</td></tr><tr><td>스케줄 작업이 서로 밀림</td><td><code>spring.task.scheduling.pool.size</code> ↑</td></tr><tr><td>WebFlux에서 전체가 가끔 정지</td><td>블로킹 코드를 <code>boundedElastic</code>로 분리</td></tr></tbody></table>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="#정리" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>
 <ul>
 <li>스프링부트엔 <strong>요청(Tomcat)·작업(@Async)·스케줄(@Scheduled)·커넥션(Hikari)</strong> 풀이 따로 있고 서로 얽힌다.</li>
