@@ -35,7 +35,7 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
 
 4. **리포트 작성**: 위 결과를 **분류별**(지양어 / MDX·렌더 / 프론트매터·구조 / 다이어그램 / 코드 정렬 / 인용·사실 / 링크·중복 / 문장 품질)로 묶어, 각 항목에 [위치·문제·제안·심각도]를 적는다. 문제 없으면 "이상 없음"도 분류별로 밝힌다. 끝에 **"어떤 항목을 수정할까요?"** 로 마무리.
 
-5. **(선택) 수정 적용**: 사용자가 고르면 해당 항목만 고치고 `npm run build`로 검증한다. 규칙에 새로 반영할 게 있으면 **개별 단어는 `word-choice.md`, 문장·표현 스타일은 `phrasing-style.md`** 표에 한 행 추가.
+5. **(선택) 수정 적용**: 사용자가 고르면 해당 항목만 고치고 `npm run build`로 검증한다. **사용자가 표현·문장을 지적하면(규칙 반영을 명시하지 않아도) 두 규칙 파일(`word-choice.md`·`phrasing-style.md`)을 모두 검토해 반드시 반영하는 것이 필수다** — 개별 단어는 `word-choice.md`, 문장·구조·톤·주체·형식은 `phrasing-style.md`(애매하면 둘 다 검토, 때로 양쪽). 고치기만 하고 규칙에 안 남기지 않는다.
 
 ## 참고
 - 규칙 원본: [word-choice.md](../../wiki/word-choice.md) · [phrasing-style.md](../../wiki/phrasing-style.md) · [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md)
