@@ -11,7 +11,8 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 │   ├── blog-authoring.md      · 게시글(.mdx) 작성 상세 규칙
 │   ├── wiki-authoring.md      · wiki 문서 작성 규칙
 │   ├── common-authoring.md    · 게시글·wiki 공통 규칙(코드 예시 스타일 등)
-│   ├── word-choice.md         · 표현·용어 순화(지양→권장 목록·예외) — 계속 늘어나 별도 관리
+│   ├── word-choice.md         · 단어 순화(지양→권장) — blog-polishing이 SSOT로 사용
+│   ├── phrasing-style.md      · 문장·문체 규칙 — blog-polishing이 SSOT로 사용
 │   ├── spring-boot-updates.md · 스프링 부트 업데이트 시리즈(3.2.0 이후) 소스·범위·주제 규칙
 │   ├── about-resume.md        · 소개 페이지(/about)·이력서 PDF 수정 규칙(단일 원천 data.ts·Rezumi 피드백·PDF 페이지 검증)
 │   ├── git-account.md         · Git 계정(johnycho) 정책
@@ -26,6 +27,7 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 │   ├── chart-canvas/SKILL.md        · 지표·추이 Canvas 애니메이션(MonitorCharts) (/chart-canvas)
 │   ├── diagram-archify/SKILL.md     · 인터랙티브 다이어그램(archify → iframe 임베드) (/diagram-archify)
 │   ├── blog-review/SKILL.md         · 작성한 글을 단어·작성·MDX·다이어그램 규칙으로 검토·피드백 (/blog-review)
+│   ├── blog-polishing/SKILL.md      · 단어·문장 규칙(SSOT)으로 글 표현을 실제로 다듬어 수정 (/blog-polishing)
 │   ├── resume-verify/SKILL.md      · 소개 페이지·이력서 PDF 수정·검증(+Rezumi 피드백·PDF 검증) (/resume-verify)
 │   └── deploy-utils/SKILL.md       · tools/johny-utils Vercel 프로덕션 배포 (/deploy-utils)
 └── hooks/                 ← 자동 검증/강제
@@ -41,6 +43,7 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 - **Java/JDK 동향 글**: `/trend-post-java` 호출 또는 "자바 최신 동향/이 JEP로 블로그" → OpenJDK JEP·Inside Java 등 1차 소스로 검증(preview/final·버전 명시) 후 작성.
 - **AI 개발 활용 동향 글**: `/trend-post-ai` 호출 또는 "AI 개발 활용 동향/클로드·코딩 에이전트로 자동화/MCP 정리" → Anthropic·OpenAI·MCP 등 **공식 소스로 검증**하고 마케팅·과장 배제, 한계·리스크까지 담아 작성.
 - **작성 후 리뷰(필수)**: `/blog-review` 호출 또는 "블로그 리뷰" → 단어·작성·MDX·다이어그램·코드 정렬·인용 규칙으로 검토·피드백(모든 작성 스킬은 완료 전 이 리뷰를 거친다).
+- **표현 다듬기**: `/blog-polishing` 호출 또는 "이 글 다듬어줘/지양어 정리/문체 통일" → 단어·문장 규칙을 SSOT로 읽어 표현을 실제로 수정(리뷰가 지적이면 이건 수정).
 - **소개 페이지·이력서 수정/검증**: `/resume-verify` 호출 또는 "소개페이지 수정/이력서 내용 바꿔/이력서 검증" → 내용은 `data.ts`만 고치고, Rezumi 피드백 반영 + PDF 페이지 오버플로 최종 확인(about-resume.md 규칙)을 필수로 거친다.
 - **규칙 확인/수정**: `wiki/` 문서를 본다. 규칙이 바뀌면 wiki를 갱신하고, 절차가 바뀌면 skill을, 자동화가 바뀌면 hook을 수정.
 - **hook**: `git commit`/`git push` 시 gh 활성 계정이 johnycho가 아니면 차단·안내(PreToolUse). `git push`가 끝나면 기본 계정 johny-cho로 자동 원복(PostToolUse). (`settings.json`에 등록)

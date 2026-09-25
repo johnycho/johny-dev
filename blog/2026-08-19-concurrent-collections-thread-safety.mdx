@@ -23,7 +23,7 @@ CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
 ## 왜 깨지나 — `ArrayList.add`는 원자적이지 않다
 
-`add(e)`는 사실 여러 단계입니다 — 대략 ① 공간이 부족하면 내부 배열을 늘리고(리사이즈) ② `elementData[size] = e` 로 넣고 ③ `size++`. 이 셋은 하나로 묶여 있지 않아, 여러 스레드가 동시에 하면 이렇게 틀어집니다.
+`add(e)`는 사실 여러 단계입니다 — 대략 ① 공간이 부족하면 내부 배열을 늘리고(리사이즈) ② `elementData[size] = e` 로 넣고 ③ `size++`. 이 셋은 하나의 원자적 동작이 아니라서, 여러 스레드가 동시에 하면 이렇게 틀어집니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -133,7 +133,7 @@ ids.parallelStream().forEach(id -> {
 | t3 | 6 씀 | | 6 |
 | t4 | | 6 씀 | 6 ← 7이어야 함 |
 
-<mark>"읽고-더하고-쓰기"가 하나로 묶이지 않아, 그 사이에 다른 스레드가 개입하면 증가가 사라지는 것</mark>입니다. 그래서 카운터는 이 세 단계를 원자적으로 묶어 주는 `AtomicInteger`(`incrementAndGet`), 고경합이면 `LongAdder`로 해야 합니다.
+<mark>"읽고-더하고-쓰기"가 하나의 원자적 동작이 아니라서, 그 사이에 다른 스레드가 개입하면 증가가 사라지는 것</mark>입니다. 그래서 카운터는 이 세 단계를 원자적으로 묶어 주는 `AtomicInteger`(`incrementAndGet`), 고경합이면 `LongAdder`로 해야 합니다.
 
 ```java
 LongAdder count = new LongAdder();

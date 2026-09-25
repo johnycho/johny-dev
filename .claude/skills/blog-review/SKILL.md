@@ -5,7 +5,14 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
 
 # 블로그 리뷰 스킬 (규칙 기반 검토·피드백)
 
-작성/수정한 게시글이 johny-dev 규칙을 지키는지 **자동 스캔 + 사람 판단**으로 검토하고, **분류별 피드백**을 준다. 규칙 원본을 먼저 읽고 그대로 기준으로 삼는다: [word-choice.md](../../wiki/word-choice.md)(단어) · [phrasing-style.md](../../wiki/phrasing-style.md)(문장·표현) · [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md). 스프링/자바 동향 글이면 [spring-boot-updates.md](../../wiki/spring-boot-updates.md) 기준도 함께 본다.
+작성/수정한 게시글이 johny-dev 규칙을 지키는지 **자동 스캔 + 사람 판단**으로 검토하고, **분류별 피드백**을 준다.
+
+- **단어·문장·문체 규칙은 [`blog-polishing` 스킬](../blog-polishing/SKILL.md)에 위임**한다(그 스킬이 규칙 원본을 SSOT로 읽어 실제 수정). 이 리뷰는 polishing을 먼저 거친 뒤(아래 "필수 선행"), **표현 외 규칙**을 자기 기준으로 검토한다.
+- 리뷰가 직접 기준으로 삼는 규칙 원본: [blog-authoring.md](../../wiki/blog-authoring.md)(작성·MDX·다이어그램·볼드 렌더) · [common-authoring.md](../../wiki/common-authoring.md)(코드 예시 스타일). 스프링/자바 동향 글이면 [spring-boot-updates.md](../../wiki/spring-boot-updates.md)도 함께 본다.
+
+## 표현·문체 수정은 blog-polishing으로 (필수 선행)
+- 이 리뷰를 시작하기 전에, **표현·단어·문체 위반은 [`blog-polishing` 스킬](../blog-polishing/SKILL.md)(`/blog-polishing`)로 먼저 다듬는다** — 그 스킬이 규칙을 SSOT로 읽어 지양어·문체(존댓말)·문장 규칙을 실제로 수정한다. **블로그 작성·리뷰 흐름에서 blog-polishing 실행은 필수**이며, 이 리뷰 스킬이 그 관문이다(모든 작성 스킬이 완료 전 blog-review를 거치므로, 여기서 polishing을 묶어 두면 자동으로 함께 실행된다).
+- 그다음 이 리뷰는 polishing이 다루지 않는 나머지(작성·MDX·다이어그램·코드 정렬·인용 정합성·구조)를 검토한다.
 
 ## 기본 동작
 - **검토·피드백이 기본**이다. 파일을 함부로 고치지 않는다. 수정은 리포트를 보여 준 뒤 **사용자가 원한 항목만** 적용한다.
@@ -16,14 +23,14 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
 1. **대상 확정**: 리뷰할 글(경로/슬러그)을 정한다. 안 주면 방금 작성/수정한 글 또는 `git status`의 변경된 `blog/*.mdx`를 대상으로 삼고, 여러 개면 사용자에게 확인.
 
 2. **자동 스캔** (기계적으로 잡히는 것부터 — **아래 grep을 실제로 실행**하고 결과를 리포트에 붙인다. 눈으로만 훑지 말 것):
-   - **지양어**: `word-choice.md` 표의 "지양" 항목·"새 항목"들을 **코드블록 밖 본문**에서 찾는다(예: `함정`·`태초`·`어긋`·`무너`·`치솟`·`꼬리`·`좁히/좁혀`·`가늠`·`흩`·`마법`·`연대기`·`꿰`·`얹히`·`덩어리`·`돌다(실행 뜻)`·`값어치`·`반갑`·`한 축을 잡`·`변주로 읽` 등 **표 전체를 매번 다시 읽어** 최신 항목까지). `되돌리다`(롤백)는 예외. 걸리면 권장 표현을 제시.
+   - **지양어·문장·문체**: [`blog-polishing` 스킬](../blog-polishing/SKILL.md)이 담당한다(규칙 전체 대조·수정). 이 리뷰에서는 polishing을 이미 거쳤는지 확인하고, **남은 지양어가 있으면 polishing 재실행**을 지적한다(여기서 규칙 표를 다시 나열하지 않는다).
    - **금지어(메모리 규칙)**: `joylangcenter`·`함정` 등장 여부(필수).
    - **MDX 위험**: 코드블록(``` ```) **밖** 본문의 raw `<태그`·`{`·`}`(`<mark>`·`<br />` 제외) → JSX 해석으로 빌드 깨짐(필수).
    - **프론트매터/구조**: `slug`·`title`(특수문자 시 따옴표)·`authors: [ johnycho ]`·`tags`(전부 `blog/tags.yml` 등록분)·`date` 존재. `<!-- truncate -->` 위치. 첫머리 여백/H1 중복 없음. 메타·연재 프레이밍("…시리즈입니다" 등) 없음.
    - **볼드 렌더(필수)**: 닫는 `**`가 `)`·`]` 뒤 + 한글 조사 앞이면 CommonMark flanking 규칙상 안 닫혀 `**`가 그대로 보인다(blog-authoring 48-49절). **실행**: `grep -rnE '[)\]]\*\*[가-힣]' blog/*.mdx` — 걸리면 **괄호를 볼드 안에 둔 채 닫는 `**` 뒤에 한 칸 띄운다**(예: `**…(gloss)** 을`). 글로스를 볼드 밖으로 빼지 말 것.
    - **다이어그램 우선순위**(blog-authoring 4절): 시스템/서비스 **구조**인데 `mermaid`로 그린 게 있으면 **C4-PlantUML 권장**으로 지적. `C4Context` 등 mermaid의 C4 타입 사용 금지. 시퀀스·클래스·상태 등은 **PlantUML 우선**(Mermaid는 최후). 렌더 이미지 `alt`는 C4=`C4 `, 일반 PlantUML=`PlantUML `로 시작하는지.
    - **메서드 체이닝 정렬**(common-authoring 1절): 이어지는 `.`이 첫 줄 "마지막 호출"의 `.` 아래로 세로 정렬됐는지(문 시작 고정 들여쓰기면 위반).
-   - **문장·표현 스타일**: [phrasing-style.md](../../wiki/phrasing-style.md)의 **규칙 목록 전체를 매번 다시 읽어** 각 패턴에 걸리는 문장을 찾는다(모호한 정성 표현·모순처럼 읽히는 진술·문장 조각/명사화·부정확한 근거 링크·보충 노트 형식·위치). 단어 grep과 달리 **체크리스트를 처음부터 끝까지 훑는다**.
+   - (문장·표현 스타일은 `blog-polishing`이 처리 — 위 "필수 선행" 참고. 여기서 중복 스캔하지 않는다.)
 
 3. **내용 검토** (읽고 판단):
    - **각도**: 이 글이 답하는 질문(주제 문장)이 분명한가. 나열식이 아니라 그 질문을 향해 전개되나.
@@ -31,12 +38,12 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
    - **인용·사실 정합성**: 버전·수치·동작 단언에 근거가 있나(1차 소스). "최신" 대신 버전·날짜. preview/정식 구분(자바) 명시. 인용은 뒷받침하는 것만.
    - **섹션 핵심 강조**: 섹션당 `<mark>` 대략 1개(남용/누락 점검).
    - **상호 링크·중복**: 이미 다른 글에서 설명한 개념을 다시 풀지 않고 링크했는가. 저장소 전체와 주제 중복은 없나.
-   - **문장 품질**: 구어·문어·종교적/극적 과장(word-choice 지양 톤), 반복, 모호한 수식, 어색한 비유(일회성 장식 비유 지양). 개수 나열은 "세 가지"·리스트로.
+   - **문장 품질**: (구어·과장·비유·나열 등 표현 품질은 blog-polishing이 다룸.) 여기서는 논지 전개·중복 서술·사실 정합 등 내용 차원만 본다.
 
 4. **리포트 작성**: 위 결과를 **분류별**(지양어 / MDX·렌더 / 프론트매터·구조 / 다이어그램 / 코드 정렬 / 인용·사실 / 링크·중복 / 문장 품질)로 묶어, 각 항목에 [위치·문제·제안·심각도]를 적는다. 문제 없으면 "이상 없음"도 분류별로 밝힌다. 끝에 **"어떤 항목을 수정할까요?"** 로 마무리.
 
-5. **(선택) 수정 적용**: 사용자가 고르면 해당 항목만 고치고 `npm run build`로 검증한다. **사용자가 표현·문장을 지적하면(규칙 반영을 명시하지 않아도) 두 규칙 파일(`word-choice.md`·`phrasing-style.md`)을 모두 검토해 반드시 반영하는 것이 필수다** — 개별 단어는 `word-choice.md`, 문장·구조·톤·주체·형식은 `phrasing-style.md`(애매하면 둘 다 검토, 때로 양쪽). 고치기만 하고 규칙에 안 남기지 않는다.
+5. **(선택) 수정 적용**: 사용자가 고르면 해당 항목만 고치고 `npm run build`로 검증한다. **표현·문장을 지적받아 규칙에 새로 반영해야 하면 [`blog-polishing` 스킬](../blog-polishing/SKILL.md) 절차를 따른다**(그 스킬이 규칙 파일을 SSOT로 관리·갱신하고 기존 글을 스윕). 고치기만 하고 규칙에 안 남기지 않는다.
 
 ## 참고
-- 규칙 원본: [word-choice.md](../../wiki/word-choice.md) · [phrasing-style.md](../../wiki/phrasing-style.md) · [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md)
+- 규칙 원본: [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md) (단어·문장 규칙은 [`blog-polishing` 스킬](../blog-polishing/SKILL.md)이 SSOT로 관리)
 - 작성 스킬: [blog-post](../blog-post/SKILL.md) · [trend-post-spring](../trend-post-spring/SKILL.md) · [trend-post-java](../trend-post-java/SKILL.md) · [trend-post-backend](../trend-post-backend/SKILL.md)

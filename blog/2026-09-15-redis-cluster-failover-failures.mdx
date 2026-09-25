@@ -269,13 +269,13 @@ var topologyRefresh = ClusterTopologyRefreshOptions.builder()
         .build();
 ```
 
-**"failover 되려면 AWS wrapper를 써야 하나?"** — Redis/Valkey에는 Aurora용 **AWS Advanced JDBC Wrapper** 같은 별도 드라이버가 필요하지 않습니다. ElastiCache에서 failover가 매끄럽게 되게 하려면 **표준 Lettuce를 AWS 권장 설정대로** 구성하면 됩니다(토폴로지 갱신 켜기, seed 노드 여럿, `dynamicRefreshSources`). 한 가지 더:
+**"failover 되려면 AWS wrapper를 써야 하나?"** — Redis/Valkey에는 Aurora용 **AWS Advanced JDBC Wrapper** 같은 별도 드라이버가 필요하지 않습니다. ElastiCache에서 failover가 매끄럽게 되게 하려면 **표준 Lettuce를 AWS 권장 설정대로** 구성하면 됩니다(토폴로지 갱신 활성화, seed 노드 여럿, `dynamicRefreshSources`). 한 가지 더:
 
 - **클러스터 모드 비활성**(단일 프라이머리 + 레플리카)이면, failover 시 **프라이머리 엔드포인트의 DNS**가 새 노드를 가리키도록 바뀝니다. 이때 JVM의 DNS 캐시 TTL(`networkaddress.cache.ttl`)이 길면 옛 노드로 계속 접속합니다 — TTL을 짧게 둬야 새 프라이머리로 재접속합니다. 강등된 옛 프라이머리에 쓰기가 가서 `READONLY`가 지속되면 `LettuceConnectionFactory#resetConnection()`으로 커넥션을 리셋하는 대응이 알려져 있습니다.
 
-<mark>서버가 failover해도 클라이언트가 토폴로지를 갱신하지 않으면 장애는 계속됩니다 — Lettuce의 토폴로지 갱신(주기 + 적응형)을 켜는 것이 Spring + Redis 클러스터 운영의 사실상 필수 설정입니다.</mark>
+<mark>서버가 failover해도 클라이언트가 토폴로지를 갱신하지 않으면 장애는 계속됩니다 — Lettuce의 토폴로지 갱신(주기 + 적응형)을 활성화하는 것이 Spring + Redis 클러스터 운영의 사실상 필수 설정입니다.</mark>
 
-토폴로지 갱신을 켜는 것 외에도, 앱이 **failover 창**(승격까지 걸리는 몇 초)을 견디게 하는 대응을 함께 갖춥니다.
+토폴로지 갱신을 활성화하는 것 외에도, 앱이 **failover 창**(승격까지 걸리는 몇 초)을 견디게 하는 대응을 함께 갖춥니다.
 
 - **타임아웃을 짧고 명확하게** — 커맨드 타임아웃이 없거나 길면, 중단된 노드의 응답을 오래 기다리며 요청 스레드가 묶여 [외부 지연이 서버 전체를 멈춘](./external-api-timeout-server-hang) 것과 같은 연쇄가 납니다. `spring.data.redis.timeout`(커맨드)과 커넥트 타임아웃을 짧게 잡아 **빨리 실패**하게 합니다.
 
@@ -322,7 +322,7 @@ class CacheConfig implements CachingConfigurer {
 - **`cluster-require-full-coverage`를 의식적으로 선택** — 부분 장애가 전면 장애로 번지는 게 더 나쁘면 `no`. 정합성이 우선이면 `yes`(기본).
 - **복제 지연을 모니터링** — `validity-factor`에 걸릴 만큼 뒤처진 레플리카는 승격 못 한다. 복제 랙·`master_link_status`를 감시.
 - **`node-timeout`을 네트워크에 맞게** — 클라우드 멀티 AZ면 너무 짧게 잡아 false failover가 나지 않게.
-- **클라이언트 토폴로지 갱신을 켠다** — Lettuce는 기본이 꺼져 있다. `spring.data.redis.lettuce.cluster.refresh.adaptive=true` + 주기 갱신을 설정해, 서버 failover를 앱이 따라가게 한다. ElastiCache 단일 프라이머리면 JVM DNS TTL도 짧게.
+- **클라이언트 토폴로지 갱신을 활성화한다** — Lettuce는 기본이 꺼져 있다. `spring.data.redis.lettuce.cluster.refresh.adaptive=true` + 주기 갱신을 설정해, 서버 failover를 앱이 따라가게 한다. ElastiCache 단일 프라이머리면 JVM DNS TTL도 짧게.
 - **failover를 실제로 테스트** — 마스터를 중단시켜 보고 승격 시간·CLUSTERDOWN 여부·**앱이 새 노드로 붙는지**를 확인(카오스 테스트). 설정이 의도대로 동작하는지는 중단시켜 봐야 안다.
 - **버전·매니지드 동작 확인** — 특정 버전의 승격 버그, 매니지드(ElastiCache 등)의 자체 failover 정책은 문서·릴리스 노트로 확인.
 

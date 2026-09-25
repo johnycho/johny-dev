@@ -4,7 +4,7 @@ title: "쿠버네티스는 무엇으로 이루어지나 — 컨트롤 플레인�
 authors: [ johnycho ]
 tags: [ architecture, system-design ]
 date: 2026-09-16T12:00:00
-description: "쿠버네티스 지식이 거의 없어도 이해하도록, 클러스터의 구성 요소를 그림으로 정리합니다 — 컨트롤 플레인(API 서버·etcd·스케줄러·컨트롤러 매니저)과 워커 노드(kubelet·컨테이너 런타임·kube-proxy)가 각각 무슨 일을 하고, 배포 요청 한 번이 어떻게 흐르는지."
+description: "쿠버네티스 지식이 거의 없어도 이해하도록, 클러스터의 구성 요소를 그림으로 정리합니다 — 컨트롤 플레인(API 서버·etcd·스케줄러·컨트롤러 매니저)과 워커 노드(kubelet·컨테이너 런타임·kube-proxy)가 각각 무슨 일을 하고, 배포 요청 한 번이 어떻게 처리되는지."
 ---
 
 <!-- truncate -->
@@ -140,7 +140,7 @@ spec:
       secretName: shop-tls
 ```
 
-구성 요소 관점의 핵심은, **Ingress 자체는 규칙일 뿐**이고 실제 처리는 **Ingress Controller**(nginx·AWS Load Balancer Controller 등)가 맡는다는 점입니다 — 이 컨트롤러는 별도 부품이 아니라 **워커 노드 위에서 파드로 실행되어** Ingress 규칙을 읽어 L7 라우팅을 수행합니다. 그 아래에서 kube-proxy가 **Service → 파드(L4)** 를 처리하므로, 외부 트래픽은 `Ingress Controller(파드) → Service → 파드` 순으로 흐릅니다.
+구성 요소 관점의 핵심은, **Ingress 자체는 규칙일 뿐**이고 실제 처리는 **Ingress Controller**(nginx·AWS Load Balancer Controller 등)가 맡는다는 점입니다 — 이 컨트롤러는 별도 부품이 아니라 **워커 노드 위에서 파드로 실행되어** Ingress 규칙을 읽어 L7 라우팅을 수행합니다. 그 아래에서 kube-proxy가 **Service → 파드(L4)** 를 처리하므로, 외부 트래픽은 `Ingress Controller(파드) → Service → 파드` 순으로 전달됩니다.
 
 <mark>Service는 L4(포트 단위 파드 부하 분산), Ingress는 L7(도메인·경로 라우팅 + TLS 종료)입니다 — Ingress는 규칙일 뿐이라, 이를 실행하는 Ingress Controller(파드)가 있어야 실제로 동작합니다.</mark>
 
@@ -160,7 +160,7 @@ spec:
 
 즉 **부품(API 서버·스케줄러·kubelet…)이 일을 하고, 오브젝트(Deployment·Pod…)는 그 일의 대상**입니다.
 
-## 배포 요청 한 번이 흐르는 과정
+## 배포 요청 한 번이 처리되는 과정
 
 부품들이 어떻게 협업하는지, `kubectl apply`로 파드 하나를 기동시키는 과정으로 따라가 봅니다.
 
@@ -206,7 +206,7 @@ kubelet -> api : 상태 보고 (Running)
 - **컨트롤 플레인**: **API 서버**(모든 요청의 관문) · **etcd**(모든 상태 저장) · **스케줄러**(파드를 어느 노드에) · **컨트롤러 매니저**(원하는 상태 유지 루프).
 - **워커 노드**: **kubelet**(파드 실행 감독) · **컨테이너 런타임**(실제 실행, containerd 등) · **kube-proxy**(서비스 네트워킹).
 - **오브젝트**(Pod·Deployment·Service)는 부품들이 다루는 **대상**이다.
-- 배포는 **API 서버 → etcd → 스케줄러 → kubelet → 런타임** 으로 흐르고, 모든 소통은 API 서버를 통한다.
+- 배포는 **API 서버 → etcd → 스케줄러 → kubelet → 런타임** 으로 이어지고, 모든 소통은 API 서버를 통한다.
 
 <mark>쿠버네티스는 저절로 되는 게 아니라 "역할을 나눈 부품들이 API 서버를 통해 원하는 상태를 맞추는" 구조입니다 — 각 부품이 무슨 일을 하는지 알면, 장애를 진단할 때 어디를 봐야 할지도 보입니다.</mark>
 

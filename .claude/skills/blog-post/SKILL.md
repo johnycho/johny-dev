@@ -33,7 +33,7 @@ description: 마크다운 초안(예: ~/Downloads/*.md)이나 주제를 johny-de
 
 6. **MDX 위험 스캔** (wiki 3절): 코드블록 **밖** 본문에 raw `{` `}` `<태그`(단 `<mark>`,`<br />` 제외)가 없는지 확인. 있으면 이스케이프. 코드블록 안은 그대로 둔다.
 
-6-1. **규칙 전체 대조**: [word-choice.md](../../wiki/word-choice.md)(개별 단어)와 [phrasing-style.md](../../wiki/phrasing-style.md)(문장·표현) **두 파일의 목록 전체**를 대조한다. 단어는 표 좌열을 통째로 grep하고, 문장·표현은 체크리스트를 처음부터 끝까지 훑는다(각 파일 "검사 방법" 참고). 즉석에서 떠오르는 일부만 확인하지 말 것.
+6-1. **표현 다듬기**: [`blog-polishing` 스킬](../blog-polishing/SKILL.md)(`/blog-polishing`)로 단어·문장·문체 규칙을 대조·수정한다(그 스킬이 규칙을 SSOT로 관리). 즉석에서 떠오르는 일부만 확인하지 말 것.
 
 7. **검증**: `npm run build` 로 MDX 컴파일 확인. 필요 시 `npm start` 로 렌더 확인.
 

@@ -286,7 +286,7 @@ ThreadPoolBulkheadConfig config = ThreadPoolBulkheadConfig.custom()
 ThreadPoolBulkhead bulkhead = ThreadPoolBulkhead.of("shard-" + shardId, config);
 ```
 
-서킷 브레이커도 마찬가지로 **샤드별 인스턴스**로 두는 것이 핵심입니다. 핫 샤드 하나가 느려졌다고 전체 서킷이 열리면 멀쩡한 샤드까지 막히기 때문입니다. 실패율이 임곗값을 넘으면 그 샤드 호출만 잠시 끊고(OPEN), 일정 시간 뒤 소량만 시험 삼아 흘려보내(HALF_OPEN) 회복됐는지 확인합니다.
+서킷 브레이커도 마찬가지로 **샤드별 인스턴스**로 두는 것이 핵심입니다. 핫 샤드 하나가 느려졌다고 전체 서킷이 열리면 멀쩡한 샤드까지 막히기 때문입니다. 실패율이 임곗값을 넘으면 그 샤드 호출만 잠시 끊고(OPEN), 일정 시간 뒤 소량만 시험 삼아 통과시켜(HALF_OPEN) 회복됐는지 확인합니다.
 
 ```java
 CircuitBreakerConfig config = CircuitBreakerConfig.custom()

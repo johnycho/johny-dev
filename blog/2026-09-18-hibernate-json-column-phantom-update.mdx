@@ -137,7 +137,7 @@ public int hashCode() {
 
 원인을 없앤 뒤, 재발과 파급을 줄이는 두 가지를 같이 봅니다.
 
-- **읽기 경로는 `@Transactional(readOnly = true)`로.** 읽기만 하는 메서드가 쓰기 트랜잭션에 묶여 있으면 flush가 일어나 이 부류의 문제에 노출됩니다. readOnly면 flush 자체가 없어 유령 UPDATE가 원천 차단됩니다. (이력 INSERT 하나 때문에 클래스 전체 `@Transactional`이 풀려 있었다면, 그 메서드만 분리하는 게 낫습니다.)
+- **읽기 경로는 `@Transactional(readOnly = true)`로.** 읽기만 하는 메서드가 쓰기 트랜잭션에 포함돼 있으면 flush가 일어나 이 부류의 문제에 노출됩니다. readOnly면 flush 자체가 없어 유령 UPDATE가 원천 차단됩니다. (이력 INSERT 하나 때문에 클래스 전체 `@Transactional`이 풀려 있었다면, 그 메서드만 분리하는 게 낫습니다.)
 - **낙관적 락 재시도.** 정당한 경합은 언제든 생깁니다. 쓰기 경로에 `@Retryable(OptimisticLockingFailureException.class)` 같은 재시도를 두면, 진짜 경합이 예외로 그대로 올라오는 것을 막습니다.
 
 ## 점검 — 내 서비스도 해당되는가

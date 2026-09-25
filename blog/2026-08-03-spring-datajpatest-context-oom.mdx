@@ -139,7 +139,7 @@ class SampleQueryRepositoryTest { ... }
 
 ### 4-1. 컨텍스트가 몇 개 누적되는지 보이게 만들기
 
-Spring에는 이 "컨텍스트 캐시" 상태를 출력하는 로그가 숨어 있습니다. 공식 문서도 로거 `org.springframework.test.context.cache`의 레벨을 `DEBUG`로 두면 캐시 통계를 볼 수 있다고 안내합니다([Context Caching](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/caching.html)). 로그 설정 하나(`logback-test.xml`)로 켜기만 하면 됩니다:
+Spring에는 이 "컨텍스트 캐시" 상태를 출력하는 로그가 숨어 있습니다. 공식 문서도 로거 `org.springframework.test.context.cache`의 레벨을 `DEBUG`로 두면 캐시 통계를 볼 수 있다고 안내합니다([Context Caching](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/caching.html)). 로그 설정 하나(`logback-test.xml`)로 활성화하기만 하면 됩니다:
 
 ```xml
 <configuration>
@@ -185,7 +185,7 @@ xychart-beta
 
 > [`@DirtiesContext`](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/dirtying.html)가 붙은 테스트는 끝난 뒤 해당 컨텍스트를 캐시에서 제거·종료하고, 이후 같은 설정이 다시 필요하면 새로 만듭니다(그래서 `missCount`만 늘어납니다).
 
-> 컨텍스트 하나가 정확히 몇 MB인지까지 보고 싶다면, 테스트에 힙덤프 옵션(`-XX:+HeapDumpOnOutOfMemoryError`)을 켜서 덤프 파일을 만든 뒤 분석 도구(Eclipse MAT)로 열면 됩니다. 이번엔 "개수(18)"만으로 원인이 명확해서 거기까지는 안 갔습니다.
+> 컨텍스트 하나가 정확히 몇 MB인지까지 보고 싶다면, 테스트에 힙덤프 옵션(`-XX:+HeapDumpOnOutOfMemoryError`)을 활성화해 덤프 파일을 만든 뒤 분석 도구(Eclipse MAT)로 열면 됩니다. 이번엔 "개수(18)"만으로 원인이 명확해서 거기까지는 안 갔습니다.
 
 ---
 

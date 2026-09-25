@@ -11,7 +11,7 @@ tags: [ spring, system-design ]
 
 여기에 "대량 처리", "동시성", "기존 쿼리 재사용"이라는 조건이 더해지자 내장 Reader들이 하나씩 탈락했고, 결국 30줄짜리 Reader를 직접 만들게 됐습니다. 그 판단 과정을 정리합니다.
 
-> **결론부터**: 내장 DB Reader는 크게 **커서형**과 **페이징형** 두 계열인데, 커서형은 `FOR UPDATE` 락이 청크 트랜잭션에 묶이지 않고, 페이징형은 읽는 조건이 바뀌는 탓에 스킵이 납니다. 키셋 커서와 청크에 묶인 락을 동시에 만족하는 내장 Reader가 없어서, 결국 직접 만들었습니다.
+> **결론부터**: 내장 DB Reader는 크게 **커서형**과 **페이징형** 두 계열인데, 커서형은 `FOR UPDATE` 락이 청크 트랜잭션에 엮이지 않고, 페이징형은 읽는 조건이 바뀌는 탓에 스킵이 납니다. 키셋 커서와 청크에 엮인 락을 동시에 만족하는 내장 Reader가 없어서, 결국 직접 만들었습니다.
 
 ## 요구사항
 
@@ -84,9 +84,9 @@ public abstract class AbstractCursorItemReader<T>
 }
 ```
 
-→ 커서는 기본적으로 청크 트랜잭션과 **다른 커넥션**에서 열립니다(공유하려면 `useSharedExtendedConnection`을 켜고 `ExtendedConnectionDataSourceProxy`를 써야 함). 그래서 그 커넥션에서 건 `FOR UPDATE` 락은 각 청크의 쓰기·커밋 트랜잭션에 묶이지 않습니다.
+→ 커서는 기본적으로 청크 트랜잭션과 **다른 커넥션**에서 열립니다(공유하려면 `useSharedExtendedConnection`을 켜고 `ExtendedConnectionDataSourceProxy`를 써야 함). 그래서 그 커넥션에서 건 `FOR UPDATE` 락은 각 청크의 쓰기·커밋 트랜잭션에 엮이지 않습니다.
 
-그럼 **"`useSharedExtendedConnection`을 켜서 커넥션을 공유하면 커서형으로 되지 않나?"** 라는 의문이 들 수 있습니다. 두 가지가 남습니다. 첫째, 커서는 스텝 전체에 걸친 **한 번의 조회**인데 청크는 그 사이 여러 번 커밋되므로, 아직 처리하지 않은 행의 락이 먼저 풀리는 구도는 그대로입니다. 둘째, 더 결정적으로 커서형은 여전히 **SQL을 문자열로** 받아 **제약 3(기존 쿼리 재사용)** 을 풀지 못합니다. 커넥션 옵션 하나로는 이미 만든 리포지토리 메서드를 그대로 부를 수 없습니다.
+그럼 **"`useSharedExtendedConnection`을 활성화해 커넥션을 공유하면 커서형으로 되지 않나?"** 라는 의문이 들 수 있습니다. 두 가지가 남습니다. 첫째, 커서는 스텝 전체에 걸친 **한 번의 조회**인데 청크는 그 사이 여러 번 커밋되므로, 아직 처리하지 않은 행의 락이 먼저 풀리는 구도는 그대로입니다. 둘째, 더 결정적으로 커서형은 여전히 **SQL을 문자열로** 받아 **제약 3(기존 쿼리 재사용)** 을 풀지 못합니다. 커넥션 옵션 하나로는 이미 만든 리포지토리 메서드를 그대로 부를 수 없습니다.
 
 **`JdbcPagingItemReader` (페이징형)**
 
@@ -252,7 +252,7 @@ new RepositoryItemReaderBuilder<Long>()
 
 > △: `JdbcCursorItemReader`는 OFFSET이 아니라 단일 커서 스트리밍이라 스킵 자체는 없지만, 락(세 번째 열)에서 탈락합니다.
 
-표에 없는 나머지 구현체도 마찬가지입니다. `JpaCursorItemReader`·`HibernateCursorItemReader`·`StoredProcedureItemReader`(그리고 생태계의 `MyBatisCursorItemReader`)는 **커서형**이라 제약 2에, `HibernatePagingItemReader`·`MyBatisPagingItemReader`는 **페이징형**이라 제약 1에 걸립니다. 또한 전부 쿼리를 문자열이나 매퍼 statement로 받아서 제약 3까지 그대로입니다. 즉 내장 Reader는 결국 **커서형과 페이징형 두 계열**로 나뉘는데, 커서형은 락이 안 묶이고 페이징형은 스킵이 발생하고, 어느 쪽도 이미 만든 쿼리 메서드를 그대로 부르지 못합니다.
+표에 없는 나머지 구현체도 마찬가지입니다. `JpaCursorItemReader`·`HibernateCursorItemReader`·`StoredProcedureItemReader`(그리고 생태계의 `MyBatisCursorItemReader`)는 **커서형**이라 제약 2에, `HibernatePagingItemReader`·`MyBatisPagingItemReader`는 **페이징형**이라 제약 1에 걸립니다. 또한 전부 쿼리를 문자열이나 매퍼 statement로 받아서 제약 3까지 그대로입니다. 즉 내장 Reader는 결국 **커서형과 페이징형 두 계열**로 나뉘는데, 커서형은 락이 안 엮이고 페이징형은 스킵이 발생하고, 어느 쪽도 이미 만든 쿼리 메서드를 그대로 부르지 못합니다.
 
 그러니 정확히는 "내장 Reader가 부족하다"가 아니라, <mark>키셋 커서 + 청크 트랜잭션에 묶인 락 + 기존 쿼리 재사용, 이 셋을 동시에 만족하는 내장 Reader가 없다</mark>는 것입니다.
 
@@ -363,7 +363,7 @@ Spring Batch가 청크 커밋마다 `update()`를 호출해 `afterId`를 `Execut
 
 ### `afterId`는 메모리에만 있는 게 아니라 DB에 저장된다
 
-여기서 한 가지 짚어둘 점이 있습니다. `ExecutionContext`는 **메모리의 키-값 맵**이지만, 그 값은 메모리에만 머무르지 않고 **DB의 배치 메타데이터 테이블에 영속화**됩니다. 프로세스를 껐다 켜도 재시작이 되는 이유가 바로 이것입니다.
+여기서 한 가지 짚어둘 점이 있습니다. `ExecutionContext`는 **메모리의 키-값 맵**이지만, 그 값은 메모리에만 머무르지 않고 **DB의 배치 메타데이터 테이블에 영속화**됩니다. 프로세스를 껐다 다시 실행해도 재시작이 되는 이유가 바로 이것입니다.
 
 1. 실행 중에는 `ExecutionContext`가 메모리 맵으로 존재합니다. `update()`로 `afterId`를 여기에 넣습니다.
 2. **청크가 커밋되는 시점마다**, Spring Batch의 `JobRepository`가 그 스텝의 `ExecutionContext`를 직렬화해 **`BATCH_STEP_EXECUTION_CONTEXT` 테이블**(`SHORT_CONTEXT`·`SERIALIZED_CONTEXT` 컬럼)에 씁니다. 즉 청크 커밋(데이터 UPDATE)과 진행 위치(`afterId`) 저장이 **같은 트랜잭션**에서 함께 일어나, 둘의 정합성이 유지됩니다.

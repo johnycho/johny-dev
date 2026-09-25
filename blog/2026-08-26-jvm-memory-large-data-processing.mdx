@@ -34,12 +34,12 @@ for (Order o : all) { process(o); }
 
 가장 먼저 볼 것은 GC 옵션이 아니라 **처리 방식**입니다.
 
-- **DB 조회**: 전체를 `List`로 받지 말고 **페이징**하거나 **커서/스트림**으로 한 건씩 흘려보냅니다. 배치라면 청크(chunk) 단위로 읽고-처리하고-비웁니다. Spring Batch에서 대용량을 안전하게 읽는 방법은 [커스텀 ItemReader로 대용량 읽기](/blog/spring-batch-custom-itemreader)에서 다뤘습니다.
+- **DB 조회**: 전체를 `List`로 받지 말고 **페이징**하거나 **커서/스트림**으로 한 건씩 처리합니다. 배치라면 청크(chunk) 단위로 읽고-처리하고-비웁니다. Spring Batch에서 대용량을 안전하게 읽는 방법은 [커스텀 ItemReader로 대용량 읽기](/blog/spring-batch-custom-itemreader)에서 다뤘습니다.
 - **Kafka 컨슈머**: `max.poll.records`(한 번에 가져오는 레코드 수)와 배치 크기를 처리 속도·메모리에 맞게 조정합니다. 배치를 너무 크게 잡으면 한 번 poll에 수천 건이 메모리에 올라오고, 처리 시간이 길어져 `max.poll.interval.ms`를 넘기면 리밸런싱까지 유발합니다.
 - **큰 JSON**: 전체를 객체 트리로 한꺼번에 바인딩하면 payload 크기에 비례해 메모리 사용량이 급증합니다. 아주 큰 문서는 **스트리밍 파서**(Jackson `JsonParser`)로 필요한 부분만 읽어 중간 객체를 줄입니다. 일반 API의 `@RequestBody` 정도는 문제되지 않지만, "수 MB짜리 배열을 통째로 받는" 엔드포인트라면 스트리밍을 고려합니다.
 
 ```java
-// 스트리밍 처리: 한 건씩 흘려보내 힙 점유를 상수로 유지
+// 스트리밍 처리: 한 건씩 처리해 힙 점유를 상수로 유지
 try (Stream<Order> stream = orderRepository.streamAll()) {   // 커서 기반
     stream.forEach(this::process);   // 처리 후 바로 GC 대상이 됨
 }

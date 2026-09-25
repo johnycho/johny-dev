@@ -50,7 +50,7 @@ LLM(ChatGPT·Claude 등)을 **개발, 특히 백엔드 개발에 실제로 활�
    - 프론트매터(`authors: [ johnycho ]`, tags) → `<!-- truncate -->` → 바로 주제(문제/배경)로 시작(메타·연재 프레이밍 금지) → 본문.
    - 본문: 배경/왜 → 무엇을 어떻게(도구·개념·버전 명시) → 예시(프롬프트·설정·코드·에이전트 흐름) → **실무 적용·판단 기준·한계/리스크·통제법** → 정리. 섹션별 핵심 한 문장 `<mark>`.
    - **다이어그램은 우선순위대로**: C4-PlantUML → PlantUML(에이전트 루프·데이터 흐름은 시퀀스/액티비티) → Mermaid(최후). 지표·추이는 Canvas. (blog-authoring 4절)
-   - MDX 위험문자(코드블록 밖 `<` `{` `}`) 스캔. 관련 기존 글과 상호 링크(이미 설명한 개념은 링크로, 중복 서술 금지). 단어는 [word-choice.md](../../wiki/word-choice.md) 지양어 회피.
+   - MDX 위험문자(코드블록 밖 `<` `{` `}`) 스캔. 관련 기존 글과 상호 링크(이미 설명한 개념은 링크로, 중복 서술 금지). 표현·문장은 [`blog-polishing` 스킬](../blog-polishing/SKILL.md)로 다듬어 지양어 회피.
 
 6. **검증**: `npm run build`로 MDX 컴파일 확인. 필요 시 `npm start`로 렌더 확인.
 
@@ -60,5 +60,5 @@ LLM(ChatGPT·Claude 등)을 **개발, 특히 백엔드 개발에 실제로 활�
 - 커밋·푸시는 [git 계정 정책](../../wiki/git-account.md)에 따라 **johnycho** 계정으로. hook이 자동 검증한다.
 
 ## 참고
-- 게시글 형식·다이어그램·MDX: [blog-authoring.md](../../wiki/blog-authoring.md) · 단어 순화: [word-choice.md](../../wiki/word-choice.md)
+- 게시글 형식·다이어그램·MDX: [blog-authoring.md](../../wiki/blog-authoring.md) · 표현 다듬기: [`blog-polishing`](../blog-polishing/SKILL.md)
 - 스프링은 [trend-post-spring](../trend-post-spring/SKILL.md), Java/JDK는 [trend-post-java](../trend-post-java/SKILL.md), 그 외 백엔드 일반은 [trend-post-backend](../trend-post-backend/SKILL.md).

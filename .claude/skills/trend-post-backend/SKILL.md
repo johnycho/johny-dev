@@ -34,7 +34,7 @@ description: 백엔드 관련 최신 동향·참고할 만한 내용(GeekNews �
    - 본문: 배경/왜 → 핵심 내용(버전·사실 명시) → 코드·설정 예제(필요 시) → 실무 적용/판단 기준 → 정리. 섹션별 핵심 한 문장 `<mark>`.
    - **다이어그램은 우선순위대로**: C4-PlantUML → PlantUML → Mermaid(최후). 지표·추이는 Canvas 컴포넌트. (blog-authoring 4절)
    - MDX 위험문자(코드블록 밖 `<` `{` `}`) 스캔. 관련 기존 글과 상호 링크(이미 설명한 개념은 링크로 넘기고 중복 서술 금지).
-   - 단어·표현은 [word-choice.md](../../wiki/word-choice.md) 지양어를 피한다.
+   - 표현·문장은 [`blog-polishing` 스킬](../blog-polishing/SKILL.md)로 다듬어 지양어를 피한다.
 
 6. **검증**: `npm run build`로 MDX 컴파일 확인. 필요 시 `npm start`로 렌더 확인.
 
@@ -45,5 +45,5 @@ description: 백엔드 관련 최신 동향·참고할 만한 내용(GeekNews �
 
 ## 참고
 - 게시글 형식·다이어그램·MDX: [blog-authoring.md](../../wiki/blog-authoring.md)
-- 단어 순화: [word-choice.md](../../wiki/word-choice.md) · 커밋 정책: [git-account.md](../../wiki/git-account.md)
+- 표현 다듬기: [`blog-polishing`](../blog-polishing/SKILL.md) · 커밋 정책: [git-account.md](../../wiki/git-account.md)
 - 스프링 부트 전용 업데이트 글은 [trend-post-spring 스킬](../trend-post-spring/SKILL.md)을 쓴다(주제가 스프링이면 그쪽).

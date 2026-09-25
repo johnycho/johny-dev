@@ -42,7 +42,7 @@ Java 언어·JDK·JVM의 변화(신버전 기능, JEP, preview/incubator, GraalV
    - 프론트매터(`authors: [ johnycho ]`, tags) → `<!-- truncate -->` → 바로 주제(문제/배경)로 시작(메타·연재 프레이밍 금지) → 본문.
    - 본문: 배경/왜 → 무엇이 어떻게(JDK 버전·JEP 명시, preview 여부) → 코드 예제(Java, 필요 시 이전 방식과 대비) → 실무 적용/판단 기준 → 정리. 섹션별 핵심 한 문장 `<mark>`.
    - **다이어그램은 우선순위대로**: C4-PlantUML → PlantUML → Mermaid(최후). 지표·추이는 Canvas. (blog-authoring 4절)
-   - MDX 위험문자(코드블록 밖 `<` `{` `}`) 스캔 — 제네릭·다이아몬드는 코드블록 안에서만 안전. 관련 기존 글과 상호 링크(중복 서술 금지). 단어는 [word-choice.md](../../wiki/word-choice.md) 지양어 회피.
+   - MDX 위험문자(코드블록 밖 `<` `{` `}`) 스캔 — 제네릭·다이아몬드는 코드블록 안에서만 안전. 관련 기존 글과 상호 링크(중복 서술 금지). 표현·문장은 [`blog-polishing` 스킬](../blog-polishing/SKILL.md)로 다듬어 지양어 회피.
 
 6. **검증**: `npm run build`로 MDX 컴파일 확인. 필요 시 `npm start`.
 
@@ -52,5 +52,5 @@ Java 언어·JDK·JVM의 변화(신버전 기능, JEP, preview/incubator, GraalV
 - 커밋·푸시는 [git 계정 정책](../../wiki/git-account.md)에 따라 **johnycho** 계정으로. hook이 자동 검증한다.
 
 ## 참고
-- 게시글 형식·다이어그램·MDX: [blog-authoring.md](../../wiki/blog-authoring.md) · 단어 순화: [word-choice.md](../../wiki/word-choice.md)
+- 게시글 형식·다이어그램·MDX: [blog-authoring.md](../../wiki/blog-authoring.md) · 표현 다듬기: [`blog-polishing`](../blog-polishing/SKILL.md)
 - 스프링은 [trend-post-spring](../trend-post-spring/SKILL.md), 그 외 백엔드 일반은 [trend-post-backend](../trend-post-backend/SKILL.md).
