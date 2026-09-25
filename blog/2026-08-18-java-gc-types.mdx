@@ -57,7 +57,7 @@ GC를 고르는 기준은 사실상 이 둘 사이의 **트레이드오프**입�
 
 ### 정지 시간이 어떻게 다른지 — STW 타임라인
 
-같은 시간 축 위에 **앱이 도는 구간**과 **GC 때문에 멈추는 구간(정지)** 을 함께 그려 보면 방식 차이가 한눈에 보입니다.
+같은 시간 흐름에서 **앱이 실행되는 구간**과 **GC 때문에 멈추는 구간(정지)** 을 함께 그려 보면 방식 차이가 한눈에 보입니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -113,7 +113,7 @@ G is 실행
 
 ![PlantUML GC 방식별 STW(정지) 타임라인](/img/c4/pu-gc-stw-timeline.svg)
 
-<mark>Parallel은 총 정지 시간이 짧아 처리량이 유리하고, ZGC·Shenandoah는 **한 번의 정지**가 가장 짧습니다(막대가 끊기지 않고 이어짐 = 앱과 **동시에** 정리). G1은 그 사이의 균형입니다.</mark> STW 방식(Serial·Parallel·G1)은 "멈추고 → 정리 → 다시 실행"을 반복하지만, 동시(concurrent) 방식(ZGC·Shenandoah)은 앱을 멈추지 않고 GC가 나란히 돕니다.
+<mark>Parallel은 총 정지 시간이 짧아 처리량이 유리하고, ZGC·Shenandoah는 **한 번의 정지**가 가장 짧습니다(막대가 끊기지 않고 이어짐 = 앱과 **동시에** 정리). G1은 그 사이의 균형입니다.</mark> STW 방식(Serial·Parallel·G1)은 "멈추고 → 정리 → 다시 실행"을 반복하지만, 동시(concurrent) 방식(ZGC·Shenandoah)은 앱을 멈추지 않고 GC가 나란히 실행됩니다.
 
 ## 종류별로 — 어떻게 세차하나
 

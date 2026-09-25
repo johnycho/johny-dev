@@ -133,7 +133,7 @@ ids.parallelStream().forEach(id -> {
 | t3 | 6 씀 | | 6 |
 | t4 | | 6 씀 | 6 ← 7이어야 함 |
 
-<mark>"읽고-더하고-쓰기"가 하나로 묶이지 않아, 그 사이에 다른 스레드가 끼어들면 증가가 사라지는 것</mark>입니다. 그래서 카운터는 이 세 단계를 원자적으로 묶어 주는 `AtomicInteger`(`incrementAndGet`), 고경합이면 `LongAdder`로 해야 합니다.
+<mark>"읽고-더하고-쓰기"가 하나로 묶이지 않아, 그 사이에 다른 스레드가 개입하면 증가가 사라지는 것</mark>입니다. 그래서 카운터는 이 세 단계를 원자적으로 묶어 주는 `AtomicInteger`(`incrementAndGet`), 고경합이면 `LongAdder`로 해야 합니다.
 
 ```java
 LongAdder count = new LongAdder();
@@ -155,7 +155,7 @@ ids.parallelStream().forEach(id -> { if (call(id).ok()) count.increment(); });
 | 용어 | 쉬운 뜻 |
 |---|---|
 | 스레드 안전 | 여러 스레드가 동시에 써도 결과가 깨지지 않음 |
-| 원자적 | 중간에 끼어들 수 없는 하나의 동작 |
+| 원자적 | 중간에 다른 동작이 개입할 수 없는 하나의 동작 |
 | effectively final | 값이 재할당되지 않아 람다가 캡처할 수 있는 지역 변수 |
 | ConcurrentLinkedQueue | 락 없이 동시 담기에 강한 큐 |
 | CopyOnWriteArrayList | 쓰기마다 복사 — 읽기 위주에 적합 |
