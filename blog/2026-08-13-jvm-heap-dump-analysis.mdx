@@ -1,6 +1,6 @@
 ---
 slug: jvm-heap-dump-analysis
-title: "메모리가 샌다 — JVM 힙 덤프를 언제 뜨고 어떻게 분석하나"
+title: "메모리 누수 — JVM 힙 덤프를 언제 뜨고 어떻게 분석하나"
 authors: [ johnycho ]
 tags: [ java ]
 ---
@@ -163,7 +163,7 @@ stop
 - **MAT**로 열어 **유지 크기(retained) → 도미네이터 트리 → Path to GC Roots** 순으로 원인과 참조 사슬을 좁힌다.
 - 원인은 대개 **static 컬렉션·무한 캐시·ThreadLocal·미해제 리스너·클래스로더**.
 
-<mark>지표로 "샌다"를 감지하고([모니터링](./server-monitoring-analysis)), 힙 덤프로 "무엇이 새는지"를 짚는다 — 이 둘이 한 세트입니다.</mark> 실제 OOM을 좇았던 사례는 [테스트 컨텍스트 OOM 글](./spring-datajpatest-context-oom)에서도 다뤘습니다.
+<mark>지표로 누수를 감지하고([모니터링](./server-monitoring-analysis)), 힙 덤프로 "무엇이 누수되는지"를 짚는다 — 이 둘이 한 세트입니다.</mark> 실제 OOM을 좇았던 사례는 [테스트 컨텍스트 OOM 글](./spring-datajpatest-context-oom)에서도 다뤘습니다.
 
 ### 용어 한 줄 정리
 

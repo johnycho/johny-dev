@@ -33,7 +33,7 @@ import module java.base;
 
 ## 2. 간결한 소스 파일 + 인스턴스 main (JEP 512, 정식)
 
-"Hello World"를 쓰려면 클래스 선언·`public static void main(String[] args)`·`System.out.println`이 필요했습니다. JDK 25는 이 의식을 걷어냅니다.
+"Hello World"를 쓰려면 클래스 선언·`public static void main(String[] args)`·`System.out.println`이 필요했습니다. JDK 25는 이 절차를 제거합니다.
 
 ```java
 // 클래스 선언도, static도, String[] args도 없이
@@ -101,9 +101,9 @@ java -XX:+UseCompactObjectHeaders -jar app.jar
 
 작은 객체(수억 개의 `Long`·짧은 문자열·트리 노드 등)를 많이 다루는 서비스라면 GC 빈도와 메모리 여유에서 바로 차이가 납니다.
 
-### Generational Shenandoah (JEP 521) — 짧게 사는 객체에 강한 GC
+### Generational Shenandoah (JEP 521) — 짧게 사는 객체를 자주 회수하는 GC
 
-Shenandoah는 정지 시간이 짧은 GC인데, JDK 25에서 **세대(generational) 모드**가 정식이 됐습니다. "대부분의 객체는 금방 죽는다"는 **약한 세대 가설**을 활용해, 젊은 객체만 자주 청소하고 오래 산 객체는 덜 건드립니다. 그 결과 같은 지연 목표에서 **처리량·메모리 효율**이 오릅니다.
+Shenandoah는 정지 시간이 짧은 GC인데, JDK 25에서 **세대(generational) 모드**가 정식이 됐습니다. "대부분의 객체는 짧게 쓰이고 버려진다"는 **약한 세대 가설**을 활용해, 젊은 객체만 자주 청소하고 오래 산 객체는 덜 건드립니다. 그 결과 같은 지연 목표에서 **처리량·메모리 효율**이 오릅니다.
 
 ```bash
 java -XX:+UseShenandoahGC -XX:ShenandoahGCMode=generational -jar app.jar

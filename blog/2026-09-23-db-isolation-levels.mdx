@@ -136,7 +136,7 @@ DB별 라이선스·성격 차이는 [MySQL·PostgreSQL·Oracle 비교](./rdbms-
 
 여기서 중요한 점 하나. <mark>gap 락은 **특정 값이 아니라, 인접한 두 인덱스 레코드 사이의 "구간" 전체**에 걸립니다.</mark> 예를 들어 테이블에 `id = 10`과 `id = 20`만 있으면 그 사이 **10~20이 하나의 gap**이고, 이 구간 안의 어떤 값(15든 17이든)으로 없는 행을 잠그면 **모두 같은 gap 락**을 잡습니다.
 
-문제가 되는 조합은 **gap 락 + INSERT**입니다. gap 락끼리는 서로 **공존**할 수 있지만, `INSERT`가 잡는 **insert intention 락**은 남이 보유한 gap 락과 **충돌해 대기**합니다.
+문제가 되는 조합은 **gap 락 + INSERT**입니다. gap 락끼리는 서로 **공존**할 수 있지만, `INSERT`가 잡는 **insert intention 락**은 다른 트랜잭션이 보유한 gap 락과 **충돌해 대기**합니다.
 
 ```sql
 -- (테이블엔 id = 10, 20만 있음 → 그 사이 10~20이 하나의 gap)
@@ -268,5 +268,5 @@ class Account {
 
 - 격리 수준은 **dirty·non-repeatable·phantom read**를 어디까지 막을지의 단계입니다(READ UNCOMMITTED → SERIALIZABLE).
 - <mark>같은 이름이라도 DB마다 다릅니다 — MySQL(기본 RR·phantom까지 차단), PostgreSQL(기본 RC·RR은 스냅샷), Oracle(기본 RC·RR 없음).</mark>
-- 스프링 `@Transactional`의 기본은 **DB 기본값**을 따르므로, 격리에 의존하는 로직은 **수준을 명시**한다.
-- 격리 수준으로 **읽기 일관성**을 잡고, **동시 갱신 경합(lost update)** 은 잠금으로 따로 막는다.
+- 스프링 `@Transactional`의 기본은 **DB 기본값**을 따르므로, 격리에 의존하는 로직은 **수준을 명시**합니다.
+- 격리 수준으로 **읽기 일관성**을 잡고, **동시 갱신 경합(lost update)** 은 잠금으로 따로 막습니다.

@@ -144,10 +144,10 @@ ids.parallelStream().forEach(id -> { if (call(id).ok()) count.increment(); });
 
 ## 정리
 
-- `ArrayList`·평범한 컬렉션은 단일 스레드용 — **동시 `add`는 조용한 데이터 손실**을 유발한다.
-- **가장 먼저 "공유를 없애라"** — 결과를 반환해 한 스레드가 모으면 문제가 사라진다.
-- 꼭 공유하면 `ConcurrentLinkedQueue`·`ConcurrentHashMap` 등 **동시성 자료구조**를.
-- 람다 안 `int[]` 카운터도 비원자 — 카운터는 `AtomicInteger`·`LongAdder`.
+- `ArrayList`·평범한 컬렉션은 단일 스레드용이라, **동시 `add`는 조용한 데이터 손실**을 유발합니다.
+- **가장 먼저 "공유를 없애라"** — 결과를 반환해 한 스레드가 모으면 문제가 사라집니다.
+- 꼭 공유해야 하면 `ConcurrentLinkedQueue`·`ConcurrentHashMap` 등 **동시성 자료구조**를 씁니다.
+- 람다 안 `int[]` 카운터도 비원자적이라, 카운터는 `AtomicInteger`·`LongAdder`로 씁니다.
 - <mark>동시성 버그는 "가끔"만 재현돼 찾기 어려우니, 공유 상태를 처음부터 만들지 않는 게 최선입니다.</mark>
 
 ### 용어 한 줄 정리

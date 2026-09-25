@@ -54,7 +54,7 @@ stop
 
 ![PlantUML OkHttpClient 남발로 인한 스레드 누적 OOM](/img/c4/pu-oom-thread.svg)
 
-<mark>트래픽이 그대로여도, 스레드가 조금씩 누적되면 몇 시간에 걸쳐 한도에 부딪힙니다 — 그래서 배포 직후가 아니라 반나절쯤 지나 터진 것</mark>입니다.
+<mark>트래픽이 그대로여도, 스레드가 조금씩 누적되면 몇 시간에 걸쳐 한도에 부딪힙니다 — 그래서 배포 직후가 아니라 반나절쯤 지나 발생한 것</mark>입니다.
 
 ## 어떻게 찾나
 
@@ -88,9 +88,9 @@ OkHttpClient okHttpClient() { // 앱당 하나만
 - `unable to create native thread`는 **힙이 아니라 네이티브 스레드 한도** 문제. `OOMKilled`도 힙 밖 메모리 초과.
 - 원인은 **OkHttpClient 재생성·상한 없는 비동기·retry 증폭**으로 스레드가 몇 시간에 걸쳐 누적된 것.
 - 해결은 **클라이언트 싱글톤 재사용 · Dispatcher 상한 · retry 상한 · 컨테이너 자원 한도 고려**.
-- <mark>배포 직후가 아니라 몇 시간 뒤 터지는 건 "천천히 쌓이는" 누수의 전형입니다.</mark>
+- <mark>배포 직후가 아니라 몇 시간 뒤 발생하는 건 "천천히 쌓이는" 누수의 전형입니다.</mark>
 
-느린 외부 호출이 부르는 다른 장애는 [외부 API 하나가 느려지자 서버 전체가 멈췄다](./external-api-timeout-server-hang)도 함께 보세요.
+느린 외부 호출이 유발하는 다른 장애는 [외부 API 하나가 느려지자 서버 전체가 멈췄다](./external-api-timeout-server-hang)도 함께 보세요.
 
 ### 용어 한 줄 정리
 

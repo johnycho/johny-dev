@@ -219,9 +219,9 @@ redis.opsForGeo().add("stores", new Point(127.02, 37.50), "gangnam");        // 
 
 ## 정리
 
-- Redis는 단순 key-value가 아니라 **자료구조마다 전용 명령어**를 제공하는 도구다.
-- 핵심 7가지(String·Hash·List·Set·Sorted Set·Stream·JSON)로 대부분의 캐시·큐·순위·문서 요구를 처리한다.
-- 특화 3가지(Geospatial·Vector Set·Time Series)로 위치·벡터·시계열까지 커버한다.
+- Redis는 단순 key-value가 아니라 **자료구조마다 전용 명령어**를 제공하는 도구입니다.
+- 핵심 7가지(String·Hash·List·Set·Sorted Set·Stream·JSON)로 대부분의 캐시·큐·순위·문서 요구를 처리합니다.
+- 특화 3가지(Geospatial·Vector Set·Time Series)로 위치·벡터·시계열까지 커버합니다.
 
 <mark>"이 데이터에 가장 맞는 자료구조가 무엇인가"를 먼저 고르면, Redis 명령어 하나로 끝날 일을 어플리케이션 코드로 힘들게 구현하지 않게 됩니다.</mark>
 
