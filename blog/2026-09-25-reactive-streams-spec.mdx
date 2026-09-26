@@ -18,7 +18,7 @@ Reactor의 `Mono`·`Flux`, RxJava의 `Observable`, Akka Streams… 리액티브 
 - 생산자가 데이터를 **밀어내기(push)** 만 하면, 느린 소비자는 밀린 데이터를 쌓다가 **메모리가 넘치거나(OOM)** 데이터를 버리게 됩니다.
 - 그렇다고 소비자가 **하나씩 요청해 받기(pull)** 만 하면, 매번 요청·응답을 주고받아 비동기의 이점이 사라집니다.
 
-<mark>Reactive Streams의 해법은 **"소비자가 감당할 개수를 미리 알려 주고, 생산자는 그만큼만 비동기로 보내는"** 방식입니다 — push와 pull의 절충인 이 흐름 제어가 곧 **백프레셔(backpressure)** 입니다.</mark>
+<mark>Reactive Streams의 해법은 **"소비자가 처리할 수 있는 개수를 미리 알려 주고, 생산자는 그만큼만 비동기로 보내는"** 방식입니다 — push와 pull의 절충인 이 흐름 제어가 곧 **백프레셔(backpressure)** 입니다.</mark>
 
 여러 라이브러리가 이걸 제각각 구현하면 서로 연동이 안 되니, **2013~2015년 Netflix·Pivotal(현 VMware)·Lightbend 등이 모여 공통 인터페이스 4개**로 표준화한 것이 Reactive Streams입니다.
 
@@ -90,7 +90,7 @@ note right of S : 이제부터 구독자가\n"받을 개수"를 직접 요청
 S -> Sub : request(2)
 Sub -> S : onNext(item1)
 Sub -> S : onNext(item2)
-note left of S : 감당한 만큼 처리 후\n다시 요청 (pull = 백프레셔)
+note left of S : 받은 만큼 처리 후\n다시 요청 (pull = 백프레셔)
 S -> Sub : request(2)
 Sub -> S : onNext(item3)
 Sub -> S : onComplete()
@@ -102,6 +102,38 @@ Sub -> S : onComplete()
 ![PlantUML Reactive Streams 구독·백프레셔 시퀀스](/img/c4/pu-reactive-streams-seq.svg)
 
 <mark>이 **pull 기반 요청** 덕분에 느린 소비자가 빠른 생산자에게 "천천히"라고 말할 수 있습니다 — 표준이 보장하는 건 결국 이 흐름 제어 하나입니다.</mark> (`request(Long.MAX_VALUE)`로 요청하면 사실상 제한 없는 push가 됩니다.)
+
+> **`request(n)`의 `n`은 누가 정하나?**
+>
+> `n`은 **구독자(Subscriber)** 가 정합니다. 구독자가 `onSubscribe(Subscription s)`에서 받은 `Subscription`에 `s.request(n)`을 호출할 때 넘기는 숫자입니다(이때 파라미터 `s`가 곧 그 `Subscription` 객체입니다). 직접 구현한 구독자면 개발자가 코드에 명시하고(아래 예시), Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 그 연산자·최종 구독자가 정합니다 — 기본값은 대개 `Long.MAX_VALUE`(무제한)이고, `limitRate(n)` 같은 연산자로 상한을 둡니다. WebFlux HTTP 스트리밍에서는 응답을 내보내는 쪽이 **전송 계층(TCP 소켓)의 쓰기 여유**에 맞춰 `request`를 내, 소켓이 막히면 요청도 멈춥니다.
+
+직접 구현한 구독자에서 `n`을 정하는 모습은 이렇습니다.
+
+```java
+// 직접 구현한 구독자 — n을 개발자가 코드에 명시한다
+class MySubscriber implements Subscriber<Integer> {
+    private Subscription subscription;   // onSubscribe에서 받은 s를 보관해 둔다
+
+    @Override
+    public void onSubscribe(Subscription s) {
+        this.subscription = s;   // ← 이 s가 곧 Subscription 객체
+        s.request(1);            // 우선 1개만 요청 (n = 1)
+    }
+
+    @Override
+    public void onNext(Integer item) {
+        process(item);              // 한 건 처리하고
+        subscription.request(1);    // 처리한 만큼(1개) 다시 요청 → 이게 백프레셔
+    }
+
+    @Override public void onComplete() { /* 스트림 종료 */ }
+    @Override public void onError(Throwable t) { /* 오류 처리 */ }
+}
+```
+
+여기서는 `onSubscribe`와 `onNext`에서 `request(1)`로 **한 건씩만** 요청해 받도록 `n`을 정했습니다. `s.request(256)`처럼 크게 잡으면 한 번에 더 많이 받고, `Long.MAX_VALUE`면 사실상 백프레셔 없이 받는 대로 처리합니다.
+
+반면 Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 이 `n`을 대신 정해 줍니다. 이건 추정이 아니라 [Reactor 레퍼런스 가이드](https://projectreactor.io/docs/core/release/reference/reactiveProgramming.html#reactive.backpressure)에 명시돼 있습니다 — 가장 직접적인 구독 방식(`subscribe()`·람다형 변형)은 구독 시 곧바로 **무제한(`Long.MAX_VALUE`)을 요청**하고("the most direct ways of subscribing all immediately trigger an unbounded request of `Long.MAX_VALUE`"), 상한이 필요하면 [`limitRate(n)`](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html#limitRate%28int%29) 연산자가 하위 수요를 **`n`개 단위 배치로 쪼개** 위로 전파합니다.
 
 ## 발행과 구독이 이어지는 구조
 
@@ -150,7 +182,7 @@ Flux.range(1, 100)          // ① 소스: 1~100 발행
 **연결·실행되는 순서**는 이렇습니다.
 
 1. **조립(assembly)** — `.filter`·`.map`은 각 단계를 감싼 새 `Publisher`를 만들 뿐, 아직 아무것도 실행되지 않습니다(위에서 아래로 단계를 엮기만).
-2. **구독(subscribe)** — 최종 `subscribe`가 호출되면, 구독이 **아래에서 위로** 거슬러 올라가며 각 단계를 이어 붙입니다(`onSubscribe`).
+2. **구독(subscribe)** — 최종 `subscribe`가 호출되면, 구독이 **아래에서 위로** 올라가며 각 단계를 이어 붙입니다(`onSubscribe`).
 3. **요청(request)** — 최종 구독자가 `request(n)`을 위로 올려 보내고, 각 연산자가 소스까지 전파합니다.
 4. **발행(onNext)** — 소스가 요청받은 만큼 데이터를 **위에서 아래로** 내보내고, 각 연산자를 거쳐 변환된 뒤 구독자에 도착합니다. 끝나면 `onComplete`, 오류면 `onError`가 같은 경로로 내려갑니다.
 
@@ -217,8 +249,8 @@ note over C, DB : 전체를 모으지 않고 한 건씩 발행·변환·전송 (
 정리하면 이렇게 이어집니다.
 
 1. **요청 도착** → 컨트롤러가 `Flux` 파이프라인을 **조립해 반환**만 합니다(DB 쿼리는 아직 실행 전).
-2. **WebFlux가 구독** → 응답 본문을 만들 데이터가 필요하므로 WebFlux가 반환된 `Flux`를 `subscribe()` 합니다. 이 구독이 실행의 방아쇠라, 이어서 `request(n)`이 소스(R2DBC)까지 거슬러 전파되고 그제야 실제 쿼리가 나갑니다.
-3. **소스가 한 건 발행** → DB에서 row 하나가 오면 `onNext(order1)` → `filter` → `map`을 거쳐 `dto1`이 되고, WebFlux가 **그 건을 응답에 써서 즉시 클라이언트로 전송**합니다.
+2. **WebFlux가 구독** → 응답 본문을 만들 데이터가 필요하므로 WebFlux가 반환된 `Flux`를 `subscribe()` 합니다. 이 구독이 곧 실행의 시작점이라, 이어서 `request(n)`이 소스(R2DBC)까지 위로 전파되고 그제야 실제 쿼리가 나갑니다.
+3. **소스가 한 건 발행** → DB에서 row 하나가 오면 `onNext(order1)` → `filter` → `map`을 거쳐 `dto1`이 되고, WebFlux가 **그 건을 곧바로 응답으로 클라이언트에 내보냅니다.**
 4. **반복** → 다음 row도 같은 경로로 한 건씩 처리·전송. 다 끝나면 `onComplete`로 응답을 닫습니다.
 
 <mark>핵심은 **"한 건 발행 → 변환 → 전송"이 건마다 반복**된다는 점입니다 — 전체 결과를 메모리에 모았다가 한 번에 주는 게 아니라, 오는 대로 처리해 메모리를 상수로 유지합니다.</mark>
@@ -338,3 +370,10 @@ public void consume(org.reactivestreams.Publisher<Event> source) {
 - 핵심은 **구독자가 `request(n)`으로 처리할 수 있는 만큼만 요청해 받는** 흐름 제어입니다 — push/pull의 절충.
 - **Publisher는 구독해야 실행되고**(lazy), cold/hot에 따라 동작이 다릅니다.
 - <mark>JDK 9 `Flow`가 이 표준을 그대로 담았고, Reactor·RxJava·Akka가 모두 이를 구현해 서로 연동됩니다.</mark> 연산자·스케줄러는 표준 밖이라 라이브러리마다 다릅니다.
+
+## 참고
+
+- [Reactive Streams 표준 명세](https://www.reactive-streams.org/) — 인터페이스 4개와 규약
+- [Reactor 레퍼런스 — Backpressure](https://projectreactor.io/docs/core/release/reference/reactiveProgramming.html#reactive.backpressure) — 구독 시 기본 `Long.MAX_VALUE` 요청, 수요 재조정
+- [`Flux.limitRate(int)` 자바독](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html#limitRate%28int%29) — 하위 수요를 배치로 쪼개 상한
+- [JDK 9 `java.util.concurrent.Flow`](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.html) — 표준을 담은 JDK 인터페이스
