@@ -15,10 +15,10 @@ Reactor의 `Mono`·`Flux`, RxJava의 `Observable`, Akka Streams… 리액티브 
 
 비동기 스트림에는 오래된 문제가 있습니다 — **생산자가 소비자보다 빠를 때**입니다.
 
-- 생산자가 데이터를 **밀어내기(push)** 만 하면, 느린 소비자는 밀린 데이터를 쌓다가 **메모리가 넘치거나(OOM)** 데이터를 버리게 됩니다.
+- 생산자가 데이터를 **내보내기(push)** 만 하면, 느린 소비자는 밀린 데이터를 쌓다가 **메모리가 넘치거나(OOM)** 데이터를 버리게 됩니다.
 - 그렇다고 소비자가 **하나씩 요청해 받기(pull)** 만 하면, 매번 요청·응답을 주고받아 비동기의 이점이 사라집니다.
 
-<mark>Reactive Streams의 해법은 **"소비자가 처리할 수 있는 개수를 미리 알려 주고, 생산자는 그만큼만 비동기로 보내는"** 방식입니다 — push와 pull의 절충인 이 흐름 제어가 곧 **백프레셔(backpressure)** 입니다.</mark>
+<mark>Reactive Streams의 해법은 **"소비자가 처리할 수 있는 개수를 미리 알려 주고, 생산자는 그만큼만 비동기로 보내는"** 방식입니다 — push와 pull의 절충인 이 흐름 제어를 **백프레셔(backpressure)** 라고 합니다.</mark>
 
 여러 라이브러리가 이걸 제각각 구현하면 서로 연동이 안 되니, **2013~2015년 Netflix·Pivotal(현 VMware)·Lightbend 등이 모여 공통 인터페이스 4개**로 표준화한 것이 Reactive Streams입니다.
 
@@ -28,8 +28,8 @@ Reactor의 `Mono`·`Flux`, RxJava의 `Observable`, Akka Streams… 리액티브 
 
 - **Publisher**(발행자) — 데이터를 만들어 발행하는 쪽. `subscribe(Subscriber)` 하나만 가집니다.
 - **Subscriber**(구독자) — 데이터를 받는 쪽. `onSubscribe`·`onNext`(값)·`onComplete`(끝)·`onError`(오류) 네 콜백을 가집니다.
-- **Subscription**(구독) — Publisher와 Subscriber를 잇는 연결. 구독자가 `request(n)`으로 **받을 개수를 요청**하고 `cancel()`로 취소합니다.
-- **Processor** — Publisher이자 Subscriber인 중간 변환 단계(직접 구현할 일은 드뭅니다).
+- **Subscription**(구독) — Publisher와 Subscriber의 연결. 구독자가 `request(n)`으로 **받을 개수를 요청**하고 `cancel()`로 취소합니다.
+- **Processor** — Publisher이자 Subscriber인 중간 변환 단계(직접 구현할 일은 많지 않습니다).
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -105,7 +105,7 @@ Sub -> S : onComplete()
 
 > **`request(n)`의 `n`은 누가 정하나?**
 >
-> `n`은 **구독자(Subscriber)** 가 정합니다. 구독자가 `onSubscribe(Subscription s)`에서 받은 `Subscription`에 `s.request(n)`을 호출할 때 넘기는 숫자입니다(이때 파라미터 `s`가 곧 그 `Subscription` 객체입니다). `Subscriber` 인터페이스를 직접 구현하는 경우엔 개발자가 그 코드 안에 명시하고(아래 예시), Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 그 연산자·최종 구독자가 정합니다 — 기본값은 대개 `Long.MAX_VALUE`(무제한)이고, `limitRate(n)` 같은 연산자로 상한을 둡니다. WebFlux HTTP 스트리밍에서는 응답을 내보내는 쪽이 **전송 계층(TCP 소켓)의 쓰기 여유**에 맞춰 `request`를 보내고, 소켓이 막히면 요청도 멈춥니다.
+> `n`은 **구독자(Subscriber)** 가 정합니다. 구독자가 `onSubscribe(Subscription s)`에서 받은 `Subscription`에 `s.request(n)`을 호출할 때 넘기는 숫자입니다(이때 파라미터 `s`가 그 `Subscription` 객체입니다). `Subscriber` 인터페이스를 직접 구현하는 경우엔 개발자가 그 코드 안에 명시하고(아래 예시), Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 그 연산자·최종 구독자가 정합니다 — 기본값은 대개 `Long.MAX_VALUE`(무제한)이고, `limitRate(n)` 같은 연산자로 상한을 둡니다. WebFlux HTTP 스트리밍에서는 응답을 내보내는 쪽이 **전송 계층(TCP 소켓)의 쓰기 여유**에 맞춰 `request`를 보내고, 소켓이 막히면 요청도 멈춥니다.
 
 `Subscriber` 구현 클래스에서 `n`을 정하는 모습은 이렇습니다.
 
@@ -116,7 +116,7 @@ class MySubscriber implements Subscriber<Integer> {
 
     @Override
     public void onSubscribe(Subscription s) {
-        this.subscription = s;   // ← 이 s가 곧 Subscription 객체
+        this.subscription = s;   // ← 이 s가 그 Subscription 객체
         s.request(1);            // 우선 1개만 요청 (n = 1)
     }
 
@@ -190,12 +190,12 @@ Flux.range(1, 100)          // ① 소스: 1~100 발행
 
 **연결·실행되는 순서**는 이렇습니다.
 
-1. **조립(assembly)** — `.filter`·`.map`은 각 단계를 감싼 새 `Publisher`를 만들 뿐, 아직 아무것도 실행되지 않습니다(위에서 아래로 단계를 엮기만).
-2. **구독(subscribe)** — 최종 `subscribe`가 호출되면, 구독이 **아래에서 위로** 올라가며 각 단계를 이어 붙입니다(`onSubscribe`).
+1. **구성(assembly)** — `.filter`·`.map`은 각 단계를 감싼 새 `Publisher`를 만들 뿐, 아직 아무것도 실행되지 않습니다(위에서 아래로 단계를 엮기만).
+2. **구독(subscribe)** — 최종 `subscribe`가 호출되면, 구독이 **아래에서 위로** 올라가며 각 단계를 연결합니다(`onSubscribe`).
 3. **요청(request)** — 최종 구독자가 `request(n)`을 위로 올려 보내고, 각 연산자가 소스까지 전파합니다.
 4. **발행(onNext)** — 소스가 요청받은 만큼 데이터를 **위에서 아래로** 내보내고, 각 연산자를 거쳐 변환된 뒤 구독자에 도착합니다. 끝나면 `onComplete`, 오류면 `onError`가 같은 경로로 내려갑니다.
 
-<mark>즉 "선언(조립) → 구독 → 위로 요청 → 아래로 발행"의 순서라, **구독 전엔 연결 구조만 있고 실행은 없다**는 점이 절차적 코드와 가장 다릅니다.</mark>
+<mark>즉 "선언(구성) → 구독 → 위로 요청 → 아래로 발행"의 순서라, **구독 전엔 연결 구조만 있고 실행은 없다**는 점이 절차적 코드와 가장 다릅니다.</mark>
 
 ### 스프링부트 예시 — 데이터가 한 건씩 발행·처리·소비되는 과정
 
@@ -207,7 +207,7 @@ public interface OrderRepository extends ReactiveCrudRepository<Order, Long> {
     Flux<Order> findByStatus(String status);
 }
 
-// 2) 파이프라인 조립 — 컨트롤러는 "무엇을 할지" 선언만 하고 Flux를 반환한다 (아직 실행 안 됨)
+// 2) 파이프라인 구성 — 컨트롤러는 "무엇을 할지" 선언만 하고 Flux를 반환한다 (아직 실행 안 됨)
 @GetMapping(value = "/orders/paid", produces = MediaType.APPLICATION_NDJSON_VALUE)
 public Flux<OrderDto> paidOrders() {
     return orderRepository.findByStatus("PAID")   // 소스: PAID 주문을 한 건씩 발행
@@ -257,8 +257,8 @@ note over C, DB : 전체를 모으지 않고 한 건씩 발행·변환·전송 (
 
 정리하면 이렇게 이어집니다.
 
-1. **요청 도착** → 컨트롤러가 `Flux` 파이프라인을 **조립해 반환**만 합니다(DB 쿼리는 아직 실행 전).
-2. **WebFlux가 구독** → 응답 본문을 만들 데이터가 필요하므로 WebFlux가 반환된 `Flux`를 `subscribe()` 합니다. 이 구독이 곧 실행의 시작점이라, 이어서 `request(n)`이 소스(R2DBC)까지 위로 전파되고 그제야 실제 쿼리가 나갑니다.
+1. **요청 도착** → 컨트롤러가 `Flux` 파이프라인을 **구성해 반환**만 합니다(DB 쿼리는 아직 실행 전).
+2. **WebFlux가 구독** → 응답 본문을 만들 데이터가 필요하므로 WebFlux가 반환된 `Flux`를 `subscribe()` 합니다. 이 구독이 실행의 시작점이라, 이어서 `request(n)`이 소스(R2DBC)까지 위로 전파되고 그제야 실제 쿼리가 나갑니다.
 3. **소스가 한 건 발행** → DB에서 row 하나가 오면 `onNext(order1)` → `filter` → `map`을 거쳐 `dto1`이 되고, WebFlux가 **그 건을 곧바로 응답으로 클라이언트에 내보냅니다.**
 4. **반복** → 다음 row도 같은 경로로 한 건씩 처리·전송. 다 끝나면 `onComplete`로 응답을 닫습니다.
 

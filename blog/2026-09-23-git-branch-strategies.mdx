@@ -24,7 +24,7 @@ description: "Git 브랜치 전략 네 가지(Git Flow·GitHub Flow·GitLab Flow
 
 2010년 Vincent Driessen이 정리한 모델([원문](https://nvie.com/posts/a-successful-git-branching-model/))로, 브랜치 역할을 가장 엄격하게 나눕니다.
 
-- **`main`** — 운영에 배포된 코드. 여기의 모든 커밋은 곧 하나의 릴리스입니다.
+- **`main`** — 운영에 배포된 코드. 여기의 모든 커밋이 하나의 릴리스입니다.
 - **`develop`** — 다음 릴리스를 위한 통합 브랜치. 기능들이 여기로 모입니다.
 - **`feature/*`** — `develop`에서 분기해 기능을 개발하고 다시 `develop`으로 병합.
 - **`release/*`** — `develop`에서 분기해 릴리스를 준비(막판 버그 수정·버전 번호). `main`과 `develop` **양쪽**으로 병합.
@@ -93,7 +93,7 @@ gitGraph
 
 GitHub Flow는 "병합하면 곧 운영 배포"인데, 현실에선 **배포를 바로 못 하는** 경우가 많습니다(배포 윈도우, 승인 절차, 스테이징 검증). <mark>GitLab Flow는 여기에 **환경 브랜치**(main → staging → production, 한 방향 승격) 또는 **릴리스 브랜치**를 더해 배포 시점을 제어합니다.</mark>
 
-- **환경 브랜치 방식**: `main`(개발) → `staging` → `production` 순으로 코드가 **한 방향으로만 이동합니다**. 각 환경 브랜치로 병합하는 순간이 곧 그 환경으로의 배포입니다.
+- **환경 브랜치 방식**: `main`(개발) → `staging` → `production` 순으로 코드가 **한 방향으로만 이동합니다**. 각 환경 브랜치로 병합하는 순간이 그 환경으로의 배포입니다.
 - **릴리스 브랜치 방식**: 버전이 필요하면 `main`에서 `release/*`를 분기해 관리(Git Flow보다는 가볍게).
 
 ```mermaid

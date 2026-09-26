@@ -82,7 +82,7 @@ public class OrderPersistenceAdapter implements SaveOrderPort {
 }
 ```
 
-화살표 방향이 핵심입니다. 유스케이스(`app-domain`의 `application/service`)도 `app-persistence`도 **둘 다 `app-domain`의 포트(인터페이스)를 향합니다.** 그래서 유스케이스가 `app-persistence`를 import하는 일이 없고, 실제 구현체를 주입하는 것은 실행 앱(조립 지점)이 DI로 합니다.
+화살표 방향이 핵심입니다. 유스케이스(`app-domain`의 `application/service`)도 `app-persistence`도 **둘 다 `app-domain`의 포트(인터페이스)를 향합니다.** 그래서 유스케이스가 `app-persistence`를 import하는 일이 없고, 실제 구현체를 주입하는 것은 실행 앱(구성 지점)이 DI로 합니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -106,7 +106,7 @@ ADP ..|> PORT : 구현
 
 유스케이스와 어댑터가 **둘 다 인터페이스(포트)를 향합니다.** 유스케이스는 `app-persistence`를 import하지 않고, 실제 구현체는 실행 앱이 DI로 주입합니다. 그래서 저장소를 JPA에서 다른 것으로 바꿔도 유스케이스·도메인 코드는 그대로입니다.
 
-<mark>실행 앱은 "어떤 어댑터를 끼울지"만 조립할 뿐, 비즈니스 규칙은 app-domain 모듈(모델·유스케이스)에 있습니다.</mark>
+<mark>실행 앱은 "어떤 어댑터를 끼울지"만 구성할 뿐, 비즈니스 규칙은 app-domain 모듈(모델·유스케이스)에 있습니다.</mark>
 
 ## 모듈별 책임과 패키지
 

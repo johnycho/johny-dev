@@ -21,7 +21,7 @@ import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
 
 ## 리액티브·비동기 기본 개념
 
-WebFlux는 이 문제를 **논블로킹**으로 풉니다. 핵심 개념부터 짚습니다.
+WebFlux는 이 문제를 **논블로킹**으로 해결합니다. 핵심 개념부터 살펴봅니다.
 
 - **논블로킹(non-blocking)**: I/O를 요청해 놓고 **기다리지 않고** 다음 일을 합니다. 결과가 준비되면 **콜백**으로 이어서 처리합니다.
 - **이벤트 루프(event loop)**: 소수의 스레드(보통 CPU 코어 수)가 "완료된 I/O"를 돌며 콜백을 실행합니다. 대기 중인 요청은 스레드를 점유하지 않습니다.
@@ -29,18 +29,18 @@ WebFlux는 이 문제를 **논블로킹**으로 풉니다. 핵심 개념부터 �
 - **`Mono`·`Flux`**: Reactor의 두 발행자(Publisher) 타입. **`Mono<T>`** 는 결과가 **0개 또는 1개**(단건), **`Flux<T>`** 는 **0개 이상 여러 개**(스트림)를 **비동기로** 내보냅니다.
 - **백프레셔(backpressure)**: 소비자가 처리할 수 있는 만큼만 데이터를 요청하는 흐름 제어. 생산자가 너무 빨라 소비자가 밀리는 상황을 규격 차원에서 막습니다.
 
-<mark>`Mono`·`Flux`는 "값" 자체가 아니라 **"나중에 값이 전달될 통로"** 입니다 — 구독(subscribe)해야 실행되고, 결과는 콜백·연산자로 이어 붙입니다.</mark>
+<mark>`Mono`·`Flux`는 "값" 자체가 아니라 **"나중에 값이 전달되는 자리"** 입니다 — 구독(subscribe)해야 실행되고, 결과는 콜백·연산자로 연결합니다.</mark>
 
 ### Reactive Streams — 네 가지 역할
 
-WebFlux의 바탕인 **Reactive Streams**는 네 개의 인터페이스로 이뤄집니다. 이 관계를 알면 "구독해야 실행된다"·"백프레셔"가 왜 그렇게 동작하는지 이해됩니다.
+WebFlux의 바탕인 **Reactive Streams**는 인터페이스 네 개로 구성됩니다. 이 관계만 이해하면 "왜 구독해야 실행되는지"·"백프레셔가 무엇인지"가 분명해집니다.
 
 - **Publisher**(발행자) — 데이터를 만들어 내보내는 쪽. `Mono`·`Flux`가 여기에 해당합니다.
 - **Subscriber**(구독자) — 데이터를 받는 쪽. `onNext`(값)·`onComplete`(끝)·`onError`(오류) 콜백을 가집니다.
-- **Subscription**(구독) — 둘을 잇는 연결. 구독자가 `request(n)`으로 **받을 개수를 요청**하고, `cancel()`로 취소합니다.
-- **Processor** — Publisher이자 Subscriber인 중간 단계(직접 쓸 일은 드뭅니다).
+- **Subscription**(구독) — Publisher와 Subscriber의 연결. 구독자가 `request(n)`으로 **받을 개수를 요청**하고, `cancel()`로 취소합니다.
+- **Processor** — Publisher이자 Subscriber인 중간 단계(직접 쓸 일은 많지 않습니다).
 
-네 역할이 실제로 어떻게 맞물리는지, 저수준 코드로 한 번만 보면 감이 잡힙니다(평소엔 연산자가 이걸 대신 해 줍니다).
+네 역할이 실제로 어떻게 함께 동작하는지는 기본 인터페이스 코드로 한 번만 보면 이해됩니다(평소엔 연산자가 이 과정을 대신 처리합니다).
 
 ```java
 // Publisher: 값을 발행 (Flux가 대표적 구현)
@@ -72,7 +72,7 @@ publisher.subscribe(new Subscriber<Integer>() {
 - **Subscription** = `onSubscribe`로 전달된 `s` — 여기에 `request(n)`·`cancel()`로 **수요를 조절**.
 - **Processor**(Publisher이자 Subscriber, 중간 변환)는 직접 쓸 일이 드물어 생략 — 실무에선 `map`·`filter` 같은 연산자가 그 역할을 합니다.
 
-<mark>핵심은 **구독자가 `request(n)`으로 "처리할 수 있는 만큼만" 요청해 받는다**는 점입니다 — 이 pull 기반 요청이 곧 백프레셔입니다. 발행자가 일방적으로 밀어내지 않습니다.</mark> (표준 자체·JDK Flow·cold/hot·라이브러리 관계는 [Reactive Streams 표준](./reactive-streams-spec)에서 자세히 다룹니다.)
+<mark>핵심은 **구독자가 `request(n)`으로 "처리할 수 있는 만큼만" 요청해 받는다**는 점입니다 — 이 pull 기반 요청이 백프레셔입니다. 발행자가 일방적으로 보내지 않습니다.</mark> (표준 자체·JDK Flow·cold/hot·라이브러리 관계는 [Reactive Streams 표준](./reactive-streams-spec)에서 자세히 다룹니다.)
 
 ### 구독하기 전엔 아무 일도 안 일어난다 (lazy)
 
@@ -86,12 +86,12 @@ mono.subscribe(user -> log.info("{}", user));  // 구독하는 순간 실행
 
 이 **지연 실행(lazy)** 때문에, 컨트롤러에서 `Mono`를 만들어 두고 반환만 하면 프레임워크가 구독·실행을 맡습니다.
 
-### 연산자(operator) — 흐름을 조립한다
+### 연산자(operator) — 흐름을 구성한다
 
-값을 직접 다루는 대신 **연산자로 통로를 이어 붙입니다.** 자주 쓰는 것만:
+값을 직접 다루는 대신 **연산자로 단계를 연결합니다.** 자주 쓰는 것만:
 
 - **`map`** — 값을 변환(1:1). `Mono<User> → Mono<UserDto>`.
-- **`flatMap`** — 값을 **또 다른 Publisher로** 바꿔 이어 붙임(비동기 연쇄). `Mono<User> → Mono<Order>`.
+- **`flatMap`** — 값을 **또 다른 Publisher로** 바꿔 연결(비동기 연쇄). `Mono<User> → Mono<Order>`.
 - **`zip`** — 여러 Publisher를 **병렬로 기다렸다 합침**(독립된 두 호출을 동시에).
 - **`onErrorResume`·`retry`·`timeout`** — 오류 대체·재시도·시간 제한.
 
@@ -106,7 +106,7 @@ Mono<Dashboard> dashboard =
 
 ### 스케줄러(Scheduler)와 백프레셔 전략
 
-- **스케줄러**: "어느 스레드에서 실행할지" 지정. `subscribeOn`(구독 시작 스레드)·`publishOn`(이후 단계 스레드). 불가피한 블로킹 작업은 `Schedulers.boundedElastic()`로 **이벤트 루프 밖으로** 뺀다.
+- **스케줄러**: "어느 스레드에서 실행할지" 지정. `subscribeOn`(구독 시작 스레드)·`publishOn`(이후 단계 스레드). 불가피한 블로킹 작업은 `Schedulers.boundedElastic()`로 **이벤트 루프와 분리된 전용 풀에서** 실행한다.
   ```java
   return Mono.fromCallable(() -> legacyBlockingClient.call())  // 블로킹 호출
              .subscribeOn(Schedulers.boundedElastic())         // 이벤트 루프가 아닌 전용 풀에서 실행
@@ -122,7 +122,7 @@ Mono<Dashboard> dashboard =
 
 <mark>MVC는 대기 중에도 스레드를 점유해 동시 요청 수만큼 스레드가 필요하지만, WebFlux는 대기를 콜백으로 넘기고 소수 스레드만으로 수만 요청을 처리합니다.</mark>
 
-**MVC**: 요청을 받은 스레드가 I/O가 끝날 때까지 붙잡혀 있습니다.
+**MVC**: 요청을 받은 스레드가 I/O가 끝날 때까지 그 요청을 점유한 채 대기합니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -232,7 +232,7 @@ public class OrderController {
 }
 ```
 
-<mark>MVC는 값을 바로 반환하지만, WebFlux는 `Mono`/`Flux`를 반환하고 `flatMap`·`map` 같은 **연산자로 흐름을 조립**합니다 — 코드의 사고방식 자체가 달라집니다.</mark>
+<mark>MVC는 값을 바로 반환하지만, WebFlux는 `Mono`/`Flux`를 반환하고 `flatMap`·`map` 같은 **연산자로 흐름을 구성**합니다 — 코드의 사고방식 자체가 달라집니다.</mark>
 
 ### 주의 — 중간에 블로킹이 섞이면 이점이 사라진다
 
@@ -260,7 +260,7 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
 
 - **스택 트레이스가 끊긴다**: 로직이 여러 스레드(이벤트 루프)에 걸쳐 콜백으로 실행되므로, 예외가 나도 스택 트레이스에 **내 코드가 거의 안 보이고** Reactor 내부 프레임만 길게 남습니다.
 - **한 요청이 한 스레드가 아니다**: 단계마다 실행 스레드가 바뀔 수 있어, 스레드 이름 기반 로그·`ThreadLocal`(MDC 등)이 그대로는 안 이어집니다.
-- **중단점 디버깅이 잘 안 맞는다**: 선언(조립) 시점과 실제 실행(구독) 시점이 달라, 연산자 람다에 브레이크포인트를 걸어도 흐름을 따라가기 어렵습니다.
+- **중단점 디버깅이 잘 안 맞는다**: 선언(구성) 시점과 실제 실행(구독) 시점이 달라, 연산자 람다에 브레이크포인트를 걸어도 흐름을 따라가기 어렵습니다.
 
 **대처**
 
@@ -287,14 +287,14 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
   ```
 - **Reactor 디버그 모드 / `checkpoint()`**: 예외가 나도 스택에 내 코드가 안 보이므로, 요소마다 표식을 남긴다.
   ```java
-  // (개발) 전역 디버그 — 조립 지점을 스택에 복원, 대신 비용이 큼
+  // (개발) 전역 디버그 — 구성 지점을 스택에 복원, 대신 비용이 큼
   Hooks.onOperatorDebug();
 
   // (운영) 지점별 checkpoint — 실패 시 "결제 조회 단계"가 스택에 찍힘
   paymentClient.charge(order)
                .checkpoint("결제 조회 단계")
                .flatMap(this::save);
-  // 더 가벼운 대안: reactor-tools의 ReactorDebugAgent.init() (오버헤드 없이 조립 지점 복원)
+  // 더 가벼운 대안: reactor-tools의 ReactorDebugAgent.init() (오버헤드 없이 구성 지점 복원)
   ```
 - **MDC(로그 문맥) 전파**: 스레드가 바뀌어도 요청 식별자(traceId 등)가 로그에 이어지도록 **Reactor Context**로 값을 실어 전달한다.
   ```java
@@ -326,7 +326,7 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
 ## WebFlux의 이점
 
 - **적은 스레드로 높은 동시성**: I/O 대기가 많은 서비스(게이트웨이·조합 API)에서 스레드 풀 고갈 없이 많은 요청을 처리합니다.
-- **백프레셔**: 생산자-소비자 속도 차를 규격 차원에서 제어합니다 — 예: 느린 클라이언트에게 빠른 스트림을 밀어내지 않습니다.
+- **백프레셔**: 생산자-소비자 속도 차를 규격 차원에서 제어합니다 — 예: 느린 클라이언트에게 소비 속도보다 빠르게 보내지 않습니다.
 - **스트리밍·SSE**: `Flux`로 데이터를 조금씩 내보내는 실시간 스트리밍(Server-Sent Events)에 자연스럽습니다.
 
 <mark>WebFlux의 진짜 강점은 "빠르다"가 아니라 **"적은 자원으로 버틴다 + 흐름을 제어한다"** 입니다 — 단일 요청이 더 빨라지는 게 아닙니다.</mark>

@@ -116,7 +116,7 @@ long peak = maxLatency.get();   // 120
 - `AtomicLong` 은 값 하나를 CAS로 다투므로 **고경합에서 재시도가 폭증**해 느려진다.
 - `LongAdder` 는 **값을 여러 칸으로 나눠** 경합을 분산하고, 필요할 때 `sum()` 으로 합친다.
 - `sum()` 은 **원자적 스냅샷이 아니다** — 통계·카운터처럼 "대략 맞으면 되는" 용도에 적합.
-- **쓰기 잦고 읽기 드문** 카운터엔 `LongAdder`, **현재 값 기반 원자 제어**엔 `AtomicLong`.
+- **쓰기 잦고 읽기 적은** 카운터엔 `LongAdder`, **현재 값 기반 원자 제어**엔 `AtomicLong`.
 - **Java 8(1.8)** 부터 지원. 형제로 `DoubleAdder`·`LongAccumulator`·`DoubleAccumulator`.
 
 <mark>한 줄 요약: "많은 스레드가 그저 숫자를 누적만 하는" 상황이면 `AtomicLong` 대신 `LongAdder` 를 기본값으로 고려하라.</mark>
