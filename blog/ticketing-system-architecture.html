@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.50dc8869.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.a9d55a8d.js" defer="defer"></script>
 <script src="/assets/js/main.33648568.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -81,7 +81,7 @@
 </ul>
 <mark>초과 예매를 막는 핵심은 &quot;확인+차감&quot;을 원자적으로 묶는 것입니다 — Redis 단일 스레드 + Lua가 잔여 좌석 수만큼만 통과시킵니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-메시지-큐--db를-완전히-완충한다">5. 메시지 큐 — DB를 완전히 완충한다<a href="#5-메시지-큐--db를-완전히-완충한다" class="hash-link" aria-label="5. 메시지 큐 — DB를 완전히 완충한다에 대한 직접 링크" title="5. 메시지 큐 — DB를 완전히 완충한다에 대한 직접 링크">​</a></h2>
-<p>좌석 게이트를 통과했다고 곧장 DB에 쓰지 않습니다. 통과분을 <strong>메시지 큐(MQ)</strong> 에 넣고, 컨슈머가 <strong>DB가 감당할 속도로</strong> 꺼내 순차 기록합니다. 이렇게 하면 오픈 순간의 스파이크가 DB에 그대로 전달되지 않아, DB 부하를 거의 완전히 예방합니다.</p>
+<p>좌석 게이트를 통과했다고 바로 DB에 쓰지 않습니다. 통과분을 <strong>메시지 큐(MQ)</strong> 에 넣고, 컨슈머가 <strong>DB가 감당할 속도로</strong> 꺼내 순차 기록합니다. 이렇게 하면 오픈 순간의 스파이크가 DB에 그대로 전달되지 않아, DB 부하를 거의 완전히 예방합니다.</p>
 <p>즉 유입 완충은 두 겹입니다. <strong>대기열</strong>이 예매 단계 진입 속도를 고르고, <strong>MQ</strong>가 DB 쓰기 속도를 고릅니다. 그 사이의 Redis 원자 처리가 &quot;좌석 수만큼만&quot; 걸러 주므로, MQ에는 이미 확정 가능한 요청만 전달됩니다.</p>
 <mark>대기열이 &quot;입장 속도&quot;를 고른다면, 메시지 큐는 &quot;DB 쓰기 속도&quot;를 고릅니다 — 두 겹의 완충으로 스파이크가 DB에 직접 닿지 않습니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="6-최종-정합성과-장애-대비">6. 최종 정합성과 장애 대비<a href="#6-최종-정합성과-장애-대비" class="hash-link" aria-label="6. 최종 정합성과 장애 대비에 대한 직접 링크" title="6. 최종 정합성과 장애 대비에 대한 직접 링크">​</a></h2>
