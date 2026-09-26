@@ -17,7 +17,7 @@ import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
 
 전통적인 **Spring MVC**(서블릿 기반)는 **요청 하나당 스레드 하나**를 씁니다. 그 스레드는 DB 조회·외부 API 호출 같은 I/O가 끝날 때까지 **블로킹**되어 아무 일도 못 하면서 자리만 차지합니다.
 
-문제는 **동시 요청이 많고 각 요청이 오래 기다릴 때**입니다. 예를 들어 톰캣 기본 스레드 풀이 200개인데 요청당 외부 API가 500ms 걸린다면, 201번째 요청부터는 스레드가 없어 대기합니다. CPU는 놀고 있는데 **스레드 풀이 병목**이 되는 것입니다. (스레드 풀 튜닝은 [스레드 풀 이야기](./spring-boot-thread-pools), 이벤트 루프의 원리는 [Redis가 싱글 스레드로 빠른 이유](./redis-single-thread-fast) 참고.)
+문제는 **동시 요청이 많고 각 요청이 오래 기다릴 때**입니다. 예를 들어 톰캣 기본 스레드 풀이 200개인데 요청당 외부 API가 500ms 걸린다면, 201번째 요청부터는 스레드가 없어 대기합니다. CPU는 여유가 있는데 **스레드 풀이 병목**이 되는 것입니다. (스레드 풀 튜닝은 [스레드 풀 이야기](./spring-boot-thread-pools), 이벤트 루프의 원리는 [Redis가 싱글 스레드로 빠른 이유](./redis-single-thread-fast) 참고.)
 
 ## 리액티브·비동기 기본 개념
 
@@ -26,8 +26,8 @@ WebFlux는 이 문제를 **논블로킹**으로 풉니다. 핵심 개념부터 �
 - **논블로킹(non-blocking)**: I/O를 요청해 놓고 **기다리지 않고** 다음 일을 합니다. 결과가 준비되면 **콜백**으로 이어서 처리합니다.
 - **이벤트 루프(event loop)**: 소수의 스레드(보통 CPU 코어 수)가 "완료된 I/O"를 돌며 콜백을 실행합니다. 대기 중인 요청은 스레드를 점유하지 않습니다.
 - **Reactive Streams**: 비동기 스트림의 **표준 규격**(Publisher·Subscriber·Subscription). WebFlux는 이 규격의 구현인 **Project Reactor** 위에서 동작합니다.
-- **`Mono`·`Flux`**: Reactor의 두 발행자(Publisher) 타입. **`Mono<T>`** 는 0~1개, **`Flux<T>`** 는 0~N개의 결과를 **비동기로** 내보냅니다.
-- **백프레셔(backpressure)**: 소비자가 감당할 수 있는 만큼만 데이터를 요청하는 흐름 제어. 생산자가 너무 빨라 소비자가 밀리는 상황을 규격 차원에서 막습니다.
+- **`Mono`·`Flux`**: Reactor의 두 발행자(Publisher) 타입. **`Mono<T>`** 는 결과가 **0개 또는 1개**(단건), **`Flux<T>`** 는 **0개 이상 여러 개**(스트림)를 **비동기로** 내보냅니다.
+- **백프레셔(backpressure)**: 소비자가 처리할 수 있는 만큼만 데이터를 요청하는 흐름 제어. 생산자가 너무 빨라 소비자가 밀리는 상황을 규격 차원에서 막습니다.
 
 <mark>`Mono`·`Flux`는 "값" 자체가 아니라 **"나중에 값이 전달될 통로"** 입니다 — 구독(subscribe)해야 실행되고, 결과는 콜백·연산자로 이어 붙입니다.</mark>
 
@@ -40,7 +40,39 @@ WebFlux의 바탕인 **Reactive Streams**는 네 개의 인터페이스로 이�
 - **Subscription**(구독) — 둘을 잇는 연결. 구독자가 `request(n)`으로 **받을 개수를 요청**하고, `cancel()`로 취소합니다.
 - **Processor** — Publisher이자 Subscriber인 중간 단계(직접 쓸 일은 드뭅니다).
 
-<mark>핵심은 **구독자가 `request(n)`으로 "감당할 만큼만" 당겨 간다**는 점입니다 — 이 pull 기반 요청이 곧 백프레셔입니다. 발행자가 일방적으로 밀어내지 않습니다.</mark> (표준 자체·JDK Flow·cold/hot·라이브러리 관계는 [Reactive Streams 표준](./reactive-streams-spec)에서 자세히 다룹니다.)
+네 역할이 실제로 어떻게 맞물리는지, 저수준 코드로 한 번만 보면 감이 잡힙니다(평소엔 연산자가 이걸 대신 해 줍니다).
+
+```java
+// Publisher: 값을 발행 (Flux가 대표적 구현)
+Publisher<Integer> publisher = Flux.range(1, 5);
+
+// Subscriber: 네 콜백으로 신호를 받는다
+publisher.subscribe(new Subscriber<Integer>() {
+    private Subscription subscription;
+
+    @Override
+    public void onSubscribe(Subscription s) {   // ① 구독 연결이 전달됨
+        this.subscription = s;
+        s.request(2);                            // ② 우선 2개만 요청 (백프레셔)
+    }
+    @Override
+    public void onNext(Integer item) {           // ③ 요청한 만큼 값이 하나씩 도착
+        System.out.println("받음: " + item);
+        subscription.request(1);                 // ④ 하나 처리했으니 하나 더 요청
+    }
+    @Override public void onError(Throwable t) { }   // 오류 신호
+    @Override public void onComplete() {             // 완료 신호
+        System.out.println("끝");
+    }
+});
+```
+
+- **Publisher** = `Flux.range(...)` — 값을 발행.
+- **Subscriber** = `subscribe(...)`에 넘긴 객체 — `onSubscribe`·`onNext`·`onError`·`onComplete`를 받음.
+- **Subscription** = `onSubscribe`로 전달된 `s` — 여기에 `request(n)`·`cancel()`로 **수요를 조절**.
+- **Processor**(Publisher이자 Subscriber, 중간 변환)는 직접 쓸 일이 드물어 생략 — 실무에선 `map`·`filter` 같은 연산자가 그 역할을 합니다.
+
+<mark>핵심은 **구독자가 `request(n)`으로 "처리할 수 있는 만큼만" 요청해 받는다**는 점입니다 — 이 pull 기반 요청이 곧 백프레셔입니다. 발행자가 일방적으로 밀어내지 않습니다.</mark> (표준 자체·JDK Flow·cold/hot·라이브러리 관계는 [Reactive Streams 표준](./reactive-streams-spec)에서 자세히 다룹니다.)
 
 ### 구독하기 전엔 아무 일도 안 일어난다 (lazy)
 
@@ -75,6 +107,13 @@ Mono<Dashboard> dashboard =
 ### 스케줄러(Scheduler)와 백프레셔 전략
 
 - **스케줄러**: "어느 스레드에서 실행할지" 지정. `subscribeOn`(구독 시작 스레드)·`publishOn`(이후 단계 스레드). 불가피한 블로킹 작업은 `Schedulers.boundedElastic()`로 **이벤트 루프 밖으로** 뺀다.
+  ```java
+  return Mono.fromCallable(() -> legacyBlockingClient.call())  // 블로킹 호출
+             .subscribeOn(Schedulers.boundedElastic())         // 이벤트 루프가 아닌 전용 풀에서 실행
+             .map(this::toResponse);
+  // boundedElastic = 블로킹 작업용 스레드 풀(필요 시 늘고 상한 있음).
+  // 이게 없으면 블로킹 호출이 이벤트 루프 스레드를 막아 전체가 멈춘다.
+  ```
 - **백프레셔 전략**: 소비자가 못 따라올 때 처리 방법 — `onBackpressureBuffer`(버퍼링)·`onBackpressureDrop`(버림)·`onBackpressureLatest`(최신만).
 
 ## 스레드 모델 — 무엇이 다른가

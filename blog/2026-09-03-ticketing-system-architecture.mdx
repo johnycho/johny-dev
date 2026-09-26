@@ -64,7 +64,7 @@ import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
 
 ## 1. 대기열 — 왜 MQ가 아니라 Redis Sorted Set인가
 
-대기열은 "먼저 온 순서대로, 서버가 감당할 만큼만 입장"을 담당합니다. Redis의 **Sorted Set(정렬 집합)** 에 점수(score)를 **도착 순번**으로 넣으면, 자동으로 순서대로 정렬됩니다.
+대기열은 "먼저 온 순서대로, 서버가 처리할 수 있는 만큼만 입장"을 담당합니다. Redis의 **Sorted Set(정렬 집합)** 에 점수(score)를 **도착 순번**으로 넣으면, 자동으로 순서대로 정렬됩니다.
 
 ```text
 ZADD  queue:{eventId} {arrivalSeq} {userId}   # 대기열 진입 (score = 도착 순번)
