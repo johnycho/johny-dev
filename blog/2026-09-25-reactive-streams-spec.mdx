@@ -105,12 +105,12 @@ Sub -> S : onComplete()
 
 > **`request(n)`의 `n`은 누가 정하나?**
 >
-> `n`은 **구독자(Subscriber)** 가 정합니다. 구독자가 `onSubscribe(Subscription s)`에서 받은 `Subscription`에 `s.request(n)`을 호출할 때 넘기는 숫자입니다(이때 파라미터 `s`가 곧 그 `Subscription` 객체입니다). 직접 구현한 구독자면 개발자가 코드에 명시하고(아래 예시), Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 그 연산자·최종 구독자가 정합니다 — 기본값은 대개 `Long.MAX_VALUE`(무제한)이고, `limitRate(n)` 같은 연산자로 상한을 둡니다. WebFlux HTTP 스트리밍에서는 응답을 내보내는 쪽이 **전송 계층(TCP 소켓)의 쓰기 여유**에 맞춰 `request`를 내, 소켓이 막히면 요청도 멈춥니다.
+> `n`은 **구독자(Subscriber)** 가 정합니다. 구독자가 `onSubscribe(Subscription s)`에서 받은 `Subscription`에 `s.request(n)`을 호출할 때 넘기는 숫자입니다(이때 파라미터 `s`가 곧 그 `Subscription` 객체입니다). `Subscriber` 인터페이스를 직접 구현하는 경우엔 개발자가 그 코드 안에 명시하고(아래 예시), Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 그 연산자·최종 구독자가 정합니다 — 기본값은 대개 `Long.MAX_VALUE`(무제한)이고, `limitRate(n)` 같은 연산자로 상한을 둡니다. WebFlux HTTP 스트리밍에서는 응답을 내보내는 쪽이 **전송 계층(TCP 소켓)의 쓰기 여유**에 맞춰 `request`를 보내고, 소켓이 막히면 요청도 멈춥니다.
 
-직접 구현한 구독자에서 `n`을 정하는 모습은 이렇습니다.
+`Subscriber` 구현 클래스에서 `n`을 정하는 모습은 이렇습니다.
 
 ```java
-// 직접 구현한 구독자 — n을 개발자가 코드에 명시한다
+// 직접 구현한 Subscriber 클래스 — n을 개발자가 코드에 명시한다
 class MySubscriber implements Subscriber<Integer> {
     private Subscription subscription;   // onSubscribe에서 받은 s를 보관해 둔다
 
@@ -133,11 +133,20 @@ class MySubscriber implements Subscriber<Integer> {
 
 여기서는 `onSubscribe`와 `onNext`에서 `request(1)`로 **한 건씩만** 요청해 받도록 `n`을 정했습니다. `s.request(256)`처럼 크게 잡으면 한 번에 더 많이 받고, `Long.MAX_VALUE`면 사실상 백프레셔 없이 받는 대로 처리합니다.
 
-반면 Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 이 `n`을 대신 정해 줍니다. 이건 추정이 아니라 [Reactor 레퍼런스 가이드](https://projectreactor.io/docs/core/release/reference/reactiveProgramming.html#reactive.backpressure)에 명시돼 있습니다 — 가장 직접적인 구독 방식(`subscribe()`·람다형 변형)은 구독 시 곧바로 **무제한(`Long.MAX_VALUE`)을 요청**하고("the most direct ways of subscribing all immediately trigger an unbounded request of `Long.MAX_VALUE`"), 상한이 필요하면 [`limitRate(n)`](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html#limitRate%28int%29) 연산자가 하위 수요를 **`n`개 단위 배치로 쪼개** 위로 전파합니다.
+반면 Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 이 `n`을 대신 정해 줍니다.
+
+- **기본은 무제한** — `subscribe()`나 람다형 변형처럼 가장 직접적인 구독 방식은 구독하는 순간 곧바로 `Long.MAX_VALUE`를 요청합니다.
+- **상한이 필요하면 `limitRate(n)`** — [이 연산자](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html#limitRate%28int%29)가 하위 수요를 `n`개 단위 배치로 나눠 위로 전파합니다.
+
+이 "기본은 무제한" 동작은 [Reactor 레퍼런스 가이드](https://projectreactor.io/docs/core/release/reference/reactiveProgramming.html#reactive.backpressure)가 다음과 같이 명시합니다.
+
+> the most direct ways of subscribing all immediately trigger an unbounded request of `Long.MAX_VALUE`
+
+즉 위 문장은 "가장 직접적인 구독 방식들은 모두 구독하는 즉시 `Long.MAX_VALUE`의 무제한 요청을 일으킨다"는 뜻으로, 앞서 말한 기본 무제한 동작을 가리킵니다.
 
 ## 발행과 구독이 이어지는 구조
 
-실제 코드는 **소스 → 연산자 여러 단계 → 최종 구독자**가 여러 단계가 이어진 **파이프라인**입니다. 방향이 두 갈래인 게 핵심입니다.
+실제 코드는 **소스 → 연산자 여러 단계 → 최종 구독자**로 이어진 **파이프라인**입니다. 흐름 방향이 둘인 게 핵심입니다.
 
 - **데이터는 위→아래(소스 → 구독자)** 로 `onNext`를 타고 내려갑니다.
 - **수요(`request(n)`)는 아래→위(구독자 → 소스)** 로 올라갑니다. 각 연산자는 요청을 위로 전파합니다.
@@ -375,5 +384,5 @@ public void consume(org.reactivestreams.Publisher<Event> source) {
 
 - [Reactive Streams 표준 명세](https://www.reactive-streams.org/) — 인터페이스 4개와 규약
 - [Reactor 레퍼런스 — Backpressure](https://projectreactor.io/docs/core/release/reference/reactiveProgramming.html#reactive.backpressure) — 구독 시 기본 `Long.MAX_VALUE` 요청, 수요 재조정
-- [`Flux.limitRate(int)` 자바독](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html#limitRate%28int%29) — 하위 수요를 배치로 쪼개 상한
+- [`Flux.limitRate(int)` 자바독](https://projectreactor.io/docs/core/release/api/reactor/core/publisher/Flux.html#limitRate%28int%29) — 하위 수요를 배치로 나눠 상한
 - [JDK 9 `java.util.concurrent.Flow`](https://docs.oracle.com/javase/9/docs/api/java/util/concurrent/Flow.html) — 표준을 담은 JDK 인터페이스
