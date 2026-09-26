@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.293eed32.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.17772d5b.js" defer="defer"></script>
 <script src="/assets/js/main.eb7444a1.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -137,7 +137,7 @@
 <table><thead><tr><th>기준</th><th>Spring MVC</th><th>Spring WebFlux</th></tr></thead><tbody><tr><td>모델</td><td>요청당 스레드·블로킹</td><td>이벤트 루프·논블로킹</td></tr><tr><td>런타임</td><td>서블릿(톰캣)</td><td>Reactor Netty(기본)</td></tr><tr><td>코드 스타일</td><td>순차·동기</td><td><code>Mono</code>/<code>Flux</code> 연산자 체인</td></tr><tr><td>DB 드라이버</td><td>JPA·JDBC</td><td>R2DBC</td></tr><tr><td>외부 호출</td><td>RestTemplate</td><td>WebClient</td></tr><tr><td>강점</td><td>단순함·풍부한 생태계·쉬운 디버깅</td><td>적은 스레드로 높은 동시성·백프레셔·스트리밍</td></tr><tr><td>약점</td><td>동시성이 스레드 풀에 제한</td><td>학습 곡선·디버깅 난이도·블로킹 혼입 위험</td></tr></tbody></table>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="webflux의-이점">WebFlux의 이점<a href="#webflux의-이점" class="hash-link" aria-label="WebFlux의 이점에 대한 직접 링크" title="WebFlux의 이점에 대한 직접 링크">​</a></h2>
 <ul>
-<li><strong>적은 스레드로 높은 동시성</strong>: I/O 대기가 많은 서비스(게이트웨이·조합 API)에서 스레드 풀 고갈 없이 많은 요청을 감당합니다.</li>
+<li><strong>적은 스레드로 높은 동시성</strong>: I/O 대기가 많은 서비스(게이트웨이·조합 API)에서 스레드 풀 고갈 없이 많은 요청을 처리합니다.</li>
 <li><strong>백프레셔</strong>: 생산자-소비자 속도 차를 규격 차원에서 제어합니다 — 예: 느린 클라이언트에게 빠른 스트림을 밀어내지 않습니다.</li>
 <li><strong>스트리밍·SSE</strong>: <code>Flux</code>로 데이터를 조금씩 내보내는 실시간 스트리밍(Server-Sent Events)에 자연스럽습니다.</li>
 </ul>
