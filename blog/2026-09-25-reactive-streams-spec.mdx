@@ -195,7 +195,7 @@ C -> Ctl : GET /orders/paid
 Ctl -> W : Flux<OrderDto> 반환 (아직 실행 안 됨)
 W -> R : subscribe()
 R -> W : onSubscribe(subscription)
-W -> R : request(n)  (받을 개수 요청)
+W -> R : request(n) 받을 개수 요청
 R -> DB : 논블로킹 쿼리 실행
 DB --> R : row1
 R -> W : onNext(order1) → map → onNext(dto1)
@@ -217,8 +217,8 @@ note over C, DB : 전체를 모으지 않고 한 건씩 발행·변환·전송 (
 정리하면 이렇게 이어집니다.
 
 1. **요청 도착** → 컨트롤러가 `Flux` 파이프라인을 **조립해 반환**만 합니다(DB 쿼리는 아직 실행 전).
-2. **WebFlux가 구독** → 응답을 쓰기 시작하며 `subscribe()`, 이어서 `request(n)`이 소스(R2DBC)까지 전파됩니다.
-3. **소스가 한 건 발행** → DB에서 row 하나가 오면 `onNext(order1)` → `filter` → `map`을 거쳐 `dto1`이 되고, **그 즉시 클라이언트로 전송**됩니다.
+2. **WebFlux가 구독** → 응답 본문을 만들 데이터가 필요하므로 WebFlux가 반환된 `Flux`를 `subscribe()` 합니다. 이 구독이 실행의 방아쇠라, 이어서 `request(n)`이 소스(R2DBC)까지 거슬러 전파되고 그제야 실제 쿼리가 나갑니다.
+3. **소스가 한 건 발행** → DB에서 row 하나가 오면 `onNext(order1)` → `filter` → `map`을 거쳐 `dto1`이 되고, WebFlux가 **그 건을 응답에 써서 즉시 클라이언트로 전송**합니다.
 4. **반복** → 다음 row도 같은 경로로 한 건씩 처리·전송. 다 끝나면 `onComplete`로 응답을 닫습니다.
 
 <mark>핵심은 **"한 건 발행 → 변환 → 전송"이 건마다 반복**된다는 점입니다 — 전체 결과를 메모리에 모았다가 한 번에 주는 게 아니라, 오는 대로 처리해 메모리를 상수로 유지합니다.</mark>

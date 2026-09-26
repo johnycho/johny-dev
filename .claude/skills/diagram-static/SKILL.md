@@ -16,6 +16,7 @@
 1. **`.puml` 작성** — **C4**면 `!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml`(또는 `C4_Container.puml`·`C4_Component.puml`) + `LAYOUT_LEFT_RIGHT()`(가로 배치). **일반 PlantUML**은 include 없이 그냥 작성.
 2. **렌더(Kroki)** — C4는 `curl -X POST https://kroki.io/c4plantuml/svg --data-binary @x.puml -o static/img/c4/<name>.svg`, 일반 PlantUML은 `.../plantuml/svg`. **HTTP 200·`<svg` 시작 확인**, 오류(400)면 문법 고쳐 재시도.
    - 자주 나는 400: 한 줄 `skinparam` 블록(→ 여러 줄로), 중첩 그룹+라벨 엣지, 대규모 한글 ER의 crow's-foot(→ 클래스 다이어그램으로), `[PK]` 대괄호 대량 사용(→ `: PK`). 겹침이 심하면 다이어그램을 나눈다.
+   - **화살표·엣지 라벨은 iOS Safari에서 깨질 수 있는 형태를 피한다.** PlantUML은 라벨에 `lengthAdjust="spacing"`을 걸어 렌더하는데, **이중 공백**(`request(n)  (…)`)이나 **중첩 괄호**가 있으면 iOS Safari에서 글자 간격이 벌어져 텍스트가 깨져 보인다. 라벨은 **공백 하나**로 붙이고 괄호 중첩을 피한다: `request(n)  (받을 개수 요청)` → `request(n) 받을 개수 요청`. 부연이 필요하면 `note`로 뺀다.
 3. **본문 삽입** — 접이식 코드 + 이미지:
    ```md
    <details>
