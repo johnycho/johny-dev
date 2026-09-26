@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.17772d5b.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.113801e5.js" defer="defer"></script>
 <script src="/assets/js/main.eb7444a1.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -99,10 +99,10 @@
 <ul>
 <li><strong>복제(replication)</strong> — 리플리카를 둬 <strong>읽기(순위 조회)를 분산</strong>합니다. 예매는 쓰기보다 &quot;내 순번&quot; 조회가 훨씬 많기 때문입니다. 마스터에 쓰고 리플리카에서 읽되, 복제는 <strong>비동기</strong>라 수백 ms~수 초 <strong>지연</strong>이 생길 수 있습니다. 그래서 <strong>정확성이 필요한 등록·정확 순번은 마스터</strong>에서, <strong>지연을 감수해도 되는 통계성 조회는 리플리카</strong>로 나눕니다.</li>
 <li><strong>Sentinel</strong> — 복제 위에 얹어 마스터 장애를 <strong>자동 감지·자동 승격</strong>합니다(수동 개입 불필요). 다만 복제 지연은 그대로라, 리플리카마다 반영 속도가 달라 <strong>순번이 들쭉날쭉</strong>해 보일 수 있습니다. 완화책은 같은 사용자를 같은 리플리카로 보내는 <strong>스티키 세션</strong>, 그리고 <strong>순위는 마스터에서 조회</strong>하기입니다.</li>
-<li><strong>클러스터(샤딩)</strong> — 동접이 전 국민 규모면 대기열 자체를 <strong>여러 키로 쪼개 여러 마스터에 분산</strong>합니다. 진입 시 발급한 사용자 UUID를 해싱해 샤드를 정하면 <strong>읽기뿐 아니라 쓰기도 분산</strong>됩니다.</li>
+<li><strong>클러스터(샤딩)</strong> — 동접이 전 국민 규모면 대기열 자체를 <strong>여러 키로 나눠 여러 마스터에 분산</strong>합니다. 진입 시 발급한 사용자 UUID를 해싱해 샤드를 정하면 <strong>읽기뿐 아니라 쓰기도 분산</strong>됩니다.</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="클러스터의-모순--전역-순서">클러스터의 모순 — 전역 순서<a href="#클러스터의-모순--전역-순서" class="hash-link" aria-label="클러스터의 모순 — 전역 순서에 대한 직접 링크" title="클러스터의 모순 — 전역 순서에 대한 직접 링크">​</a></h3>
-<p>여기서 핵심 문제가 생깁니다. <strong>Sorted Set 하나는 한 샤드에만 존재</strong>하므로, 단일 전역 큐 키는 자동으로 분산되지 않습니다. 샤드별로 쪼개면 <strong>전역 순서와 순위를 어떻게 계산하나?</strong> 세 가지 전략이 있습니다.</p>
+<p>여기서 핵심 문제가 생깁니다. <strong>Sorted Set 하나는 한 샤드에만 존재</strong>하므로, 단일 전역 큐 키는 자동으로 분산되지 않습니다. 샤드별로 나누면 <strong>전역 순서와 순위를 어떻게 계산하나?</strong> 세 가지 전략이 있습니다.</p>
 <table><thead><tr><th>전략</th><th>순서 기준</th><th>내 순위 계산</th><th>입장 처리</th><th>특징</th></tr></thead><tbody><tr><td><strong>A. 글로벌 카운터</strong></td><td><code>INCR</code> 발급 번호</td><td>내 번호 − 처리 번호</td><td>K-way merge</td><td>정확하지만 <strong>카운터가 새 병목/SPOF</strong></td></tr><tr><td><strong>B. 분산 타임스탬프</strong></td><td>도착 시각(ms)</td><td>전 샤드 <code>ZCOUNT</code> 합산</td><td>K-way merge</td><td>정확하지만 <strong>조회 시 전 샤드 질의</strong>(시간 동기화 필요)</td></tr><tr><td><strong>C. 통계적 추정</strong></td><td>샤드 내 순위</td><td>내 샤드 순위 × 샤드 수</td><td>라운드 로빈</td><td><strong>근사치(오차)</strong>, 대신 성능·단순함·가용성 최고</td></tr></tbody></table>
 <ul>
 <li><strong>입장 처리의 K-way merge</strong> — 각 샤드는 이미 정렬돼 있으니, <strong>맨 앞 값만 비교해 가장 작은 것부터</strong> 하나씩 꺼내면 전역 순서로 병합됩니다. C의 <strong>라운드 로빈</strong>은 비교 없이 각 샤드에서 동일 비율로 꺼내는 방식이라 빠르지만, 샤드 간 인원 편차만큼 순서가 틀어집니다.</li>
