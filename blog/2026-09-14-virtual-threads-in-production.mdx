@@ -1,17 +1,17 @@
 ---
 slug: virtual-threads-in-production
-title: "가상 스레드, 실전에서 언제 이득이고 언제 손해인가 (Java 21+·Spring Boot)"
+title: "가상 스레드, 실전에서 언제 이득이고 언제 불리한가 (Java 21+·Spring Boot)"
 authors: [ johnycho ]
 tags: [ java, spring ]
 date: 2026-09-14T12:00:00
-description: "Java 21 정식 가상 스레드를 Spring Boot에서 활성화할 때 언제 이득이고 언제 손해인지 — 스레드 풀 고갈이 사라지는 원리, JDK 24(JEP 491)로 해결된 synchronized 핀닝, ThreadLocal·CPU 바운드 주의점과 적용 판단 기준을 정리합니다."
+description: "Java 21 정식 가상 스레드를 Spring Boot에서 활성화할 때 언제 이득이고 언제 불리한지 — 스레드 풀 고갈이 사라지는 원리, JDK 24(JEP 491)로 해결된 synchronized 핀닝, ThreadLocal·CPU 바운드 주의점과 적용 판단 기준을 정리합니다."
 ---
 
 import {AnimatedLineChart} from '@site/src/components/blog/MonitorCharts';
 
 <!-- truncate -->
 
-스프링 부트 설정 한 줄(`spring.threads.virtual.enabled=true`)로 활성화할 수 있게 되면서, 가상 스레드(virtual thread)는 "일단 활성화하면 그냥 빨라지는 옵션"처럼 소개되곤 합니다. 절반은 맞고 절반은 위험합니다. 가상 스레드는 **특정 종류의 워크로드**에서 극적인 확장성을 주지만, 엉뚱한 곳에 활성화하면 이득이 없거나 오히려 성능을 떨어뜨립니다. 언제 이득이고 언제 손해인지 정리합니다.
+스프링 부트 설정 한 줄(`spring.threads.virtual.enabled=true`)로 활성화할 수 있게 되면서, 가상 스레드(virtual thread)는 "일단 활성화하면 그냥 빨라지는 옵션"처럼 소개되곤 합니다. 절반은 맞고 절반은 위험합니다. 가상 스레드는 **특정 종류의 워크로드**에서 극적인 확장성을 주지만, 엉뚱한 곳에 활성화하면 이득이 없거나 오히려 성능을 떨어뜨립니다. 언제 이득이고 언제 불리한지 정리합니다.
 
 <mark>가상 스레드는 "블로킹 I/O를 기다리는 동안 OS 스레드를 붙잡아 두지 않는다"가 전부입니다 — I/O 대기가 많은 서버는 스레드 풀 고갈에서 벗어나고, CPU를 계속 쓰는 작업은 아무 이득이 없습니다.</mark>
 
@@ -116,7 +116,7 @@ spring:
 
 <mark>가상 스레드의 이득은 "블로킹 I/O를 기다리는 시간"에서 나옵니다 — 그 시간 동안 OS 스레드(캐리어)를 반납하므로, I/O 대기가 많을수록 효과가 큽니다.</mark>
 
-## 언제 손해인가 — 세 가지 주의점
+## 언제 불리한가 — 세 가지 주의점
 
 ### ① CPU 바운드 작업엔 이득이 없다
 

@@ -44,6 +44,17 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
 
 5. **(선택) 수정 적용**: 사용자가 고르면 해당 항목만 고치고 `npm run build`로 검증한다. **표현·문장을 지적받아 규칙에 새로 반영해야 하면 [`blog-polishing` 스킬](../blog-polishing/SKILL.md) 절차를 따른다**(그 스킬이 규칙 파일을 SSOT로 관리·갱신하고 기존 글을 스윕). 고치기만 하고 규칙에 안 남기지 않는다.
 
+## 완료 체크리스트 (리포트에 반드시 포함 — 미기재 시 리뷰 미완료)
+"했다"가 아니라 **실제 결과(매칭 건수·grep 출력·통과 여부)** 를 각 항목에 적는다. 하나라도 확인 안 됐으면 리뷰를 끝내지 않는다. 특히 단어·문장은 **부분 확인이 아니라 규칙 표 전체 대조**여야 한다(과거에 규칙은 있는데 스윕이 덜 돼 `고통`·`비싸/싸`가 남은 적 있음).
+
+- [ ] **단어 — 좌열 전체 대조**: `scan-polishing.py`를 실행했고(출력 첨부), 매칭 **전건을 문맥 확인**해 실제 지양어를 고쳤다. (즉석 부분 grep로 갈음하지 않음)
+- [ ] **문장 — 기계 항목**: 같은 스크립트의 볼드 마커 홀수(#14)·평서체 종결(#6) 결과를 확인·처리했다.
+- [ ] **문장 — 판단 항목**: phrasing-style **#1~#16 전 항목**을 체크리스트로 처음부터 끝까지 훑었다(모호함·나열식·주체 모호·인용 구성 등 기계로 안 잡히는 것 포함).
+- [ ] **금지어**: `joylangcenter`·`함정` 0건 확인.
+- [ ] **MDX·볼드 렌더**: 코드펜스 밖 raw `<`·`{`·`}` / `grep -rnE '[)\]]\*\*[가-힣]' blog/*.mdx` 실행.
+- [ ] **구조·다이어그램·코드·인용·링크**: 프론트매터·`<!-- truncate -->`·다이어그램 우선순위/alt·메서드 체이닝 정렬·1차 소스 근거·상호 링크 중복을 확인.
+- [ ] **빌드**: `npm run build` 통과.
+
 ## 참고
 - 규칙 원본: [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md) (단어·문장 규칙은 [`blog-polishing` 스킬](../blog-polishing/SKILL.md)이 SSOT로 관리)
 - 작성 스킬: [blog-post](../blog-post/SKILL.md) · [trend-post-spring](../trend-post-spring/SKILL.md) · [trend-post-java](../trend-post-java/SKILL.md) · [trend-post-backend](../trend-post-backend/SKILL.md)

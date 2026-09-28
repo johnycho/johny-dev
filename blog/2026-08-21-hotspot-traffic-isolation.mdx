@@ -176,7 +176,7 @@ boolean allowJoin(long roomId) {
     return recent <= joinThreshold;                  // 최근 5초 한도 이내면 허용
 }
 
-// 호출부: 한도를 넘으면 원격 집계를 기다리지 않고 그 자리에서 바로 거절
+// 호출부: 한도를 넘으면 원격 집계를 기다리지 않고 그 즉시 거절
 if (!allowJoin(roomId)) return reject();
 ```
 

@@ -77,7 +77,7 @@ List<Result> results = ids.stream()
 |---|---|
 | `ConcurrentLinkedQueue` | 여러 스레드가 마구 담기만 할 때(순서 무관 수집) |
 | `ConcurrentHashMap` | 키-값으로 모을 때 |
-| `CopyOnWriteArrayList` | **읽기가 대부분, 쓰기가 드물 때**(쓰기마다 통째 복사라 비쌈) |
+| `CopyOnWriteArrayList` | **읽기가 대부분, 쓰기가 드물 때**(쓰기마다 통째 복사라 비용이 큼) |
 | `Collections.synchronizedList(...)` | 리스트 전체에 락을 걸 때(간단하지만 경합 큼) |
 
 `ConcurrentLinkedQueue`는 락 없이(내부적으로 CAS로) 동시 `add`를 안전하게 처리합니다. 여러 스레드가 동시에 넣어도 유실이 없고, 별도 동기화도 필요 없습니다. 다 넣은 뒤 한 번에 읽어 리스트로 옮기면 됩니다.

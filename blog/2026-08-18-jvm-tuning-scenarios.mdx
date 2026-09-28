@@ -157,7 +157,7 @@ $ kubectl describe pod my-app-xxxx
 
 **증상이 아니라 목적**: 야간 배치처럼 **개별 지연은 상관없고 전체 처리량**이 중요합니다.
 
-이땐 저지연 GC가 오히려 손해입니다. 정지가 다소 길어도 **총 GC 오버헤드가 낮은** Parallel GC가 유리합니다.
+이땐 저지연 GC가 오히려 불리합니다. 정지가 다소 길어도 **총 GC 오버헤드가 낮은** Parallel GC가 유리합니다.
 
 <AnimatedBars
   title="배치 처리량 — Parallel GC가 유리(개념 예시)"

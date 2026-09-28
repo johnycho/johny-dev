@@ -15,7 +15,7 @@ import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
 
 ## 배경 — MVC(thread-per-request)의 한계
 
-전통적인 **Spring MVC**(서블릿 기반)는 **요청 하나당 스레드 하나**를 씁니다. 그 스레드는 DB 조회·외부 API 호출 같은 I/O가 끝날 때까지 **블로킹**되어 아무 일도 못 하면서 자리만 차지합니다.
+전통적인 **Spring MVC**(서블릿 기반)는 **요청 하나당 스레드 하나**를 씁니다. 그 스레드는 DB 조회·외부 API 호출 같은 I/O가 끝날 때까지 **블로킹**되어 아무 일도 못 하면서 스레드를 점유만 합니다.
 
 문제는 **동시 요청이 많고 각 요청이 오래 기다릴 때**입니다. 예를 들어 톰캣 기본 스레드 풀이 200개인데 요청당 외부 API가 500ms 걸린다면, 201번째 요청부터는 스레드가 없어 대기합니다. CPU는 여유가 있는데 **스레드 풀이 병목**이 되는 것입니다. (스레드 풀 튜닝은 [스레드 풀 이야기](./spring-boot-thread-pools), 이벤트 루프의 원리는 [Redis가 싱글 스레드로 빠른 이유](./redis-single-thread-fast) 참고.)
 
@@ -29,7 +29,7 @@ WebFlux는 이 문제를 **논블로킹**으로 해결합니다. 핵심 개념�
 - **`Mono`·`Flux`**: Reactor의 두 발행자(Publisher) 타입. **`Mono<T>`** 는 결과가 **0개 또는 1개**(단건), **`Flux<T>`** 는 **0개 이상 여러 개**(스트림)를 **비동기로** 내보냅니다.
 - **백프레셔(backpressure)**: 소비자가 처리할 수 있는 만큼만 데이터를 요청하는 흐름 제어. 생산자가 너무 빨라 소비자가 밀리는 상황을 규격 차원에서 막습니다.
 
-<mark>`Mono`·`Flux`는 "값" 자체가 아니라 **"나중에 값이 전달되는 자리"** 입니다 — 구독(subscribe)해야 실행되고, 결과는 콜백·연산자로 연결합니다.</mark>
+<mark>`Mono`·`Flux`는 "값" 자체가 아니라 **나중에 값이 전달될 것을 나타내는 타입**입니다 — 구독(subscribe)해야 실행되고, 결과는 콜백·연산자로 연결합니다.</mark>
 
 ### Reactive Streams — 네 가지 역할
 
@@ -106,7 +106,7 @@ Mono<Dashboard> dashboard =
 
 ### 스케줄러(Scheduler)와 백프레셔 전략
 
-- **스케줄러**: "어느 스레드에서 실행할지" 지정. `subscribeOn`(구독 시작 스레드)·`publishOn`(이후 단계 스레드). 불가피한 블로킹 작업은 `Schedulers.boundedElastic()`로 **이벤트 루프와 분리된 전용 풀에서** 실행한다.
+- **스케줄러**: "어느 스레드에서 실행할지" 지정. `subscribeOn`(구독 시작 스레드)·`publishOn`(이후 단계 스레드). 불가피한 블로킹 작업은 `Schedulers.boundedElastic()`로 **이벤트 루프와 분리된 전용 풀에서** 실행합니다.
   ```java
   return Mono.fromCallable(() -> legacyBlockingClient.call())  // 블로킹 호출
              .subscribeOn(Schedulers.boundedElastic())         // 이벤트 루프가 아닌 전용 풀에서 실행
@@ -264,7 +264,7 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
 
 **대처**
 
-- **`doOnError` / `onErrorResume`으로 지점마다 처리**: 어느 연산자 단계에서 실패했는지 남기고, 필요하면 대체값으로 이어 간다. 둘은 역할이 다르다.
+- **`doOnError` / `onErrorResume`으로 지점마다 처리**: 어느 연산자 단계에서 실패했는지 남기고, 필요하면 대체값으로 이어 갑니다. 둘은 역할이 다릅니다.
   ```java
   // ① doOnError — 흐름은 그대로 두고 "로그만" 남긴다(부수 효과). 예외는 계속 전파됨
   return userRepo.findById(id)
@@ -278,14 +278,14 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
   - **`doOnError`**: 로그·메트릭 같은 **부수 효과만**. 예외는 그대로 전파 → 어디서 났는지 기록용.
   - **`onErrorResume`**: 예외를 **대체 Publisher로 복구**(기본값·폴백). 정상 흐름으로 이어짐.
   - **`onErrorMap`**: 예외를 **다른 예외로 변환**해 다시 던짐(내부 예외 → 도메인 예외).
-- **`log()` 연산자로 신호 추적**: 체인 중간에 `.log()`를 넣으면 `onSubscribe`·`request`·`onNext`·`onError` 신호가 순서대로 출력돼 흐름을 눈으로 확인할 수 있다.
+- **`log()` 연산자로 신호 추적**: 체인 중간에 `.log()`를 넣으면 `onSubscribe`·`request`·`onNext`·`onError` 신호가 순서대로 출력돼 흐름을 눈으로 확인할 수 있습니다.
   ```java
   userRepo.findById(id)
           .log()                       // 이 지점을 지나는 모든 신호를 로그로
           .flatMap(this::loadOrders);
   // 로그 예: onSubscribe → request(unbounded) → onNext(User(1)) → onComplete
   ```
-- **Reactor 디버그 모드 / `checkpoint()`**: 예외가 나도 스택에 내 코드가 안 보이므로, 요소마다 표식을 남긴다.
+- **Reactor 디버그 모드 / `checkpoint()`**: 예외가 나도 스택에 내 코드가 안 보이므로, 요소마다 표식을 남깁니다.
   ```java
   // (개발) 전역 디버그 — 구성 지점을 스택에 복원, 대신 비용이 큼
   Hooks.onOperatorDebug();
@@ -296,7 +296,7 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
                .flatMap(this::save);
   // 더 가벼운 대안: reactor-tools의 ReactorDebugAgent.init() (오버헤드 없이 구성 지점 복원)
   ```
-- **MDC(로그 문맥) 전파**: 스레드가 바뀌어도 요청 식별자(traceId 등)가 로그에 이어지도록 **Reactor Context**로 값을 실어 전달한다.
+- **MDC(로그 문맥) 전파**: 스레드가 바뀌어도 요청 식별자(traceId 등)가 로그에 이어지도록 **Reactor Context**로 값을 실어 전달합니다.
   ```java
   return handle(request)
       .contextWrite(ctx -> ctx.put("traceId", traceId));   // 체인 전체에서 접근 가능
