@@ -183,7 +183,7 @@ victim이 받는 오류는 이렇습니다.
 ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction
 ```
 
-- 오류 코드 **1213**, SQLSTATE **40001**. 메시지 그대로 "**재시도하라**"입니다 — 데드락은 이상 상황이 아니라 정상적으로 일어날 수 있는 일이므로, 어플리케이션이 잡아 **재시도**해야 합니다.
+- 오류 코드 **1213**, SQLSTATE **40001**. 메시지 그대로 "**재시도하라**"입니다 — 데드락은 이상 상황이 아니라 정상적으로 발생할 수 있는 일이므로, 어플리케이션이 잡아 **재시도**해야 합니다.
 - victim의 **변경은 전부 롤백**되고, 상대 트랜잭션은 커밋을 이어갑니다.
 - 방금 난 데드락의 상세(어느 트랜잭션이 무슨 락을 기다렸는지)는 `SHOW ENGINE INNODB STATUS`의 `LATEST DETECTED DEADLOCK` 섹션에서 볼 수 있고, 모든 데드락을 로그로 남기려면 `innodb_print_all_deadlocks`를 켭니다.
 

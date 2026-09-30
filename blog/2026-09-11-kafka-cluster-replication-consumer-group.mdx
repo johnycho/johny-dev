@@ -457,7 +457,7 @@ pl --> gc : poll 재호출\nmax.poll.interval(5분) 넘기면 처리 정지 판�
 
 ## 리밸런싱 — eager vs cooperative-sticky {#rebalancing}
 
-멤버가 추가·이탈하거나 파티션이 늘면, 파티션을 다시 나눠 맡는 **리밸런싱(rebalancing)** 이 일어납니다. 아래는 조인·하트비트·이탈의 전체 흐름입니다.
+멤버가 추가·이탈하거나 파티션이 늘면, 파티션을 다시 나눠 맡는 **리밸런싱(rebalancing)** 이 발생합니다. 아래는 조인·하트비트·이탈의 전체 흐름입니다.
 
 <details>
 <summary>PlantUML 코드</summary>

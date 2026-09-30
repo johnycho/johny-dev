@@ -56,7 +56,7 @@ id 값은 항상 증가하는 방향이고, 이미 전이된 행은 다음 조�
 
 ## 제약 2. 락을 청크 트랜잭션에 묶어야 한다
 
-동시성은 조회 시 `FOR UPDATE`(비관적 락)로 잡았습니다. 그런데 이 락이 효과를 보려면 <mark>"잠그고 → 바꾸고 → 커밋"이 하나의 트랜잭션 안에서 일어나 잡은 락이 커밋 시점까지 유지</mark>되어야 합니다.
+동시성은 조회 시 `FOR UPDATE`(비관적 락)로 잡았습니다. 그런데 이 락이 효과를 보려면 <mark>"잠그고 → 바꾸고 → 커밋"이 하나의 트랜잭션 안에서 발생해 잡은 락이 커밋 시점까지 유지</mark>되어야 합니다.
 
 그런데 내장 커서형·페이징형 Reader는 이 조건을 만족시키지 못합니다. 근거를 문서와 소스로 나눠 확인하면 이렇습니다.
 
@@ -366,7 +366,7 @@ Spring Batch가 청크 커밋마다 `update()`를 호출해 `afterId`를 `Execut
 여기서 한 가지 짚어둘 점이 있습니다. `ExecutionContext`는 **메모리의 키-값 맵**이지만, 그 값은 메모리에만 머무르지 않고 **DB의 배치 메타데이터 테이블에 영속화**됩니다. 프로세스를 껐다 다시 실행해도 재시작이 되는 이유가 바로 이것입니다.
 
 1. 실행 중에는 `ExecutionContext`가 메모리 맵으로 존재합니다. `update()`로 `afterId`를 여기에 넣습니다.
-2. **청크가 커밋되는 시점마다**, Spring Batch의 `JobRepository`가 그 스텝의 `ExecutionContext`를 직렬화해 **`BATCH_STEP_EXECUTION_CONTEXT` 테이블**(`SHORT_CONTEXT`·`SERIALIZED_CONTEXT` 컬럼)에 씁니다. 즉 청크 커밋(데이터 UPDATE)과 진행 위치(`afterId`) 저장이 **같은 트랜잭션**에서 함께 일어나, 둘의 정합성이 유지됩니다.
+2. **청크가 커밋되는 시점마다**, Spring Batch의 `JobRepository`가 그 스텝의 `ExecutionContext`를 직렬화해 **`BATCH_STEP_EXECUTION_CONTEXT` 테이블**(`SHORT_CONTEXT`·`SERIALIZED_CONTEXT` 컬럼)에 씁니다. 즉 청크 커밋(데이터 UPDATE)과 진행 위치(`afterId`) 저장이 **같은 트랜잭션**에서 함께 발생해, 둘의 정합성이 유지됩니다.
 3. 재시작하면(같은 JVM이든 종료됐다 재기동한 새 JVM이든), `JobRepository`가 그 테이블에서 **마지막으로 저장된 컨텍스트**를 읽어 `open(ctx)`로 넘겨줍니다. 그래서 `afterId`가 복원되어 그 지점부터 이어집니다.
 
 ```text

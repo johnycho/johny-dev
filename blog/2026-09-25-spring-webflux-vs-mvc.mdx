@@ -74,7 +74,7 @@ publisher.subscribe(new Subscriber<Integer>() {
 
 <mark>핵심은 **구독자가 `request(n)`으로 "처리할 수 있는 만큼만" 요청해 받는다**는 점입니다 — 이 pull 기반 요청이 백프레셔입니다. 발행자가 일방적으로 보내지 않습니다.</mark> (표준 자체·JDK Flow·cold/hot·라이브러리 관계는 [Reactive Streams 표준](./reactive-streams-spec)에서 자세히 다룹니다.)
 
-### 구독하기 전엔 아무 일도 안 일어난다 (lazy)
+### 구독하기 전엔 아무 일도 안 발생한다 (lazy)
 
 `Mono`·`Flux`는 **선언**일 뿐, 누군가 **구독(subscribe)** 해야 실제로 실행됩니다.
 
