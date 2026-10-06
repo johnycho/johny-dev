@@ -1,0 +1,190 @@
+---
+slug: jpa-eager-loading-associations
+title: "JPA 연관관계 즉시 로딩 — JPQL·QueryDSL·EntityGraph·Native·DTO로 하는 법과 착각"
+authors: [ johnycho ]
+tags: [ jpa, spring ]
+date: 2026-10-06T15:00:00+09:00
+description: "LAZY 연관관계를 조회 시점에 함께 가져오는 방법을 JPQL fetch join·QueryDSL·@EntityGraph·네이티브 쿼리·DTO 프로젝션별로 코드와 함께 정리합니다. 그리고 join만 하면·EAGER면·findById면 즉시 로딩될 거라 착각하기 쉬운 경우를 실제 쿼리로 짚습니다."
+---
+
+<!-- truncate -->
+
+연관관계는 기본을 **지연 로딩(LAZY)** 으로 삼는 게 정석입니다. 그런데 특정 조회에서는 연관 엔티티를 **그 쿼리에서 함께** 가져와야 합니다(N+1·`LazyInitializationException` 방지). 문제는 "즉시 로딩"을 하는 방법이 접근 방식마다 다르고, **즉시 로딩될 거라 착각하기 쉬운 코드**가 많다는 점입니다. 방법별로 코드와 실제 쿼리를 보며 정리합니다.
+
+<mark>핵심은 **"조인했다고 로딩되는 게 아니라, `fetch`로 연관 엔티티를 함께 영속화해야 로딩된다"** 는 점입니다 — 그래서 방법마다 fetch join에 해당하는 장치를 명시적으로 써야 합니다.</mark>
+
+예시 엔티티는 이렇게 잡습니다 — `Order`는 `Member`(다대일)와 `OrderItem`(일대다)을 **LAZY** 로 참조합니다.
+
+```java
+@Entity
+class Order {
+    @Id @GeneratedValue Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    Member member;
+
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
+    List<OrderItem> items = new ArrayList<>();
+}
+```
+
+## 1. JPQL — `join fetch`
+
+가장 표준적인 방법입니다. `join fetch`는 연관 엔티티를 **같은 SELECT에 담아 함께 영속화**합니다.
+
+```java
+// 단건 연관(다대일) — 한 쿼리로 member까지 로딩
+@Query("select o from Order o join fetch o.member where o.id = :id")
+Order findWithMember(@Param("id") Long id);
+```
+
+```sql
+select o.*, m.* from orders o join member m on m.id = o.member_id where o.id = ?;
+```
+
+컬렉션(일대다)은 조인 때문에 **행이 중복**되니 `distinct`로 엔티티를 정리합니다.
+
+```java
+@Query("select distinct o from Order o join fetch o.items where o.id = :id")
+Order findWithItems(@Param("id") Long id);
+```
+
+> **컬렉션 fetch join의 두 제약**
+>
+> ① **둘 이상의 컬렉션을 동시에** fetch join하면 `MultipleBagFetchException`이 발생합니다(카테시안 곱). 하나만 fetch join하고 나머지는 `@BatchSize`/별도 조회로 해결합니다. ② **컬렉션 fetch join + 페이징**은 DB가 아니라 **메모리에서 페이징**됩니다(로그에 `HHH000104` 경고). 페이징이 필요하면 컬렉션은 fetch join하지 말고 `@BatchSize`나 2차 조회로 가져옵니다.
+
+## 2. QueryDSL — `.fetchJoin()`
+
+JPQL의 `join fetch`와 같은 동작을 타입 안전하게 표현합니다. **`join`/`leftJoin` 뒤에 `.fetchJoin()`을 반드시 붙여야** 로딩됩니다.
+
+```java
+queryFactory
+    .selectFrom(order)
+    .join(order.member, member).fetchJoin()   // fetchJoin() 없으면 로딩 안 됨
+    .where(order.id.eq(id))
+    .fetchOne();
+```
+
+<mark>`.fetchJoin()`을 빼고 `.join(order.member, member)`만 쓰면, 조인은 되지만 `member`는 **로딩되지 않고** 접근 시 추가 쿼리가 나갑니다 — 가장 흔한 실수입니다.</mark>
+
+## 3. Spring Data JPA — `@EntityGraph`
+
+쿼리 문자열 없이 **어떤 연관관계를 함께 로딩할지 속성 경로로** 지정합니다. 내부적으로 fetch join(LEFT OUTER JOIN)으로 동작합니다.
+
+```java
+// 메서드 이름 쿼리에 그래프만 얹기
+@EntityGraph(attributePaths = {"member"})
+Optional<Order> findById(Long id);
+
+// @Query와 함께도 가능
+@EntityGraph(attributePaths = {"member", "items"})
+@Query("select o from Order o where o.id = :id")
+Order findGraph(@Param("id") Long id);
+```
+
+페이징과 함께 쓰기 좋지만(단건 연관), **컬렉션을 그래프에 넣고 페이징하면** JPQL fetch join과 똑같이 메모리 페이징이 됩니다.
+
+## 4. DTO 프로젝션 — 엔티티를 로딩하지 않고 "값만" 가져온다
+
+필요한 필드만 DTO로 바로 뽑으면, 연관 데이터도 **같은 쿼리의 조인으로** 가져옵니다. 다만 이건 **엄밀히는 연관 엔티티의 "즉시 로딩"이 아닙니다** — 엔티티·프록시를 만들지 않고 **스칼라 값**을 선택할 뿐입니다.
+
+```java
+// JPQL 생성자 표현식
+@Query("select new com.example.OrderView(o.id, o.member.name) from Order o where o.id = :id")
+OrderView findView(@Param("id") Long id);
+```
+
+```java
+// QueryDSL Projections
+queryFactory
+    .select(Projections.constructor(OrderView.class, order.id, order.member.name))
+    .from(order).join(order.member, member)
+    .fetchOne();
+```
+
+`o.member.name`은 조인으로 한 쿼리에 들어오지만, **DTO에 담지 않은 다른 연관 필드는 존재하지 않습니다.** 조회 전용 화면에는 이 방식이 가장 가볍고, 지연 로딩 문제 자체가 사라집니다.
+
+## 5. 네이티브 쿼리 — fetch join이 안 된다
+
+네이티브 SQL은 **`join fetch`를 지원하지 않습니다.** 조인을 걸어 조회해도 반환 엔티티의 연관관계는 **여전히 프록시(지연)** 라, 접근하면 추가 쿼리가 나갑니다.
+
+```java
+// member_id로 조인해도 order.member는 로딩되지 않는다
+@Query(value = "select o.* from orders o join member m on m.id = o.member_id where o.id = :id",
+       nativeQuery = true)
+Order findNative(@Param("id") Long id);
+```
+
+연관까지 한 번에 채우려면 **`@SqlResultSetMapping`으로 두 엔티티를 각각 매핑**하거나(장황함), 애초에 **DTO로 받는** 편이 현실적입니다. 복잡한 연관 로딩이 목적이면 네이티브는 적합하지 않습니다.
+
+```java
+// 두 엔티티를 함께 매핑 — 컬럼을 모두 선택하고 결과 매핑을 선언
+@SqlResultSetMapping(
+    name = "OrderWithMember",
+    entities = {
+        @EntityResult(entityClass = Order.class),
+        @EntityResult(entityClass = Member.class)
+    })
+```
+
+## 즉시 로딩으로 착각하기 쉬운 경우
+
+### ① `join`만 하고 `fetch`를 빼먹는다
+
+```java
+// ✗ 조인은 되지만 member는 로딩 안 됨 → 접근 시 추가 쿼리
+select o from Order o join o.member m where m.name = :name
+// ✓ 함께 로딩하려면 fetch
+select o from Order o join fetch o.member where o.member.name = :name
+```
+
+조인은 **필터링·정렬용**이고, 로딩은 **`fetch`가 있어야** 합니다. 둘은 다릅니다.
+
+### ② `FetchType.EAGER`로 변경하면 JPQL도 한 방에 될 거라 생각한다
+
+이게 가장 많이 속는 지점입니다. **JPQL 쿼리는 매핑의 `EAGER` 설정을 무시**합니다. `join fetch`가 없으면, JPQL로 `Order`를 가져온 뒤 **EAGER 연관관계를 각각 별도 SELECT로** 끌어옵니다 — 즉 **EAGER인데도 N+1**이 발생합니다.
+
+```java
+// Order.member가 EAGER여도,
+@Query("select o from Order o")   // fetch join 없음
+List<Order> findAll();
+// 실행: Order 목록 1번 + member를 Order 수만큼 추가 SELECT (N+1)
+```
+
+<mark>`EAGER`는 "항상 로딩"일 뿐 "항상 한 쿼리"가 아닙니다. 한 쿼리로 묶는 건 오직 fetch join(또는 EntityGraph)뿐입니다 — 그래서 전역 `EAGER`는 N+1을 숨겨 오히려 권장되지 않습니다.</mark>
+
+### ③ `findById`/`findAll`로 가져오면 연관관계도 채워진 줄 안다
+
+LAZY면 `findById`가 돌려준 엔티티의 연관 필드는 **프록시**입니다. 트랜잭션 안에서 접근하면 그제야 추가 쿼리로 로딩되고, **트랜잭션 밖에서 접근하면 `LazyInitializationException`** 이 발생합니다. "조회했으니 다 있겠지"가 가장 기본적인 착각입니다.
+
+### ④ `@Transactional` 안에서 접근되니 "즉시 로딩"이라 여긴다
+
+트랜잭션 안이라 지연 로딩이 **성공은** 하지만, 그건 **그 시점에 추가 쿼리가 나가는** 것(N+1)이지 즉시 로딩이 아닙니다. 목록을 돌며 연관을 건드리면 건수만큼 쿼리가 발생합니다.
+
+### ⑤ DTO로 뽑으면 엔티티처럼 전부 들어있는 줄 안다
+
+DTO는 **선택한 값만** 가진 평범한 객체입니다. `o.member.name`만 담았다면 `member`의 다른 필드나 다른 연관관계는 없습니다. 엔티티가 아니므로 이후 지연 로딩도 되지 않습니다(영속성 컨텍스트 밖).
+
+## 방법 요약
+
+| 방법 | 즉시 로딩 장치 | 비고 |
+|---|---|---|
+| JPQL | `join fetch` | 컬렉션은 `distinct`, 다중 컬렉션·페이징 주의 |
+| QueryDSL | `.fetchJoin()` | 빼먹으면 조인만 되고 로딩 안 됨 |
+| `@EntityGraph` | `attributePaths` | 쿼리 없이 그래프 지정, 컬렉션+페이징은 메모리 페이징 |
+| DTO 프로젝션 | 조인 + 값 선택 | 엔티티 로딩이 아님(값만), 조회 전용에 최적 |
+| 네이티브 쿼리 | (fetch join 불가) | `@SqlResultSetMapping` 또는 DTO로 우회 |
+
+## 정리
+
+- 기본은 **LAZY**, 즉시 로딩은 조회마다 **fetch join 계열 장치를 명시**해서 합니다.
+- **JPQL `join fetch` / QueryDSL `.fetchJoin()` / `@EntityGraph`** 가 진짜 "한 쿼리 즉시 로딩"입니다.
+- **DTO 프로젝션**은 값만 가져오는 것이라 지연 로딩 문제 자체가 없지만, 엔티티는 아닙니다.
+- **네이티브 쿼리**는 fetch join이 안 돼, 연관 로딩에는 적합하지 않습니다.
+- 착각 포인트: **`join`≠`join fetch`**, **`EAGER`여도 JPQL은 N+1**, **`findById`의 연관은 프록시**, **트랜잭션 안 접근은 즉시가 아니라 추가 쿼리**.
+
+## 참고
+
+- [Hibernate ORM User Guide — Fetching (`join fetch`, EntityGraph)](https://docs.hibernate.org/orm/current/userguide/html_single/Hibernate_User_Guide.html#fetching)
+- [Spring Data JPA — `@EntityGraph`](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.entity-graph)

@@ -1,0 +1,209 @@
+---
+slug: jpa-unidirectional-association-pitfalls
+title: "JPA 단방향 연관관계 매핑의 문제점과 해결 — @OneToMany 단방향은 왜 피하나"
+authors: [ johnycho ]
+tags: [ jpa, spring ]
+date: 2026-10-06T12:00:00+09:00
+description: "JPA 연관관계를 단방향으로 매핑할 때 생기는 문제를 정리합니다. @OneToMany 단방향이 만드는 조인 테이블과 추가 UPDATE 쿼리, 그리고 다대일 단방향을 기본으로 삼고 필요할 때만 양방향으로 보완하는 해결 방향과 양방향의 주의점(무한 재귀·연관관계 편의 메서드)까지 다룹니다."
+---
+
+<!-- truncate -->
+
+JPA에서 연관관계를 어느 방향으로 매핑하느냐는 단순한 취향 문제가 아닙니다. 특히 **`@OneToMany` 단방향**은 멀쩡해 보여도 숨은 쿼리를 만들어, 저장할 때마다 불필요한 `UPDATE`가 나가거나 의도치 않은 조인 테이블이 생깁니다. 단방향 매핑의 문제를 짚고, 실무에서 사용하는 해결 방향을 정리합니다.
+
+<mark>핵심은 **"연관관계의 주인은 외래 키(FK)를 가진 쪽"** 이라는 규칙입니다 — FK가 없는 `@OneToMany` 쪽이 컬렉션을 주인처럼 다루면, DB가 FK를 채우려고 추가 쿼리를 발생시킵니다.</mark>
+
+## 연관관계 — 방향과 연관관계 주인
+
+두 엔티티를 잇는 매핑에는 두 개념이 있습니다.
+
+- **방향(direction)** — 한쪽에서만 참조하면 **단방향**, 양쪽이 서로 참조하면 **양방향**입니다. (DB 테이블은 FK 하나로 양쪽을 다 조인하므로 방향 개념이 없고, 이건 **객체(JPA) 쪽 얘기**입니다.)
+- **연관관계의 주인(owner)** — 양방향일 때 **FK를 관리(INSERT/UPDATE)하는 쪽**입니다. 주인은 **FK를 가진 테이블에 매핑된 엔티티**이고, 반대쪽은 `mappedBy`로 "나는 주인이 아니다(읽기 전용)"를 표시합니다.
+
+예시는 **회원(`Member`) 1 : N 주문(`Order`)** 로 하겠습니다. FK인 `member_id`는 당연히 **`orders` 테이블**에 있습니다.
+
+## @ManyToOne 단방향 — 기본이자 깔끔한 선택
+
+FK를 가진 `Order`가 `Member`를 참조하는 다대일 단방향은 문제가 없습니다. 자식이 자기 FK를 직접 알고 있어, 저장이 **INSERT 한 번**으로 끝납니다.
+
+```java
+@Entity
+class Order {
+    @Id @GeneratedValue
+    Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)   // 지연 로딩 기본 권장
+    @JoinColumn(name = "member_id")      // orders.member_id (FK) = 연관관계 주인
+    Member member;
+}
+```
+
+```sql
+-- order를 저장하면 FK까지 한 번에
+INSERT INTO orders (id, member_id) VALUES (?, ?);
+```
+
+<mark>다대일 단방향은 FK를 가진 쪽이 주인이라 자연스럽고, 대부분의 매핑은 이걸로 시작하면 됩니다.</mark> 한계는 하나뿐 — **부모(`Member`)에서 주문 목록으로 바로 탐색할 수 없다**는 점입니다.
+
+## @OneToMany 단방향의 문제
+
+반대로 부모 `Member`가 컬렉션으로 `Order`를 단방향 참조하면, **FK는 `orders`에 있는데 그 FK를 `Member` 쪽에서 관리**하게 됩니다. 여기서 두 가지 문제가 생깁니다.
+
+### 문제 1 — `@JoinColumn`이 없으면 조인 테이블이 생긴다
+
+```java
+@Entity
+class Member {
+    @Id @GeneratedValue
+    Long id;
+
+    @OneToMany                 // @JoinColumn 없음
+    List<Order> orders = new ArrayList<>();
+}
+```
+
+이렇게 하면 Hibernate는 FK를 어디에 둘지 몰라, **중간 조인 테이블(`member_orders`)** 을 만들어 다대다처럼 관리합니다. 테이블이 하나 더 생기고, 조회·저장 때마다 그 테이블을 거쳐 쿼리가 복잡해집니다.
+
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+skinparam defaultTextAlignment center
+skinparam shadowing false
+
+rectangle "member\n(id)" as M #E3F2FD
+rectangle "member_orders\n(member_id, orders_id)\n← 의도치 않은 조인 테이블" as J #FFEBEE
+rectangle "orders\n(id, ...)" as O #E8F5E9
+
+M -down-> J
+J -down-> O
+note right of J
+  @OneToMany 단방향 + @JoinColumn 없음
+  → 중간 테이블로 관리
+end note
+@enduml
+```
+
+</details>
+
+![PlantUML @OneToMany 단방향이 만드는 조인 테이블](/img/c4/pu-jpa-onetomany-jointable.svg)
+
+### 문제 2 — `@JoinColumn`을 써도 추가 UPDATE가 발생한다
+
+조인 테이블이 싫어 `@JoinColumn`으로 `orders.member_id`에 직접 매핑해도 문제가 남습니다.
+
+```java
+@Entity
+class Member {
+    @Id @GeneratedValue
+    Long id;
+
+    @OneToMany
+    @JoinColumn(name = "member_id")   // orders.member_id에 매핑
+    List<Order> orders = new ArrayList<>();
+}
+```
+
+`member.getOrders().add(order)`로 주문을 추가해 저장하면, **`Order` 엔티티는 자기 `member_id`를 모릅니다**(단방향이라 `Order`에 `Member` 참조가 없음). 그래서 Hibernate는 일단 FK를 비운 채 INSERT한 뒤, 컬렉션을 보고 **별도 UPDATE로 FK를 채웁니다.**
+
+```sql
+INSERT INTO member (id) VALUES (?);
+INSERT INTO orders (id, member_id) VALUES (?, NULL);   -- 자식이 부모를 모름
+UPDATE orders SET member_id = ? WHERE id = ?;          -- 추가 UPDATE
+```
+
+<mark>주문 한 건마다 INSERT + UPDATE가 나가므로, 벌크로 쌓을수록 쿼리가 두 배로 늘고 원인도 눈에 잘 안 띕니다.</mark> 이게 `@OneToMany` 단방향을 피하는 가장 큰 이유입니다.
+
+### 문제 3 — 역방향 탐색과 주인이 헷갈린다
+
+단방향은 반대쪽으로 탐색할 수 없고(`@ManyToOne` 단방향이면 부모→자식, `@OneToMany` 단방향이면 자식→부모 불가), 팀원이 "주인이 어느 쪽인지"를 매번 확인해야 합니다. 특히 `@OneToMany` 단방향은 **FK 위치(자식)와 관리 주체(부모)가 어긋나** 직관과 반대로 동작합니다.
+
+## 해결 방향
+
+### 1) 다대일 단방향(`@ManyToOne`)을 기본으로
+
+가장 단순한 해결은 **연관관계를 FK 가진 쪽(`Order`)에서 `@ManyToOne` 단방향으로** 거는 것입니다. 추가 UPDATE도, 조인 테이블도 없습니다. 부모에서 자식으로 탐색할 일이 없다면 여기서 끝내면 됩니다.
+
+### 2) 역방향 탐색이 필요하면 — 양방향으로 보완
+
+`member.getOrders()`처럼 부모에서 자식을 탐색해야 한다면, **`@ManyToOne`(주인)은 그대로 유지하고 부모에 `@OneToMany(mappedBy)`를 추가**합니다. `mappedBy`는 "FK 관리는 `Order.member`가 한다"는 선언이라, **테이블 구조도 쿼리도 1)과 똑같고** 객체 탐색만 양쪽으로 열립니다.
+
+```java
+@Entity
+class Member {
+    @Id @GeneratedValue
+    Long id;
+
+    @OneToMany(mappedBy = "member")   // 주인 아님(읽기 전용) — 추가 쿼리 없음
+    List<Order> orders = new ArrayList<>();
+}
+
+@Entity
+class Order {
+    @Id @GeneratedValue
+    Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")   // 주인(FK)
+    Member member;
+}
+```
+
+### 3) 양방향을 쓸 때의 주의점
+
+양방향은 편리하지만 두 가지를 챙겨야 합니다.
+
+- **연관관계 편의 메서드로 양쪽을 함께 세팅** — 주인(`Order.member`)만 세팅하면 DB는 맞지만, 영속성 컨텍스트 안의 부모 컬렉션은 갱신되지 않아 조회 값이 어긋날 수 있습니다. 한 메서드에서 양쪽을 동기화합니다.
+
+  ```java
+  // Member
+  void addOrder(Order order) {
+      orders.add(order);
+      order.setMember(this);   // 주인 쪽도 함께 세팅
+  }
+  ```
+
+- **무한 재귀 차단** — `Member`↔`Order`가 서로 참조하므로, 롬복 `@ToString`이나 JSON 직렬화가 순환 참조를 따라 무한히 반복돼 `StackOverflowError`에 이릅니다. `@ToString`에서 연관 필드를 빼고(`exclude`), API 응답은 엔티티 대신 **DTO로 변환**하거나 `@JsonIgnore`로 끊습니다.
+
+## 언제 단방향으로 충분한가 — 판단 기준
+
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+skinparam defaultTextAlignment center
+start
+:연관관계를 매핑한다;
+:FK를 가진 쪽에 @ManyToOne 단방향;
+if (부모에서 자식 목록을\n탐색해야 하나?) then (아니오)
+  :여기서 끝 - 단방향으로 충분;
+  stop
+else (예)
+  :부모에 @OneToMany(mappedBy) 추가\n(양방향);
+  :연관관계 편의 메서드로 동기화\n직렬화 순환 차단;
+  stop
+endif
+@enduml
+```
+
+</details>
+
+![PlantUML 단방향·양방향 선택 흐름](/img/c4/pu-jpa-association-decision.svg)
+
+- **`@ManyToOne` 단방향** — FK 가진 쪽에서만 참조하면 되는 대부분의 경우. 기본값으로 삼습니다.
+- **양방향** — 부모에서 자식 컬렉션 탐색이 실제로 필요할 때만. `@OneToMany`는 항상 `mappedBy`로 읽기 전용이어야 합니다.
+- **`@OneToMany` 단방향(주인)** — `mappedBy` 없이 부모가 컬렉션을 주인으로 다루는 형태. 조인 테이블·추가 UPDATE 때문에 **특별한 이유가 없으면 사용하지 않습니다.**
+
+## 정리
+
+- 연관관계의 주인은 **FK를 가진 쪽**입니다 — 이 원칙을 어기면 DB가 FK를 채우려고 추가 쿼리를 발생시킵니다.
+- **`@OneToMany` 단방향**은 `@JoinColumn`이 없으면 **조인 테이블**, 있어도 **INSERT 후 추가 UPDATE**가 발생합니다.
+- 기본은 **`@ManyToOne` 단방향**, 부모→자식 탐색이 필요할 때만 **`@OneToMany(mappedBy)`로 양방향** 보완(테이블·쿼리 영향 없음).
+- 양방향은 **연관관계 편의 메서드**로 양쪽을 동기화하고, **직렬화 순환**(`@ToString`·JSON)을 끊습니다.
+
+## 참고
+
+- [Hibernate ORM — Unidirectional `@OneToMany`](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#associations-one-to-many-unidirectional)
+- [Jakarta Persistence — `@OneToMany` / `@ManyToOne`](https://jakarta.ee/specifications/persistence/3.1/apidocs/jakarta.persistence/jakarta/persistence/onetomany)
