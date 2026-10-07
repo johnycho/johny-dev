@@ -191,7 +191,7 @@ new JdbcPagingItemReaderBuilder<Long>()
 // findNextChunk()에 위임 불가 → 같은 쿼리가 리포지토리와 배치, 두 곳에 존재
 ```
 
-메서드를 호출할 수 있는 Reader는 `RepositoryItemReader` 하나뿐인데, 이건 Spring Data의 `Pageable → Page` 시그니처만 받습니다.
+메서드를 호출할 수 있는 Reader는 `RepositoryItemReader` 하나밖에 없는데, 이건 Spring Data의 `Pageable → Page` 시그니처만 받습니다.
 
 ```java
 // RepositoryItemReader — 메서드는 부르지만 Pageable(=OFFSET) 시그니처만
