@@ -202,11 +202,11 @@ package "코어 뱅킹 어댑터" {
 
 ## 다이어그램을 코드로 — C4-PlantUML
 
-앞서 각 레벨 그림 위에 실은 코드가 보여 주듯, C4는 아예 **다이어그램을 코드로 작성**하기 좋은 모델입니다(위 그림들은 모두 그 코드를 렌더한 것). 코드로 두면 **Git으로 버전 관리**하고, PR에서 리뷰하고, 요소가 바뀔 때 손으로 다시 그리지 않아도 됩니다. 위 예시는 **C4-PlantUML**(PlantUML에 C4 매크로를 얹은 것)로, 레벨에 따라 `C4_Context.puml`·`C4_Container.puml`·`C4_Component.puml`을 include하고 `Person`·`System`·`Container`·`Component`·`Rel` 매크로만 바꿔 쓰면 됩니다.
+앞서 각 레벨 그림 위에 실은 코드가 보여 주듯, C4는 아예 **다이어그램을 코드로 작성**하기 좋은 모델입니다(위 그림들은 모두 그 코드를 렌더한 것). 코드로 두면 **Git으로 버전 관리**하고, PR에서 리뷰하고, 요소가 바뀔 때 손으로 다시 그리지 않아도 됩니다. 위 예시는 **C4-PlantUML**(PlantUML에 C4 매크로를 더한 것)로, 레벨에 따라 `C4_Context.puml`·`C4_Container.puml`·`C4_Component.puml`을 include하고 `Person`·`System`·`Container`·`Component`·`Rel` 매크로만 바꿔 쓰면 됩니다.
 
 도구는 취향껏 고르면 됩니다.
 
-- **C4-PlantUML** — PlantUML에 C4 매크로를 얹은 것. 배치가 정교하고 IDE·CI 생태계가 넓습니다.
+- **C4-PlantUML** — PlantUML에 C4 매크로를 더한 것. 배치가 정교하고 IDE·CI 생태계가 넓습니다.
 - **Mermaid** — `C4Context` 등 C4 타입을 지원해 코드 블록으로 바로 렌더되지만, C4는 실험적이라 자동 배치가 다소 거칠 수 있습니다.
 - **Structurizr** — C4를 만든 사이먼 브라운의 공식 도구. **하나의 DSL 모델**에서 컨텍스트·컨테이너·컴포넌트 뷰를 **자동으로 여러 장** 뽑아 줍니다(모델 한 번, 뷰 여러 개).
 

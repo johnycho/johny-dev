@@ -210,7 +210,7 @@ public class BalanceService {
 }
 ```
 
-<mark>READ COMMITTED에서는 한 트랜잭션 안에서도 조회할 때마다 값이 달라질 수 있어, "읽은 값이 트랜잭션 내내 유지된다"고 가정한 로직(집계·검증·조건 분기)이 깨질 수 있습니다.</mark>
+<mark>READ COMMITTED에서는 한 트랜잭션 안에서도 조회할 때마다 값이 달라질 수 있어, "읽은 값이 트랜잭션 내내 유지된다"고 가정한 로직(집계·검증·조건 분기)이 잘못될 수 있습니다.</mark>
 
 ### 주의할 점 하나 — 스프링 기본값은 "DB 기본값"이다
 
@@ -262,7 +262,7 @@ class Account {
 
 - **대부분의 웹 서비스**는 기본값(READ COMMITTED 또는 REPEATABLE READ)으로 충분합니다. 무작정 SERIALIZABLE로 올리면 잠금·재시도가 늘어 처리량이 떨어집니다.
 - **한 트랜잭션 내내 읽은 값이 고정돼야 하는 로직**(집계 리포트, 여러 번 참조하는 검증)은 REPEATABLE READ가 안전합니다.
-- **금전·재고처럼 불변식이 깨지면 안 되는 갱신**은 격리 수준만 믿지 말고 **명시적 잠금**(FOR UPDATE)이나 **낙관적 락(@Version)**, 또는 **원자적 UPDATE**(`SET stock = stock - 1 WHERE stock >= 1`)로 처리합니다.
+- **금전·재고처럼 불변식을 지켜야 하는 갱신**은 격리 수준만 믿지 말고 **명시적 잠금**(FOR UPDATE)이나 **낙관적 락(@Version)**, 또는 **원자적 UPDATE**(`SET stock = stock - 1 WHERE stock >= 1`)로 처리합니다.
 
 ## 정리
 

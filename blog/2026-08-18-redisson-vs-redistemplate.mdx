@@ -105,7 +105,7 @@ RMapCache<String, Product> c2 = redisson.getMapCache("products");
 c2.put("p1", product, 10, TimeUnit.MINUTES);
 ```
 
-Redis의 기본 자료구조엔 "필드별 TTL"이 없는데, Redisson은 `RMapCache`로 그런 편의를 얹어 줍니다(내부적으로 별도 관리).
+Redis의 기본 자료구조엔 "필드별 TTL"이 없는데, Redisson은 `RMapCache`로 그런 편의를 더해 줍니다(내부적으로 별도 관리).
 
 ## 직렬화·런타임·무게
 

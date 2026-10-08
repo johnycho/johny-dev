@@ -72,7 +72,7 @@ GC 로그를 열면 이런 줄이 보입니다 — 맨 끝 `830.5ms`가 그 순�
 
 **증상**: `java.lang.OutOfMemoryError: Java heap space`로 앱이 종료된다.
 
-**판단이 먼저입니다** — 진짜 메모리가 부족한 건지, **누수**인지 구분해야 합니다. GC 로그에서 Full GC 뒤에도 사용량이 계속 우상향하면 누수 신호입니다.
+**판단이 먼저입니다** — 실제로 메모리가 부족한 건지, **누수**인지 구분해야 합니다. GC 로그에서 Full GC 뒤에도 사용량이 계속 우상향하면 누수 신호입니다.
 
 <AnimatedLineChart
   title="누수 — Full GC 뒤에도 힙 사용률이 우상향(개념 예시)"
@@ -91,7 +91,7 @@ java.lang.OutOfMemoryError: Java heap space
 ```
 
 - **누수라면** — `Xmx`를 올려도 시간만 벌 뿐 다시 OOM이 발생합니다. 힙 덤프로 원인 객체를 찾아 **코드를 고칩니다**([힙 덤프 분석](./jvm-heap-dump-analysis)).
-- **진짜 부족이라면** — 워크로드에 맞게 `-Xmx`를 올립니다.
+- **실제로 부족하다면** — 워크로드에 맞게 `-Xmx`를 올립니다.
 
 ```bash
 -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/var/log/app/  # 종료되는 순간 스냅샷
@@ -191,7 +191,7 @@ $ kubectl describe pod my-app-xxxx
   data={[100, 72, 58, 18]}
   yMax={110}
   unit="기동 시간(상대)"
-/> <mark>단, `TieredStopAtLevel=1`은 오래 도는 서버의 최대 성능은 낮추므로, 기동이 진짜 병목일 때만 씁니다.</mark>
+/> <mark>단, `TieredStopAtLevel=1`은 오래 도는 서버의 최대 성능은 낮추므로, 기동이 실제 병목일 때만 씁니다.</mark>
 
 ## 상황 7 — 스레드·스택 관련
 

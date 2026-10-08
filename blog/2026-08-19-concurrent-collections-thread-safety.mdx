@@ -8,7 +8,7 @@ date: 2026-08-19T14:00:00
 
 <!-- truncate -->
 
-병렬로 빨리 처리하려고 `CompletableFuture`로 여러 스레드에 일을 나눈 뒤, 결과를 **하나의 리스트에 모으는** 코드는 흔합니다. 그런데 가끔 결과 개수가 모자라거나, `null`이 섞이거나, `ArrayIndexOutOfBoundsException`이 납니다. <mark>원인은 로직이 아니라 "여러 스레드가 스레드 안전하지 않은 `ArrayList`에 동시에 `add`한 것"입니다.</mark> 왜 깨지는지와 올바른 대안을 정리합니다.
+병렬로 빨리 처리하려고 `CompletableFuture`로 여러 스레드에 일을 나눈 뒤, 결과를 **하나의 리스트에 모으는** 코드는 흔합니다. 그런데 가끔 결과 개수가 모자라거나, `null`이 섞이거나, `ArrayIndexOutOfBoundsException`이 납니다. <mark>원인은 로직이 아니라 "여러 스레드가 스레드 안전하지 않은 `ArrayList`에 동시에 `add`한 것"입니다.</mark> 왜 이렇게 되는지와 올바른 대안을 정리합니다.
 
 ```java
 List<Result> results = new ArrayList<>(); // 공유 — 스레드 안전하지 않음
@@ -21,7 +21,7 @@ List<CompletableFuture<Void>> futures = ids.stream()
 CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 ```
 
-## 왜 깨지나 — `ArrayList.add`는 원자적이지 않다
+## 왜 결과가 손상되나 — `ArrayList.add`는 원자적이지 않다
 
 `add(e)`는 사실 여러 단계입니다 — 대략 ① 공간이 부족하면 내부 배열을 늘리고(리사이즈) ② `elementData[size] = e` 로 넣고 ③ `size++`. 이 셋은 하나의 원자적 동작이 아니라서, 여러 스레드가 동시에 하면 이렇게 잘못됩니다.
 
@@ -154,7 +154,7 @@ ids.parallelStream().forEach(id -> { if (call(id).ok()) count.increment(); });
 
 | 용어 | 쉬운 뜻 |
 |---|---|
-| 스레드 안전 | 여러 스레드가 동시에 써도 결과가 깨지지 않음 |
+| 스레드 안전 | 여러 스레드가 동시에 써도 결과가 손상되지 않음 |
 | 원자적 | 중간에 다른 동작이 개입할 수 없는 하나의 동작 |
 | effectively final | 값이 재할당되지 않아 람다가 캡처할 수 있는 지역 변수 |
 | ConcurrentLinkedQueue | 락 없이 동시 담기에 강한 큐 |

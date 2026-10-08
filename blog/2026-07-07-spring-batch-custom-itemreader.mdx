@@ -11,7 +11,7 @@ tags: [ spring, system-design ]
 
 여기에 "대량 처리", "동시성", "기존 쿼리 재사용"이라는 조건이 더해지자 내장 Reader들이 하나씩 탈락했고, 결국 30줄짜리 Reader를 직접 만들게 됐습니다. 그 판단 과정을 정리합니다.
 
-> **결론부터**: 내장 DB Reader는 크게 **커서형**과 **페이징형** 두 계열인데, 커서형은 `FOR UPDATE` 락이 청크 트랜잭션에 엮이지 않고, 페이징형은 읽는 조건이 바뀌는 탓에 스킵이 납니다. 키셋 커서와 청크에 엮인 락을 동시에 만족하는 내장 Reader가 없어서, 결국 직접 만들었습니다.
+> **결론부터**: 내장 DB Reader는 크게 **커서형**과 **페이징형** 두 계열인데, 커서형은 `FOR UPDATE` 락이 청크 트랜잭션에 묶이지 않고, 페이징형은 읽는 조건이 바뀌는 탓에 스킵이 납니다. 키셋 커서와 청크에 묶인 락을 동시에 만족하는 내장 Reader가 없어서, 결국 직접 만들었습니다.
 
 ## 요구사항
 
@@ -84,7 +84,7 @@ public abstract class AbstractCursorItemReader<T>
 }
 ```
 
-→ 커서는 기본적으로 청크 트랜잭션과 **다른 커넥션**에서 열립니다(공유하려면 `useSharedExtendedConnection`을 켜고 `ExtendedConnectionDataSourceProxy`를 써야 함). 그래서 그 커넥션에서 건 `FOR UPDATE` 락은 각 청크의 쓰기·커밋 트랜잭션에 엮이지 않습니다.
+→ 커서는 기본적으로 청크 트랜잭션과 **다른 커넥션**에서 열립니다(공유하려면 `useSharedExtendedConnection`을 켜고 `ExtendedConnectionDataSourceProxy`를 써야 함). 그래서 그 커넥션에서 건 `FOR UPDATE` 락은 각 청크의 쓰기·커밋 트랜잭션에 묶이지 않습니다.
 
 앞의 `AbstractCursorItemReader` 주석이 "별도 커넥션"까지 말했다면, [`JdbcCursorItemReader` 문서](https://docs.spring.io/spring-batch/docs/current/api/org/springframework/batch/item/database/JdbcCursorItemReader.html)는 한 걸음 더 나아가 그 커넥션이 **스텝 트랜잭션에 참여하지 않는다**고 명시합니다.
 
@@ -259,7 +259,7 @@ W -> DB : UPDATE — 이미 다른 요청이 바꾼 뒤
 
 ![PlantUML fetch>chunk 시 조기 락 해제와 다른 요청 인터리브](/img/c4/pu-batch-seq2.svg)
 
-`fetch`가 `chunk`보다 크면, 한 조회로 잠근 행이 여러 청크 트랜잭션에 걸칩니다. 첫 청크가 커밋되는 순간 **아직 처리하지 않은 행의 락까지 함께 풀려**, 그 사이 다른 요청이 개입할 수 있어 안전장치가 깨집니다. 그래서 "한 번의 `FOR UPDATE` 조회 = 한 청크"가 되도록 두 값을 같게 맞춥니다.
+`fetch`가 `chunk`보다 크면, 한 조회로 잠근 행이 여러 청크 트랜잭션에 걸칩니다. 첫 청크가 커밋되는 순간 **아직 처리하지 않은 행의 락까지 함께 풀려**, 그 사이 다른 요청이 개입할 수 있어 안전장치가 무력화됩니다. 그래서 "한 번의 `FOR UPDATE` 조회 = 한 청크"가 되도록 두 값을 같게 맞춥니다.
 
 ## 제약 3. 내장 Reader는 기존 쿼리를 호출하지 못한다
 
@@ -367,7 +367,7 @@ public MyBatisPagingItemReader<Long> reader() {
 
 > △: `JdbcCursorItemReader`는 OFFSET이 아니라 단일 커서 스트리밍이라 스킵 자체는 없지만, 락(세 번째 열)에서 탈락합니다. `MyBatisPagingItemReader`의 △(첫 열)는 매퍼 statement로 쿼리 정의를 재사용하는 쪽엔 가장 가깝지만, OFFSET 페이징이라 스킵·락에서 탈락함을 뜻합니다.
 
-표에 없는 나머지 구현체도 마찬가지입니다. `JpaCursorItemReader`·`HibernateCursorItemReader`·`StoredProcedureItemReader`(그리고 생태계의 `MyBatisCursorItemReader`)는 **커서형**이라 제약 2에, `HibernatePagingItemReader`는 **페이징형**이라 제약 1에 걸립니다(`MyBatisPagingItemReader`는 위 표에서 다뤘습니다). 또한 전부 쿼리를 문자열이나 매퍼 statement로 받아서 제약 3까지 그대로입니다. 즉 내장 Reader는 결국 **커서형과 페이징형 두 계열**로 나뉘는데, 커서형은 락이 안 엮이고 페이징형은 스킵이 발생하고, 어느 쪽도 이미 만든 쿼리 메서드를 그대로 부르지 못합니다.
+표에 없는 나머지 구현체도 마찬가지입니다. `JpaCursorItemReader`·`HibernateCursorItemReader`·`StoredProcedureItemReader`(그리고 생태계의 `MyBatisCursorItemReader`)는 **커서형**이라 제약 2에, `HibernatePagingItemReader`는 **페이징형**이라 제약 1에 걸립니다(`MyBatisPagingItemReader`는 위 표에서 다뤘습니다). 또한 전부 쿼리를 문자열이나 매퍼 statement로 받아서 제약 3까지 그대로입니다. 즉 내장 Reader는 결국 **커서형과 페이징형 두 계열**로 나뉘는데, 커서형은 락이 안 묶이고 페이징형은 스킵이 발생하고, 어느 쪽도 이미 만든 쿼리 메서드를 그대로 부르지 못합니다.
 
 그러니 정확히는 "내장 Reader가 부족하다"가 아니라, <mark>키셋 커서 + 청크 트랜잭션에 묶인 락 + 기존 쿼리 재사용, 이 셋을 동시에 만족하는 내장 Reader가 없다</mark>는 것입니다.
 
@@ -443,11 +443,11 @@ public void write(Chunk<? extends Long> chunk) {
 - `AbstractPagingItemReader` — 페이징 리더의 추상 베이스지만 page(=OFFSET) 기반이라 제약 1(스킵)이 그대로 돌아옵니다.
 - **`ItemStreamReader`를 직접 구현** — `open()`/`update()`에서 `afterId`를 직접 저장·복원합니다. <mark>키셋 커서에는 이 방식이 가장 자연스럽습니다.</mark>
 
-그런데 이번에는 애초에 재시작 저장이 필요 없었습니다. 안 쓸 기능 때문에 라이프사이클 메서드를 얹을 이유가 없어, 순수 `ItemReader`로 갔습니다. 대신 기댄 건 멱등성입니다. <mark>상태 전이 자체가 멱등이라, 다시 실행하면 아직 `READY`인 행만 다시 잡힙니다.</mark> 이미 전이된 행은 조건에서 빠집니다.
+그런데 이번에는 애초에 재시작 저장이 필요 없었습니다. 안 쓸 기능 때문에 라이프사이클 메서드를 추가할 이유가 없어, 순수 `ItemReader`로 갔습니다. 대신 기댄 건 멱등성입니다. <mark>상태 전이 자체가 멱등이라, 다시 실행하면 아직 `READY`인 행만 다시 잡힙니다.</mark> 이미 전이된 행은 조건에서 빠집니다.
 
 배치를 "기동해 한 번 실행하고 종료"하는 방식(K8s CronJob 등)으로 운영하면, 중간 상태를 복원하기보다 그냥 재실행하는 편이 더 자연스러운 복구입니다. 그래서 재시작 저장을 포기해도 문제가 없었고, 그 덕분에 Reader를 이 정도로 단순하게 유지할 수 있었습니다.
 
-반대로 재시작 복원이 꼭 필요한 배치라면, keyset 커서에는 `ItemStreamReader`를 직접 구현해 `afterId`를 저장하는 쪽이 가장 잘 맞습니다. 앞의 `read()`/`fill()`은 그대로 유지하고, 라이프사이클 메서드만 얹으면 됩니다.
+반대로 재시작 복원이 꼭 필요한 배치라면, keyset 커서에는 `ItemStreamReader`를 직접 구현해 `afterId`를 저장하는 쪽이 가장 잘 맞습니다. 앞의 `read()`/`fill()`은 그대로 유지하고, 라이프사이클 메서드만 추가하면 됩니다.
 
 ```java
 public class StatusTransitionItemReader implements ItemStreamReader<Long> {
@@ -495,7 +495,7 @@ Spring Batch가 청크 커밋마다 `update()`를 호출해 `afterId`를 `Execut
   open(ctx) → this.afterId = ctx.getLong(CURSOR_KEY)       ← 그 지점부터 재개
 ```
 
-<mark>재시작 복원의 실제 저장소는 메모리가 아니라 DB의 배치 메타 테이블입니다. 그래서 데이터 변경과 진행 위치가 같은 트랜잭션에서 커밋돼, 프로세스가 중단돼도 정합성이 깨지지 않습니다.</mark>
+<mark>재시작 복원의 실제 저장소는 메모리가 아니라 DB의 배치 메타 테이블입니다. 그래서 데이터 변경과 진행 위치가 같은 트랜잭션에서 커밋돼, 프로세스가 중단돼도 정합성이 유지됩니다.</mark>
 
 단, 이건 **JDBC 기반 `JobRepository`**(배치 메타 테이블을 쓰는 표준 구성)일 때입니다. 메모리형(Map) `JobRepository`를 쓰면 DB에 남지 않아, 프로세스가 종료되면 진행 위치도 사라집니다.
 

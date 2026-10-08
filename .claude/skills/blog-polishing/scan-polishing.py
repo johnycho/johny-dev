@@ -50,6 +50,21 @@ def body_lines(path):
 # 평서체(비존댓) 종결 — 줄 끝이 '…다.'인데 '…니다.'(존댓말)가 아닌 경우(한다/된다/낮다 등). </mark>·따옴표·괄호는 무시.
 PYEONG = re.compile(r"[가-힣](?<!니)다[\.\)”\"']*\s*(</mark>)?\s*$")
 
+# 단음절·과대오탐 지양어는 extract_terms(len>=2, 부분문자열)로 못 잡는다 →
+# 여기 '문맥 정규식'으로 보완한다. 좌열에 한 글자(예: 절)만 있는 규칙은 반드시 여기도 추가.
+CONTEXT = [
+    # '절'(문서의 section·조건절 뜻)만. 절차·적절·거절·계절·절반 등은 매칭 안 됨.
+    (re.compile(r"(?:[0-9]+|다음|이어지는|앞|뒤|위|아래|경계|정리|해당|본문|같은|이|그|첫|끝)\s?절(?=[에은을이도과만 .,)\]\n])|조건절"),
+     "절(→섹션)"),
+    # '주다'(설정값·옵션을 주다 → 설정하다). 보조동사 '되돌려/보여/처리해 주다'는 매칭 안 됨.
+    (re.compile(r"(?:`[^`]+`[를을]|이걸|그걸|값을|옵션을|설정을|같은 값을)\s*주(?:면|다|는|지)"),
+     "주다(→설정하다)"),
+]
+
+# 볼드 미적용(플랭킹): **"…"** 뒤에 한글/영숫자가 오면 CommonMark상 닫는 **가 무효 → 볼드가 안 걸린다.
+# `**` 개수는 짝수라 홀수 검사로 안 잡힘. 따옴표를 볼드 밖으로("**…**") 빼야 함.
+FLANK = re.compile(r'\*\*["“][^"”\n]*["”]\*\*[가-힣A-Za-z0-9]')
+
 def is_target_line(line):
     s = line.strip()
     return ("<mark>" in line) or bool(re.match(r"^\s*([-*]|\d+\.)\s", line)) or s.startswith(">")
@@ -78,8 +93,14 @@ def main():
                 j = line.find(t)
                 if j >= 0:
                     words.append((n, t, line[max(0, j-16):j+16]))
+            for rx, label in CONTEXT:
+                for m in rx.finditer(line):
+                    j = m.start()
+                    words.append((n, label, line[max(0, j-16):j+16]))
             if line.count("**") % 2 == 1:
-                bolds.append((n, line.strip()[:70]))
+                bolds.append((n, "** 홀수 — 두 줄 인용구면 오탐", line.strip()[:60]))
+            if FLANK.search(line):
+                bolds.append((n, '**"…"** 뒤 한글 → 볼드 안 닫힘(따옴표를 밖으로)', line.strip()[:60]))
             if is_target_line(line) and PYEONG.search(line):
                 pyeongs.append((n, line.strip()[:70]))
         cnt = len(words) + len(bolds) + len(pyeongs)
@@ -87,8 +108,8 @@ def main():
             print(f"\n### {os.path.relpath(f, ROOT)} — {cnt}건 (육안 확인 필수)")
             for n, t, ctx in sorted(words):
                 print(f"  [단어] {n}: [{t}]  …{ctx}…")
-            for n, ctx in sorted(bolds):
-                print(f"  [문장-볼드] {n}: {ctx}  (** 홀수 — 두 줄 인용구면 오탐)")
+            for n, why, ctx in sorted(bolds):
+                print(f"  [문장-볼드] {n}: {ctx}  ({why})")
             for n, ctx in sorted(pyeongs):
                 print(f"  [문장-평서] {n}: {ctx}  (평서체면 존댓말로)")
             total += cnt

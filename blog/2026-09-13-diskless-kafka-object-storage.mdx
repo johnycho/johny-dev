@@ -96,7 +96,7 @@ package "Diskless Kafka — 오브젝트 스토리지에 직접" {
 | 제품 | 방식 | 특징 |
 |---|---|---|
 | **WarpStream** | 상태 없는 에이전트, 로컬 WAL 없이 **S3 직행** | P99 약 400~600ms. 현재 Confluent(IBM) 소속. Grafana·Character.AI·Cursor·Robinhood 등 사용 |
-| **Redpanda Cloud Topics** | 쓰기 경로 페이로드는 오브젝트 스토리지로, **메타데이터·Raft 합의는 로컬** | 기존 Redpanda 엔진에 얹은 하이브리드 |
+| **Redpanda Cloud Topics** | 쓰기 경로 페이로드는 오브젝트 스토리지로, **메타데이터·Raft 합의는 로컬** | 기존 Redpanda 엔진에 더한 하이브리드 |
 | **AutoMQ** | S3 네이티브 재설계 | 카프카 프로토콜 호환, 비용 절감 강조 |
 | **Aiven Inkless** | **KIP-1150의 오픈(AGPLv3) MVP 포크** | Kafka 4.x 기반, 코디네이터로 PostgreSQL 사용, S3·GCS·Azure Blob 지원 |
 

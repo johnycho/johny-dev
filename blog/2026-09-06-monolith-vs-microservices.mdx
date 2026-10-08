@@ -91,7 +91,7 @@ void on(OrderCompleted event) { /* 결제 처리 */ }
 
 `@ApplicationModuleListener`는 트랜잭션 커밋 이후 비동기로 실행되고, **이벤트 발행 기록(Event Publication Registry)** 이 아웃박스처럼 남아 실패 시 재시도를 돕습니다. 덤으로 `Documenter`로 **모듈 구조 다이어그램을 자동 생성**할 수 있어, 앞의 [C4 다이어그램](./c4-model-architecture-diagram)을 손으로 그리는 대신 코드에서 뽑아낼 수 있습니다.
 
-<mark>Spring Modulith의 가치는 "모듈을 나눴다"가 아니라 "**경계를 어기면 빌드가 깨진다**"에 있습니다 — 그래야 시간이 지나도 경계가 유지됩니다.</mark>
+<mark>Spring Modulith의 가치는 "모듈을 나눴다"가 아니라 "**경계를 어기면 빌드가 실패한다**"에 있습니다 — 그래야 시간이 지나도 경계가 유지됩니다.</mark>
 
 <mark>모놀리스는 능력이 부족해 쓰는 게 아니라 의도적으로 선택하는 구조이고, MSA는 조직이 성숙했을 때 감당할 수 있는 구조입니다.</mark>
 

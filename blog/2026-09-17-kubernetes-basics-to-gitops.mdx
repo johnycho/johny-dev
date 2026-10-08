@@ -164,7 +164,7 @@ spec:
 
 <mark>매니지드 쿠버네티스는 "쿠버네티스를 운영하는 일" 자체를 클라우드에 맡기고, 팀은 어플리케이션 배포·운영에만 집중하게 해 줍니다.</mark>
 
-이 글에서 다루는 AWS 인프라를 한 장으로 보면 이렇습니다. 개발자·CI가 이미지를 **ECR(Elastic Container Registry, 컨테이너 이미지 저장소)** 에 올리고 매니페스트를 **Git**에 커밋하면, **EKS(Elastic Kubernetes Service, 매니지드 쿠버네티스)** 안의 ArgoCD가 이를 감지해 **워커 노드(EC2, Elastic Compute Cloud 가상 서버)** 에 배포하고, 노드는 ECR에서 이미지를, **Secrets Manager**에서 시크릿을 가져옵니다. 각 요소는 이어지는 절에서 자세히 다룹니다.
+이 글에서 다루는 AWS 인프라를 한 장으로 보면 이렇습니다. 개발자·CI가 이미지를 **ECR(Elastic Container Registry, 컨테이너 이미지 저장소)** 에 올리고 매니페스트를 **Git**에 커밋하면, **EKS(Elastic Kubernetes Service, 매니지드 쿠버네티스)** 안의 ArgoCD가 이를 감지해 **워커 노드(EC2, Elastic Compute Cloud 가상 서버)** 에 배포하고, 노드는 ECR에서 이미지를, **Secrets Manager**에서 시크릿을 가져옵니다. 각 요소는 이어지는 섹션에서 자세히 다룹니다.
 
 <details>
 <summary>PlantUML 코드 (AWS 아이콘)</summary>

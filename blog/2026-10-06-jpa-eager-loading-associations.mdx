@@ -73,7 +73,7 @@ queryFactory
 쿼리 문자열 없이 **어떤 연관관계를 함께 로딩할지 속성 경로로** 지정합니다. 내부적으로 fetch join(LEFT OUTER JOIN)으로 동작합니다.
 
 ```java
-// 메서드 이름 쿼리에 그래프만 얹기
+// 메서드 이름 쿼리에 그래프만 추가
 @EntityGraph(attributePaths = {"member"})
 Optional<Order> findById(Long id);
 
@@ -192,7 +192,7 @@ DTO는 **선택한 값만** 가진 평범한 객체입니다. `o.member.name`만
 ## 정리
 
 - 기본은 **LAZY**, 즉시 로딩은 조회할 때마다 **`join fetch`·`.fetchJoin()`·`@EntityGraph` 중 하나를 명시**해야 합니다.
-- **JPQL `join fetch` / QueryDSL `.fetchJoin()` / `@EntityGraph`** 가 진짜 "한 쿼리 즉시 로딩"입니다.
+- **JPQL `join fetch` / QueryDSL `.fetchJoin()` / `@EntityGraph`** 가 실제 "한 쿼리 즉시 로딩"입니다.
 - **DTO 프로젝션**은 값만 가져오는 것이라 지연 로딩 문제 자체가 없지만, 엔티티는 아닙니다.
 - **네이티브 쿼리**는 fetch join이 되지 않아, 연관 로딩에는 적합하지 않습니다.
 - 자주 하는 착각:
