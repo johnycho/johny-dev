@@ -13,9 +13,9 @@ description: "InnoDB가 컬럼 타입을 실제로 어떻게 저장하는지 정
 
 <mark>핵심은 **"고정 크기 타입은 행 안에 그대로, 큰 가변 타입은 행 밖(오버플로 페이지)에 포인터로"** 저장된다는 구조입니다 — 이걸 알면 타입 선택이 공간·I/O로 어떻게 이어지는지 보입니다.</mark>
 
-## InnoDB 로우의 기본 구조
+## InnoDB row의 기본 구조
 
-InnoDB는 데이터를 **16KB 페이지** 단위로 저장하고, 한 페이지 안에 여러 로우가 들어갑니다. 한 로우는 대략 이렇게 구성됩니다.
+InnoDB는 데이터를 **16KB 페이지** 단위로 저장하고, 한 페이지 안에 여러 row가 들어갑니다. 한 row는 대략 이렇게 구성됩니다.
 
 - **레코드 헤더 + NULL 비트맵** — 어떤 컬럼이 `NULL`인지 비트로 표시(그래서 `NULL`은 값 저장 공간을 거의 쓰지 않습니다).
 - **고정 크기 컬럼** — `INT`·`DATETIME` 등은 정해진 바이트로 **행 안에 그대로** 들어갑니다.
@@ -29,7 +29,7 @@ InnoDB는 데이터를 **16KB 페이지** 단위로 저장하고, 한 페이지 
 skinparam defaultTextAlignment center
 skinparam shadowing false
 
-rectangle "InnoDB 로우 (16KB 데이터 페이지 안)" as ROW #E3F2FD {
+rectangle "InnoDB row (16KB 데이터 페이지 안)" as ROW #E3F2FD {
   rectangle "레코드 헤더 + NULL 비트맵\n+ 가변 길이 목록" as H #FFF3E0
   rectangle "고정 컬럼\nINT·DATETIME 등 (인라인)" as F #E8F5E9
   rectangle "짧은 VARCHAR (인라인)" as V #E8F5E9
@@ -43,9 +43,9 @@ P -down-> OV : off-page 저장
 
 </details>
 
-![PlantUML InnoDB 로우 구조와 off-page 저장](/img/c4/pu-mysql-row-layout.svg)
+![PlantUML InnoDB row 구조와 off-page 저장](/img/c4/pu-mysql-row-layout.svg)
 
-한 로우의 최대 크기는 **65,535바이트**로 제한되며, 모든 컬럼이 이 한도를 나눠 사용합니다(단, `TEXT`·`BLOB`·`JSON`은 본문이 행 밖에 있어 9~12바이트만 차지). 이 구조를 전제로 타입별로 봅니다.
+한 row의 최대 크기는 **65,535바이트**로 제한되며, 모든 컬럼이 이 한도를 나눠 사용합니다(단, `TEXT`·`BLOB`·`JSON`은 본문이 행 밖에 있어 9~12바이트만 차지). 이 구조를 전제로 타입별로 봅니다.
 
 ## 숫자형 — 고정 크기, 그리고 정확도
 
@@ -53,7 +53,7 @@ P -down-> OV : off-page 저장
 
 | 타입 | 크기 | 비고 |
 |---|---|---|
-| `TINYINT` | 1바이트 | -128~127 (unsigned 0~255) |
+| `TINYINT` | 1바이트 | `-128~127` (unsigned `0~255`) |
 | `SMALLINT` | 2바이트 | |
 | `MEDIUMINT` | 3바이트 | |
 | `INT` | 4바이트 | 약 ±21억 |
@@ -161,6 +161,36 @@ SELECT * FROM product WHERE brand = 'ACME';
 배열 요소를 조건으로 자주 찾는다면 **다중 값 인덱스(multi-valued index, 8.0.17+)** 도 선택지입니다.
 
 <mark>JSON은 "스키마가 유동적인 속성"에 유용하지만, 자주 조회·정렬하는 값이라면 생성 컬럼+인덱스로 꺼내거나 애초에 **정규 컬럼으로 선언하는 편**이 빠릅니다 — JSON은 만능 저장소가 아닙니다.</mark>
+
+## 예시 — 한 행이 실제로 몇 바이트인가
+
+지금까지의 규칙을 실제 테이블 한 행에 대입해 봅니다. 아래 테이블(utf8mb4, 소수초 없음)에 `nickname = '홍길동'`(한글 3자)인 행을 저장한다고 하면:
+
+```sql
+CREATE TABLE member (
+    id        BIGINT,          -- 고정 8
+    age       TINYINT,         -- 고정 1
+    grade     CHAR(2),         -- 고정 2 × 4 = 8  (utf8mb4 1자 최대 4바이트)
+    nickname  VARCHAR(20),     -- 가변: 값 바이트 + 길이 프리픽스
+    balance   DECIMAL(13, 2),  -- 패킹 6
+    joined_at DATETIME,        -- 고정 5
+    bio       TEXT             -- 본문은 off-page, 행엔 포인터만
+);
+```
+
+| 컬럼 | 타입 | 이 행에서의 크기 | 계산 |
+|---|---|---|---|
+| `id` | `BIGINT` | 8 | 고정 |
+| `age` | `TINYINT` | 1 | 고정 |
+| `grade` | `CHAR(2)` | 8 | 2자 × 4바이트(utf8mb4) |
+| `nickname` | `VARCHAR(20)` | 10 | `'홍길동'` 9바이트 + 길이 프리픽스 1바이트 |
+| `balance` | `DECIMAL(13,2)` | 6 | 정수 11자리(5) + 소수 2자리(1) |
+| `joined_at` | `DATETIME` | 5 | 고정 |
+| `bio` | `TEXT` | 약 12 | 본문은 off-page, 행엔 포인터만 |
+
+행 안에 들어가는 건 **레코드 헤더·NULL 비트맵 + 위 합계(약 50바이트)** 정도이고, `bio`의 긴 본문은 **행 밖 오버플로 페이지**에 따로 저장됩니다.
+
+<mark>같은 7개 컬럼이라도 `grade`를 `CHAR(2)`→`VARCHAR`로, `balance`를 `DECIMAL`→`BIGINT`(원 단위)로, `bio`를 꼭 필요할 때만 조회하도록 하면 행 크기가 크게 줄어듭니다 — 타입 선택이 행 크기를 정하고, 행 크기가 페이지당 행 수·캐시 효율을 좌우합니다.</mark>
 
 ## 타입 선택 기준 — 정리
 
