@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.968fee10.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9d5e92de.js" defer="defer"></script>
 <script src="/assets/js/main.127359e0.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -26,7 +26,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="분산-락을-쓰기-전에--정말-락이-필요한가">분산 락을 쓰기 전에 — 정말 락이 필요한가<a href="#분산-락을-쓰기-전에--정말-락이-필요한가" class="hash-link" aria-label="분산 락을 쓰기 전에 — 정말 락이 필요한가에 대한 직접 링크" title="분산 락을 쓰기 전에 — 정말 락이 필요한가에 대한 직접 링크">​</a></h2>
 <p>가장 먼저 할 질문은 &quot;락 없이 풀 수 있는가&quot;입니다. 분산 락은 관리 비용과 장애 지점을 늘리므로, 다음으로 해결되면 쓰지 않습니다.</p>
 <ul>
-<li><strong>멱등성 키</strong>: 같은 결제 요청이 두 번 와도 한 번만 처리되게 합니다. 클라이언트가 요청마다 고유 키를 보내고, 서버는 그 키로 중복을 걸러냅니다.</li>
+<li><strong>멱등성 키</strong>: 같은 결제 요청이 두 번 와도 한 번만 처리되게 합니다. 클라이언트가 요청마다 고유 키를 보내고, 서버는 그 키로 중복을 막습니다.</li>
 <li><strong>조건부 UPDATE</strong>: 잔액이 충분할 때만 차감하는 식으로, 조건을 SQL에 넣어 원자적으로 처리합니다.</li>
 <li><strong>DB 유니크 제약</strong>: &quot;주문당 결제 1건&quot; 같은 규칙을 유니크 인덱스로 강제하면, 중복 삽입이 DB 레벨에서 실패합니다.</li>
 </ul>

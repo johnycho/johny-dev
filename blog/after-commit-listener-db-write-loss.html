@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.968fee10.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9d5e92de.js" defer="defer"></script>
 <script src="/assets/js/main.127359e0.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -28,7 +28,7 @@
 <p>운영 DB를 조사했더니, <strong>&quot;상태 전환으로 예약 취소&quot; 사유를 가진 행이 테이블 전체에 단 한 건도 없었습니다.</strong> <code>send_yn=false</code>인 행은 전부 <em>발송 실패</em>분이지 <em>취소</em>분이 아니었고, 취소 대상 행들의 <code>updated_at</code>은 <strong>전부 <code>created_at</code>과 같아</strong> 생성 후 한 번도 변경되지 않았습니다.</p>
 <blockquote>
 <p><strong>&quot;취소가 성공했다면 취소 표시 행이 남아야 하지 않나?&quot;</strong></p>
-<p>이 질문이 핵심을 정확히 가리켰습니다. 외부로는 취소가 나갔는데(알림은 실제로 사라졌는데) DB에는 취소 흔적이 전무했습니다. 외부와 DB 사이의 이 비대칭이 &quot;DB 쓰기만 유실된다&quot;를 가리킵니다.</p>
+<p>이 질문이 핵심을 정확히 가리켰습니다. 외부로는 취소가 나갔는데(알림은 실제로 사라졌는데) DB에는 취소 흔적이 전혀 없었습니다. 외부와 DB 사이의 이 비대칭이 &quot;DB 쓰기만 유실된다&quot;를 가리킵니다.</p>
 </blockquote>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-after_commit에서-required-쓰기는-커밋되지-않나">왜 AFTER_COMMIT에서 <code>REQUIRED</code> 쓰기는 커밋되지 않나<a href="#왜-after_commit에서-required-쓰기는-커밋되지-않나" class="hash-link" aria-label="왜-after_commit에서-required-쓰기는-커밋되지-않나에 대한 직접 링크" title="왜-after_commit에서-required-쓰기는-커밋되지-않나에 대한 직접 링크">​</a></h2>
 <p><code>markCancelled</code>가 한 번도 반영되지 않은 이유는 <strong>실행 위치와 전파 속성</strong>에 있었습니다.</p>

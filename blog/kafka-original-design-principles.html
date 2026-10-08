@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.968fee10.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9d5e92de.js" defer="defer"></script>
 <script src="/assets/js/main.127359e0.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -94,7 +94,7 @@
 <li><strong>at-least-once(최소 한 번)</strong>: 유실은 없지만 중복 가능 — <strong>카프카의 기본값</strong>.</li>
 <li><strong>exactly-once(정확히 한 번)</strong>: 유실도 중복도 없지만, 프로듀서·브로커·컨슈머가 &quot;보냈다/받았다/처리했다&quot;를 함께 확정하는 <strong>합의(2단계 커밋, 2PC)</strong> 가 필요해 비용이 큽니다.</li>
 </ul>
-<p>카프카는 왜 at-least-once를 택했을까요? 논문의 표현을 빌리면 <strong>&quot;로그 데이터라면 가끔 빠져도 세상이 끝나지 않는다&quot;</strong> 입니다. 페이지뷰 이벤트 몇 개가 누락되는 것보다 처리량을 극대화하는 편이 낫다는 것이죠. 중복이 문제라면 <strong>오프셋으로 직접 중복 제거</strong>하거나 메시지에 <strong>고유 키</strong>를 넣어 걸러 내면 되고, 이는 2PC보다 훨씬 저렴합니다.</p>
+<p>카프카는 왜 at-least-once를 택했을까요? 논문의 표현을 빌리면 <strong>&quot;로그 데이터라면 가끔 빠져도 세상이 끝나지 않는다&quot;</strong> 입니다. 페이지뷰 이벤트 몇 개가 누락되는 것보다 처리량을 극대화하는 편이 낫다는 것이죠. 중복이 문제라면 <strong>오프셋으로 직접 중복 제거</strong>하거나 메시지에 <strong>고유 키</strong>를 넣어 제거하면 되고, 이는 2PC보다 훨씬 저렴합니다.</p>
 <p>원논문 시점엔 exactly-once가 <strong>향후 과제(future work)</strong> 였고, 이후 <strong>멱등 프로듀서(idempotent producer)</strong> 와 트랜잭션 API로 구현됐습니다(상세는 <a href="/blog/kafka-transactions-exactly-once">Kafka 트랜잭션과 EOS</a> 참고).</p>
 <mark>전달 보장조차 &quot;무엇을 포기할지&quot;의 문제입니다 — 카프카는 exactly-once의 비용을 버리고 at-least-once + (필요시) 중복 제거를 택해 처리량을 얻었습니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="8-얼마나-빨랐나--논문의-성능-비교">8. 얼마나 빨랐나 — 논문의 성능 비교<a href="#8-얼마나-빨랐나--논문의-성능-비교" class="hash-link" aria-label="8. 얼마나 빨랐나 — 논문의 성능 비교에 대한 직접 링크" title="8. 얼마나 빨랐나 — 논문의 성능 비교에 대한 직접 링크">​</a></h2>
