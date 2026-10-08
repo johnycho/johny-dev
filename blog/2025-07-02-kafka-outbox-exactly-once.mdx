@@ -8,7 +8,7 @@ tags: [ kafka, system-design, architecture ]
 <!-- truncate -->
 
 이번 포스트에서는 **Debezium(CDC)을 사용하지 않고**,  
-Outbox 패턴을 활용해 **effectively exactly-once**를 달성하는 구조를 정리해보려고 합니다.
+Outbox 패턴을 활용해 **effectively exactly-once**를 보장하는 구조를 정리해보려고 합니다.
 
 분산 시스템에서  
 **“메시지를 정확히 한 번 처리한다(Exactly-Once)”** 는 요구사항은 매우 흔하지만,  
