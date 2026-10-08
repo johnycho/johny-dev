@@ -211,7 +211,7 @@ public interface OrderRepository extends ReactiveCrudRepository<Order, Long> {
 @GetMapping(value = "/orders/paid", produces = MediaType.APPLICATION_NDJSON_VALUE)
 public Flux<OrderDto> paidOrders() {
     return orderRepository.findByStatus("PAID")   // 소스: PAID 주문을 한 건씩 발행
-                          .filter(o -> o.getAmount() > 0)   // 연산자: 걸러 내고
+                          .filter(o -> o.getAmount() > 0)   // 연산자: 조건에 맞는 것만 통과
                           .map(OrderDto::from)              // 연산자: DTO로 변환
                           .doOnNext(dto -> log.info("보냄: {}", dto.id()));  // 각 건마다 로그
     // 3) 구독은 WebFlux가 대신 한다 — 클라이언트에 응답을 쓰기 시작할 때 subscribe()

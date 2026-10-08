@@ -423,7 +423,7 @@ new StepBuilder("transitionStep", jobRepository).<Long, Long>chunk(CHUNK, txMana
                                                 .build();
 ```
 
-Writer는 모인 id에 조건부 UPDATE를 겁니다. `WHERE`에 `status='READY'`를 한 번 더 넣은 것은, 락과 별개로 "조회 이후 상태가 바뀐 행"을 걸러 내는 2차 방어선입니다.
+Writer는 모인 id에 조건부 UPDATE를 겁니다. `WHERE`에 `status='READY'`를 한 번 더 넣은 것은, 락과 별개로 "조회 이후 상태가 바뀐 행"을 잡아내는 2차 방어선입니다.
 
 ```java
 public void write(Chunk<? extends Long> chunk) {

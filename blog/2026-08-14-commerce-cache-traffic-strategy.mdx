@@ -144,7 +144,7 @@ if (Boolean.TRUE.equals(acquired)) {
 
 **대응**:
 - **네거티브 캐시**: "없음"도 **짧은 TTL로 캐시**해 반복 조회를 막습니다.
-- 규모가 크면 **블룸 필터**로 "확실히 없는 id"를 DB 가기 전에 걸러냅니다(있을 수도 있음은 통과).
+- 규모가 크면 **블룸 필터**로 "확실히 없는 id"를 DB 가기 전에 막아냅니다(있을 수도 있음은 통과).
 
 ```java
 Product p = productRepository.findById(id).orElse(null);
