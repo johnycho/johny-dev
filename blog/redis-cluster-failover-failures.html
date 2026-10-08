@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.f8132a14.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.968fee10.js" defer="defer"></script>
 <script src="/assets/js/main.127359e0.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -75,7 +75,7 @@
 <p><code>cluster-node-timeout</code>(기본 <code>15000</code>ms)은 실패 감지의 기준 시계입니다. 뒤의 원인 ④(레플리카 자격)도 이 값을 기준으로 삼으므로 먼저 봅니다.</p>
 <ul>
 <li><strong>너무 짧으면</strong>: 느린 네트워크·GC 스톱 등 일시적 지연을 장애로 오판해 <strong>불필요한 failover</strong>(false failover)가 발생합니다. 승격·재동기화가 반복되며 오히려 불안정해집니다.</li>
-<li><strong>너무 길면</strong>: 진짜 장애를 늦게 감지해 <strong>failover가 지연</strong>됩니다. 그동안 해당 슬롯은 멈춰 있습니다.</li>
+<li><strong>너무 길면</strong>: 실제 장애를 늦게 감지해 <strong>failover가 지연</strong>됩니다. 그동안 해당 슬롯은 멈춰 있습니다.</li>
 <li>네트워크 품질과 허용 다운타임에 맞춰 잡습니다(빠른 감지 2~5초 vs 안정적 15초).</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="대응-방법-2">대응 방법<a href="#대응-방법-2" class="hash-link" aria-label="대응 방법에 대한 직접 링크" title="대응 방법에 대한 직접 링크">​</a></h3>

@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.f8132a14.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.968fee10.js" defer="defer"></script>
 <script src="/assets/js/main.127359e0.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -31,7 +31,7 @@
 </ul>
 <mark>같은 컨슈머 그룹의 최대 병렬성은 파티션 수를 넘지 못합니다 — 이것이 파티션 수 산정의 출발점입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-처음에-신중히-정해야-하나">왜 처음에 신중히 정해야 하나<a href="#왜-처음에-신중히-정해야-하나" class="hash-link" aria-label="왜 처음에 신중히 정해야 하나에 대한 직접 링크" title="왜 처음에 신중히 정해야 하나에 대한 직접 링크">​</a></h2>
-<p>파티션 수는 <strong>늘릴 수는 있어도 줄일 수는 없습니다.</strong> 또한 늘리는 것도 대가가 있습니다. 키 해시로 파티션을 고르기 때문에, 파티션 수가 바뀌면 <code>키 → 파티션</code> 매핑이 달라져 <strong>같은 키의 순서가 깨질 수 있습니다.</strong> 예를 들어 주문 ID를 키로 &quot;생성 → 결제 → 취소&quot; 순서를 지키고 있었다면, 파티션 수를 늘린 뒤부터 그 키가 다른 파티션으로 가면서 이전 메시지와 순서가 엉킬 수 있습니다.</p>
+<p>파티션 수는 <strong>늘릴 수는 있어도 줄일 수는 없습니다.</strong> 또한 늘리는 것도 대가가 있습니다. 키 해시로 파티션을 고르기 때문에, 파티션 수가 바뀌면 <code>키 → 파티션</code> 매핑이 달라져 <strong>같은 키의 순서가 보장되지 않을 수 있습니다.</strong> 예를 들어 주문 ID를 키로 &quot;생성 → 결제 → 취소&quot; 순서를 지키고 있었다면, 파티션 수를 늘린 뒤부터 그 키가 다른 파티션으로 가면서 이전 메시지와 순서가 엉킬 수 있습니다.</p>
 <mark>파티션 수는 사실상 한 방향(증가)으로만 바꿀 수 있고, 그마저 키 순서를 흔들기 때문에 처음에 근거 있게 정하는 것이 가장 좋습니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="기준-1--목표-처리량">기준 1 — 목표 처리량<a href="#기준-1--목표-처리량" class="hash-link" aria-label="기준 1 — 목표 처리량에 대한 직접 링크" title="기준 1 — 목표 처리량에 대한 직접 링크">​</a></h2>
 <p>가장 기본이 되는 기준은 <strong>목표 처리량</strong>입니다. 프로듀서가 밀어 넣는 속도와 컨슈머가 처리하는 속도 중 <strong>더 빠듯한 쪽</strong>을 만족해야 합니다.</p>

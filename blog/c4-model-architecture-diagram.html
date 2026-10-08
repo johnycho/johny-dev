@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.f8132a14.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.968fee10.js" defer="defer"></script>
 <script src="/assets/js/main.127359e0.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -74,10 +74,10 @@
 </ul>
 <p>절대적 공식은 아니고, <strong>&quot;누구와 어떤 다이어그램으로 소통할지&quot;</strong> 에 맞춰 고르면 됩니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="다이어그램을-코드로--c4-plantuml">다이어그램을 코드로 — C4-PlantUML<a href="#다이어그램을-코드로--c4-plantuml" class="hash-link" aria-label="다이어그램을 코드로 — C4-PlantUML에 대한 직접 링크" title="다이어그램을 코드로 — C4-PlantUML에 대한 직접 링크">​</a></h2>
-<p>앞서 각 레벨 그림 위에 실은 코드가 보여 주듯, C4는 아예 <strong>다이어그램을 코드로 작성</strong>하기 좋은 모델입니다(위 그림들은 모두 그 코드를 렌더한 것). 코드로 두면 <strong>Git으로 버전 관리</strong>하고, PR에서 리뷰하고, 요소가 바뀔 때 손으로 다시 그리지 않아도 됩니다. 위 예시는 <strong>C4-PlantUML</strong>(PlantUML에 C4 매크로를 얹은 것)로, 레벨에 따라 <code>C4_Context.puml</code>·<code>C4_Container.puml</code>·<code>C4_Component.puml</code>을 include하고 <code>Person</code>·<code>System</code>·<code>Container</code>·<code>Component</code>·<code>Rel</code> 매크로만 바꿔 쓰면 됩니다.</p>
+<p>앞서 각 레벨 그림 위에 실은 코드가 보여 주듯, C4는 아예 <strong>다이어그램을 코드로 작성</strong>하기 좋은 모델입니다(위 그림들은 모두 그 코드를 렌더한 것). 코드로 두면 <strong>Git으로 버전 관리</strong>하고, PR에서 리뷰하고, 요소가 바뀔 때 손으로 다시 그리지 않아도 됩니다. 위 예시는 <strong>C4-PlantUML</strong>(PlantUML에 C4 매크로를 더한 것)로, 레벨에 따라 <code>C4_Context.puml</code>·<code>C4_Container.puml</code>·<code>C4_Component.puml</code>을 include하고 <code>Person</code>·<code>System</code>·<code>Container</code>·<code>Component</code>·<code>Rel</code> 매크로만 바꿔 쓰면 됩니다.</p>
 <p>도구는 취향껏 고르면 됩니다.</p>
 <ul>
-<li><strong>C4-PlantUML</strong> — PlantUML에 C4 매크로를 얹은 것. 배치가 정교하고 IDE·CI 생태계가 넓습니다.</li>
+<li><strong>C4-PlantUML</strong> — PlantUML에 C4 매크로를 더한 것. 배치가 정교하고 IDE·CI 생태계가 넓습니다.</li>
 <li><strong>Mermaid</strong> — <code>C4Context</code> 등 C4 타입을 지원해 코드 블록으로 바로 렌더되지만, C4는 실험적이라 자동 배치가 다소 거칠 수 있습니다.</li>
 <li><strong>Structurizr</strong> — C4를 만든 사이먼 브라운의 공식 도구. <strong>하나의 DSL 모델</strong>에서 컨텍스트·컨테이너·컴포넌트 뷰를 <strong>자동으로 여러 장</strong> 뽑아 줍니다(모델 한 번, 뷰 여러 개).</li>
 </ul>

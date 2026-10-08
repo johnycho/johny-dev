@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.f8132a14.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.968fee10.js" defer="defer"></script>
 <script src="/assets/js/main.127359e0.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -64,7 +64,7 @@
 <p>이렇게 두면 (1) unlock 누락·순서 실수를 <strong>구조적으로</strong> 막고, (2) 대기 시간·키 규칙·트랜잭션 경계 같은 락 정책을 <strong>한 곳에서</strong> 바꿀 수 있습니다. <mark>획득→실행→해제를 고차 함수로 감싸면, 호출부에서 unlock 누락·순서 실수를 구조적으로 없앨 수 있습니다.</mark></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="redis가-장애나면--락의-한계와-최종-방어선">Redis가 장애나면 — 락의 한계와 최종 방어선<a href="#redis가-장애나면--락의-한계와-최종-방어선" class="hash-link" aria-label="Redis가 장애나면 — 락의 한계와 최종 방어선에 대한 직접 링크" title="Redis가 장애나면 — 락의 한계와 최종 방어선에 대한 직접 링크">​</a></h2>
 <p>분산 락은 Redis에 의존합니다. 그래서 Redis가 느려지거나 멈추면 락 자체가 흔들립니다. 장애 순간에 정합성(락을 못 얻으면 요청 실패)과 가용성(락 없이 진행) 중 무엇을 택할지 미리 정해야 합니다. 복제·failover 중 짧게 락이 두 곳에서 잡히는 상황도 고려해야 합니다.</p>
-<p>그래서 <strong>분산 락을 유일한 방어선으로 삼지 않습니다.</strong> 락은 경합을 줄여 처리량을 지키는 1차 방어이고, 정합성의 최종 보장은 <strong>DB의 제약과 조건부 연산</strong>이 맡습니다 — 유니크 인덱스로 중복 결제를 원천 차단하고, 조건부 UPDATE로 잔액이 음수가 되지 않게 합니다. 이렇게 두 겹으로 두면 락이 잠깐 실패해도 데이터가 깨지지 않습니다.</p>
+<p>그래서 <strong>분산 락을 유일한 방어선으로 삼지 않습니다.</strong> 락은 경합을 줄여 처리량을 지키는 1차 방어이고, 정합성의 최종 보장은 <strong>DB의 제약과 조건부 연산</strong>이 맡습니다 — 유니크 인덱스로 중복 결제를 원천 차단하고, 조건부 UPDATE로 잔액이 음수가 되지 않게 합니다. 이렇게 두 겹으로 두면 락이 잠깐 실패해도 데이터가 손상되지 않습니다.</p>
 <mark>분산 락은 Redis에 의존하므로, 최종 정합성은 DB의 유니크 제약·조건부 연산으로 한 번 더 보장합니다.</mark>
 <p>분산 락과 Redis 장애 시 대응은 <a href="/blog/distributed-lock-and-redis-failure">분산 락과 Redis 장애</a>에서 더 다뤘습니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리--결제-분산-락-체크리스트">정리 — 결제 분산 락 체크리스트<a href="#정리--결제-분산-락-체크리스트" class="hash-link" aria-label="정리 — 결제 분산 락 체크리스트에 대한 직접 링크" title="정리 — 결제 분산 락 체크리스트에 대한 직접 링크">​</a></h2>

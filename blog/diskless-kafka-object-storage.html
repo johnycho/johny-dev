@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.f8132a14.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.968fee10.js" defer="defer"></script>
 <script src="/assets/js/main.127359e0.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -42,7 +42,7 @@
 <mark>Diskless는 &quot;지연을 조금 감수하고 비용을 크게 아끼는&quot; 트레이드오프입니다 — 로그·이벤트·분석 파이프라인처럼 수백 ms 지연이 문제없는 곳에 맞고, 실시간 저지연이 생명인 경로에는 맞지 않습니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="어떤-구현체가-있나">어떤 구현체가 있나<a href="#어떤-구현체가-있나" class="hash-link" aria-label="어떤 구현체가 있나에 대한 직접 링크" title="어떤 구현체가 있나에 대한 직접 링크">​</a></h2>
 <p>같은 방향이지만 세부는 제각각입니다. 표준(KIP-1150) 이전에 이미 여러 제품이 시장에 나와 있습니다.</p>
-<table><thead><tr><th>제품</th><th>방식</th><th>특징</th></tr></thead><tbody><tr><td><strong>WarpStream</strong></td><td>상태 없는 에이전트, 로컬 WAL 없이 <strong>S3 직행</strong></td><td>P99 약 400~600ms. 현재 Confluent(IBM) 소속. Grafana·Character.AI·Cursor·Robinhood 등 사용</td></tr><tr><td><strong>Redpanda Cloud Topics</strong></td><td>쓰기 경로 페이로드는 오브젝트 스토리지로, <strong>메타데이터·Raft 합의는 로컬</strong></td><td>기존 Redpanda 엔진에 얹은 하이브리드</td></tr><tr><td><strong>AutoMQ</strong></td><td>S3 네이티브 재설계</td><td>카프카 프로토콜 호환, 비용 절감 강조</td></tr><tr><td><strong>Aiven Inkless</strong></td><td><strong>KIP-1150의 오픈(AGPLv3) MVP 포크</strong></td><td>Kafka 4.x 기반, 코디네이터로 PostgreSQL 사용, S3·GCS·Azure Blob 지원</td></tr></tbody></table>
+<table><thead><tr><th>제품</th><th>방식</th><th>특징</th></tr></thead><tbody><tr><td><strong>WarpStream</strong></td><td>상태 없는 에이전트, 로컬 WAL 없이 <strong>S3 직행</strong></td><td>P99 약 400~600ms. 현재 Confluent(IBM) 소속. Grafana·Character.AI·Cursor·Robinhood 등 사용</td></tr><tr><td><strong>Redpanda Cloud Topics</strong></td><td>쓰기 경로 페이로드는 오브젝트 스토리지로, <strong>메타데이터·Raft 합의는 로컬</strong></td><td>기존 Redpanda 엔진에 더한 하이브리드</td></tr><tr><td><strong>AutoMQ</strong></td><td>S3 네이티브 재설계</td><td>카프카 프로토콜 호환, 비용 절감 강조</td></tr><tr><td><strong>Aiven Inkless</strong></td><td><strong>KIP-1150의 오픈(AGPLv3) MVP 포크</strong></td><td>Kafka 4.x 기반, 코디네이터로 PostgreSQL 사용, S3·GCS·Azure Blob 지원</td></tr></tbody></table>
 <ul>
 <li><strong>프로토콜 호환</strong>이 공통점입니다. 대부분 기존 카프카 클라이언트를 그대로 쓸 수 있다고 표방합니다(검증은 필요).</li>
 <li><strong>완전 무상태(WarpStream) vs 하이브리드(Redpanda)</strong> 로 나뉩니다. 무상태는 운영이 단순하지만 지연이 크고, 하이브리드는 메타데이터를 로컬에 둬 지연·기능 균형을 꾀합니다.</li>

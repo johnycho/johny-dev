@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.3af69570.css">
-<script src="/assets/js/runtime~main.f8132a14.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.968fee10.js" defer="defer"></script>
 <script src="/assets/js/main.127359e0.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -28,11 +28,11 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="가상-스레드가-하는-일">가상 스레드가 하는 일<a href="#가상-스레드가-하는-일" class="hash-link" aria-label="가상 스레드가 하는 일에 대한 직접 링크" title="가상 스레드가 하는 일에 대한 직접 링크">​</a></h2>
 <p><strong>가상 스레드</strong>(JEP 444, <strong>JDK 21에서 정식</strong>)는 JVM이 관리하는 가벼운 스레드입니다. 수백만 개를 만들어도 됩니다. 핵심은 <strong>블로킹 시 동작</strong>입니다.</p>
 <ul>
-<li>가상 스레드는 실행될 때 <strong>캐리어(carrier) 스레드</strong>(진짜 OS 스레드)에 잠깐 올라탑니다(mount).</li>
+<li>가상 스레드는 실행될 때 <strong>캐리어(carrier) 스레드</strong>(실제 OS 스레드)에 잠깐 올라탑니다(mount).</li>
 <li>그 안에서 DB·네트워크 I/O로 <strong>블로킹되면</strong>, JVM이 가상 스레드를 캐리어에서 <strong>내려놓고(unmount)</strong> 캐리어를 반납합니다. 그 캐리어는 곧바로 <strong>다른 가상 스레드</strong>를 실행합니다.</li>
 <li>I/O가 끝나면 가상 스레드는 다시 임의의 캐리어에 배정돼 이어서 실행됩니다.</li>
 </ul>
-<p>결과적으로 <strong>소수의 OS 스레드로 수만 개의 동시 요청</strong>을 처리할 수 있습니다. 코드는 여전히 익숙한 <strong>동기·블로킹 스타일</strong> 그대로라는 점이 가상 스레드의 진짜 매력입니다.</p>
+<p>결과적으로 <strong>소수의 OS 스레드로 수만 개의 동시 요청</strong>을 처리할 수 있습니다. 코드는 여전히 익숙한 <strong>동기·블로킹 스타일</strong> 그대로라는 점이 가상 스레드의 핵심 매력입니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="리액티브webflux와-무엇이-다른가">리액티브(WebFlux)와 무엇이 다른가<a href="#리액티브webflux와-무엇이-다른가" class="hash-link" aria-label="리액티브(WebFlux)와 무엇이 다른가에 대한 직접 링크" title="리액티브(WebFlux)와 무엇이 다른가에 대한 직접 링크">​</a></h3>
 <p>같은 &quot;높은 동시성&quot;을 리액티브로도 얻을 수 있지만, <strong>코드를 쓰는 방식</strong>이 다릅니다.</p>
 <ul>
