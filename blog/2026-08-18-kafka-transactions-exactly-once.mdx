@@ -43,6 +43,7 @@ Kafka는 이 보장을 **세 가지 메커니즘의 조합**으로 만듭니다:
 @startuml
 skinparam shadowing false
 skinparam DefaultFontName sans-serif
+skinparam maxMessageSize 95
 participant "토픽 A\n(입력)" as A
 participant "처리기\nconsumer + producer" as P
 participant "토픽 B\n(출력)" as B
@@ -50,10 +51,10 @@ participant "다운스트림\n컨슈머" as D
 
 P -> A : poll (read)
 A --> P : 레코드
-group ❷ 하나의 트랜잭션   (❹ transactional.id 로 좀비 펜싱)
-  P -> B : send(결과)  ← 처리기의 프로듀서가 B로 전송
+group ❷ 하나의 트랜잭션 (❹ transactional.id 로 좀비 펜싱)
+  P -> B : send(결과) ← 처리기의 프로듀서가 B로 전송
   P --> B : send 재시도 (네트워크 재전송)
-  note over P, B : ❶ 멱등 프로듀서 = 처리기가 B로 보내는 프로듀서\n재시도로 들어온 중복을 브로커가\nPID+시퀀스로 막아 한 번만 저장
+  note over P, B : ❶ 멱등 프로듀서\n= 처리기가 B로 보내는 프로듀서\n재시도로 들어온 중복을 브로커가\nPID+시퀀스로 막아 한 번만 저장
   P -> A : 읽은 오프셋 커밋
 end
 D -> B : poll (read)
