@@ -117,7 +117,7 @@ class IdCache {
         try {
             validIds = api.fetchValidIds();   // 부팅 때 한 번 로드
         } catch (Exception e) {
-            log.warn("ID 캐시 로드 실패", e);   // 예외를 삼켜 '빈 캐시'로 그냥 뜬다
+            log.warn("ID 캐시 로드 실패", e);   // 예외를 무시해 '빈 캐시'로 그냥 넘어간다
         }
     }
 }

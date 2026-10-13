@@ -269,7 +269,7 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
   // ① doOnError — 흐름은 그대로 두고 "로그만" 남긴다(부수 효과). 예외는 계속 전파됨
   return userRepo.findById(id)
                  .doOnError(e -> log.error("findById 실패 id={}", id, e))
-                 // ② onErrorResume — 실패를 "대체 흐름"으로 바꿔 복구(예외를 삼켜 이어 감)
+                 // ② onErrorResume — 실패를 "대체 흐름"으로 바꿔 복구(예외를 무시해 이어 감)
                  .onErrorResume(e -> Mono.just(User.guest()))
                  // ③ onErrorMap — 예외를 도메인 예외로 변환해 위로 던짐
                  .onErrorMap(DataAccessException.class, e -> new UserLookupException(id, e))

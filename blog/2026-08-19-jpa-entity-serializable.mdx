@@ -106,7 +106,7 @@ private static final long serialVersionUID = 1L; // 명시 안 하면 변경마�
 - 평소 쓰는 API는 응답에 필요한 연관이 우연히 이미 초기화됐거나, OSIV(뷰까지 트랜잭션 유지)로 `LAZY`가 그때그때 로딩돼 무탈합니다.
 - 그러다 **어쩌다 한 번 호출되는 엔드포인트**가 초기화 안 된 다른 `LAZY` 연관을 건드리면, Jackson이 미초기화 프록시를 직렬화하다 `LazyInitializationException`이 납니다.
 
-<mark>즉 `Serializable`을 붙였는지와 무관하게, 엔티티를 응답으로 내보내는 것 자체가 LAZY·그래프라는 같은 뿌리의 문제를 유발합니다.</mark> 그래서 해법도 같습니다 — DTO로 분리.
+<mark>즉 `Serializable`을 붙였는지와 무관하게, 엔티티를 응답으로 내보내는 것 자체가 LAZY·그래프라는 같은 근원의 문제를 유발합니다.</mark> 그래서 해법도 같습니다 — DTO로 분리.
 
 > **Q. `fetch join`·`@EntityGraph`로 미리 로딩하면 되지 않나?**
 >
