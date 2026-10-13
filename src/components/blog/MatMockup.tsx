@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './MatMockup.module.css';
 
-// Eclipse MAT 뷰(도미네이터 트리 / 히스토그램 / Path to GC Roots)를 흉내 낸 오리지널 목업.
+// Eclipse MAT 뷰(도미네이터 트리 / 히스토그램 / Path to GC Roots)를 재현한 오리지널 목업.
 // 실제 스크린샷이 아니며 표시 값은 전부 예시.
 
 const TABS = ['Overview', 'Histogram', 'Dominator Tree', 'Leak Suspects'];

@@ -1,0 +1,232 @@
+/* Herdr TUI를 재현한 오리지널 목업 — 실제 스크린샷 아님, 직접 그림 */
+.win {
+  margin: 1rem 0 0.35rem;
+  border: 1px solid var(--site-card-border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--site-card-bg);
+  box-shadow: var(--site-shadow-lg, 0 8px 24px -12px rgba(0, 0, 0, 0.4));
+  font-size: 0.78rem;
+  font-family: var(--ifm-font-family-monospace, monospace);
+}
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.7rem;
+  background: var(--site-chrome-bg, var(--site-card-bg));
+  border-bottom: 1px solid var(--site-card-border);
+}
+.dots {
+  display: flex;
+  gap: 6px;
+}
+.dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.title {
+  color: var(--site-chrome-muted, var(--site-muted));
+  font-size: 0.74rem;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 12.5rem minmax(0, 1fr);
+  min-width: 460px;
+}
+
+/* ── 사이드바 ── */
+.side {
+  border-right: 1px solid var(--site-card-border);
+  background: color-mix(in srgb, var(--site-card-bg) 94%, var(--site-muted));
+  padding: 0.3rem 0;
+}
+.sideHead {
+  padding: 0.3rem 0.7rem 0.4rem;
+  color: var(--site-muted);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.wsRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0.3rem 0.6rem;
+}
+.tw {
+  color: var(--site-muted);
+  width: 0.8em;
+  flex-shrink: 0;
+}
+.wsName {
+  color: var(--site-fg);
+  font-weight: 700;
+  margin-right: auto;
+}
+.paneRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.26rem 0.6rem 0.26rem 1.5rem;
+  border-left: 2px solid transparent;
+}
+.paneActive {
+  background: var(--site-accent-soft);
+  border-left-color: var(--site-accent);
+}
+.paneAgent {
+  color: var(--site-fg);
+}
+.paneTask {
+  color: var(--site-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.spacer {
+  flex: 1;
+}
+
+/* ── 메인 페인 ── */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.paneHead {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.7rem;
+  border-bottom: 1px solid var(--site-card-border);
+  background: color-mix(in srgb, var(--site-card-bg) 96%, var(--site-muted));
+}
+.paneHeadTitle {
+  color: var(--site-fg);
+  font-weight: 700;
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.term {
+  padding: 0.55rem 0.8rem 0.7rem;
+  line-height: 1.7;
+}
+.t_ok {
+  color: var(--site-fg);
+}
+.tmark {
+  color: #28c840;
+  margin-right: 0.5rem;
+}
+.t_ask {
+  color: var(--site-fg);
+  font-weight: 700;
+  margin-top: 0.1rem;
+}
+.t_opt {
+  color: var(--site-muted);
+  white-space: pre;
+}
+.t_opt:first-of-type {
+  color: var(--site-accent);
+  font-weight: 700;
+}
+.t_wait {
+  color: #febc2e;
+}
+.tgap {
+  height: 0.5rem;
+}
+
+/* ── 상태 배지 / 점 ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.64rem;
+  font-weight: 700;
+  padding: 0.08rem 0.45rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+  color: #fff;
+}
+.badgeDim {
+  color: var(--site-fg);
+  background: transparent !important;
+  padding: 0;
+  font-weight: 600;
+  opacity: 0.85;
+}
+.bdot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.badge.working {
+  background: #1f9d3f;
+}
+.badge.blocked {
+  background: #d9831f;
+}
+.badge.done {
+  background: #2f74d0;
+}
+.badge.idle {
+  background: color-mix(in srgb, var(--site-muted) 70%, transparent);
+}
+
+.sdot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sdot.working {
+  background: #28c840;
+}
+.sdot.blocked {
+  background: #febc2e;
+}
+.sdot.done {
+  background: #4b9fff;
+}
+.sdot.idle {
+  background: color-mix(in srgb, var(--site-muted) 55%, transparent);
+}
+
+/* ── 상태바 ── */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.35rem 0.7rem;
+  border-top: 1px solid var(--site-card-border);
+  background: color-mix(in srgb, var(--site-card-bg) 92%, var(--site-muted));
+  font-size: 0.68rem;
+}
+.prefix {
+  color: var(--site-fg);
+  font-weight: 700;
+  border: 1px solid var(--site-card-border);
+  border-radius: 5px;
+  padding: 0.05rem 0.4rem;
+}
+.count {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--site-muted);
+}
+
+.cap {
+  margin: 0 0 1rem;
+  color: var(--site-muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
