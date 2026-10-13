@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.3e34932f.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.418a7979.js" defer="defer"></script>
 <script src="/assets/js/main.7730c3e5.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -27,7 +27,7 @@
 <li><strong>운영 지표</strong>: CPU·메모리·네트워크·레이턴시·에러 같은 시스템 지표.</li>
 </ul>
 <p>규모도 컸습니다. 논문은 당시 Facebook이 하루 약 6TB의 활동 이벤트를, 중국의 한 통신사가 하루 5~8TB의 통화 기록을 수집했다고 인용합니다. 또한 <strong>더 중요한 변화</strong>가 있었습니다. 이 로그가 나중에 모아 분석하는 데이터가 아니라 <strong>실시간 프로덕션 기능</strong>(추천·광고 타깃팅·스팸/보안 탐지·뉴스)에 직접 쓰이기 시작한 것입니다. 즉 &quot;몇 초 안에&quot; 처리해야 했습니다.</p>
-<p>기존 메시징 시스템(전통적 MQ)은 메시지당 전달 보장·복잡한 라우팅에 초점이 맞춰져, 초당 수십만 건을 처리하는 <strong>로그 처리</strong>에는 무거웠습니다. 로그 데이터는 조금 유실돼도 치명적이지 않은 대신 <strong>처리량과 단순함</strong>이 훨씬 중요합니다. 카프카는 이 지점을 겨냥해, 전통적 MQ와 다른 선택을 합니다.</p>
+<p>기존 메시징 시스템(전통적 MQ)은 메시지당 전달 보장·복잡한 라우팅에 초점이 맞춰져, 초당 수십만 건을 처리하는 <strong>로그 처리</strong>에는 무거웠습니다. 로그 데이터는 조금 유실돼도 치명적이지 않은 대신 <strong>처리량과 단순함</strong>이 훨씬 중요합니다. 카프카는 이 지점을 노려, 전통적 MQ와 다른 선택을 합니다.</p>
 <mark>&quot;로그 데이터는 대량이지만 유실 허용도가 있다&quot;는 전제가, 강한 보장 대신 처리량·단순함을 택하게 만든 출발점입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-메시지를-지우지-않는다--append-only-커밋-로그">1. 메시지를 지우지 않는다 — append-only 커밋 로그<a href="#1-메시지를-지우지-않는다--append-only-커밋-로그" class="hash-link" aria-label="1. 메시지를 지우지 않는다 — append-only 커밋 로그에 대한 직접 링크" title="1. 메시지를 지우지 않는다 — append-only 커밋 로그에 대한 직접 링크">​</a></h2>
 <p>전통적 MQ는 소비된 메시지를 큐에서 지웁니다. 카프카는 다릅니다. 각 파티션을 <strong>파일 끝에만 덧붙이는(append-only) 로그</strong>로 두고, 소비돼도 지우지 않습니다. 대신 <strong>시간·용량 기준으로 보존(retention)</strong> 하다 오래된 것을 통째로 버립니다(기본 보존 기간은 시간 기반).</p>
