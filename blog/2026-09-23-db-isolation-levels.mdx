@@ -37,7 +37,7 @@ note over B : B는 존재한 적 없는 90을 읽음 = dirty read
 
 ![PlantUML Dirty Read 시퀀스](/img/c4/pu-iso-dirty-read.svg)
 
-<mark>커밋되지 않아 언제든 되돌려질 수 있는 값을 읽는 것이 dirty read입니다.</mark>
+<mark>커밋되지 않아 언제든 롤백될 수 있는 값을 읽는 것이 dirty read입니다.</mark>
 
 ### ② Non-repeatable Read — 같은 행을 두 번 읽었는데 값이 바뀜
 
@@ -132,7 +132,7 @@ DB별 라이선스·성격 차이는 [MySQL·PostgreSQL·Oracle 비교](./rdbms-
 
 ## REPEATABLE READ는 데드락이 더 잘 생길까 — MySQL의 gap 락
 
-<mark>MySQL InnoDB에서는 그렇습니다. REPEATABLE READ가 phantom을 막으려고 쓰는 **gap(next-key) 락**이 잠금 대기·데드락을 늘립니다.</mark> RR은 "행"만이 아니라 **"그 행 앞의 빈 구간(gap)"** 까지 잠가 새 행이 삽입되는 것을 막는데, 구간을 잠그다 보니 충돌 범위가 넓어집니다.
+<mark>MySQL InnoDB에서는 그렇습니다. REPEATABLE READ가 phantom을 막으려고 사용하는 **gap(next-key) 락**이 잠금 대기·데드락을 늘립니다.</mark> RR은 "행"만이 아니라 **"그 행 앞의 빈 구간(gap)"** 까지 잠가 새 행이 삽입되는 것을 막는데, 구간을 잠그다 보니 충돌 범위가 넓어집니다.
 
 여기서 중요한 점이 하나 있습니다. <mark>gap 락은 **특정 값이 아니라, 인접한 두 인덱스 레코드 사이의 "구간" 전체**에 걸립니다.</mark> 예를 들어 테이블에 `id = 10`과 `id = 20`만 있으면 그 사이 **10~20이 하나의 gap**이고, 이 구간 안의 어떤 값(15든 17이든)으로 없는 행을 잠그면 **모두 같은 gap 락**을 잡습니다.
 
@@ -174,7 +174,7 @@ note over A, B : 서로의 gap 락을 기다림 → 데드락 (한쪽 롤백)
 **READ COMMITTED로 낮추면** 검색·인덱스 스캔에서 **gap 락이 비활성화**(외래키·중복키 검사에만 사용)되어, 이런 gap 데드락이 크게 줄어듭니다. 대신 phantom read가 다시 가능해지는 트레이드오프가 있습니다.
 
 - **잠금 대기·데드락이 자주 생긴다** → READ COMMITTED를 검토(단, phantom 재등장 감안). 실제로 gap 락 부담을 줄이려 RC로 운영하는 팀이 많습니다.
-- **RR을 유지**한다면 → 트랜잭션이 여러 행을 **항상 같은 순서로** 접근하고, 범위 조건보다 **유니크 키 동등 조건**을 써 gap 경합을 줄입니다.
+- **RR을 유지**한다면 → 트랜잭션이 여러 행을 **항상 같은 순서로** 접근하고, 범위 조건보다 **유니크 키 동등 조건**을 사용해 gap 경합을 줄입니다.
 - 이건 **MySQL InnoDB 특유**입니다 — PostgreSQL·Oracle은 스냅샷 MVCC라 gap 락이 없어 이 데드락은 없습니다(대신 SERIALIZABLE에서는 직렬화 실패가 나 재시도로 처리). 근거: [InnoDB Locking](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html).
 
 접근 순서·인덱스 때문에 생기는 또 다른 데드락은 [세컨더리 인덱스와 데드락](./index-deadlock)에서 다뤘습니다.
@@ -238,7 +238,7 @@ public void withdraw(Long id, int amount) {
 }
 ```
 
-스냅샷은 "읽은 값"을 고정할 뿐, 그 값을 근거로 한 쓰기가 남의 쓰기를 덮어쓰는 것은 막지 않습니다. 이때는 **잠금**이 필요합니다.
+스냅샷은 "읽은 값"을 고정할 뿐, 그 값을 근거로 한 쓰기가 다른 트랜잭션의 쓰기를 덮어쓰는 것은 막지 않습니다. 이때는 **잠금**이 필요합니다.
 
 ```java
 // 해결 1) 비관적 락 — 조회 시점에 행을 잠가 다른 Tx를 대기시킨다 (SELECT ... FOR UPDATE)
@@ -252,7 +252,7 @@ Account findByIdForUpdate(@Param("id") Long id);
 @Entity
 class Account {
     @Version
-    private long version;   // 갱신 시 버전이 다르면 예외 → 잡아서 재시도
+    private long version;   // 갱신 시 버전이 다르면 예외 → 처리해 재시도
 }
 ```
 

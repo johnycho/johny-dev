@@ -7,7 +7,7 @@ tags: [ redis, system-design ]
 
 <!-- truncate -->
 
-이번 포스트에서는 Redis 기반의 Spin Lock(`SETNX` + while-loop) 구조를 `Redisson` 기반의 `Reentrant Distributed Lock`으로 전환했던 경험을 공유하고자 합니다.
+이번 포스트에서는 Redis 기반의 Spin Lock(`SETNX` + while-loop) 구조를 `Redisson` 기반의 `Reentrant Distributed Lock`으로 바꿨던 경험을 공유하고자 합니다.
 
 ## 기존 Spin Lock 구조
 ```java
@@ -196,7 +196,7 @@ public class RedissonDistributedLockService {
 먼저 "무한"이 두 종류라는 걸 구분해야 합니다 — **대기자(waiter)가 락을 못 잡아 무한 대기**하는 것과, **보유자(holder)가 살아있는 채 멈춰 락을 영원히 쥐는 것**. 앞의 것은 워치독을 켠 채로도 해결되고, 뒤의 것은 워치독의 성질상 근본 해결이 안 됩니다.
 
 **1) 대기자의 무한 대기 — 워치독을 켠 채 없앤다**<br />
-무한 대기의 직접 원인은 `lock()`이 잡을 때까지 무한 블로킹하는 것입니다. `leaseTime`을 지정하지 않는 `tryLock(waitTime, unit)`을 쓰면 <mark>워치독(보유자 자동 연장)은 그대로 켜진 채 획득 대기에만 상한이 생깁니다.</mark> 못 잡으면 빠르게 실패해 재시도·알림으로 넘깁니다.
+무한 대기의 직접 원인은 `lock()`이 잡을 때까지 무한 블로킹하는 것입니다. `leaseTime`을 지정하지 않는 `tryLock(waitTime, unit)`을 사용하면 <mark>워치독(보유자 자동 연장)은 그대로 켜진 채 획득 대기에만 상한이 생깁니다.</mark> 못 잡으면 빠르게 실패해 재시도·알림으로 넘깁니다.
 
 ```java
 RLock lock = redissonClient.getLock(lockKey);

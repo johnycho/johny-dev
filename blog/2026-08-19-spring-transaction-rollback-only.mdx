@@ -8,7 +8,7 @@ date: 2026-08-19T10:00:00
 
 <!-- truncate -->
 
-**상황** — 금요일 오후 피크에 회원가입에서 간헐적으로 500 에러가 났습니다. 최근 배포에서 "외부 API가 실패해도 가입은 진행되게" `try-catch`로 예외를 처리하도록 바꿨는데, <mark>예외를 분명히 잡았는데도 가입 데이터가 DB에 저장되지 않고 트랜잭션이 통째로 롤백됐습니다.</mark> (Spring Boot 3.x · Kotlin · MySQL 8.0)
+**상황** — 금요일 오후 피크에 회원가입에서 간헐적으로 500 에러가 났습니다. 최근 배포에서 "외부 API가 실패해도 가입은 진행되게" `try-catch`로 예외를 처리하도록 바꿨는데, <mark>예외를 분명히 잡았는데도 가입 데이터가 DB에 저장되지 않고 트랜잭션 전체가 롤백됐습니다.</mark> (Spring Boot 3.x · Kotlin · MySQL 8.0)
 
 로그엔 이 예외가 찍혔습니다.
 
@@ -68,7 +68,7 @@ endif
 
 ![PlantUML rollback-only 전파 흐름 — 예외·롤백 표시·커밋 거부](/img/c4/pu-rollback-only.svg)
 
-<mark>내부 `@Transactional`이 던진 예외는, 외부에서 잡아 무시해도 트랜잭션에 남긴 "rollback-only" 표시까지 지우지는 못합니다.</mark> 그래서 커밋 시점에 스프링이 "이 트랜잭션은 롤백만 가능"이라며 거부하고, 저장한 user까지 전부 롤백됩니다.
+<mark>내부 `@Transactional`이 던진 예외는, 외부에서 무시해도 트랜잭션에 남긴 "rollback-only" 표시까지 지우지는 못합니다.</mark> 그래서 커밋 시점에 스프링이 "이 트랜잭션은 롤백만 가능"이라며 거부하고, 저장한 user까지 전부 롤백됩니다.
 
 ## 왜 스프링은 이렇게 동작하나
 
@@ -100,9 +100,9 @@ public void grantSignupCoupon(User user) { ... }
 
 ## 정리
 
-- `REQUIRED` 전파에서 **내부 `@Transactional`의 예외는 트랜잭션을 rollback-only로 표시**한다.
-- 외부에서 `try-catch`로 무시해도 표시는 남아, **커밋 때 `UnexpectedRollbackException`** 으로 전체가 롤백된다.
-- 해결은 **실패해도 되는 작업(외부 호출 등)을 트랜잭션 밖 또는 `REQUIRES_NEW`로 분리**하는 것.
+- `REQUIRED` 전파에서 **내부 `@Transactional`의 예외는 트랜잭션을 rollback-only로 표시**합니다.
+- 외부에서 `try-catch`로 무시해도 표시는 남아, **커밋 때 `UnexpectedRollbackException`** 으로 전체가 롤백됩니다.
+- 해결은 **실패해도 되는 작업(외부 호출 등)을 트랜잭션 밖 또는 `REQUIRES_NEW`로 분리**하는 것입니다.
 - <mark>예외를 "잡았다"가 아니라 트랜잭션 "경계"를 나눴는지가 핵심입니다.</mark>
 
 ### 용어 한 줄 정리

@@ -71,11 +71,11 @@ List<Result> results = ids.stream()
 
 ## 해결 ② 꼭 공유해야 하면, 동시성 자료구조
 
-여러 스레드가 정말 한 자료구조에 써야 한다면, 스레드 안전한 것을 씁니다.
+여러 스레드가 정말 한 자료구조에 써야 한다면, 스레드 안전한 것을 사용합니다.
 
 | 자료구조 | 언제 |
 |---|---|
-| `ConcurrentLinkedQueue` | 여러 스레드가 마구 담기만 할 때(순서 무관 수집) |
+| `ConcurrentLinkedQueue` | 여러 스레드가 마구 넣기만 할 때(순서 무관 수집) |
 | `ConcurrentHashMap` | 키-값으로 모을 때 |
 | `CopyOnWriteArrayList` | **읽기가 대부분, 쓰기가 드물 때**(쓰기마다 통째 복사라 비용이 큼) |
 | `Collections.synchronizedList(...)` | 리스트 전체에 락을 걸 때(간단하지만 경합 큼) |
@@ -90,7 +90,7 @@ results.add(r);                          // 스레드 안전, 외부 동기화 �
 List<Result> list = new ArrayList<>(results);   // 이제 한 스레드가 읽어 옮김
 ```
 
-**`Collections.synchronizedList`의 주의점 — 순회는 따로 감싸야 한다.** 이건 `add`·`get` 같은 **개별 메서드에만** 락이 걸립니다. 그래서 `add(r)` 한 번은 안전하지만, `for`/`iterator`로 **순회**할 때는 내부적으로 `hasNext()`·`next()`가 이어지는데, 그 사이 다른 스레드가 `add`하면 `ConcurrentModificationException`이 납니다. 순회 구간은 이렇게 **직접 락으로 감싸야** 합니다.
+**`Collections.synchronizedList`의 주의점 — 순회는 따로 감싸야 합니다.** 이건 `add`·`get` 같은 **개별 메서드에만** 락이 걸립니다. 그래서 `add(r)` 한 번은 안전하지만, `for`/`iterator`로 **순회**할 때는 내부적으로 `hasNext()`·`next()`가 이어지는데, 그 사이 다른 스레드가 `add`하면 `ConcurrentModificationException`이 납니다. 순회 구간은 이렇게 **직접 락으로 감싸야** 합니다.
 
 ```java
 List<Result> results = Collections.synchronizedList(new ArrayList<>());
@@ -100,14 +100,14 @@ synchronized (results) {
 }
 ```
 
-이렇게 순회를 통째로 잠그면 그 동안 모든 쓰기가 막혀 느려지고, 순회할 때마다 직접 잠가 줘야 해 번거롭습니다. <mark>그래서 값을 담기만 하고 마지막에 한 번 읽는 수집이라면, 이런 손이 가는 `synchronizedList`보다 다음이 낫습니다.</mark>
+이렇게 순회 전체를 잠그면 그 동안 모든 쓰기가 막혀 느려지고, 순회할 때마다 직접 잠가 줘야 해 번거롭습니다. <mark>그래서 값을 넣기만 하고 마지막에 한 번 읽는 수집이라면, 이런 손이 가는 `synchronizedList`보다 다음이 더 유리합니다.</mark>
 
 - **`ConcurrentLinkedQueue`로 넣기** — 직접 락을 걸 필요가 없어 넣는 코드가 단순합니다.
 - **공유 컬렉션을 아예 두지 않기** — 해결 ①처럼 각자 결과를 반환하고, 마지막에 한 스레드가 모읍니다.
 
 ## 비슷한 실수 — 람다 안의 `int[]` 카운터도 원자적이지 않다
 
-병렬 코드에서 이런 걸 종종 봅니다. 람다 안에서 값을 바꾸려고 배열 트릭을 쓰는 것이죠.
+병렬 코드에서 이런 걸 종종 봅니다. 람다 안에서 값을 바꾸려고 배열 트릭을 사용하는 것이죠.
 
 ```java
 int[] count = {0};
@@ -146,8 +146,8 @@ ids.parallelStream().forEach(id -> { if (call(id).ok()) count.increment(); });
 
 - `ArrayList`·평범한 컬렉션은 단일 스레드용이라, **동시 `add`는 조용한 데이터 손실**을 유발합니다.
 - **가장 먼저 "공유를 없애라"** — 결과를 반환해 한 스레드가 모으면 문제가 사라집니다.
-- 꼭 공유해야 하면 `ConcurrentLinkedQueue`·`ConcurrentHashMap` 등 **동시성 자료구조**를 씁니다.
-- 람다 안 `int[]` 카운터도 비원자적이라, 카운터는 `AtomicInteger`·`LongAdder`로 씁니다.
+- 꼭 공유해야 하면 `ConcurrentLinkedQueue`·`ConcurrentHashMap` 등 **동시성 자료구조**를 사용합니다.
+- 람다 안 `int[]` 카운터도 비원자적이라, 카운터는 `AtomicInteger`·`LongAdder`로 처리합니다.
 - <mark>동시성 버그는 "가끔"만 재현돼 찾기 어려우니, 공유 상태를 처음부터 만들지 않는 게 최선입니다.</mark>
 
 ### 용어 한 줄 정리
@@ -157,5 +157,5 @@ ids.parallelStream().forEach(id -> { if (call(id).ok()) count.increment(); });
 | 스레드 안전 | 여러 스레드가 동시에 써도 결과가 손상되지 않음 |
 | 원자적 | 중간에 다른 동작이 개입할 수 없는 하나의 동작 |
 | effectively final | 값이 재할당되지 않아 람다가 캡처할 수 있는 지역 변수 |
-| ConcurrentLinkedQueue | 락 없이 동시 담기에 강한 큐 |
+| ConcurrentLinkedQueue | 락 없이 여러 스레드가 동시에 넣기 좋은 큐 |
 | CopyOnWriteArrayList | 쓰기마다 복사 — 읽기 위주에 적합 |

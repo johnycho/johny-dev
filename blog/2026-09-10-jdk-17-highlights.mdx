@@ -9,7 +9,7 @@ description: "JDK 11 다음 LTS인 JDK 17을 기준으로, 그 사이(12~17)에 
 
 <!-- truncate -->
 
-**JDK 17**은 2021-09-14 GA한 **LTS**(장기 지원) 버전으로, **[JDK 11](/blog/jdk-11-highlights) 다음 LTS**입니다. 오래 11에 머물던 팀이 다음으로 올릴 목적지였죠. 11 → 17 사이에는 여섯 개 버전(12~17)이 지나가며, 여러 언어 기능이 **preview를 거쳐 정식(final)** 이 됐습니다. 이 글은 11에서 넘어올 때 **바로 쓸 수 있는 정식 기능**과 런타임 변화 위주로 정리합니다.
+**JDK 17**은 2021-09-14 GA한 **LTS**(장기 지원) 버전으로, **[JDK 11](/blog/jdk-11-highlights) 다음 LTS**입니다. 오래 11에 머물던 팀이 다음으로 올릴 목적지였죠. 11 → 17 사이에는 여섯 개 버전(12~17)이 지나가며, 여러 언어 기능이 **preview를 거쳐 정식(final)** 이 됐습니다. 이 글은 11에서 넘어올 때 **바로 사용할 수 있는 정식 기능**과 런타임 변화 위주로 정리합니다.
 
 <mark>11 → 17의 핵심은 새 문법 하나가 아니라, `records`·`sealed`·`pattern matching`이 **함께 정식이 되어** 데이터 모델링 방식이 바뀐 것입니다 — 셋을 묶으면 "값을 보관하고, 종류를 제한하고, 종류별로 분기"가 간결해집니다.</mark>
 
@@ -27,7 +27,7 @@ p.x();               // 접근자는 필드명과 동일 (getX 아님)
 ```
 
 - 필드는 **불변(final)** 이고, `equals`/`hashCode`는 **값 기반**으로 자동 생성됩니다.
-- 생성자에서 검증만 넣고 싶으면 **compact 생성자**를 씁니다.
+- 생성자에서 검증만 넣고 싶으면 **compact 생성자**를 사용합니다.
 
 ```java
 public record Range(int lo, int hi) {
@@ -73,7 +73,7 @@ if (obj instanceof String s) {
 
 ## 4. Switch 식과 Text Block — 표현식·여러 줄 문자열 (JEP 361 · 378)
 
-**Switch 식**(JEP 361, JDK 14 정식)은 `switch`를 **값을 돌려주는 식**으로 쓰게 하고, `->` 화살표로 fall-through·`break` 실수를 없앱니다.
+**Switch 식**(JEP 361, JDK 14 정식)은 `switch`를 **값을 돌려주는 식**으로 사용하게 하고, `->` 화살표로 fall-through·`break` 실수를 없앱니다.
 
 ```java
 int days = switch (month) {
@@ -83,7 +83,7 @@ int days = switch (month) {
 };
 ```
 
-**Text Block**(JEP 378, JDK 15 정식)은 `"""`로 여러 줄 문자열을 이스케이프·연결 없이 그대로 씁니다.
+**Text Block**(JEP 378, JDK 15 정식)은 `"""`로 여러 줄 문자열을 이스케이프·연결 없이 그대로 작성합니다.
 
 ```java
 String json = """
@@ -104,7 +104,7 @@ NPE가 났을 때 **어느 변수·어느 호출이 null이었는지**를 메시
 Cannot invoke "String.length()" because "<local1>.name" is null
 ```
 
-<mark>여기까지가 코드에 바로 쓰는 정식 기능입니다 — `record`·`sealed`·`instanceof` 패턴·switch 식·text block 모두 `--enable-preview` 없이 씁니다.</mark>
+<mark>여기까지가 코드에 바로 사용하는 정식 기능입니다 — `record`·`sealed`·`instanceof` 패턴·switch 식·text block 모두 `--enable-preview` 없이 사용합니다.</mark>
 
 ## 6. 런타임 — GC·플랫폼·제거된 것들
 
@@ -130,7 +130,7 @@ Cannot invoke "String.length()" because "<local1>.name" is null
 
 ## 정리 — 11에서 17로
 
-- **바로 쓰는 정식 기능**: `record`(JEP 395), `sealed`(409), `instanceof` 패턴(394), switch 식(361), text block(378), 친절한 NPE(358).
+- **바로 사용하는 정식 기능**: `record`(JEP 395), `sealed`(409), `instanceof` 패턴(394), switch 식(361), text block(378), 친절한 NPE(358).
 - **런타임**: ZGC·Shenandoah 정식, Apple Silicon 네이티브, **JDK 내부 강한 캡슐화**(이관 시 최우선 점검).
 - **제거**: Nashorn·RMI Activation, Security Manager 지원 종료 예고.
 - LTS라 지원이 길고, 언어 기능은 대부분 소스 호환이라 11에서 넘어갈 명분이 큽니다. 그다음 목적지는 JDK 21, 그리고 최신 LTS인 JDK 25입니다.

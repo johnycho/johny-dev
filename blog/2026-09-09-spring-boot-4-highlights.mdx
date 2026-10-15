@@ -16,9 +16,9 @@ date: 2026-09-09T12:00:00
 
 <mark>4.0은 기능 추가보다 "구조를 정리한" 릴리스입니다 — jar를 나누고, 널 가능성을 타입으로 드러내고, REST 관례를 프레임워크가 떠안습니다.</mark>
 
-## 1. 모듈화 — 하나의 비대해진 jar를 쪼갰다
+## 1. 모듈화 — 하나의 비대해진 jar를 나눴다
 
-가장 큰 구조 변화입니다. 배경은 이렇습니다. 모든 자동설정을 포함하던 **`spring-boot-autoconfigure` jar 하나**가 계속 커졌습니다 — 2014년 1.0에선 182KiB였는데 3.5에선 **약 2MiB**입니다. 내가 안 쓰는 기술의 자동설정까지 전부 들어 있으니, 클래스패스가 무거워지고 IDE 자동완성 후보도 지저분해졌습니다.
+가장 큰 구조 변화입니다. 배경은 이렇습니다. 모든 자동설정을 포함하던 **`spring-boot-autoconfigure` jar 하나**가 계속 커졌습니다 — 2014년 1.0에선 182KiB였는데 3.5에선 **약 2MiB**입니다. 사용하지 않는 기술의 자동설정까지 전부 들어 있으니, 클래스패스가 무거워지고 IDE 자동완성 후보도 지저분해졌습니다.
 
 4.0은 이 거대한 jar를 **기술별 모듈**로 나눴습니다. 어플리케이션은 자기가 쓰는 자동설정 모듈만 로드합니다.
 
@@ -37,7 +37,7 @@ implementation 'org.springframework.boot:spring-boot-starter-flyway' // 이전�
 
 마이그레이션 부담을 줄이려고 **"classic" 스타터**가 제공됩니다. 이건 예전처럼 관련 모듈을 한꺼번에 끌고 와, **일단 올려서 돌린 뒤** 필요한 모듈만 선택적으로 추려 가는 경로입니다.
 
-<mark>모듈화의 대가는 "의존성 이름·패키지를 손봐야 한다"는 것이고, 얻는 건 얇고 명확한 클래스패스입니다 — classic 스타터로 우선 띄우고 점진 전환하는 게 현실적입니다.</mark>
+<mark>모듈화의 대가는 "의존성 이름·패키지를 손봐야 한다"는 것이고, 얻는 건 얇고 명확한 클래스패스입니다 — classic 스타터로 우선 띄우고 점진 이관하는 게 현실적입니다.</mark>
 
 ## 2. JSpecify null-safety — NPE를 컴파일 타임으로 당긴다
 
@@ -93,7 +93,7 @@ public interface PaymentClient {
 
 ## 그 밖에
 
-**Jackson 3**가 기본이 됐고, **Jackson 2는 deprecated** 형태로만 남습니다. 핵심은 **패키지·좌표가 통째로 바뀐다**는 점입니다 — `com.fasterxml.jackson.*` → **`tools.jackson.*`**. 다만 **애너테이션(`com.fasterxml.jackson.annotation.*`)은 그대로**라 `@JsonProperty` 같은 건 안 고쳐도 됩니다. `ObjectMapper`를 직접 설정하던 코드는 새 패키지 + `JsonMapper.builder()`로 옮깁니다.
+**Jackson 3**가 기본이 됐고, **Jackson 2는 deprecated** 형태로만 남습니다. 핵심은 **패키지·좌표가 전부 바뀐다**는 점입니다 — `com.fasterxml.jackson.*` → **`tools.jackson.*`**. 다만 **애너테이션(`com.fasterxml.jackson.annotation.*`)은 그대로**라 `@JsonProperty` 같은 건 안 고쳐도 됩니다. `ObjectMapper`를 직접 설정하던 코드는 새 패키지 + `JsonMapper.builder()`로 옮깁니다.
 
 ```java
 // Jackson 2 — 예외가 checked라 throws/try-catch 필요
@@ -168,7 +168,7 @@ client.get().uri("/orders/{id}", 1)
 
 ## 정리
 
-- **모듈화**: `spring-boot-autoconfigure`를 기술별 모듈로 분리(작은 jar). 스타터 rename(`web`→`webmvc`)·새 스타터(`flyway`)·패키지 이동. classic 스타터로 점진 전환.
+- **모듈화**: `spring-boot-autoconfigure`를 기술별 모듈로 분리(작은 jar). 스타터 rename(`web`→`webmvc`)·새 스타터(`flyway`)·패키지 이동. classic 스타터로 점진 이관.
 - **JSpecify null-safety**: `@NullMarked`/`@Nullable`로 널 가능성을 타입에 명시 → IDE 경고 → NullAway로 컴파일 강제.
 - **API 버저닝**: `spring.mvc.apiversion.*` 자동설정 + 매핑의 `version` 속성.
 - **HTTP Service Client**: `@HttpExchange` 인터페이스 자동설정으로 선언형 REST 클라이언트.

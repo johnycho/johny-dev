@@ -15,7 +15,7 @@ import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
 
 ## 배경 — MVC(thread-per-request)의 한계
 
-전통적인 **Spring MVC**(서블릿 기반)는 **요청 하나당 스레드 하나**를 씁니다. 그 스레드는 DB 조회·외부 API 호출 같은 I/O가 끝날 때까지 **블로킹**되어 아무 일도 못 하면서 스레드를 점유만 합니다.
+전통적인 **Spring MVC**(서블릿 기반)는 **요청 하나당 스레드 하나**를 사용합니다. 그 스레드는 DB 조회·외부 API 호출 같은 I/O가 끝날 때까지 **블로킹**되어 아무 일도 못 하면서 스레드를 점유만 합니다.
 
 문제는 **동시 요청이 많고 각 요청이 오래 기다릴 때**입니다. 예를 들어 톰캣 기본 스레드 풀이 200개인데 요청당 외부 API가 500ms 걸린다면, 201번째 요청부터는 스레드가 없어 대기합니다. CPU는 여유가 있는데 **스레드 풀이 병목**이 되는 것입니다. (스레드 풀 튜닝은 [스레드 풀 이야기](./spring-boot-thread-pools), 이벤트 루프의 원리는 [Redis가 싱글 스레드로 빠른 이유](./redis-single-thread-fast) 참고.)
 
@@ -88,7 +88,7 @@ mono.subscribe(user -> log.info("{}", user));  // 구독하는 순간 실행
 
 ### 연산자(operator) — 흐름을 구성한다
 
-값을 직접 다루는 대신 **연산자로 단계를 연결합니다.** 자주 쓰는 것만:
+값을 직접 다루는 대신 **연산자로 단계를 연결합니다.** 자주 사용하는 것만:
 
 - **`map`** — 값을 변환(1:1). `Mono<User> → Mono<UserDto>`.
 - **`flatMap`** — 값을 **또 다른 Publisher로** 바꿔 연결(비동기 연쇄). `Mono<User> → Mono<Order>`.
@@ -248,9 +248,9 @@ public Mono<String> bad() {
 }
 ```
 
-- **DB**: JPA/JDBC(블로킹) 대신 **R2DBC**(리액티브 드라이버)를 써야 합니다.
+- **DB**: JPA/JDBC(블로킹) 대신 **R2DBC**(리액티브 드라이버)를 사용해야 합니다.
 - **외부 호출**: `RestTemplate`(블로킹) 대신 **`WebClient`**(논블로킹).
-- 불가피하게 블로킹 라이브러리를 써야 하면 `subscribeOn(Schedulers.boundedElastic())`로 **별도 스레드 풀에 격리**합니다(하지만 이러면 순수 리액티브의 이점이 줄어듭니다).
+- 불가피하게 블로킹 라이브러리를 사용해야 하면 `subscribeOn(Schedulers.boundedElastic())`로 **별도 스레드 풀에 격리**합니다(하지만 이러면 순수 리액티브의 이점이 줄어듭니다).
 
 ## 디버깅 — MVC보다 까다로운 이유와 대처
 

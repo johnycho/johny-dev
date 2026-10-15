@@ -105,7 +105,7 @@ tags: [ kafka, system-design ]
 Consumer 측에서 **eventId 기반 멱등 처리**나  
 DB 유니크 제약을 통해 중복 처리를 방지하는 방식이 가장 일반적입니다.
 
-즉, 메시징 레벨은 `At-least-once`로 두고  
+즉, 메시징 레벨은 `At-least-once`로 설정하고  
 비즈니스 로직에서 `Exactly-once`에 가깝게 만드는 전략을 취합니다.
 
 ---

@@ -11,7 +11,7 @@ description: "Spring Boot 4로 올리며 Hibernate가 6.2 → 7.x로 함께 올�
 
 [Spring Boot 4로 올리는 작업](/blog/spring-boot-4-highlights) 중, 특정 엔티티에서 **읽기만 했는데 커밋 시점에 UPDATE가 나가고 `version`이 1씩 오르는** 현상이 생겼습니다. 낙관적 락 충돌 알람이 분당 여러 건씩 올라왔죠. 코드는 엔티티를 조회해 상태만 판정할 뿐 어떤 필드도 대입하지 않는데도요. 원인은 **`@JdbcTypeCode(SqlTypes.JSON)` 컬럼의 dirty check 방식이 Hibernate 6.2 → 7.x에서 바뀐 것**이었습니다.
 
-<mark>Hibernate 7.x는 flush마다 JSON 컬럼 값을 **직렬화했다가 다시 역직렬화해** 스냅샷을 만든다(deep copy). 이때 값 객체에 `equals`가 없으면 **값이 같아도 서로 다른 객체로 취급**되어, 조회만 했는데도 매번 변경(dirty)으로 판정됩니다.</mark>
+<mark>Hibernate 7.x는 flush마다 JSON 컬럼 값을 **직렬화했다가 다시 역직렬화해** 스냅샷을 만듭니다(deep copy). 이때 값 객체에 `equals`가 없으면 **값이 같아도 서로 다른 객체로 취급**되어, 조회만 했는데도 매번 변경(dirty)으로 판정됩니다.</mark>
 
 ## 현상
 
@@ -108,7 +108,7 @@ hib --> svc : OptimisticLockException
 private List<OrderItem> items;
 ```
 
-<mark>단, 전제 조건이 있다 — 이 값을 절대 제자리에서 수정하지 않고 항상 새 리스트/객체로 전부 교체해야 합니다. 이 규약을 어기면 다시 "변경 감지 못 함" 버그로 돌아갑니다.</mark>
+<mark>단, 전제 조건이 있습니다 — 이 값을 절대 제자리에서 수정하지 않고 항상 새 리스트/객체로 전부 교체해야 합니다. 이 규약을 어기면 다시 "변경 감지 못 함" 버그로 돌아갑니다.</mark>
 
 ### ② 값 객체에 `equals`/`hashCode`
 
@@ -155,7 +155,7 @@ Hibernate가 deep-copy 방식으로 바뀐 버전(6.2 후기·6.3·6.4 이상, 7
 
 <mark>증상으로 찾는 법 — 읽기만 하는 API를 호출한 뒤 `version`이 올라가거나, 특정 JSON 컬럼만 SET하는 UPDATE가 반복되면 같은 건입니다. 전환 전후로 `version` 평균 증가량을 비교하면 빠르게 드러납니다.</mark>
 
-## 곁가지 — 같은 전환에서 나온 다른 JSON 이슈
+## 관련 이슈 — 같은 전환에서 나온 다른 JSON 이슈
 
 원인은 다르지만 걸리는 지점이 같은(`@JdbcTypeCode(JSON)` 컬럼) 건이 하나 더 있습니다. **Spring Boot 4는 어플리케이션 JSON 라이브러리를 Jackson 3로 바꾸지만, Hibernate의 JSON 컬럼 매퍼는 여전히 Jackson 2 기반**입니다. 이 과정에서 `spring-boot-starter-web`이 `jackson-datatype-jsr310`을 더 이상 전이(transitive) 의존성으로 넘겨주지 않는 경우가 있어, JSON 컬럼 안에 `LocalDate`/`LocalDateTime`이 있으면 `Java 8 date/time type not supported`로 실패할 수 있습니다.
 

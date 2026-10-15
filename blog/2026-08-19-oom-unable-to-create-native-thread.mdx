@@ -85,8 +85,8 @@ OkHttpClient okHttpClient() { // 앱당 하나만
 
 ## 정리
 
-- `unable to create native thread`는 **힙이 아니라 네이티브 스레드 한도** 문제. `OOMKilled`도 힙 밖 메모리 초과.
-- 원인은 **OkHttpClient 재생성·상한 없는 비동기·retry 증폭**으로 스레드가 몇 시간에 걸쳐 누적된 것.
+- `unable to create native thread`는 **힙이 아니라 네이티브 스레드 한도** 문제입니다. `OOMKilled`도 힙 밖 메모리 초과입니다.
+- 원인은 **OkHttpClient 재생성·상한 없는 비동기·retry 증폭**으로 스레드가 몇 시간에 걸쳐 누적된 것입니다.
 - 해결은 **클라이언트 싱글톤 재사용 · Dispatcher 상한 · retry 상한 · 컨테이너 자원 한도 고려**.
 - <mark>배포 직후가 아니라 몇 시간 뒤 발생하는 건 "천천히 쌓이는" 누수의 전형입니다.</mark>
 

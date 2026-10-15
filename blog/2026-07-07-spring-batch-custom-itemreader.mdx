@@ -1,6 +1,6 @@
 ---
 slug: spring-batch-custom-itemreader
-title: 상태를 바꾸면서 읽는 배치, 결국 ItemReader를 직접 만든 이야기
+title: 상태를 변경하면서 읽는 배치, 결국 ItemReader를 직접 만든 이야기
 authors: [ johnycho ]
 tags: [ spring, system-design ]
 ---
@@ -17,9 +17,9 @@ tags: [ spring, system-design ]
 
 `task(id, status, created_at)`에서 **등록된 지 N분이 지난 `READY` 작업을 `IN_PROGRESS`로 전이**하는 배치입니다. 조건은 세 가지였습니다.
 
-1. 대상이 수만 건이라 청크 단위로 나눠 처리해야 한다.
-2. 배치가 도는 중에도 다른 요청이 같은 행을 건드릴 수 있어(예: 사용자가 직접 취소) 동시성을 지켜야 한다.
-3. 이미 QueryDSL로 만들어 둔 조회·갱신 쿼리를 재사용하고 싶다.
+1. 대상이 수만 건이라 청크 단위로 나눠 처리해야 합니다.
+2. 배치가 도는 중에도 다른 요청이 같은 행을 건드릴 수 있어(예: 사용자가 직접 취소) 동시성을 지켜야 합니다.
+3. 이미 QueryDSL로 만들어 둔 조회·갱신 쿼리를 재사용하고 싶었습니다.
 
 Spring Batch의 chunk step은 `read → process → write`를 청크 크기만큼 모아 한 트랜잭션으로 커밋합니다. "대상 id를 읽는" 역할이 ItemReader이고, 후보는 네 가지였습니다.
 
@@ -41,7 +41,7 @@ Spring Batch의 chunk step은 `read → process → write`를 청크 크기만�
    앞으로 100칸 당겨져서 201~300을 읽는다. 101~200은 통째로 스킵.
 ```
 
-한 페이지를 처리하면 `READY` 개수가 그만큼 줄어듭니다. 그 상태에서 `OFFSET 100`을 다시 조회하면 원래 101번째였던 행이 앞으로 당겨져 있어 건너뛰게 됩니다. **처리하면서 목록에서 빠지는 데이터에 OFFSET 페이징을 쓰면 나타나는 전형적인 스킵 버그**입니다.
+한 페이지를 처리하면 `READY` 개수가 그만큼 줄어듭니다. 그 상태에서 `OFFSET 100`을 다시 조회하면 원래 101번째였던 행이 앞으로 당겨져 있어 건너뛰게 됩니다. **처리하면서 목록에서 빠지는 데이터에 OFFSET 페이징을 사용하면 나타나는 전형적인 스킵 버그**입니다.
 
 그래서 OFFSET을 버리고 <mark>마지막으로 읽은 id 다음부터 조회하는 키셋 커서(`id > afterId`)</mark>로 바꿨습니다.
 
@@ -178,7 +178,7 @@ rectangle "청크3 커밋\n행 401~500" <<chunk>> as C3
 P -[hidden]down- C1
 C1 -right-> C2 : 커밋 경계(200)
 C2 -right-> C3 : 커밋 경계(400)
-note bottom of C1 : 첫 커밋(200행째)이 끝나는 순간\n500행 락이 통째로 풀림 → 201~500 미처리
+note bottom of C1 : 첫 커밋(200행째)이 끝나는 순간\n500행 락이 한꺼번에 풀림 → 201~500 미처리
 @enduml
 ```
 
@@ -330,7 +330,7 @@ new RepositoryItemReaderBuilder<Long>()
 
 ### `MyBatisPagingItemReader` — 페이징형(매퍼 statement, mybatis-spring)
 
-Spring Batch 코어 밖이지만, mybatis-spring을 쓰면 이 페이징 Reader도 후보가 됩니다. SQL 문자열 대신 **매퍼 statement를 `queryId`로** 가리키는 점이 앞의 네 후보와 다릅니다.
+Spring Batch 코어 밖이지만, mybatis-spring을 사용하면 이 페이징 Reader도 후보가 됩니다. SQL 문자열 대신 **매퍼 statement를 `queryId`로** 가리키는 점이 앞의 네 후보와 다릅니다.
 
 ```java
 @Bean
@@ -440,10 +440,10 @@ public void write(Chunk<? extends Long> chunk) {
 커스텀에서도 이걸 얻는 길은 있습니다. `ItemStream`(open/update/close)을 함께 구현해 읽은 위치를 `ExecutionContext`에 저장하면 되고, 방법은 몇 가지입니다.
 
 - `AbstractItemCountingItemStreamItemReader` — `doRead()`만 구현하면 위치 저장이 딸려오지만, 저장하는 값이 `currentItemCount`(읽은 **개수**)라 우리 커서 `afterId`와 맞지 않습니다. 개수로는 커서를 되살릴 수 없어서, 결국 `open()`/`update()`를 직접 손봐야 합니다.
-- `AbstractPagingItemReader` — 페이징 리더의 추상 베이스지만 page(=OFFSET) 기반이라 제약 1(스킵)이 그대로 돌아옵니다.
+- `AbstractPagingItemReader` — 페이징 리더의 추상 베이스지만 page(=OFFSET) 기반이라 제약 1(스킵)이 그대로 다시 나타납니다.
 - **`ItemStreamReader`를 직접 구현** — `open()`/`update()`에서 `afterId`를 직접 저장·복원합니다. <mark>키셋 커서에는 이 방식이 가장 자연스럽습니다.</mark>
 
-그런데 이번에는 애초에 재시작 저장이 필요 없었습니다. 안 쓸 기능 때문에 라이프사이클 메서드를 추가할 이유가 없어, 순수 `ItemReader`로 갔습니다. 대신 기댄 건 멱등성입니다. <mark>상태 전이 자체가 멱등이라, 다시 실행하면 아직 `READY`인 행만 다시 잡힙니다.</mark> 이미 전이된 행은 조건에서 빠집니다.
+그런데 이번에는 애초에 재시작 저장이 필요 없었습니다. 사용하지 않을 기능 때문에 라이프사이클 메서드를 추가할 이유가 없어, 순수 `ItemReader`로 갔습니다. 대신 기댄 건 멱등성입니다. <mark>상태 전이 자체가 멱등이라, 다시 실행하면 아직 `READY`인 행만 다시 잡힙니다.</mark> 이미 전이된 행은 조건에서 빠집니다.
 
 배치를 "기동해 한 번 실행하고 종료"하는 방식(K8s CronJob 등)으로 운영하면, 중간 상태를 복원하기보다 그냥 재실행하는 편이 더 자연스러운 복구입니다. 그래서 재시작 저장을 포기해도 문제가 없었고, 그 덕분에 Reader를 이 정도로 단순하게 유지할 수 있었습니다.
 
@@ -497,10 +497,10 @@ Spring Batch가 청크 커밋마다 `update()`를 호출해 `afterId`를 `Execut
 
 <mark>재시작 복원의 실제 저장소는 메모리가 아니라 DB의 배치 메타 테이블입니다. 그래서 데이터 변경과 진행 위치가 같은 트랜잭션에서 커밋돼, 프로세스가 중단돼도 정합성이 유지됩니다.</mark>
 
-단, 이건 **JDBC 기반 `JobRepository`**(배치 메타 테이블을 쓰는 표준 구성)일 때입니다. 메모리형(Map) `JobRepository`를 쓰면 DB에 남지 않아, 프로세스가 종료되면 진행 위치도 사라집니다.
+단, 이건 **JDBC 기반 `JobRepository`**(배치 메타 테이블을 사용하는 표준 구성)일 때입니다. 메모리형(Map) `JobRepository`를 사용하면 DB에 남지 않아, 프로세스가 종료되면 진행 위치도 사라집니다.
 
 ## 마무리
 
 내장 컴포넌트는 일반적인 사용 사례를 편하게 처리하도록 만들어져 있습니다. 그래서 요구사항이 하나씩일 때는 대개 잘 맞지만, **평범하지 않은 요구가 두세 개 한꺼번에 겹치면** 어느 하나에서 걸리곤 합니다. 이번엔 (1) 읽으면서 목록에서 빠지는 데이터, (2) 청크 트랜잭션에 유지돼야 하는 락, (3) 기존 쿼리 재사용 — 이 세 가지가 동시에 필요했고, 그 교집합을 만족하는 내장 Reader가 없어서 30줄짜리 Reader가 가장 나은 답이었습니다.
 
-내장을 안 쓴 게 아니라 쓸 수 없었던 것이고, 그 이유를 이해하면 다음 배치를 설계할 때도 판단이 빨라집니다.
+내장을 사용하지 않은 게 아니라 사용할 수 없었던 것이고, 그 이유를 이해하면 다음 배치를 설계할 때도 판단이 빨라집니다.

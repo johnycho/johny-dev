@@ -292,7 +292,7 @@ BK --> Z : 거절 (ProducerFencedException)\nepoch 0 < 현재 1
 
 ## 경계 — EOS는 "Kafka 안에서"만이다
 
-가장 자주 오해하는 지점입니다. Kafka 트랜잭션의 exactly-once는 **Kafka 토픽 읽기·쓰기와 오프셋 커밋** 사이에서 성립합니다. <mark>처리 중간에 **외부 DB에 쓰거나 외부 API를 호출**하면, 그건 Kafka 트랜잭션이 되돌려 주지 않습니다.</mark> "Kafka로 보내면서 DB에도 확실히 한 번"이 필요하면 트랜잭션만으로는 안 되고, [Outbox 패턴](./kafka-outbox-exactly-once) 같은 방식으로 DB 트랜잭션과 발행을 묶어야 합니다.
+가장 자주 오해하는 지점입니다. Kafka 트랜잭션의 exactly-once는 **Kafka 토픽 읽기·쓰기와 오프셋 커밋** 사이에서 성립합니다. <mark>처리 중간에 **외부 DB에 쓰거나 외부 API를 호출**하면, 그건 Kafka 트랜잭션이 롤백해 주지 않습니다.</mark> "Kafka로 보내면서 DB에도 확실히 한 번"이 필요하면 트랜잭션만으로는 안 되고, [Outbox 패턴](./kafka-outbox-exactly-once) 같은 방식으로 DB 트랜잭션과 발행을 묶어야 합니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -311,7 +311,7 @@ card "외부 API 호출" as API #FFEBEE
 A -[hidden]right- B
 B -[hidden]right- O
 TX -[hidden]down- DB
-note bottom of DB : 트랜잭션 밖 — abort해도\n되돌려지지 않음
+note bottom of DB : 트랜잭션 밖 — abort해도\n롤백되지 않음
 note bottom of API : 트랜잭션 밖 — 재처리 시\n중복 호출 가능
 @enduml
 ```
@@ -356,7 +356,7 @@ CFG --> RT
 >
 > v1(`exactly_once`)은 **입력 파티션마다 프로듀서를 하나씩** 만들어, 파티션이 많으면 프로듀서·트랜잭션이 함께 늘었습니다. v2(KIP-447, 브로커 2.5+)는 **인스턴스당 프로듀서 하나**로 여러 파티션을 처리하도록 오프셋 커밋 프로토콜을 개선해 확장성이 크게 좋아졌습니다. v1은 deprecated이므로 새로 작성한다면 **v2**를 선택합니다.
 
-단, 경계는 그대로입니다 — Streams의 EOS도 **Kafka 토픽 사이에서만** 성립하고, 처리 중 외부 DB·API 호출까지 되돌려 주지는 않습니다.
+단, 경계는 그대로입니다 — Streams의 EOS도 **Kafka 토픽 사이에서만** 성립하고, 처리 중 외부 DB·API 호출까지 롤백해 주지는 않습니다.
 
 ## EOS 설정·조건 한눈에
 

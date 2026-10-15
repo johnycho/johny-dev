@@ -136,7 +136,7 @@ failover는 **과반 마스터의 투표**로 승인됩니다. 여기서 핵심�
 
 ### 대응 방법
 
-파라미터가 아니라 **구성**으로 해결합니다. **마스터를 홀수(3~5대)로, 여러 AZ에 고르게** 배치합니다. 매니지드(ElastiCache 등)라면 **Multi-AZ**를 켜고 노드를 여러 AZ에 나눠 만듭니다.
+파라미터가 아니라 **구성**으로 해결합니다. **마스터를 홀수(3~5대)로, 여러 AZ에 고르게** 배치합니다. 매니지드(ElastiCache 등)라면 **Multi-AZ**를 활성화하고 노드를 여러 AZ에 나눠 만듭니다.
 
 ## 원인 ② cluster-require-full-coverage — 한 슬롯 때문에 전체가 멈춘다
 
@@ -237,16 +237,16 @@ cluster-replica-validity-factor 10
 
 ### 대응 방법
 
-클러스터 모드는 `configEpoch`가 **자동** 처리라 켤 설정은 없습니다. 대신 **재기동은 순차로**(전 노드를 동시에 재배치하지 않기), Sentinel이라면 **컷오버 절차**(옛 마스터가 돌아오기 전 승격 확정)를 지킵니다.
+클러스터 모드는 `configEpoch`가 **자동** 처리라 활성화할 설정은 없습니다. 대신 **재기동은 순차로**(전 노드를 동시에 재배치하지 않기), Sentinel이라면 **컷오버 절차**(옛 마스터가 돌아오기 전 승격 확정)를 지킵니다.
 
 ## 원인 ⑥ 클라이언트(드라이버)가 새 토폴로지를 못 따라간다
 
 여기까지는 서버 쪽 이야기였는데, **클라이언트가 failover를 못 따라가는** 경우가 실무에서 가장 자주 만나는 원인입니다. 서버는 정상적으로 승격했는데도 앱이 계속 중단된(또는 강등된) 노드로 요청하는 상황이죠. Spring Boot 기본 Redis 클라이언트인 **Lettuce**가 대표적입니다.
 
-- Lettuce는 **클러스터 토폴로지를 기본적으로 자동 갱신하지 않습니다.** failover로 리더가 바뀌어도 예전 토폴로지를 붙잡고 있어, `RedisCommandTimeoutException`이나 `READONLY`(강등된 옛 리더에 쓰기 시도) 오류가 **failover가 끝난 뒤에도 계속** 납니다 — "서버는 복구됐는데 앱만 안 낫는" 상태.
+- Lettuce는 **클러스터 토폴로지를 기본적으로 자동 갱신하지 않습니다.** failover로 리더가 바뀌어도 예전 토폴로지를 붙잡고 있어, `RedisCommandTimeoutException`이나 `READONLY`(강등된 옛 리더에 쓰기 시도) 오류가 **failover가 끝난 뒤에도 계속** 납니다 — "서버는 복구됐는데 앱만 복구되지 않는" 상태.
 ### 대응 방법
 
-**토폴로지 갱신을 켭니다.** **주기적 갱신**(`enablePeriodicRefresh`)과 **적응형 트리거**(`enableAllAdaptiveRefreshTriggers` — MOVED·ASK·재연결 타임아웃 이벤트가 오면 즉시 갱신)를 함께 켭니다. Spring Boot 3.x는 설정으로 노출합니다.
+**토폴로지 갱신을 활성화합니다.** **주기적 갱신**(`enablePeriodicRefresh`)과 **적응형 트리거**(`enableAllAdaptiveRefreshTriggers` — MOVED·ASK·재연결 타임아웃 이벤트가 오면 즉시 갱신)를 함께 활성화합니다. Spring Boot 3.x는 설정으로 노출합니다.
 
 ```yaml
 spring:
@@ -277,7 +277,7 @@ var topologyRefresh = ClusterTopologyRefreshOptions.builder()
 
 토폴로지 갱신을 활성화하는 것 외에도, 앱이 **failover 창**(승격까지 걸리는 몇 초)을 견디게 하는 대응을 함께 갖춥니다.
 
-- **타임아웃을 짧고 명확하게** — 커맨드 타임아웃이 없거나 길면, 중단된 노드의 응답을 오래 기다리며 요청 스레드가 묶여 [외부 지연이 서버 전체를 멈춘](./external-api-timeout-server-hang) 것과 같은 연쇄가 납니다. `spring.data.redis.timeout`(커맨드)과 커넥트 타임아웃을 짧게 잡아 **빨리 실패**하게 합니다.
+- **타임아웃을 짧고 명확하게** — 커맨드 타임아웃이 없거나 길면, 중단된 노드의 응답을 오래 기다리며 요청 스레드가 대기 상태에 빠져 [외부 지연이 서버 전체를 멈춘](./external-api-timeout-server-hang) 것과 같은 연쇄가 납니다. `spring.data.redis.timeout`(커맨드)과 커넥트 타임아웃을 짧게 잡아 **빨리 실패**하게 합니다.
 
 ```yaml
 spring:
@@ -292,7 +292,7 @@ spring:
             period: 30s
 ```
 
-- **읽기는 레플리카로도 흘리기** — 프라이머리 승격 중에도 읽기는 이어지게 `ReadFrom`을 조정할 수 있습니다(예: `REPLICA_PREFERRED`). 단, 레플리카는 복제 지연이 있어 최신성이 꼭 필요한 읽기에는 신중히.
+- **읽기는 레플리카로도 분산** — 프라이머리 승격 중에도 읽기는 이어지게 `ReadFrom`을 조정할 수 있습니다(예: `REPLICA_PREFERRED`). 단, 레플리카는 복제 지연이 있어 최신성이 꼭 필요한 읽기에는 신중히.
 - **캐시 실패에 견디기(graceful degradation)** — 캐시는 대개 필수 자원이 아닙니다. Redis가 잠깐 안 되면 **요청을 실패시키지 말고 원본(DB)으로 폴백**해야 합니다. Spring Cache라면 `CacheErrorHandler`로 캐시 오류를 무시하고 진행하게 합니다.
 
 ```java
@@ -320,22 +320,22 @@ class CacheConfig implements CachingConfigurer {
 
 - **마스터는 홀수·최소 3(권장 5), AZ에 고르게** — 한 AZ 장애에도 **과반 마스터**가 남아 투표가 성립하게. 레플리카만 늘리는 것으로는 과반 문제가 안 풀립니다.
 - **`cluster-require-full-coverage`를 의식적으로 선택** — 부분 장애가 전면 장애로 번지는 게 더 나쁘면 `no`. 정합성이 우선이면 `yes`(기본).
-- **복제 지연을 모니터링** — `validity-factor`에 걸릴 만큼 뒤처진 레플리카는 승격 못 한다. 복제 랙·`master_link_status`를 감시.
+- **복제 지연을 모니터링** — `validity-factor`에 걸릴 만큼 뒤처진 레플리카는 승격하지 못합니다. 복제 랙·`master_link_status`를 감시합니다.
 - **`node-timeout`을 네트워크에 맞게** — 클라우드 멀티 AZ면 너무 짧게 잡아 false failover가 나지 않게.
-- **클라이언트 토폴로지 갱신을 활성화한다** — Lettuce는 기본이 꺼져 있다. `spring.data.redis.lettuce.cluster.refresh.adaptive=true` + 주기 갱신을 설정해, 서버 failover를 앱이 따라가게 한다. ElastiCache 단일 프라이머리면 JVM DNS TTL도 짧게.
-- **failover를 실제로 테스트** — 마스터를 중단시켜 보고 승격 시간·CLUSTERDOWN 여부·**앱이 새 노드로 붙는지**를 확인(카오스 테스트). 설정이 의도대로 동작하는지는 중단시켜 봐야 안다.
+- **클라이언트 토폴로지 갱신을 활성화** — Lettuce는 기본이 꺼져 있습니다. `spring.data.redis.lettuce.cluster.refresh.adaptive=true` + 주기 갱신을 설정해, 서버 failover를 앱이 따라가게 합니다. ElastiCache 단일 프라이머리면 JVM DNS TTL도 짧게.
+- **failover를 실제로 테스트** — 마스터를 중단시켜 보고 승격 시간·CLUSTERDOWN 여부·**앱이 새 노드로 붙는지**를 확인합니다(카오스 테스트). 설정이 의도대로 동작하는지는 중단시켜 봐야 압니다.
 - **버전·매니지드 동작 확인** — 특정 버전의 승격 버그, 매니지드(ElastiCache 등)의 자체 failover 정책은 문서·릴리스 노트로 확인.
 
 ## 정리
 
-- Redis Cluster failover는 **과반 마스터의 합의·투표**, 레플리카의 **자격(staleness)**, **슬롯 커버리지**를 모두 통과해야 발생한다 — "마스터에 장애가 나면 무조건 승격"이 아니다.
+- Redis Cluster failover는 **과반 마스터의 합의·투표**, 레플리카의 **자격(staleness)**, **슬롯 커버리지**를 모두 통과해야 발생합니다 — "마스터에 장애가 나면 무조건 승격"이 아닙니다.
 - **마스터 과반 상실**(AZ 장애로)이면 레플리카가 살아도 승격 실패. → 마스터 홀수·AZ 분산.
-- **`require-full-coverage=yes`**(기본)면 한 슬롯이 담당 노드를 모두 잃으면 **전 클러스터 CLUSTERDOWN**으로 번진다. → 필요하면 `no`.
+- **`require-full-coverage=yes`**(기본)면 한 슬롯이 담당 노드를 모두 잃으면 **전 클러스터 CLUSTERDOWN**으로 번집니다. → 필요하면 `no`.
 - **레플리카 staleness**(`validity-factor`)로 뒤처진 레플리카는 승격 거부.
 - **`node-timeout`** 은 짧으면 false failover, 길면 감지 지연.
 - split-brain은 클러스터의 **`configEpoch`** 로 대개 해소되나 Sentinel·대량 재기동은 주의.
-- **클라이언트도 원인**이다 — Lettuce는 토폴로지 자동 갱신이 **기본 꺼짐**이라, 켜지 않으면 서버가 failover해도 앱이 계속 중단된 노드를 붙잡는다. (별도 AWS 드라이버가 아니라 Lettuce 설정 문제)
-- **failover는 반드시 중단시켜 테스트**한다.
+- **클라이언트도 원인**입니다 — Lettuce는 토폴로지 자동 갱신이 **기본 꺼짐**이라, 활성화하지 않으면 서버가 failover해도 앱이 계속 중단된 노드를 붙잡습니다. (별도 AWS 드라이버가 아니라 Lettuce 설정 문제)
+- **failover는 반드시 중단시켜 테스트**합니다.
 
 ## 참고
 

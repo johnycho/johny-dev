@@ -9,7 +9,7 @@ description: "JDK 17 다음 LTS인 JDK 21을 기준으로, 그 사이(18~21)에 
 
 <!-- truncate -->
 
-**JDK 21**은 2023-09-19 GA한 **LTS**로, **JDK 17 다음 LTS**입니다. 17 → 21 사이(18~21)에서 가장 크게 달라진 것은 두 가지입니다 — **가상 스레드가 정식**이 되어 동시성 모델이 바뀌었고, JDK 17에서 preview였던 **패턴 매칭이 완성**되어 `record`·`sealed`와 맞물려 데이터 분기가 간결해졌습니다.
+**JDK 21**은 2023-09-19 GA한 **LTS**로, **JDK 17 다음 LTS**입니다. 17 → 21 사이(18~21)에서 가장 크게 달라진 것은 두 가지입니다 — **가상 스레드가 정식**이 되어 동시성 모델이 바뀌었고, JDK 17에서 preview였던 **패턴 매칭이 완성**되어 `record`·`sealed`와 함께 쓰여 데이터 분기가 간결해졌습니다.
 
 <mark>17 → 21의 핵심은 **가상 스레드(동시성)** 와 **패턴 매칭 switch + 레코드 패턴(데이터 분기)** 이 정식이 된 것 — 앞의 [JDK 17](/blog/jdk-17-highlights)에서 `record`·`sealed`가 정식이 됐고, 21에서 그 위의 분기 문법이 완성됩니다.</mark>
 
@@ -70,11 +70,11 @@ list.reversed();          // 역순 뷰
 
 `List`·`Deque`·`LinkedHashSet` 등이 공통 메서드(`getFirst`/`getLast`/`addFirst`/`addLast`/`reversed`)를 갖게 되어, 순서 있는 컬렉션을 다루는 코드가 일관돼집니다.
 
-<mark>여기까지가 코드에 바로 쓰는 정식 기능입니다 — 가상 스레드·패턴 매칭 switch·레코드 패턴·시퀀스드 컬렉션 모두 `--enable-preview` 없이 씁니다.</mark>
+<mark>여기까지가 코드에 바로 사용하는 정식 기능입니다 — 가상 스레드·패턴 매칭 switch·레코드 패턴·시퀀스드 컬렉션 모두 `--enable-preview` 없이 사용합니다.</mark>
 
 ## 5. 런타임 — Generational ZGC·보안 API
 
-- **Generational ZGC(JEP 439, 정식).** [JDK 17에서 정식이 된 ZGC](/blog/jdk-17-highlights)에 **세대(generational) 모드**가 더해졌습니다. "대부분의 객체는 금방 죽는다"는 약한 세대 가설을 활용해 젊은 객체만 자주 청소하므로, 같은 저지연 목표에서 **힙 여유·처리량**이 오릅니다. (JDK 21에선 `-XX:+ZGenerational` 플래그로 켜야 하고, **JDK 23부터는 세대 모드가 ZGC 기본값이라 플래그가 필요 없습니다**(JEP 474). JDK 25에서는 비세대 모드가 제거됐습니다(JEP 490).)
+- **Generational ZGC(JEP 439, 정식).** [JDK 17에서 정식이 된 ZGC](/blog/jdk-17-highlights)에 **세대(generational) 모드**가 더해졌습니다. "대부분의 객체는 금방 죽는다"는 약한 세대 가설을 활용해 젊은 객체만 자주 청소하므로, 같은 저지연 목표에서 **힙 여유·처리량**이 오릅니다. (JDK 21에선 `-XX:+ZGenerational` 플래그로 활성화해야 하고, **JDK 23부터는 세대 모드가 ZGC 기본값이라 플래그가 필요 없습니다**(JEP 474). JDK 25에서는 비세대 모드가 제거됐습니다(JEP 490).)
   ```bash
   java -XX:+UseZGC -XX:+ZGenerational -jar app.jar
   ```
@@ -87,7 +87,7 @@ list.reversed();          // 역순 뷰
 - **String Templates**(JEP 430, preview) — 문자열 보간(`STR."..."`). 이후 설계가 재검토되어 제거됐으니 **운영에 넣지 말 것**.
 - **구조적 동시성**(JEP 453, preview) — 여러 하위 작업을 한 단위로 묶어 실패·취소를 함께 다룸. 가상 스레드와 짝.
 - **Scoped Values**(JEP 446, preview → JDK 25에서 정식) — `ThreadLocal`의 불변·범위 한정 대안.
-- **이름 없는 패턴·변수**(JEP 443, preview) — 안 쓰는 바인딩을 `_`로.
+- **이름 없는 패턴·변수**(JEP 443, preview) — 사용하지 않는 바인딩을 `_`로.
 - **Foreign Function & Memory API**(JEP 442, 3차 preview → JDK 22 정식) — 네이티브 코드·메모리 접근.
 
 ## 정리 — 17에서 21로
