@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.0379dc82.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b34e155e.js" defer="defer"></script>
 <script src="/assets/js/main.c2ffbd9a.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -62,7 +62,7 @@
 <p>Redis는 완전한 단일 스레드로 출발했지만, 느린 작업을 조금씩 백그라운드로 분리해 왔습니다.</p>
 <ul>
 <li><strong>Redis 4.0</strong> — 백그라운드 스레드(<code>bio</code>)를 추가해 <strong>비동기 삭제(lazy free)</strong> 와 <strong>AOF fsync</strong> 같은 느린 작업을 분리했습니다. 덕분에 수백만 항목을 지울 때도 메인 스레드가 멈추지 않습니다.</li>
-<li><strong>Redis 6.0</strong> — <strong>I/O 멀티스레딩</strong>(<code>io-threads</code>)을 선택 옵션으로 넣었습니다. 오해하기 쉬운데, <mark>멀티스레드로 바뀐 건 &quot;명령 실행&quot;이 아니라 &quot;네트워크 I/O(소켓 읽기·쓰기, 프로토콜 파싱)&quot;입니다.</mark> 커넥션이 많거나 응답이 클 때 활성화하면 처리량이 30<del>60%까지 오르지만, 명령이 가벼우면 스레드 전환 비용 때문에 오히려 느려질 수 있어 보통 <strong>코어 수보다 1~2개 적게</strong>(8코어면 6</del>7) 두고 벤치마크로 조정합니다.</li>
+<li><strong>Redis 6.0</strong> — <strong>I/O 멀티스레딩</strong>(<code>io-threads</code>)을 선택 옵션으로 넣었습니다. 오해하기 쉬운데, <mark>멀티스레드로 바뀐 건 &quot;명령 실행&quot;이 아니라 &quot;네트워크 I/O(소켓 읽기·쓰기, 프로토콜 파싱)&quot;입니다.</mark> 커넥션이 많거나 응답이 클 때 활성화하면 처리량이 30~60%까지 오르지만, 명령이 가벼우면 스레드 전환 비용 때문에 오히려 느려질 수 있어 보통 <strong>코어 수보다 1~2개 적게</strong>(8코어면 6~7) 두고 벤치마크로 조정합니다.</li>
 </ul>
 <p>핵심은 그대로입니다 — <strong>명령 실행 경로는 지금도 단일 스레드</strong>라, 원자성·단순함이 유지됩니다. &quot;Redis는 싱글스레드&quot;란 &quot;명령 실행이 싱글스레드&quot;라는 뜻이지, 프로세스 전체가 그렇다는 말은 아닙니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="#정리" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>
