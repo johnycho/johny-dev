@@ -15,7 +15,7 @@ JPA에서 연관관계를 어느 방향으로 매핑하느냐는 단순한 취�
 
 > **"FK가 없는 `@OneToMany` 쪽"이란?**
 >
-> FK 컬럼(`member_id`)은 **N쪽인 `orders` 테이블에만** 있고, `@OneToMany`를 거는 **1쪽 `Member` 테이블에는 FK가 없습니다**(`member`에는 `id`만, `orders`에는 `id`·`member_id`). 그 FK 없는 `Member`가 컬렉션을 주인처럼 다루면, 자기 것이 아닌 `orders.member_id`를 원격으로 채우느라 추가 쿼리가 생깁니다 — 자세한 구조는 아래 "문제"에서 그림으로 봅니다.
+> FK 컬럼(`member_id`)은 **다(N)쪽인 `orders` 테이블에만** 있고, `@OneToMany`를 거는 **일(1)쪽 `Member` 테이블에는 FK가 없습니다**(`member`에는 `id`만, `orders`에는 `id`·`member_id`). 그 FK 없는 `Member`가 컬렉션을 주인처럼 다루면, 자기 것이 아닌 `orders.member_id`를 원격으로 채우느라 추가 쿼리가 생깁니다 — 자세한 구조는 아래 "문제"에서 그림으로 봅니다.
 
 ## 연관관계 — "DB의 FK 하나를 누가 채우나"
 
@@ -26,7 +26,9 @@ JPA에서 연관관계를 어느 방향으로 매핑하느냐는 단순한 취�
 - FK 컬럼(`member_id`)은 **`orders` 테이블**에 있습니다 → 그 값은 **`Order`를 저장할 때** 채워집니다 → 그래서 **주인은 `Order.member`**.
 - 반대쪽 `Member.orders`는 **읽기 전용**입니다. `mappedBy = "member"`로 "FK 관리는 `Order.member`가 하고, 이쪽은 조회만 한다"를 선언합니다.
 
-<mark>규칙은 하나입니다 — **FK 컬럼을 가진 테이블의 엔티티가 주인**이고, 주인만 FK를 채웁니다. 주인이 아닌 쪽(`mappedBy`)에서 컬렉션을 수정해도 DB의 FK는 변하지 않습니다.</mark>
+<mark>규칙은 하나입니다 — **FK 컬럼(`member_id`)을 가진 `orders`의 엔티티, 즉 `Order`가 주인**이고, 주인만 FK를 채웁니다. 주인이 아닌 쪽(`mappedBy`인 `Member.orders`)에서 컬렉션을 수정해도 DB의 FK는 변하지 않습니다.</mark>
+
+> 직관적으로는 "부모인 `Member`(일대다의 '1')가 주인"일 것 같지만, JPA의 주인은 **FK를 가진 자식 `Order`(일대다의 'N')** 입니다 — 방향(부모·자식)이 아니라 **FK 위치**로 정해집니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -35,13 +37,14 @@ JPA에서 연관관계를 어느 방향으로 매핑하느냐는 단순한 취�
 @startuml
 skinparam defaultTextAlignment center
 skinparam shadowing false
+skinparam defaultFontName sans-serif
 
-rectangle "Order.member  (주인)\n@ManyToOne + @JoinColumn" as ORD #C8E6C9
-rectangle "Member.orders  (주인 아님)\n@OneToMany(mappedBy)" as MEM #FFF9C4
-rectangle "orders 테이블\n id | member_id  ← FK는 하나만" as T #FFCDD2
+rectangle "Order.member (주인)\n@ManyToOne\n+ @JoinColumn" as ORD #C8E6C9
+rectangle "Member.orders (주인 아님)\n@OneToMany(mappedBy)" as MEM #FFF9C4
+rectangle "orders 테이블\nid | member_id\n(FK는 하나)" as T #FFCDD2
 
-ORD -down-> T : FK를 INSERT/UPDATE (값을 채움)
-MEM ..> T : 조회만 — FK를 바꾸지 못함
+ORD -down-> T : FK를 채움\n(INSERT/UPDATE)
+MEM ..> T : 조회만\n(FK 못 바꿈)
 @enduml
 ```
 
@@ -88,10 +91,10 @@ INSERT INTO orders (id, member_id) VALUES (?, ?);
 skinparam defaultTextAlignment center
 skinparam shadowing false
 
-rectangle "Member (1쪽, @OneToMany 단방향)\nFK 컬럼이 없다" as M #FFF9C4
-rectangle "orders 테이블 (N쪽)\n id | member_id  ← FK는 여기 있다" as O #C8E6C9
+rectangle "Member (ONE 쪽, @OneToMany 단방향)\nFK 컬럼이 없다" as M #FFF9C4
+rectangle "orders 테이블 (MANY 쪽)\nid | member_id ← FK는 여기 있다" as O #C8E6C9
 
-M -right-> O : 주인인데 내 테이블엔 FK가 없어서\norders.member_id를 원격으로 채움\n→ INSERT 뒤 별도 UPDATE
+M -down-> O : 주인인데 내 테이블엔\nFK가 없어서\norders.member_id를\n원격으로 채움\n→ INSERT 뒤 별도 UPDATE
 @enduml
 ```
 
