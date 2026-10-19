@@ -1,0 +1,26 @@
+/* diagram-design의 반응형 래퍼 모델 재현:
+   프레임은 유동, 다이어그램은 overflow-x:auto 안에서 viewBox 기반 확대,
+   단 svg min-width 아래(모바일)에서는 축소 대신 가로 스크롤. */
+.container {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0 0.35rem;
+  border: 1px solid var(--site-card-border);
+  border-radius: 10px;
+  background: #f5f5f3;
+}
+.svg {
+  display: block;
+  width: 100%;
+  min-width: 680px; /* 이 폭 아래로는 줄이지 않고 가로 스크롤 */
+  height: auto;
+}
+.mono {
+  font-family: var(--ifm-font-family-monospace, ui-monospace, monospace);
+}
+.cap {
+  margin: 0 0 1rem;
+  color: var(--site-muted);
+  font-size: 0.72rem;
+  text-align: center;
+}
