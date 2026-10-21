@@ -44,7 +44,7 @@ JDK 11에서는 **람다 파라미터에도 `var`** 를 사용할 수 있습니�
 
 ## 3. 표준 HTTP 클라이언트 (JEP 321 · JDK 11)
 
-낡은 `HttpURLConnection`을 대체하는 **현대적 HTTP 클라이언트**가 표준(`java.net.http`)으로 들어왔습니다(JDK 9 인큐베이터 → 11 정식). HTTP/2·비동기·`CompletableFuture`를 기본 지원합니다.
+오래된 `HttpURLConnection`을 대체하는 **현대적 HTTP 클라이언트**가 표준(`java.net.http`)으로 들어왔습니다(JDK 9 인큐베이터 → 11 정식). HTTP/2·비동기·`CompletableFuture`를 기본 지원합니다.
 
 ```java
 HttpClient client = HttpClient.newHttpClient();
