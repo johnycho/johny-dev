@@ -252,7 +252,7 @@ public Mono<String> bad() {
 - **외부 호출**: `RestTemplate`(블로킹) 대신 **`WebClient`**(논블로킹).
 - 불가피하게 블로킹 라이브러리를 사용해야 하면 `subscribeOn(Schedulers.boundedElastic())`로 **별도 스레드 풀에 격리**합니다(하지만 이러면 순수 리액티브의 이점이 줄어듭니다).
 
-## 디버깅 — MVC보다 까다로운 이유와 대처
+## 디버깅 — MVC보다 복잡한 이유와 대처
 
 WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어떻게 대처하는지 정리합니다.
 

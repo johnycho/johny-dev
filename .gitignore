@@ -23,3 +23,7 @@ yarn-error.log*
 ### IntelliJ IDEA ###
 .idea
 __pycache__/
+
+### ego lite (ego-browser skill — 개인 도구, 미추적)
+.agents/skills/ego-browser
+.claude/skills/ego-browser
