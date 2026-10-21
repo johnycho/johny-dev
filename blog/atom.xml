@@ -71,11 +71,17 @@
 <li><strong>ALB</strong> — AWS가 <strong>인프라 계층에서</strong> 제공하는 로드밸런서입니다. 맨 앞 진입점에서 <strong>큰 단위로</strong> 나눠 보내고, 다음 같은 일을 <strong>관리형으로</strong> 처리합니다.<!-- -->
 <ul>
 <li><strong>TLS 종료</strong> — 클라이언트와의 HTTPS 암호화를 ALB가 풀어, 뒤 서버에는 복호화된 평문 요청만 전달합니다(인증서도 ALB에서 관리). 예: 브라우저는 <code>https://</code>로 접속하지만 백엔드 서버는 복잡한 암호화 처리를 신경 쓰지 않습니다.</li>
-<li><strong>WAF</strong> — 수상한 요청을 규칙으로 차단합니다. 예: SQL 인젝션 패턴이 담긴 요청이나 특정 IP·국가의 공격성 트래픽을 어플리케이션에 닿기 전에 막습니다.</li>
+<li><strong>WAF</strong>(Web Application Firewall, 웹 어플리케이션 방화벽) — 요청 내용을 규칙으로 검사해 수상한 것을 어플리케이션에 닿기 전에 차단합니다(AWS에서는 <code>AWS WAF</code>를 ALB에 붙여 관리형 룰셋·요청 빈도 제한 등을 적용). 다음 같은 요청을 막습니다.<!-- -->
+<ul>
+<li><strong>SQL 인젝션</strong> — 입력값에 <code>' OR 1=1 --</code> 같은 DB 조작 구문이 섞인 요청</li>
+<li><strong>XSS</strong>(크로스 사이트 스크립팅) — <code>&lt;script&gt;</code> 태그로 악성 스크립트를 심으려는 시도</li>
+<li><strong>과도한 요청 빈도</strong> — 한 IP가 초당 수백 번씩 보내는 비정상 트래픽(요청 수를 제한하는 rate limit으로 차단)</li>
+</ul>
+</li>
 <li><strong>경로/호스트 라우팅</strong> — URL을 보고 목적지를 나눕니다. 예: <code>api.example.com</code>은 API 서버로, <code>/img/*</code> 경로는 이미지 서버로 보냅니다.</li>
 </ul>
 </li>
-<li><strong>Spring Cloud Gateway</strong> — 우리가 직접 배포하는 <strong>어플리케이션</strong>입니다(코드로 동작하는 리버스 프록시). 여기선 <strong>요청 하나하나</strong>를 세밀하게 제어합니다. 예를 들어 "JWT가 있는지 검사", "사용자당 초당 10회로 제한(레이트 리밋)", "뒤 서비스가 실패하면 차단(서킷 브레이커)", "헤더를 붙여 전달" 같은 <strong>필터</strong>를 코드·설정으로 겁니다.</li>
+<li><strong>Spring Cloud Gateway</strong> — 우리가 직접 배포하는 <strong>어플리케이션</strong>입니다(코드로 동작하는 리버스 프록시). 여기선 <strong>요청 하나하나</strong>를 세밀하게 제어합니다. 예를 들어 "JWT가 있는지 검사", "사용자당 초당 10회로 제한(레이트 리밋)", "뒤 서비스가 실패하면 차단(서킷 브레이커)", "헤더를 붙여 전달" 같은 <strong>필터</strong>를 코드·설정으로 적용합니다.</li>
 </ul>
 <p><mark>정리하면 ALB는 "경로·호스트로 나눠 보내는" <strong>큰 단위 라우팅</strong>에, Spring Cloud Gateway는 "요청마다 인증·변환·제어까지" 하는 <strong>세밀한 게이트웨이</strong>에 강합니다.</mark> 그래서 보통 함께 구성합니다.</p>
 <ul>
