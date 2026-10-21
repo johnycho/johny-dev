@@ -2,14 +2,14 @@
 slug: alb-vs-nlb
 title: 'AWS ALB vs NLB — L7/L4 로드밸런서 차이와 선택 기준'
 authors: [ johnycho ]
-tags: [ architecture, system-design ]
+tags: [ architecture, system-design, spring ]
 date: 2026-10-21T15:00:00+09:00
 description: "AWS의 ALB(L7)와 NLB(L4)는 무엇이 다른가 — 동작 계층, 라우팅 방식(내용 기반 vs 플로우), 소스 IP 보존, 고정 IP, 성능, 그리고 언제 무엇을 선택해야 하는지 비교합니다."
 ---
 
 <!-- truncate -->
 
-AWS에서 로드밸런서를 붙일 때 가장 먼저 만나는 선택이 **ALB냐 NLB냐**입니다. 둘 다 Elastic Load Balancing(ELB)에 속하지만 **동작하는 네트워크 계층이 다릅니다** — <mark>ALB는 **L7(어플리케이션 계층)**, NLB는 **L4(전송 계층)** 에서 동작하고, 그 차이가 "무엇을 보고 트래픽을 분배하나"를 가릅니다.</mark>
+AWS에서 로드밸런서를 붙일 때 가장 먼저 만나는 선택이 **ALB냐 NLB냐**입니다. ALB와 NLB 모두 Elastic Load Balancing(ELB)에 속하지만 **동작하는 네트워크 계층이 다릅니다** — <mark>ALB는 **L7(어플리케이션 계층)**, NLB는 **L4(전송 계층)** 에서 동작하고, 그 차이가 "무엇을 보고 트래픽을 분배하나"를 가릅니다.</mark>
 
 - **ALB**(Application Load Balancer) — HTTP 요청의 **내용**(경로·호스트·헤더)을 보고 분배합니다.
 - **NLB**(Network Load Balancer) — TCP/UDP **연결(플로우)** 만 보고 그대로 전달합니다.
@@ -52,13 +52,13 @@ ALB는 요청을 해석하므로 **내용 기반 라우팅**이 가능합니다.
 
 ## NLB — L4의 강점
 
-NLB는 연결을 해석하지 않고 그대로 넘기므로 **극한의 성능과 낮은 지연**을 냅니다. 사전 워밍업 없이 **급격한 트래픽 폭증**도 그대로 받아냅니다.
+NLB는 연결을 해석하지 않고 그대로 넘기므로 **극한의 성능과 낮은 지연**을 보입니다. 사전 워밍업 없이 **급격한 트래픽 폭증**도 그대로 받아냅니다.
 
 - **TCP/UDP** — HTTP가 아닌 프로토콜(게임·IoT·DB·gRPC 위의 커스텀 등)도 처리.
 - **소스 IP 보존** — 백엔드가 **실제 클라이언트 IP를 그대로** 봅니다(ALB처럼 헤더로 전달하는 게 아니라 패킷 수준에서 보존). IP 기반 접근 제어·감사에 유리.
 - **고정 IP / Elastic IP** — AZ마다 고정 IP를 줄 수 있어, **방화벽 화이트리스트**에 넣기 좋습니다(ALB는 DNS 이름만 제공).
 - **PrivateLink** — VPC 엔드포인트 서비스를 만들 때 사용하는 진입점이 NLB입니다.
-- **ALB를 타깃으로** — NLB(고정 IP) 뒤에 ALB(L7 라우팅)를 둬서 둘의 장점을 함께 쓸 수도 있습니다.
+- **ALB를 타깃으로** — NLB(고정 IP) 뒤에 ALB(L7 라우팅)를 둬서 양쪽 장점을 함께 사용할 수도 있습니다.
 
 <mark>TCP/UDP·극한 성능·고정 IP·소스 IP 보존·PrivateLink가 필요하면 NLB입니다.</mark>
 
@@ -69,11 +69,93 @@ NLB는 연결을 해석하지 않고 그대로 넘기므로 **극한의 성능�
 - **소스 IP** — ALB는 연결을 종료(terminate)하므로 백엔드 입장에선 **ALB의 IP**가 출발지입니다. 실제 클라이언트 IP는 `X-Forwarded-For` 헤더로 전달되니, 어플리케이션이 그 헤더를 읽어야 합니다. NLB(인스턴스·IP 타깃)는 **클라이언트 IP가 패킷에 그대로** 남아, 백엔드가 별도 설정 없이 실제 IP를 봅니다.
 - **고정 IP** — ALB는 IP가 수시로 바뀌어 **DNS 이름으로만** 참조해야 합니다. 상대 방화벽에 "이 IP만 허용"을 넣어야 한다면 ALB로는 곤란하고, **고정 IP를 주는 NLB**가 맞습니다.
 
+## 쿠버네티스(EKS)에서는 — Ingress vs Service
+
+EKS에서는 **AWS Load Balancer Controller**가 쿠버네티스 리소스를 보고 로드밸런서를 만들어 줍니다. 리소스 종류로 나뉩니다.
+
+- **ALB → `Ingress`** — HTTP 경로·호스트 라우팅 규칙을 `Ingress`로 선언하면, 컨트롤러가 그 규칙대로 ALB를 구성합니다(`/api`는 주문 서비스, `/img`는 이미지 서비스처럼).
+- **NLB → `Service`(type: LoadBalancer)** — L4 그대로 노출할 때는 `Service`를 LoadBalancer 타입으로 만들면 NLB가 생깁니다.
+
+```yaml
+# ALB — Ingress로 HTTP 라우팅
+kind: Ingress
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip   # instance(기본) 대신 Pod IP로 직접
+spec:
+  ingressClassName: alb
+---
+# NLB — Service(LoadBalancer)로 L4 노출
+kind: Service
+metadata:
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: external
+    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: ip
+spec:
+  type: LoadBalancer
+```
+
+여기서 **IP 모드**란 위 애너테이션의 **`target-type: ip`**(ALB)·**`nlb-target-type: ip`**(NLB)를 말합니다. 기본값은 `instance`입니다.
+
+**NodePort**는 클러스터의 **모든 노드에 똑같이 열리는 포트**(기본 30000~32767 범위)로, 그 포트로 들어온 트래픽을 해당 Service의 Pod으로 넘겨 주는 입구입니다. `instance` 모드에선 로드밸런서가 **노드들**을 타깃으로 잡고 이 NodePort로 보내는데, 받은 노드에 해당 Pod이 없으면 `kube-proxy`가 **다른 노드의 Pod으로 한 번 더 넘깁니다**. 즉 홉이 하나 더 생기고, 그 과정에서 출발지 IP가 노드 IP로 바뀌기도 합니다. <mark>`ip` 모드는 이 중간 단계를 건너뛰고 로드밸런서가 **Pod IP로 바로** 전달합니다 — 홉이 줄어 지연·부하에 유리합니다.</mark>
+
+<details>
+<summary>PlantUML 코드</summary>
+
+```plantuml
+@startuml
+skinparam shadowing false
+skinparam defaultFontName sans-serif
+skinparam ranksep 16
+skinparam nodesep 22
+hide empty members
+
+rectangle "LB\n(ALB/NLB)" as LB1 #EEF3FB
+rectangle "노드\n:NodePort" as ND #FFF3E0
+rectangle "kube-proxy" as KP #FFF3E0
+rectangle "Pod" as PA #E9F2E9
+
+rectangle "LB\n(ALB/NLB)" as LB2 #EEF3FB
+rectangle "Pod" as PB #E9F2E9
+
+LB1 --> ND
+ND --> KP
+KP --> PA : 다른 노드면\n홉 추가
+LB2 --> PB : 직접 전달
+
+note top of LB1 : instance 모드(기본)
+note top of LB2 : ip 모드
+@enduml
+```
+
+</details>
+
+![PlantUML EKS target-type instance vs ip 트래픽 경로](/img/c4/pu-eks-target-type.svg)
+
+## ALB와 Spring Cloud Gateway — 인프라 로드밸런서 vs 앱 게이트웨이
+
+"ALB도 L7 라우팅을 하는데 Spring Cloud Gateway는 왜 사용하나?"라는 질문이 자주 나옵니다. ALB와 Spring Cloud Gateway는 **동작하는 위치**가 다릅니다.
+
+- **ALB** — AWS가 **인프라 계층에서** 제공하는 로드밸런서입니다. 맨 앞 진입점에서 **큰 단위로** 나눠 보내고, 다음 같은 일을 **관리형으로** 처리합니다.
+    - **TLS 종료** — 클라이언트와의 HTTPS 암호화를 ALB가 풀어, 뒤 서버에는 복호화된 평문 요청만 전달합니다(인증서도 ALB에서 관리). 예: 브라우저는 `https://`로 접속하지만 백엔드 서버는 복잡한 암호화 처리를 신경 쓰지 않습니다.
+    - **WAF** — 수상한 요청을 규칙으로 차단합니다. 예: SQL 인젝션 패턴이 담긴 요청이나 특정 IP·국가의 공격성 트래픽을 어플리케이션에 닿기 전에 막습니다.
+    - **경로/호스트 라우팅** — URL을 보고 목적지를 나눕니다. 예: `api.example.com`은 API 서버로, `/img/*` 경로는 이미지 서버로 보냅니다.
+- **Spring Cloud Gateway** — 우리가 직접 배포하는 **어플리케이션**입니다(코드로 동작하는 리버스 프록시). 여기선 **요청 하나하나**를 세밀하게 제어합니다. 예를 들어 "JWT가 있는지 검사", "사용자당 초당 10회로 제한(레이트 리밋)", "뒤 서비스가 실패하면 차단(서킷 브레이커)", "헤더를 붙여 전달" 같은 **필터**를 코드·설정으로 겁니다.
+
+<mark>정리하면 ALB는 "경로·호스트로 나눠 보내는" **큰 단위 라우팅**에, Spring Cloud Gateway는 "요청마다 인증·변환·제어까지" 하는 **세밀한 게이트웨이**에 강합니다.</mark> 그래서 보통 함께 구성합니다.
+
+- 클라이언트 → **ALB**(TLS 종료·WAF·경로/호스트 라우팅) → **Spring Cloud Gateway**(요청별 인증·필터) → 마이크로서비스
+- 고정 IP가 필요하면 맨 앞에 NLB를 둬서 `NLB → ALB → Spring Cloud Gateway`로 구성하기도 합니다.
+
+Spring Cloud Gateway는 기본이 WebFlux(리액티브) 기반이라, 비동기 처리 특성은 [WebFlux vs MVC](./spring-webflux-vs-mvc)를 참고하세요.
+
 ## 선택 기준
 
 | 상황 | 선택 |
 |---|---|
 | 경로·호스트별 라우팅, HTTP(S) 서비스 | ALB |
+| EKS에서 HTTP 라우팅(`Ingress`) | ALB |
 | WAF·인증을 앞단에서 처리 | ALB |
 | TCP/UDP(비 HTTP) 프로토콜 | NLB |
 | 초고성능·초저지연·급격한 스파이크 | NLB |
@@ -87,4 +169,4 @@ NLB는 연결을 해석하지 않고 그대로 넘기므로 **극한의 성능�
 - **ALB=L7, NLB=L4** — ALB는 요청 **내용**을 보고(경로·호스트·헤더) 똑똑하게 라우팅하고, NLB는 **연결**만 보고 빠르게 전달합니다.
 - **ALB**: HTTP(S)·gRPC·WebSocket, 내용 기반 라우팅, WAF·인증·리다이렉트·Lambda 타깃.
 - **NLB**: TCP/UDP, 초고성능·저지연, **고정 IP·소스 IP 보존**, PrivateLink.
-- <mark>HTTP를 내용으로 나눠야 하면 ALB, 극한 성능·고정 IP·L4가 필요하면 NLB — 둘을 **NLB 뒤에 ALB**로 함께 쓰기도 합니다.</mark>
+- <mark>HTTP를 내용으로 나눠야 하면 ALB, 극한 성능·고정 IP·L4가 필요하면 NLB — **NLB 뒤에 ALB**로 함께 구성하기도 합니다.</mark>
