@@ -100,14 +100,14 @@ synchronized (results) {
 }
 ```
 
-이렇게 순회 전체를 잠그면 그 동안 모든 쓰기가 막혀 느려지고, 순회할 때마다 직접 잠가 줘야 해 번거롭습니다. <mark>그래서 값을 넣기만 하고 마지막에 한 번 읽는 수집이라면, 이런 손이 가는 `synchronizedList`보다 다음이 더 유리합니다.</mark>
+이렇게 순회 전체를 잠그면 그 동안 모든 쓰기가 막혀 느려지고, 순회할 때마다 직접 잠가 줘야 해 번거롭습니다. <mark>그래서 값을 넣기만 하고 마지막에 한 번 읽는 수집이라면, 이러한 손이 가는 `synchronizedList`보다 다음이 더 유리합니다.</mark>
 
 - **`ConcurrentLinkedQueue`로 넣기** — 직접 락을 걸 필요가 없어 넣는 코드가 단순합니다.
 - **공유 컬렉션을 아예 두지 않기** — 해결 ①처럼 각자 결과를 반환하고, 마지막에 한 스레드가 모읍니다.
 
 ## 비슷한 실수 — 람다 안의 `int[]` 카운터도 원자적이지 않다
 
-병렬 코드에서 이런 걸 종종 봅니다. 람다 안에서 값을 바꾸려고 배열 트릭을 사용하는 것이죠.
+병렬 코드에서 이러한 경우를 종종 봅니다. 람다 안에서 값을 바꾸려고 배열 트릭을 사용하는 것이죠.
 
 ```java
 int[] count = {0};
@@ -140,7 +140,7 @@ LongAdder count = new LongAdder();
 ids.parallelStream().forEach(id -> { if (call(id).ok()) count.increment(); });
 ```
 
-`AtomicLong`과 `LongAdder`의 차이는 [LongAdder는 왜 빠른가](./java-longadder)에서 다뤘습니다.
+`AtomicLong`과 `LongAdder`의 차이는 [LongAdder는 왜 빠른가](./java-longadder)에서 설명했습니다.
 
 ## 정리
 

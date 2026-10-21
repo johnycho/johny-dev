@@ -8,7 +8,7 @@ date: 2026-08-19T10:00:00
 
 <!-- truncate -->
 
-**상황** — 금요일 오후 피크에 회원가입에서 간헐적으로 500 에러가 났습니다. 최근 배포에서 "외부 API가 실패해도 가입은 진행되게" `try-catch`로 예외를 처리하도록 바꿨는데, <mark>예외를 분명히 잡았는데도 가입 데이터가 DB에 저장되지 않고 트랜잭션 전체가 롤백됐습니다.</mark> (Spring Boot 3.x · Kotlin · MySQL 8.0)
+**상황** — 금요일 오후 피크에 회원가입에서 간헐적으로 500 에러가 발생했습니다. 최근 배포에서 "외부 API가 실패해도 가입은 진행되게" `try-catch`로 예외를 처리하도록 바꿨는데, <mark>예외를 분명히 잡았는데도 가입 데이터가 DB에 저장되지 않고 트랜잭션 전체가 롤백됐습니다.</mark> (Spring Boot 3.x · Kotlin · MySQL 8.0)
 
 로그엔 이 예외가 찍혔습니다.
 
@@ -25,7 +25,7 @@ org.springframework.transaction.UnexpectedRollbackException:
 
 ## 무슨 일이 벌어졌나
 
-코드는 대략 이런 모양이었습니다.
+코드는 대략 이러한 모양이었습니다.
 
 ```java
 @Transactional

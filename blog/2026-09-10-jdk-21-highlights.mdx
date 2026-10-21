@@ -24,11 +24,11 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 }
 ```
 
-실무에서 **언제 이득이고 무엇을 조심해야 하는지**(블로킹 vs CPU 바운드, 풀 크기, 핀 고정 등)는 별도 글에서 자세히 다뤘습니다 → [가상 스레드, 실무에서 언제 쓰나](/blog/virtual-threads-in-production).
+실무에서 **언제 이득이고 무엇을 조심해야 하는지**(블로킹 vs CPU 바운드, 풀 크기, 핀 고정 등)는 별도 글에서 자세히 정리했습니다 → [가상 스레드, 실무에서 언제 쓰나](/blog/virtual-threads-in-production).
 
 ## 2. 패턴 매칭 switch — 타입별 분기 완성 (JEP 441, 정식)
 
-JDK 17에서 preview였던 기능이 정식이 됐습니다. `switch`에서 **타입으로 분기하고 바로 바인딩**합니다. [JDK 17의 `sealed`](/blog/jdk-17-highlights)와 함께 쓰면 **모든 경우를 다뤘는지 컴파일러가 검사**합니다(누락 시 컴파일 에러 — `default` 없이도 안전).
+JDK 17에서 preview였던 기능이 정식이 됐습니다. `switch`에서 **타입으로 분기하고 바로 바인딩**합니다. [JDK 17의 `sealed`](/blog/jdk-17-highlights)와 함께 쓰면 **모든 경우를 처리했는지 컴파일러가 검사**합니다(누락 시 컴파일 에러 — `default` 없이도 안전).
 
 ```java
 // Shape는 JDK 17 예시의 sealed 인터페이스 (Circle/Rectangle/Triangle)
@@ -40,7 +40,7 @@ double area = switch (shape) {
 };
 ```
 
-가드(`when`)로 조건도 붙일 수 있고, `null`도 `case null`로 명시적으로 다룹니다.
+가드(`when`)로 조건도 붙일 수 있고, `null`도 `case null`로 명시적으로 처리합니다.
 
 ## 3. 레코드 패턴 — 분해(deconstruction) (JEP 440, 정식)
 
@@ -68,7 +68,7 @@ list.getLast();           // list.get(list.size() - 1) 대신
 list.reversed();          // 역순 뷰
 ```
 
-`List`·`Deque`·`LinkedHashSet` 등이 공통 메서드(`getFirst`/`getLast`/`addFirst`/`addLast`/`reversed`)를 갖게 되어, 순서 있는 컬렉션을 다루는 코드가 일관돼집니다.
+`List`·`Deque`·`LinkedHashSet` 등이 공통 메서드(`getFirst`/`getLast`/`addFirst`/`addLast`/`reversed`)를 갖게 되어, 순서 있는 컬렉션을 처리하는 코드가 일관돼집니다.
 
 <mark>여기까지가 코드에 바로 사용하는 정식 기능입니다 — 가상 스레드·패턴 매칭 switch·레코드 패턴·시퀀스드 컬렉션 모두 `--enable-preview` 없이 사용합니다.</mark>
 

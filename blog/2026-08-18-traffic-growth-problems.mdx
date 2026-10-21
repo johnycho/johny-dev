@@ -52,7 +52,7 @@ import {AnimatedLineChart} from '@site/src/components/blog/MonitorCharts';
 유입이 처리 속도를 앞서면 큐가 계속 쌓입니다. 방치하면 메모리까지 밀어붙이죠. → [대용량 Redis 대응](./redis-large-scale-pitfalls), [서버 지표 읽기](./server-monitoring-analysis).
 
 **⑤ CPU·메모리·GC 포화**<br />
-CPU가 차면 런 큐가 길어지고, 힙 압박으로 **GC가 자주·오래** 돌아 지연을 키우다 OOM으로 갑니다. → [JVM 힙 덤프 분석](./jvm-heap-dump-analysis).
+CPU가 차면 런 큐가 길어지고, 힙 압박으로 **GC가 자주·오래** 실행돼 지연을 키우다 OOM으로 갑니다. → [JVM 힙 덤프 분석](./jvm-heap-dump-analysis).
 
 **⑥ 팬아웃·P99 레이턴시 증폭**<br />
 한 요청이 내부적으로 여러 번 호출하면(fan-out), 그중 하나만 느려도 전체가 느려집니다. 트래픽이 늘수록 내부 호출이 늘어, 하나라도 느린 호출에 걸릴 확률이 높아지고 그만큼 **P99 레이턴시**가 빠르게 나빠집니다. → [서버 지표 읽기](./server-monitoring-analysis).

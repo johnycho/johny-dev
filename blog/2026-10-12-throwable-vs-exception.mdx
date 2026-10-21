@@ -53,13 +53,13 @@ Error <|-- ERR
 
 - **`Throwable`** — 던지고 처리할 수 있는 모든 것의 **최상위 클래스**. `Error`와 `Exception`의 공통 부모.
 - **`Error`** — JVM 수준의 **심각한 문제**. 어플리케이션이 복구하기 어렵습니다.
-- **`Exception`** — 어플리케이션이 **다룰 수 있는** 문제. 다시 checked와 unchecked(`RuntimeException`)로 나뉩니다.
+- **`Exception`** — 어플리케이션이 **처리할 수 있는** 문제. 다시 checked와 unchecked(`RuntimeException`)로 나뉩니다.
 
 ## Throwable — 던지고 처리하는 모든 것의 최상위
 
 `Throwable`은 "예외"라는 개념 자체를 대표하는 클래스입니다. <mark>`throw` 문에 올 수 있고 `catch`로 처리할 수 있는 건 오직 `Throwable`과 그 하위 타입뿐입니다</mark> — 예컨대 `throw "문자열"`은 컴파일되지 않습니다.
 
-예외를 다룰 때 사용하는 메서드도 전부 이 클래스에 정의돼 있습니다.
+예외를 처리할 때 사용하는 메서드도 전부 이 클래스에 정의돼 있습니다.
 
 ```java
 public class Throwable {
@@ -85,9 +85,9 @@ void recurse(int n) {
 }
 ```
 
-이런 `StackOverflowError`를 `catch`로 막는다고 근본 원인(잘못된 재귀)이 사라지지는 않습니다. `Error`가 보이면 처리할 게 아니라 코드를 고쳐야 한다는 신호로 읽는 편이 맞습니다.
+이러한 `StackOverflowError`를 `catch`로 막는다고 근본 원인(잘못된 재귀)이 사라지지는 않습니다. `Error`가 보이면 처리할 게 아니라 코드를 고쳐야 한다는 신호로 읽는 편이 맞습니다.
 
-## Exception — 어플리케이션이 다루는 문제
+## Exception — 어플리케이션이 처리하는 문제
 
 `Exception`은 **어플리케이션 로직에서 충분히 발생할 수 있고, 처리할 가치가 있는** 문제입니다. 파일이 없거나, 네트워크가 끊기거나, 입력값이 잘못된 상황이 여기 속합니다. 그리고 `Exception`은 다시 두 가지로 나뉩니다.
 
@@ -117,7 +117,7 @@ void read2() {
 
 ## catch (Throwable) vs catch (Exception)
 
-이제 처음 질문으로 돌아오면, 둘의 차이는 **처리하는 범위**입니다.
+이제 처음 질문을 다시 보면, 둘의 차이는 **처리하는 범위**입니다.
 
 - `catch (Exception e)` — `Exception`과 그 하위(checked + unchecked)만 처리합니다. **`Error`는 그대로 전파됩니다.**
 - `catch (Throwable t)` — `Exception`뿐 아니라 **`Error`까지 전부** 처리합니다.

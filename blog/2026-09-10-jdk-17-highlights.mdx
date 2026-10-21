@@ -52,7 +52,7 @@ public record Rectangle(double w, double h) implements Shape {}
 public record Triangle(double base, double height) implements Shape {}
 ```
 
-하위 타입이 **닫혀 있으니**, 뒤에서 볼 패턴 매칭 `switch`에서 **모든 경우를 다뤘는지 컴파일러가 검사**할 수 있습니다(누락 시 컴파일 에러). `record` + `sealed`는 함수형 언어의 대수적 데이터 타입(ADT)에 해당합니다.
+하위 타입이 **닫혀 있으니**, 뒤에서 볼 패턴 매칭 `switch`에서 **모든 경우를 처리했는지 컴파일러가 검사**할 수 있습니다(누락 시 컴파일 에러). `record` + `sealed`는 함수형 언어의 대수적 데이터 타입(ADT)에 해당합니다.
 
 ## 3. instanceof 패턴 매칭 — 검사와 캐스팅을 한 번에 (JEP 394, JDK 16 정식)
 

@@ -36,7 +36,7 @@ redis.opsForZSet().add("leaderboard", "kim", 1500);
 
 예를 들어 서버 3대가 같은 재고를 건드릴 때, 자바 `ReentrantLock`으론 각 서버 *내부의* 스레드끼리만 막힐 뿐 서버 사이 경쟁은 못 막습니다. Redisson `RLock`은 세 서버가 같은 Redis를 보고 잠그므로 **전체에서 한 번에 하나만** 임계 구역에 들어갑니다.
 
-Netty 기반 클라이언트로, 이런 "분산 도구"들을 폭넓게 제공합니다.
+Netty 기반 클라이언트로, 이러한 "분산 도구"들을 폭넓게 제공합니다.
 
 - **동시성 프리미티브**: `RLock`(재진입·공정·멀티락), `RSemaphore`, `RRateLimiter`, `RCountDownLatch`
 - **분산 컬렉션**: `RMap`·`RList`·`RSet`(각각 `java.util` 인터페이스 구현), 엔트리별 TTL·near-cache(`RMapCache`·`RLocalCachedMap`)
@@ -44,7 +44,7 @@ Netty 기반 클라이언트로, 이런 "분산 도구"들을 폭넓게 제공�
 - **여러 API 스타일**: 같은 기능을 **동기**(결과가 올 때까지 기다림)·**비동기**(`RFuture`로 나중에 받기)·**리액티브**(Reactor `Mono`/`Flux`)·**RxJava** 중 선택해 호출할 수 있습니다. WebFlux 같은 논블로킹 스택과도 맞물립니다.
 - **코덱(codec)**: 자바 객체를 Redis에 저장할 때의 **직렬화 방식**(JSON·Kryo 등)을 지정합니다. `RedisTemplate`의 `RedisSerializer`에 해당하는 개념입니다.
 
-즉 Redisson은 "Redis 명령"이 아니라 **"여러 서버가 공유하는 자료구조·동시성 도구"** 를 다루는 관점입니다.
+즉 Redisson은 "Redis 명령"이 아니라 **"여러 서버가 공유하는 자료구조·동시성 도구"** 로 접근하는 관점입니다.
 
 ## 같은 작업, 두 방식 — ① 분산 락
 
@@ -93,7 +93,7 @@ if (limiter.tryAcquire()) {
 
 ## 자료구조 사용감
 
-`RedisTemplate`은 `opsForHash` 같은 raw 명령에 가깝고, Redisson은 컬렉션을 **자바 `Map`처럼** 다룹니다.
+`RedisTemplate`은 `opsForHash` 같은 raw 명령에 가깝고, Redisson은 컬렉션을 **자바 `Map`처럼** 사용합니다.
 
 ```java
 RMap<String, Product> cache = redisson.getMap("products");

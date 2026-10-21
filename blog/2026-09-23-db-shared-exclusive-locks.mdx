@@ -213,7 +213,7 @@ public void transfer(Long from, Long to, int amount) { ... }
 - **필요 이상 높은 격리를 피한다** — SERIALIZABLE 남용 금지. 특정 갱신만 보호하려면 격리 수준을 올리기보다 `SELECT ... FOR UPDATE`로 그 행만 잠급니다.
 - **데드락은 재시도로 대비** — 데드락은 완전히 없앨 수 없으니, 오류(1213)를 처리해 재시도하는 경로를 둡니다.
 
-인덱스 구조 때문에 생기는 데드락은 [세컨더리 인덱스와 데드락](./index-deadlock), REPEATABLE READ의 gap 락 데드락은 [격리 수준 글](./db-isolation-levels)에서 다뤘습니다.
+인덱스 구조 때문에 생기는 데드락은 [세컨더리 인덱스와 데드락](./index-deadlock), REPEATABLE READ의 gap 락 데드락은 [격리 수준 글](./db-isolation-levels)에서 설명합니다.
 
 ## 정리
 

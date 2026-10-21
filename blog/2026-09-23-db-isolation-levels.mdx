@@ -128,7 +128,7 @@ non-repeatable read가 **한 행의 값**이 바뀌는 문제라면, phantom rea
 
 <mark>그래서 "REPEATABLE READ로 맞췄다"는 말은 DB를 밝히지 않으면 정확하지 않습니다 — MySQL의 RR과 Oracle(RR 없음)은 동작이 아예 다릅니다.</mark> (근거: [PostgreSQL 문서](https://www.postgresql.org/docs/current/transaction-iso.html) · [MySQL 문서](https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-isolation-levels.html) · [Oracle 문서](https://docs.oracle.com/en/database/oracle/oracle-database/19/cncpt/data-concurrency-and-consistency.html))
 
-DB별 라이선스·성격 차이는 [MySQL·PostgreSQL·Oracle 비교](./rdbms-comparison)에서 다뤘습니다.
+DB별 라이선스·성격 차이는 [MySQL·PostgreSQL·Oracle 비교](./rdbms-comparison)에서 정리했습니다.
 
 ## REPEATABLE READ는 데드락이 더 잘 생길까 — MySQL의 gap 락
 
@@ -171,13 +171,13 @@ note over A, B : 서로의 gap 락을 기다림 → 데드락 (한쪽 롤백)
 
 ![PlantUML MySQL gap 락 데드락](/img/c4/pu-iso-gap-deadlock.svg)
 
-**READ COMMITTED로 낮추면** 검색·인덱스 스캔에서 **gap 락이 비활성화**(외래키·중복키 검사에만 사용)되어, 이런 gap 데드락이 크게 줄어듭니다. 대신 phantom read가 다시 가능해지는 트레이드오프가 있습니다.
+**READ COMMITTED로 낮추면** 검색·인덱스 스캔에서 **gap 락이 비활성화**(외래키·중복키 검사에만 사용)되어, 이러한 gap 데드락이 크게 줄어듭니다. 대신 phantom read가 다시 가능해지는 트레이드오프가 있습니다.
 
 - **잠금 대기·데드락이 자주 생긴다** → READ COMMITTED를 검토(단, phantom 재등장 감안). 실제로 gap 락 부담을 줄이려 RC로 운영하는 팀이 많습니다.
 - **RR을 유지**한다면 → 트랜잭션이 여러 행을 **항상 같은 순서로** 접근하고, 범위 조건보다 **유니크 키 동등 조건**을 사용해 gap 경합을 줄입니다.
 - 이건 **MySQL InnoDB 특유**입니다 — PostgreSQL·Oracle은 스냅샷 MVCC라 gap 락이 없어 이 데드락은 없습니다(대신 SERIALIZABLE에서는 직렬화 실패가 나 재시도로 처리). 근거: [InnoDB Locking](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html).
 
-접근 순서·인덱스 때문에 생기는 또 다른 데드락은 [세컨더리 인덱스와 데드락](./index-deadlock)에서 다뤘습니다.
+접근 순서·인덱스 때문에 생기는 또 다른 데드락은 [세컨더리 인덱스와 데드락](./index-deadlock)에서 정리했습니다.
 
 ## 스프링에서 격리 수준이 로직에 미치는 영향
 
@@ -256,7 +256,7 @@ class Account {
 }
 ```
 
-<mark>격리 수준은 "읽기 일관성"을 다루고, 동시 갱신 경합은 **잠금(비관적·낙관적)** 으로 따로 막아야 합니다.</mark> 잠금이 얽혀 생기는 데드락은 [인덱스와 데드락](./index-deadlock)에서 다뤘습니다.
+<mark>격리 수준은 "읽기 일관성"을 담당하고, 동시 갱신 경합은 **잠금(비관적·낙관적)** 으로 따로 막아야 합니다.</mark> 잠금이 얽혀 생기는 데드락은 [인덱스와 데드락](./index-deadlock)에서 정리했습니다.
 
 ## 실무에서는 어떻게 정하나
 

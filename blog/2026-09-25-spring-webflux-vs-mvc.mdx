@@ -72,7 +72,7 @@ publisher.subscribe(new Subscriber<Integer>() {
 - **Subscription** = `onSubscribe`로 전달된 `s` — 여기에 `request(n)`·`cancel()`로 **수요를 조절**.
 - **Processor**(Publisher이자 Subscriber, 중간 변환)는 직접 쓸 일이 드물어 생략 — 실무에선 `map`·`filter` 같은 연산자가 그 역할을 합니다.
 
-<mark>핵심은 **구독자가 `request(n)`으로 "처리할 수 있는 만큼만" 요청해 받는다**는 점입니다 — 이 pull 기반 요청이 백프레셔입니다. 발행자가 일방적으로 보내지 않습니다.</mark> (표준 자체·JDK Flow·cold/hot·라이브러리 관계는 [Reactive Streams 표준](./reactive-streams-spec)에서 자세히 다룹니다.)
+<mark>핵심은 **구독자가 `request(n)`으로 "처리할 수 있는 만큼만" 요청해 받는다**는 점입니다 — 이 pull 기반 요청이 백프레셔입니다. 발행자가 일방적으로 보내지 않습니다.</mark> (표준 자체·JDK Flow·cold/hot·라이브러리 관계는 [Reactive Streams 표준](./reactive-streams-spec)에서 자세히 설명합니다.)
 
 ### 구독하기 전엔 아무 일도 안 발생한다 (lazy)
 
@@ -88,7 +88,7 @@ mono.subscribe(user -> log.info("{}", user));  // 구독하는 순간 실행
 
 ### 연산자(operator) — 흐름을 구성한다
 
-값을 직접 다루는 대신 **연산자로 단계를 연결합니다.** 자주 사용하는 것만:
+값을 직접 처리하는 대신 **연산자로 단계를 연결합니다.** 자주 사용하는 것만:
 
 - **`map`** — 값을 변환(1:1). `Mono<User> → Mono<UserDto>`.
 - **`flatMap`** — 값을 **또 다른 Publisher로** 바꿔 연결(비동기 연쇄). `Mono<User> → Mono<Order>`.
