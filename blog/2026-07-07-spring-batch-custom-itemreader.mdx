@@ -7,7 +7,7 @@ tags: [ spring, system-design ]
 
 <!-- truncate -->
 
-"일정 시간이 지난 `READY` 작업을 `IN_PROGRESS`로 전이하는 배치." 요구사항만 보면 `JdbcPagingItemReader` 하나로 해결될 것 같았습니다. 그런데 여기에는 놓치기 쉬운 문제가 하나 있었습니다. <mark>대상을 고르는 기준(`status = 'READY'`)을, 그 배치가 처리 과정에서 스스로 변경한다는 점</mark>(`READY → IN_PROGRESS`)입니다.
+"일정 시간이 지난 `READY` 작업을 `IN_PROGRESS`로 전이하는 배치." 요구사항만 보면 `JdbcPagingItemReader` 하나로 해결될 것 같았습니다. 그런데 여기에는 놓치기 쉬운 문제가 하나 있었습니다. <mark>대상을 선택하는 기준(`status = 'READY'`)을, 그 배치가 처리 과정에서 스스로 변경한다는 점</mark>(`READY → IN_PROGRESS`)입니다.
 
 여기에 "대량 처리", "동시성", "기존 쿼리 재사용"이라는 조건이 더해지자 내장 Reader들이 하나씩 탈락했고, 결국 30줄짜리 Reader를 직접 만들게 됐습니다. 그 판단 과정을 정리합니다.
 
@@ -98,7 +98,7 @@ public abstract class AbstractCursorItemReader<T>
 >
 > → 읽기 전용이 아닌 커서는 테이블·행을 불필요하게 잠글 수 있어, 커서를 `READ_ONLY`로 연다는 뜻입니다.
 
-DB 트랜잭션은 커넥션 단위이므로, 커서 커넥션(A)과 청크 처리 커넥션(B)은 서로 다른 트랜잭션입니다. 그래서 동시성을 위해 커서에 `FOR UPDATE`를 걸면, A가 잠근 행을 정작 `UPDATE`하는 건 B인데, B가 그 행을 수정하려면 A의 락이 풀리기를 기다려야 합니다. A의 락은 스텝이 끝나야 풀리므로 — **첫 청크 쓰기부터 배치가 자기 자신의 읽기 락에 막혀** 락 대기 타임아웃으로 이어질 수 있습니다. 이 현상은 Spring Batch에서도 보고된 영역입니다([discussion #5032](https://github.com/spring-projects/spring-batch/discussions/5032) — Reader가 `FOR UPDATE`로 고른 행을 Writer가 `UPDATE`하려다 멈추는 사례).
+DB 트랜잭션은 커넥션 단위이므로, 커서 커넥션(A)과 청크 처리 커넥션(B)은 서로 다른 트랜잭션입니다. 그래서 동시성을 위해 커서에 `FOR UPDATE`를 걸면, A가 잠근 행을 정작 `UPDATE`하는 건 B인데, B가 그 행을 수정하려면 A의 락이 풀리기를 기다려야 합니다. A의 락은 스텝이 끝나야 풀리므로 — **첫 청크 쓰기부터 배치가 자기 자신의 읽기 락에 막혀** 락 대기 타임아웃으로 이어질 수 있습니다. 이 현상은 Spring Batch에서도 보고된 영역입니다([discussion #5032](https://github.com/spring-projects/spring-batch/discussions/5032) — Reader가 `FOR UPDATE`로 선택한 행을 Writer가 `UPDATE`하려다 멈추는 사례).
 
 <details>
 <summary>PlantUML 코드</summary>

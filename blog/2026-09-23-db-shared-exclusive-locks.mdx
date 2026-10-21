@@ -175,7 +175,7 @@ UPDATE account SET balance=100         -- A: X락 요청 → B의 S락 대기
 
 ## 데드락이 발생하면: 어떤 메시지가 뜨고 무엇이 롤백되나
 
-InnoDB는 데드락을 **자동으로 감지**해 스스로 해소합니다([공식 문서](https://dev.mysql.com/doc/refman/8.0/en/innodb-deadlocks.html)). 순환에 걸린 트랜잭션 중 <mark>**작업량이 가장 적은 쪽(바꾼 행 수가 적은 쪽)을 victim으로 골라, 그 트랜잭션 전체를 롤백**하고 나머지는 그대로 진행시킵니다</mark> — 둘 다 죽는 게 아닙니다.
+InnoDB는 데드락을 **자동으로 감지**해 스스로 해소합니다([공식 문서](https://dev.mysql.com/doc/refman/8.0/en/innodb-deadlocks.html)). 순환에 걸린 트랜잭션 중 <mark>**작업량이 가장 적은 쪽(바꾼 행 수가 적은 쪽)을 victim으로 선정해, 그 트랜잭션 전체를 롤백**하고 나머지는 그대로 진행시킵니다</mark> — 둘 다 죽는 게 아닙니다.
 
 victim이 받는 오류는 이렇습니다.
 
