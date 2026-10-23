@@ -100,8 +100,8 @@ const config: Config = {
           //     'https://github.com/johnycho/johny-dev/edit/main/',
         },
         blog: {
-          blogTitle: '인사이트', // 블로그 목록 페이지 제목(브라우저 탭)
-          blogDescription: '실무에서 부딪힌 문제와 해결 과정에서 얻은 깨달음을 기록합니다.',
+          blogTitle: '블로그', // 블로그 목록 페이지 제목(브라우저 탭)
+          blogDescription: '실무에서 얻은 경험과 관련 지식을 깊이 있게 정리하고 공유합니다.',
           postsPerPage: 10, // 한 페이지당 표시할 게시글 개수 (기본값: 10)
           blogSidebarCount: "ALL", // 사이드바에 모든 게시글 표시
           showReadingTime: false,
@@ -218,7 +218,7 @@ const config: Config = {
         },
         {
           to: "/blog",
-          label: "인사이트",
+          label: "블로그",
           position: "left",
           className: "navbar-noactive",
         },

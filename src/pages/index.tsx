@@ -11,9 +11,9 @@ import styles from './index.module.css';
 // 터미널에 직접 입력해 실행할 수 있는 명령 → 동작 매핑
 const COMMANDS: {match: string[]; to: string; external?: boolean}[] = [
   {match: ['whoami', 'cat about.md', 'open ./about', 'cd ./about', 'cd about'], to: '/about'},
-  {match: ['open ./wiki', 'open wiki', 'cd ./wiki', 'cd wiki'], to: '/wiki'},
+  {match: ['cd ./wiki', 'cd wiki', 'open ./wiki', 'open wiki'], to: '/wiki'},
   {match: ['ls ./blog', 'ls blog', 'cd ./blog', 'open ./blog'], to: '/blog'},
-  {match: ['git remote', 'git remote -v'], to: 'https://github.com/johnycho', external: true},
+  {match: ['open linkedin', 'open ./linkedin', 'curl linkedin', 'connect linkedin'], to: 'https://www.linkedin.com/in/johny-cho', external: true},
 ];
 // Tab 자동완성 대상(대표 명령)
 const COMPLETIONS = COMMANDS.map((c) => c.match[0]);
@@ -148,7 +148,7 @@ function InteractivePrompt() {
           autoComplete="off"
           autoCapitalize="off"
           autoCorrect="off"
-          aria-label="터미널 명령 입력 (open ./wiki, ls ./blog, git remote)"
+          aria-label="터미널 명령 입력 (cd ./wiki, ls ./blog, open linkedin)"
         />
       </p>
     </>
@@ -260,13 +260,13 @@ function HomepageHeader() {
             $ whoami
           </Link>
           <Link className={clsx(styles.ctaBtn, styles.ctaGhost)} to="/wiki">
-            $ open ./wiki
+            $ cd ./wiki
           </Link>
           <Link className={clsx(styles.ctaBtn, styles.ctaGhost)} to="/blog">
             $ ls ./blog
           </Link>
-          <Link className={clsx(styles.ctaBtn, styles.ctaGhost)} to="https://github.com/johnycho">
-            $ git remote
+          <Link className={clsx(styles.ctaBtn, styles.ctaGhost)} to="https://www.linkedin.com/in/johny-cho">
+            $ open linkedin
           </Link>
         </div>
       </div>

@@ -43,10 +43,10 @@ export default function BlogListPage(props: Props): ReactNode {
         <main className={styles.page}>
           <div className={styles.container}>
             <div className={styles.head}>
-              <p className={styles.eyebrow}>INSIGHTS</p>
-              <h1 className={styles.heading}>인사이트</h1>
+              <p className={styles.eyebrow}>BLOG</p>
+              <h1 className={styles.heading}>블로그</h1>
               <p className={styles.sub}>
-                실무에서 부딪힌 문제와 해결 과정에서 얻은 깨달음을 기록합니다.
+                실무에서 얻은 경험과 관련 지식을 깊이 있게 정리하고 공유합니다.
               </p>
             </div>
             <BlogBoard paginate />
