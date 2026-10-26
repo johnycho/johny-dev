@@ -58,7 +58,7 @@ NLB는 연결을 해석하지 않고 그대로 넘기므로 **극한의 성능�
 - **소스 IP 보존** — 백엔드가 **실제 클라이언트 IP를 그대로** 봅니다(ALB처럼 헤더로 전달하는 게 아니라 패킷 수준에서 보존). IP 기반 접근 제어·감사에 유리.
 - **고정 IP / Elastic IP** — AZ마다 고정 IP를 줄 수 있어, **방화벽 화이트리스트**에 넣기 좋습니다(ALB는 DNS 이름만 제공).
 - **PrivateLink** — VPC 엔드포인트 서비스를 만들 때 사용하는 진입점이 NLB입니다.
-- **ALB를 타깃으로** — NLB(고정 IP) 뒤에 ALB(L7 라우팅)를 둬서 양쪽 장점을 함께 사용할 수도 있습니다.
+- **ALB를 타깃으로** — NLB(고정 IP) 뒤에 ALB(L7 라우팅)를 배치해 양쪽 장점을 함께 사용할 수도 있습니다.
 
 <mark>TCP/UDP·극한 성능·고정 IP·소스 IP 보존·PrivateLink가 필요하면 NLB입니다.</mark>
 
@@ -149,7 +149,7 @@ note top of LB2 : ip 모드
 <mark>정리하면 ALB는 "경로·호스트로 나눠 보내는" **큰 단위 라우팅**에, Spring Cloud Gateway는 "요청마다 인증·변환·제어까지" 하는 **세밀한 게이트웨이**에 강합니다.</mark> 그래서 보통 함께 구성합니다.
 
 - 클라이언트 → **ALB**(TLS 종료·WAF·경로/호스트 라우팅) → **Spring Cloud Gateway**(요청별 인증·필터) → 마이크로서비스
-- 고정 IP가 필요하면 맨 앞에 NLB를 둬서 `NLB → ALB → Spring Cloud Gateway`로 구성하기도 합니다.
+- 고정 IP가 필요하면 맨 앞에 NLB를 배치해 `NLB → ALB → Spring Cloud Gateway`로 구성하기도 합니다.
 
 Spring Cloud Gateway는 기본이 WebFlux(리액티브) 기반이라, 비동기 처리 특성은 [WebFlux vs MVC](./spring-webflux-vs-mvc)를 참고하세요.
 

@@ -66,7 +66,7 @@ GC 로그를 열면 이러한 줄이 보입니다 — 맨 끝 `830.5ms`가 그 �
 -XX:+UseZGC                   # 대용량 힙에서도 정지 수 ms 목표
 ```
 
-<mark>`Xms`와 `Xmx`를 같게 설정하는 것만으로도 힙을 늘였다 줄였다 하며 생기는 정지가 사라집니다.</mark> 정지 자체가 서비스 목표(SLO)를 못 지키면 G1 → ZGC/Shenandoah로 바꿉니다.
+<mark>`Xms`와 `Xmx`를 같게 설정하는 것만으로도 힙을 늘였다 줄였다 하며 생기는 정지가 사라집니다.</mark> 정지 자체가 서비스 목표(SLO)를 못 지키면 G1 → ZGC/Shenandoah로 교체합니다.
 
 ## 상황 2 — 힙 OutOfMemoryError
 

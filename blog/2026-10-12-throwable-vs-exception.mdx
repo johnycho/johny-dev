@@ -111,9 +111,9 @@ void read2() {
 
 ### 2. unchecked 예외
 
-`RuntimeException`과 그 하위 타입(`NullPointerException`, `IllegalArgumentException`, `IndexOutOfBoundsException` 등)입니다. 컴파일러가 처리를 강제하지 않습니다. 주로 **프로그래밍 실수**로 발생하므로, 일일이 처리하기보다 **코드를 고쳐 애초에 안 나게** 하는 쪽이 맞습니다.
+`RuntimeException`과 그 하위 타입(`NullPointerException`, `IllegalArgumentException`, `IndexOutOfBoundsException` 등)입니다. 컴파일러가 처리를 강제하지 않습니다. 주로 **프로그래밍 실수**로 발생하므로, 일일이 처리하기보다 **코드를 고쳐 애초에 발생하지 않게** 하는 쪽이 맞습니다.
 
-> checked와 unchecked를 가르는 기준은 상속 관계 하나뿐입니다 — `RuntimeException`을 상속하면 unchecked, `Exception`만 상속하면 checked. `Error`도 unchecked로 분류됩니다(컴파일러가 처리를 강제하지 않는다는 의미에서).
+> checked와 unchecked를 가르는 기준은 상속 관계 하나입니다 — `RuntimeException`을 상속하면 unchecked, `Exception`만 상속하면 checked. `Error`도 unchecked로 분류됩니다(컴파일러가 처리를 강제하지 않는다는 의미에서).
 
 ## catch (Throwable) vs catch (Exception)
 

@@ -67,7 +67,7 @@ hide empty description
 - **어플리케이션**: 주문·결제건마다 **멱등성 키**를 부여해, 같은 키의 요청은 한 번만 처리합니다.
 - **데이터베이스**: 결제건에 **유니크 제약**을 걸어, 앱 로직을 통과하더라도 중복 삽입이 DB에서 실패하게 합니다(이중 방어).
 
-멱등성 키로 중복 결제를 막는 구체적인 키 설계·이중 방어는 [대규모 결제 분산 락](./large-scale-payment-distributed-lock)과 [MySQL GET_LOCK 분산 락](./mysql-get-lock-distributed-lock)에서도 다뤘습니다.
+멱등성 키로 중복 결제를 막는 구체적인 키 설계·이중 방어는 [대규모 결제 분산 락](./large-scale-payment-distributed-lock)과 [MySQL GET_LOCK 분산 락](./mysql-get-lock-distributed-lock)에서도 설명했습니다.
 
 ### 4. 맞지 않는 상태는 웹훅 + 리컨실리에이션으로 복구한다
 
@@ -114,7 +114,7 @@ r -> DB : 결제완료로 복구
 3. 재시도가 와도 멱등성 키로 **한 번만** 성립시킵니다.
 4. 응답을 못 받은 건은 **웹훅**으로 보완하고, 놓친 건은 **정합성 보정 스케줄러**가 주기적으로 조회해 복구합니다.
 
-이렇게 "정상 응답은 동기로 끝내고, 못 받은 결과는 재시도·웹훅·정합성 보정으로 보완한다"가 전체 그림입니다. 상태 변경 이벤트를 안전하게 내보내는 문제는 [Outbox 패턴](./kafka-outbox-exactly-once), 커밋과 이벤트 발행의 불일치는 [`@TransactionalEventListener`의 쓰기 유실](./after-commit-listener-db-write-loss)에서 더 정리했습니다.
+이렇게 "정상 응답은 동기로 끝내고, 못 받은 결과는 재시도·웹훅·정합성 보정으로 보완한다"가 전체 흐름입니다. 상태 변경 이벤트를 안전하게 보내는 문제는 [Outbox 패턴](./kafka-outbox-exactly-once), 커밋과 이벤트 발행의 불일치는 [`@TransactionalEventListener`의 쓰기 유실](./after-commit-listener-db-write-loss)에서 더 정리했습니다.
 
 ## 검증 — 그림이 아니라 동작으로 확인한다
 

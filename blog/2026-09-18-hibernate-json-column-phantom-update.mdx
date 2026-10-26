@@ -15,7 +15,7 @@ description: "Spring Boot 4로 올리며 Hibernate가 6.2 → 7.x로 함께 올�
 
 ## 현상
 
-에러 로그에 같은 문구가 반복됐습니다. 실패한 SQL은 JSON 컬럼(`items`) 하나와 감사 컬럼, `version`만 바꾸는 UPDATE인데, 해당 코드는 조회해서 판정만 합니다.
+에러 로그에 같은 문구가 반복됐습니다. 실패한 SQL은 JSON 컬럼(`items`) 하나와 감사 컬럼, `version`만 변경하는 UPDATE인데, 해당 코드는 조회해서 판정만 합니다.
 
 ```
 Unexpected row count (expected row count 1 but was 0)
@@ -95,7 +95,7 @@ hib --> svc : OptimisticLockException
 
 ## 해결 — 스냅샷 비교를 값 기반으로 되돌린다
 
-두 가지 방향이 있습니다. **값을 제자리에서 바꾸지 않고 항상 새 참조로 교체**한다면 deep copy 자체를 끌 수 있고, 그렇지 않다면 값 비교가 되도록 `equals`를 넣습니다.
+두 가지 방향이 있습니다. **값을 제자리에서 변경하지 않고 항상 새 참조로 교체**한다면 deep copy 자체를 끌 수 있고, 그렇지 않다면 값 비교가 되도록 `equals`를 넣습니다.
 
 ### ① `@Mutability(Immutability.class)` — deep copy 자체를 끈다
 
@@ -131,7 +131,7 @@ public int hashCode() {
 ```
 
 - **Lombok이면** `@EqualsAndHashCode` 한 줄로 같은 효과입니다. 값 객체 안에 다른 객체가 중첩돼 있으면 그 타입에도 필요합니다 — 비교는 끝까지 값 기반이어야 합니다.
-- **`record`는 이미 값 기반 `equals`를 갖습니다.** 다만 기존 클래스를 record로 바꾸면 Jackson 역직렬화 경로가 달라지니, 기존 JSON 데이터 호환을 따로 검증해야 합니다.
+- **`record`는 이미 값 기반 `equals`를 갖습니다.** 다만 기존 클래스를 record로 변경하면 Jackson 역직렬화 경로가 달라지니, 기존 JSON 데이터 호환을 따로 검증해야 합니다.
 
 ### 함께 손볼 것 — 트랜잭션·재시도
 

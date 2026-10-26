@@ -20,7 +20,7 @@ date: 2026-09-09T12:00:00
 
 가장 큰 구조 변화입니다. 배경은 이렇습니다. 모든 자동설정을 포함하던 **`spring-boot-autoconfigure` jar 하나**가 계속 커졌습니다 — 2014년 1.0에선 182KiB였는데 3.5에선 **약 2MiB**입니다. 사용하지 않는 기술의 자동설정까지 전부 들어 있으니, 클래스패스가 무거워지고 IDE 자동완성 후보도 지저분해졌습니다.
 
-4.0은 이 거대한 jar를 **기술별 모듈**로 나눴습니다. 어플리케이션은 자기가 쓰는 자동설정 모듈만 로드합니다.
+4.0은 이 거대한 jar를 **기술별 모듈**로 나눴습니다. 어플리케이션은 자기가 사용하는 자동설정 모듈만 로드합니다.
 
 - **스타터 이름 정리**: 일관성을 위해 일부 스타터가 이름이 바뀌었습니다. 대표적으로 `spring-boot-starter-web` → **`spring-boot-starter-webmvc`**.
 - **새 스타터**: 예전엔 jar만 넣으면 자동설정되던 것들도 명시적 스타터를 갖습니다. 예: Flyway는 이제 **`spring-boot-starter-flyway`**.
@@ -120,7 +120,7 @@ Order back = mapper.readValue(json, Order.class);    // 역직렬화
 
 대량으로 바꿔야 하면 **OpenRewrite의 Jackson 2→3 레시피**로 import·좌표를 자동 변환할 수 있습니다.
 
-**관측성** — OTLP로 메트릭·트레이스를 내보내는 **OpenTelemetry 스타터**가 추가돼, 예전처럼 브리지를 손수 붙이지 않고 스타터 + 엔드포인트 설정만으로 시작합니다(트레이싱 개념·TraceId 전파는 [Kafka 분산 추적](./kafka-distributed-tracing) 참고).
+**관측성** — OTLP로 메트릭·트레이스를 보내는 **OpenTelemetry 스타터**가 추가돼, 예전처럼 브리지를 손수 붙이지 않고 스타터 + 엔드포인트 설정만으로 시작합니다(트레이싱 개념·TraceId 전파는 [Kafka 분산 추적](./kafka-distributed-tracing) 참고).
 
 ```yaml
 management:
@@ -144,7 +144,7 @@ val name = order.customerName        // ✗ 컴파일 에러 — null 가능
 val name = order?.customerName ?: "-" // ✓
 ```
 
-**Gradle 9** 지원, 그리고 테스트에서 컨트롤러를 실제 HTTP처럼 검증하는 **`RestTestClient`**(Spring Framework 7)가 들어왔습니다. 그동안 리액티브(WebFlux) 테스트엔 요청→응답을 매끄럽게 이어 쓰는 `WebTestClient`가 있었는데, `RestTestClient`는 **그 체이닝 스타일을 일반 MVC 앱에서** 쓰게 한 것입니다(WebFlux 의존성 없이). `MockMvc`보다 읽기 쉽습니다.
+**Gradle 9** 지원, 그리고 테스트에서 컨트롤러를 실제 HTTP처럼 검증하는 **`RestTestClient`**(Spring Framework 7)가 들어왔습니다. 그동안 리액티브(WebFlux) 테스트엔 요청→응답을 매끄럽게 이어서 사용하는 `WebTestClient`가 있었는데, `RestTestClient`는 **그 체이닝 스타일을 일반 MVC 앱에서** 쓰게 한 것입니다(WebFlux 의존성 없이). `MockMvc`보다 읽기 쉽습니다.
 
 ```java
 RestTestClient client = RestTestClient.bindToServer()

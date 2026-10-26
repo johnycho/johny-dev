@@ -4,7 +4,7 @@ title: 'Spring 트랜잭션 전파(Propagation) — 언제 새로 열리고 언�
 authors: [ johnycho ]
 tags: [ spring, database ]
 date: 2026-09-23T16:00:00+09:00
-description: "Spring @Transactional의 전파(propagation) 7가지를 케이스별로 정리 — REQUIRED·REQUIRES_NEW·NESTED가 기존 트랜잭션에 참여할지 새로 열지, 롤백이 어떻게 번지는지 코드와 다이어그램으로 설명하고 self-invocation 주의점까지 다룹니다."
+description: "Spring @Transactional의 전파(propagation) 7가지를 케이스별로 정리 — REQUIRED·REQUIRES_NEW·NESTED가 기존 트랜잭션에 참여할지 새로 열지, 롤백이 어떻게 번지는지 코드와 다이어그램으로 설명하고 self-invocation 주의점까지 살펴봅니다."
 ---
 
 <!-- truncate -->
@@ -58,7 +58,7 @@ rectangle "NESTED — 중첩(savepoint)" #FFF3E0 {
 | **MANDATORY** | 참여 | **예외** |
 | **NEVER** | **예외** | 트랜잭션 없이 실행 |
 
-아래에서는 실무에서 자주 쓰는 **REQUIRED · REQUIRES_NEW · NESTED** 세 가지를 케이스로 봅니다.
+아래에서는 실무에서 자주 사용하는 **REQUIRED · REQUIRES_NEW · NESTED** 세 가지를 케이스로 봅니다.
 
 ## ① REQUIRED (기본) — 하나의 트랜잭션으로 합친다
 

@@ -74,7 +74,7 @@ endif
 
 `REQUIRED` 전파에서 내부 메서드는 **새 트랜잭션이 아니라 상위 트랜잭션에 참여**합니다(물리적으로 하나). 이 참여 구간에서 예외가 터지면, 스프링은 트랜잭션을 **rollback-only**로 표시합니다(`globalRollbackOnParticipationFailure` 기본값).
 
-<mark>즉 "예외를 잡았으니 없던 일"이 아니라, 트랜잭션은 이미 오염돼 커밋할 수 없는 상태가 된 것입니다.</mark> 그래서 잡아도 소용이 없고, 커밋 때 `UnexpectedRollbackException`으로 드러납니다.
+<mark>즉 "예외를 처리했으니 없던 일"이 아니라, 트랜잭션은 이미 오염돼 커밋할 수 없는 상태가 된 것입니다.</mark> 그래서 처리해도 소용이 없고, 커밋 때 `UnexpectedRollbackException`으로 드러납니다.
 
 ## 해결 — 실패해도 되는 작업을 트랜잭션에서 분리한다
 

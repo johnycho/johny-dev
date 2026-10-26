@@ -105,7 +105,7 @@ Sub -> S : onComplete()
 
 > **`request(n)`의 `n`은 누가 정하나?**
 >
-> `n`은 **구독자(Subscriber)** 가 정합니다. 구독자가 `onSubscribe(Subscription s)`에서 받은 `Subscription`에 `s.request(n)`을 호출할 때 넘기는 숫자입니다(이때 파라미터 `s`가 그 `Subscription` 객체입니다). `Subscriber` 인터페이스를 직접 구현하는 경우엔 개발자가 그 코드 안에 명시하고(아래 예시), Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 그 연산자·최종 구독자가 정합니다 — 기본값은 대개 `Long.MAX_VALUE`(무제한)이고, `limitRate(n)` 같은 연산자로 상한을 설정합니다. WebFlux HTTP 스트리밍에서는 응답을 내보내는 쪽이 **전송 계층(TCP 소켓)의 쓰기 여유**에 맞춰 `request`를 보내고, 소켓이 막히면 요청도 멈춥니다.
+> `n`은 **구독자(Subscriber)** 가 정합니다. 구독자가 `onSubscribe(Subscription s)`에서 받은 `Subscription`에 `s.request(n)`을 호출할 때 넘기는 숫자입니다(이때 파라미터 `s`가 그 `Subscription` 객체입니다). `Subscriber` 인터페이스를 직접 구현하는 경우엔 개발자가 그 코드 안에 명시하고(아래 예시), Reactor·WebFlux처럼 프레임워크가 구독을 대행하면 그 연산자·최종 구독자가 정합니다 — 기본값은 대개 `Long.MAX_VALUE`(무제한)이고, `limitRate(n)` 같은 연산자로 상한을 설정합니다. WebFlux HTTP 스트리밍에서는 응답을 보내는 쪽이 **전송 계층(TCP 소켓)의 쓰기 여유**에 맞춰 `request`를 보내고, 소켓이 막히면 요청도 멈춥니다.
 
 `Subscriber` 구현 클래스에서 `n`을 정하는 모습은 이렇습니다.
 
@@ -258,8 +258,8 @@ note over C, DB : 전체를 모으지 않고 한 건씩 발행·변환·전송 (
 정리하면 이렇게 이어집니다.
 
 1. **요청 도착** → 컨트롤러가 `Flux` 파이프라인을 **구성해 반환**만 합니다(DB 쿼리는 아직 실행 전).
-2. **WebFlux가 구독** → 응답 본문을 만들 데이터가 필요하므로 WebFlux가 반환된 `Flux`를 `subscribe()` 합니다. 이 구독이 실행의 시작점이라, 이어서 `request(n)`이 소스(R2DBC)까지 위로 전파되고 그제야 실제 쿼리가 나갑니다.
-3. **소스가 한 건 발행** → DB에서 row 하나가 오면 `onNext(order1)` → `filter` → `map`을 거쳐 `dto1`이 되고, WebFlux가 **그 건을 곧바로 응답으로 클라이언트에 내보냅니다.**
+2. **WebFlux가 구독** → 응답 본문을 만들 데이터가 필요하므로 WebFlux가 반환된 `Flux`를 `subscribe()` 합니다. 이 구독이 실행의 시작점이라, 이어서 `request(n)`이 소스(R2DBC)까지 위로 전파되고 그제야 실제 쿼리가 실행됩니다.
+3. **소스가 한 건 발행** → DB에서 row 하나가 오면 `onNext(order1)` → `filter` → `map`을 거쳐 `dto1`이 되고, WebFlux가 **그 건을 곧바로 응답으로 클라이언트에 보냅니다.**
 4. **반복** → 다음 row도 같은 경로로 한 건씩 처리·전송. 다 끝나면 `onComplete`로 응답을 닫습니다.
 
 <mark>핵심은 **"한 건 발행 → 변환 → 전송"이 건마다 반복**된다는 점입니다 — 전체 결과를 메모리에 모았다가 한 번에 주는 게 아니라, 오는 대로 처리해 메모리를 상수로 유지합니다.</mark>
@@ -323,7 +323,7 @@ public Flux<Order> stream() {
 
 ### ② 실시간 푸시 — SSE
 
-`Flux`는 서버가 값을 **생기는 대로 계속 내보내는** SSE(Server-Sent Events)에 자연스럽습니다.
+`Flux`는 서버가 값을 **생기는 대로 계속 보내는** SSE(Server-Sent Events)에 자연스럽습니다.
 
 ```java
 @GetMapping(value = "/prices", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

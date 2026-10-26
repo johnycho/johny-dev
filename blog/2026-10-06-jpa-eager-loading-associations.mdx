@@ -66,7 +66,7 @@ queryFactory
     .fetchOne();
 ```
 
-<mark>`.fetchJoin()`을 빼고 `.join(order.member, member)`만 사용하면, 조인은 되지만 `member`는 **로딩되지 않고** 접근 시 추가 쿼리가 나갑니다 — 가장 흔한 실수입니다.</mark>
+<mark>`.fetchJoin()`을 빼고 `.join(order.member, member)`만 사용하면, 조인은 되지만 `member`는 **로딩되지 않고** 접근 시 추가 쿼리가 실행됩니다 — 가장 흔한 실수입니다.</mark>
 
 ## 3. Spring Data JPA — `@EntityGraph`
 
@@ -107,7 +107,7 @@ queryFactory
 
 ## 5. 네이티브 쿼리 — fetch join이 되지 않는다
 
-네이티브 SQL은 **`join fetch`를 지원하지 않습니다.** 조인을 걸어 조회해도 반환 엔티티의 연관관계는 **여전히 프록시(지연)** 라, 접근하면 추가 쿼리가 나갑니다.
+네이티브 SQL은 **`join fetch`를 지원하지 않습니다.** 조인을 걸어 조회해도 반환 엔티티의 연관관계는 **여전히 프록시(지연)** 라, 접근하면 추가 쿼리가 실행됩니다.
 
 ```java
 // member_id로 조인해도 order.member는 로딩되지 않는다
@@ -160,7 +160,7 @@ LAZY면 `findById`가 돌려준 엔티티의 연관 필드는 **프록시**입�
 
 ### ④ `@Transactional` 안에서 접근되니 "즉시 로딩"이라 여긴다
 
-LAZY 연관을 **트랜잭션 안에서** 건드리면 `LazyInitializationException` 없이 값이 **채워지긴 합니다.** 그래서 "로딩됐다"고 여기기 쉽지만, 이건 **접근하는 순간 추가 SELECT가 한 번 더 나가는** 지연 로딩이지 한 쿼리로 가져오는 즉시 로딩이 아닙니다.
+LAZY 연관을 **트랜잭션 안에서** 건드리면 `LazyInitializationException` 없이 값이 **채워지긴 합니다.** 그래서 "로딩됐다"고 여기기 쉽지만, 이건 **접근하는 순간 추가 SELECT가 한 번 더 실행되는** 지연 로딩이지 한 쿼리로 가져오는 즉시 로딩이 아닙니다.
 
 ```java
 @Transactional
@@ -199,7 +199,7 @@ DTO는 **선택한 값만** 가진 평범한 객체입니다. `o.member.name`만
   - `join`과 `join fetch`는 다릅니다 — `fetch`가 있어야 로딩됩니다.
   - `EAGER`로 변경해도 JPQL은 fetch join이 없으면 N+1입니다.
   - `findById`가 돌려준 엔티티의 연관은 프록시입니다(트랜잭션 밖이면 예외).
-  - 트랜잭션 안에서 LAZY 연관에 접근하면 예외 없이 되긴 하지만, 즉시 로딩이 아니라 **접근할 때마다 나가는 추가 쿼리**(N+1)입니다.
+  - 트랜잭션 안에서 LAZY 연관에 접근하면 예외 없이 되긴 하지만, 즉시 로딩이 아니라 **접근할 때마다 실행되는 추가 쿼리**(N+1)입니다.
 
 ## 참고
 

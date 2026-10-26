@@ -183,8 +183,8 @@ victim이 받는 오류는 이렇습니다.
 ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction
 ```
 
-- 오류 코드 **1213**, SQLSTATE **40001**. 메시지 그대로 "**재시도하라**"입니다 — 데드락은 이상 상황이 아니라 정상적으로 발생할 수 있는 일이므로, 어플리케이션이 잡아 **재시도**해야 합니다.
-- victim의 **변경은 전부 롤백**되고, 상대 트랜잭션은 커밋을 이어갑니다.
+- 오류 코드 **1213**, SQLSTATE **40001**. 메시지 그대로 "**재시도하라**"입니다 — 데드락은 이상 상황이 아니라 정상적으로 발생할 수 있는 일이므로, 어플리케이션이 받아 **재시도**해야 합니다.
+- victim의 **변경은 전부 롤백**되고, 상대 트랜잭션은 커밋을 계속합니다.
 - 방금 난 데드락의 상세(어느 트랜잭션이 무슨 락을 기다렸는지)는 `SHOW ENGINE INNODB STATUS`의 `LATEST DETECTED DEADLOCK` 섹션에서 볼 수 있고, 모든 데드락을 로그로 남기려면 `innodb_print_all_deadlocks`를 켭니다.
 
 **대기 초과(lock wait timeout)는 데드락과 다릅니다.** 순환이 아니라 단순히 오래 기다린 경우입니다.
@@ -195,7 +195,7 @@ ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
 
 - `innodb_lock_wait_timeout`(기본 50초)을 넘으면 발생합니다. <mark>기본적으로 **트랜잭션 전체가 아니라 그 문장(statement)만 롤백**되고 트랜잭션 자체는 살아 있습니다.</mark> 전체를 롤백하려면 `innodb_rollback_on_timeout`을 켭니다.
 
-스프링(Spring)에서는 이 오류들이 예외로 변환됩니다 — MySQL의 `1213`·`1205`는 모두 `DeadlockLoserDataAccessException`(→ `ConcurrencyFailureException` 계열)으로 올라오니, 이를 잡아 재시도하면 됩니다.
+스프링(Spring)에서는 이 오류들이 예외로 변환됩니다 — MySQL의 `1213`·`1205`는 모두 `DeadlockLoserDataAccessException`(→ `ConcurrencyFailureException` 계열)으로 올라오니, 이를 받아 재시도하면 됩니다.
 
 ```java
 @Retryable(retryFor = DeadlockLoserDataAccessException.class,

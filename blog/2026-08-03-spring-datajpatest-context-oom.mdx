@@ -79,7 +79,7 @@ flowchart TD
 > - `@WebAppConfiguration` → `resourceBasePath`
 > - `@ContextConfiguration(initializers = …, loader = …)` → `contextInitializerClasses`·`contextLoader`
 >
-> 이 항목 중 `@ContextConfiguration`·`@ActiveProfiles`·`@TestPropertySource`는 공식 Javadoc이 **직접 이름을 든** 것입니다. `@ComponentScan`은 문서에 직접 나오진 않지만, **컨텍스트가 불러올 클래스(구성)를 변경하는** 설정입니다. 그러면 이 식별값의 `classes` 항목이 달라지고, "식별값이 다르면 다른 컨텍스트"라는 위 규칙에 걸려 스캔 대상이 다른 테스트끼리는 컨텍스트가 나뉩니다. 즉 문서에 문장으로 적혀 있는 게 아니라 **이 식별값 비교 규칙에서 따라오는 결론**입니다. 이 글에서 컨텍스트를 18개로 나눈 ①~④가 모두 이 목록에 들어갑니다.
+> 이 항목 중 `@ContextConfiguration`·`@ActiveProfiles`·`@TestPropertySource`는 공식 Javadoc이 **직접 이름을 든** 것입니다. `@ComponentScan`은 문서에 직접 나오진 않지만, **컨텍스트가 가져올 클래스(구성)를 변경하는** 설정입니다. 그러면 이 식별값의 `classes` 항목이 달라지고, "식별값이 다르면 다른 컨텍스트"라는 위 규칙에 걸려 스캔 대상이 다른 테스트끼리는 컨텍스트가 나뉩니다. 즉 문서에 문장으로 적혀 있는 게 아니라 **이 식별값 비교 규칙에서 따라오는 결론**입니다. 이 글에서 컨텍스트를 18개로 나눈 ①~④가 모두 이 목록에 들어갑니다.
 
 전체 테스트에서 컨텍스트를 나눈 차이는 두 가지였습니다.
 

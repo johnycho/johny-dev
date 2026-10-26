@@ -4,7 +4,7 @@ title: 'Spring WebFlux 비동기 프로그래밍 — MVC 대비 이점과 도입
 authors: [ johnycho ]
 tags: [ spring, java, system-design ]
 date: 2026-09-25T13:00:00+09:00
-description: "Spring WebFlux(리액티브·비동기)의 기본 개념(Reactive Streams·Mono/Flux·이벤트 루프·백프레셔·연산자·스케줄러)과 Spring MVC 대비 이점, 그리고 언제 도입하고 언제 피해야 하는지를 정리합니다. 가상 스레드와의 선택 기준까지 다룹니다."
+description: "Spring WebFlux(리액티브·비동기)의 기본 개념(Reactive Streams·Mono/Flux·이벤트 루프·백프레셔·연산자·스케줄러)과 Spring MVC 대비 이점, 그리고 언제 도입하고 언제 피해야 하는지를 정리합니다. 가상 스레드와의 선택 기준까지 살펴봅니다."
 ---
 
 import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
@@ -26,7 +26,7 @@ WebFlux는 이 문제를 **논블로킹**으로 해결합니다. 핵심 개념�
 - **논블로킹(non-blocking)**: I/O를 요청해 놓고 **기다리지 않고** 다음 일을 합니다. 결과가 준비되면 **콜백**으로 이어서 처리합니다.
 - **이벤트 루프(event loop)**: 소수의 스레드(보통 CPU 코어 수)가 "완료된 I/O"를 돌며 콜백을 실행합니다. 대기 중인 요청은 스레드를 점유하지 않습니다.
 - **Reactive Streams**: 비동기 스트림의 **표준 규격**(Publisher·Subscriber·Subscription). WebFlux는 이 규격의 구현인 **Project Reactor** 위에서 동작합니다.
-- **`Mono`·`Flux`**: Reactor의 두 발행자(Publisher) 타입. **`Mono<T>`** 는 결과가 **0개 또는 1개**(단건), **`Flux<T>`** 는 **0개 이상 여러 개**(스트림)를 **비동기로** 내보냅니다.
+- **`Mono`·`Flux`**: Reactor의 두 발행자(Publisher) 타입. **`Mono<T>`** 는 결과가 **0개 또는 1개**(단건), **`Flux<T>`** 는 **0개 이상 여러 개**(스트림)를 **비동기로** 보냅니다.
 - **백프레셔(backpressure)**: 소비자가 처리할 수 있는 만큼만 데이터를 요청하는 흐름 제어. 생산자가 너무 빨라 소비자가 밀리는 상황을 규격 차원에서 막습니다.
 
 <mark>`Mono`·`Flux`는 "값" 자체가 아니라 **나중에 값이 전달될 것을 나타내는 타입**입니다 — 구독(subscribe)해야 실행되고, 결과는 콜백·연산자로 연결합니다.</mark>
@@ -35,7 +35,7 @@ WebFlux는 이 문제를 **논블로킹**으로 해결합니다. 핵심 개념�
 
 WebFlux의 바탕인 **Reactive Streams**는 인터페이스 네 개로 구성됩니다. 이 관계만 이해하면 "왜 구독해야 실행되는지"·"백프레셔가 무엇인지"가 분명해집니다.
 
-- **Publisher**(발행자) — 데이터를 만들어 내보내는 쪽. `Mono`·`Flux`가 여기에 해당합니다.
+- **Publisher**(발행자) — 데이터를 만들어 보내는 쪽. `Mono`·`Flux`가 여기에 해당합니다.
 - **Subscriber**(구독자) — 데이터를 받는 쪽. `onNext`(값)·`onComplete`(끝)·`onError`(오류) 콜백을 가집니다.
 - **Subscription**(구독) — Publisher와 Subscriber의 연결. 구독자가 `request(n)`으로 **받을 개수를 요청**하고, `cancel()`로 취소합니다.
 - **Processor** — Publisher이자 Subscriber인 중간 단계(직접 쓸 일은 많지 않습니다).
@@ -264,7 +264,7 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
 
 **대처**
 
-- **`doOnError` / `onErrorResume`으로 지점마다 처리**: 어느 연산자 단계에서 실패했는지 남기고, 필요하면 대체값으로 이어 갑니다. 둘은 역할이 다릅니다.
+- **`doOnError` / `onErrorResume`으로 지점마다 처리**: 어느 연산자 단계에서 실패했는지 남기고, 필요하면 대체값으로 이어서 진행합니다. 둘은 역할이 다릅니다.
   ```java
   // ① doOnError — 흐름은 그대로 두고 "로그만" 남긴다(부수 효과). 예외는 계속 전파됨
   return userRepo.findById(id)
@@ -327,7 +327,7 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
 
 - **적은 스레드로 높은 동시성**: I/O 대기가 많은 서비스(게이트웨이·조합 API)에서 스레드 풀 고갈 없이 많은 요청을 처리합니다.
 - **백프레셔**: 생산자-소비자 속도 차를 규격 차원에서 제어합니다 — 예: 느린 클라이언트에게 소비 속도보다 빠르게 보내지 않습니다.
-- **스트리밍·SSE**: `Flux`로 데이터를 조금씩 내보내는 실시간 스트리밍(Server-Sent Events)에 자연스럽습니다.
+- **스트리밍·SSE**: `Flux`로 데이터를 조금씩 보내는 실시간 스트리밍(Server-Sent Events)에 자연스럽습니다.
 
 <mark>WebFlux의 핵심 강점은 "빠르다"가 아니라 **"적은 자원으로 버틴다 + 흐름을 제어한다"** 입니다 — 단일 요청이 더 빨라지는 게 아닙니다.</mark>
 

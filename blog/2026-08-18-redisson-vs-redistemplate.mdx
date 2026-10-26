@@ -25,7 +25,7 @@ redis.opsForValue().set("session:abc", "user-123", Duration.ofSeconds(60));
 redis.opsForZSet().add("leaderboard", "kim", 1500);
 ```
 
-<mark>가볍고 Redis에 가깝지만, 분산 락 같은 "고수준 기능"은 내장돼 있지 않습니다</mark> — 필요하면 직접 `SET NX`로 구현하거나 Spring Integration의 `RedisLockRegistry`를 씁니다.
+<mark>가볍고 Redis에 가깝지만, 분산 락 같은 "고수준 기능"은 내장돼 있지 않습니다</mark> — 필요하면 직접 `SET NX`로 구현하거나 Spring Integration의 `RedisLockRegistry`를 사용합니다.
 
 ## Redisson — 분산 객체·동시성 프리미티브
 
@@ -119,7 +119,7 @@ Redis의 기본 자료구조엔 "필드별 TTL"이 없는데, Redisson은 `RMapC
 | API | 동기·리액티브 | 동기·비동기·리액티브·RxJava |
 | 규모 | 가벼움, Spring 네이티브 | 기능 많고 의존성 큼 |
 
-Redisson도 **Spring Boot 스타터**가 있어 통합이 쉽고, Spring Cache 백엔드로도 쓸 수 있습니다. <mark>그리고 둘은 배타적이지 않습니다 — 캐시는 `RedisTemplate`, 분산 락만 Redisson처럼 섞어 쓰는 구성이 흔합니다.</mark>
+Redisson도 **Spring Boot 스타터**가 있어 통합이 쉽고, Spring Cache 백엔드로도 쓸 수 있습니다. <mark>그리고 둘은 배타적이지 않습니다 — 캐시는 `RedisTemplate`, 분산 락만 Redisson처럼 섞어 사용하는 구성이 흔합니다.</mark>
 
 ## 선택 가이드
 
@@ -128,7 +128,7 @@ Redisson도 **Spring Boot 스타터**가 있어 통합이 쉽고, Spring Cache �
 | 캐시·세션·카운터·단순 명령 | RedisTemplate |
 | 리액티브 스택에서 가벼운 Redis 접근 | RedisTemplate(Lettuce) |
 | 분산 락·세마포어·레이트리미터 | Redisson |
-| `Map`/`List`처럼 쓰는 분산 컬렉션·near-cache | Redisson |
+| `Map`/`List`처럼 사용하는 분산 컬렉션·near-cache | Redisson |
 | 블룸필터·분산 실행 등 고급 기능 | Redisson |
 | 최소 의존성·Redis에 밀착 | RedisTemplate |
 

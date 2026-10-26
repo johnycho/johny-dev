@@ -345,7 +345,7 @@ public MyBatisPagingItemReader<Long> reader() {
 ```
 
 - **동작**: 페이지마다 `queryId`의 statement를 `_page`·`_pagesize`·`_skiprows` 파라미터와 함께 **새로** 실행합니다(매퍼 SQL은 보통 `LIMIT #{_pagesize} OFFSET #{_skiprows}` 형태).
-- **제약 3(쿼리 재사용)**: △ — 후보 중 **쿼리 정의 재사용에 가장 가깝습니다**(매퍼 statement를 그대로 가리킴). 다만 QueryDSL로 만든 리포지토리 메서드를 직접 부르는 게 아니라, offset 페이징용 SQL을 매퍼에 따로 작성해야 합니다.
+- **제약 3(쿼리 재사용)**: △ — 후보 중 **쿼리 정의 재사용에 가장 가깝습니다**(매퍼 statement를 그대로 가리킴). 다만 QueryDSL로 만든 리포지토리 메서드를 직접 호출하는 게 아니라, offset 페이징용 SQL을 매퍼에 따로 작성해야 합니다.
 - **제약 1(스킵)**: ✕ — 결국 `_skiprows` 기반 OFFSET 페이징이라, 처리된 행이 `READY`에서 빠지면 제약 1의 스킵이 그대로 발생합니다.
 - **제약 2(락 유지)**: ✕ — 페이징형이라 페이지마다 statement를 새로 실행, `FOR UPDATE`를 걸어도 다음 페이지 전에 트랜잭션이 커밋되며 풀립니다.
 - **판정**: 쿼리 정의 재사용엔 가장 가깝지만, 다시 OFFSET이라 스킵·락에서 탈락.
@@ -367,7 +367,7 @@ public MyBatisPagingItemReader<Long> reader() {
 
 > △: `JdbcCursorItemReader`는 OFFSET이 아니라 단일 커서 스트리밍이라 스킵 자체는 없지만, 락(세 번째 열)에서 탈락합니다. `MyBatisPagingItemReader`의 △(첫 열)는 매퍼 statement로 쿼리 정의를 재사용하는 쪽엔 가장 가깝지만, OFFSET 페이징이라 스킵·락에서 탈락함을 뜻합니다.
 
-표에 없는 나머지 구현체도 마찬가지입니다. `JpaCursorItemReader`·`HibernateCursorItemReader`·`StoredProcedureItemReader`(그리고 생태계의 `MyBatisCursorItemReader`)는 **커서형**이라 제약 2에, `HibernatePagingItemReader`는 **페이징형**이라 제약 1에 걸립니다(`MyBatisPagingItemReader`는 위 표에서 설명했습니다). 또한 전부 쿼리를 문자열이나 매퍼 statement로 받아서 제약 3까지 그대로입니다. 즉 내장 Reader는 결국 **커서형과 페이징형 두 계열**로 나뉘는데, 커서형은 락이 안 묶이고 페이징형은 스킵이 발생하고, 어느 쪽도 이미 만든 쿼리 메서드를 그대로 부르지 못합니다.
+표에 없는 나머지 구현체도 마찬가지입니다. `JpaCursorItemReader`·`HibernateCursorItemReader`·`StoredProcedureItemReader`(그리고 생태계의 `MyBatisCursorItemReader`)는 **커서형**이라 제약 2에, `HibernatePagingItemReader`는 **페이징형**이라 제약 1에 걸립니다(`MyBatisPagingItemReader`는 위 표에서 설명했습니다). 또한 전부 쿼리를 문자열이나 매퍼 statement로 받아서 제약 3까지 그대로입니다. 즉 내장 Reader는 결국 **커서형과 페이징형 두 계열**로 나뉘는데, 커서형은 락이 안 묶이고 페이징형은 스킵이 발생하고, 어느 쪽도 이미 만든 쿼리 메서드를 그대로 호출하지 못합니다.
 
 그러니 정확히는 "내장 Reader가 부족하다"가 아니라, <mark>키셋 커서 + 청크 트랜잭션에 묶인 락 + 기존 쿼리 재사용, 이 셋을 동시에 만족하는 내장 Reader가 없다</mark>는 것입니다.
 
