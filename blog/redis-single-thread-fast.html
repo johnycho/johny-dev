@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -36,9 +36,9 @@
 <p>&quot;한 스레드면 커넥션 하나 처리하는 동안 나머지는 노나?&quot; 아닙니다. Redis는 <strong>I/O 멀티플렉싱</strong>(<code>epoll</code>(리눅스)·<code>kqueue</code>(맥/BSD) 등)을 사용합니다. 수천 개 소켓을 논블로킹으로 등록해 두고, <strong>데이터가 준비된 소켓만</strong> 선별해 처리합니다.</p>
 <!-- -->
 <p><mark>커넥션마다 스레드를 만드는 대신, 한 스레드가 &quot;준비된 이벤트&quot;만 돌아가며 처리해 수천 연결을 감당합니다.</mark> 이게 단일 스레드로도 높은 동시성을 내는 핵심입니다.</p>
-<p>식당에 빗대면 이렇습니다. <strong>커넥션당 스레드 하나</strong>를 붙이는 블로킹 방식은, 웨이터(스레드)가 손님(커넥션) 주문을 받으면 그 요리가 나올 때까지 옆에서 기다립니다 — 다른 손님을 받으려면 웨이터를 더 고용(스레드 추가)해야 하고, 커넥션 수만큼 스레드가 늘면 메모리가 견디지 못합니다. 반면 <strong>I/O 멀티플렉싱</strong>은 웨이터가 한 명이어도, 모든 주문을 주방장(커널의 <code>epoll</code>)에게 맡겨 두고 &quot;<strong>준비된 것만</strong> 알려 주세요&quot; 하고 다른 일을 계속합니다. 이 방식이 바로 1999년 제기된 <strong>C10K 문제</strong>(한 서버로 동시 커넥션 1만 개를 어떻게 감당하나)의 해법이고, Redis뿐 아니라 Node.js·Nginx도 같은 원리로 고성능 I/O를 냅니다.</p>
+<p>식당에 빗대면 이렇습니다. <strong>커넥션당 스레드 하나</strong>를 붙이는 블로킹 방식은, 웨이터(스레드)가 손님(커넥션) 주문을 받으면 그 요리가 나올 때까지 옆에서 기다립니다 — 다른 손님을 받으려면 웨이터를 더 고용(스레드 추가)해야 하고, 커넥션 수만큼 스레드가 늘면 메모리가 견디지 못합니다. 반면 <strong>I/O 멀티플렉싱</strong>은 웨이터가 한 명이어도, 모든 주문을 주방장(커널의 <code>epoll</code>)에게 맡겨 두고 &quot;<strong>준비된 것만</strong> 알려 주세요&quot; 하고 다른 일을 계속합니다. 이 방식이 바로 1999년 제기된 <strong>C10K 문제</strong>(한 서버로 동시 커넥션 1만 개를 어떻게 감당하나)의 해법이고, Redis뿐 아니라 Node.js·Nginx도 같은 원리로 고성능 I/O를 구현합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-o1-자료구조--대부분의-연산이-상수-시간">4. O(1) 자료구조 — 대부분의 연산이 상수 시간<a href="#4-o1-자료구조--대부분의-연산이-상수-시간" class="hash-link" aria-label="4. O(1) 자료구조 — 대부분의 연산이 상수 시간에 대한 직접 링크" title="4. O(1) 자료구조 — 대부분의 연산이 상수 시간에 대한 직접 링크">​</a></h2>
-<p>키 조회부터가 빠릅니다. Redis는 전역 키 공간을 <strong>해시테이블</strong>로 관리해, 키의 해시값으로 슬롯을 바로 찾아갑니다 — 처음부터 스캔할 필요 없이 <strong>시간 복잡도 O(1)</strong> 로 점프합니다(해시 충돌은 체이닝으로 해결). 내부 타입들도 상황에 맞게 최적화돼, 대부분의 연산이 <strong>상수 시간</strong>에 끝납니다.</p>
+<p>키 조회부터가 빠릅니다. Redis는 전역 키 공간을 <strong>해시테이블</strong>로 관리해, 키의 해시값으로 슬롯을 바로 찾습니다 — 처음부터 스캔할 필요 없이 <strong>시간 복잡도 O(1)</strong> 로 점프합니다(해시 충돌은 체이닝으로 해결). 내부 타입들도 상황에 맞게 최적화돼, 대부분의 연산이 <strong>상수 시간</strong>에 끝납니다.</p>
 <ul>
 <li>문자열(SDS), 해시테이블, 작은 데이터를 위한 listpack/intset 등 각 상황에 맞는 표현을 사용해 메모리와 연산을 아낍니다. 데이터가 작으면 더 촘촘한 인코딩으로 자동 전환합니다.</li>
 <li>sorted set은 보통 레드-블랙 트리를 사용하는 대신 <strong>skiplist</strong>를 사용합니다. 성능은 비슷하되 구현이 단순해서인데, 만든이(antirez)도 &quot;성능 최적이 아니라 <strong>단순함</strong>을 택했다&quot;고 밝혔습니다.</li>

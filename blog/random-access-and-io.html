@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -42,7 +42,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="ssd에서는-나아졌지만-사라지진-않았다">SSD에서는 나아졌지만 사라지진 않았다<a href="#ssd에서는-나아졌지만-사라지진-않았다" class="hash-link" aria-label="SSD에서는 나아졌지만 사라지진 않았다에 대한 직접 링크" title="SSD에서는 나아졌지만 사라지진 않았다에 대한 직접 링크">​</a></h2>
 <p>SSD는 움직이는 부품이 없습니다. 탐색·회전 대기가 없으니 랜덤과 순차의 격차가 크게 줄었습니다. 그렇다고 <strong>차이가 0이 되는 건 아닙니다.</strong></p>
 <ul>
-<li>SSD는 데이터를 <strong>페이지 단위</strong>로 읽고, 내부적으로 여러 칩을 <strong>병렬</strong>로 활용해 순차 읽기에서 더 높은 처리량을 냅니다.</li>
+<li>SSD는 데이터를 <strong>페이지 단위</strong>로 읽고, 내부적으로 여러 칩을 <strong>병렬</strong>로 활용해 순차 읽기에서 처리량이 더 높습니다.</li>
 <li>작은 랜덤 읽기는 이 병렬성·미리 읽기(prefetch)의 이점을 덜 받아, <strong>순차보다 처리량이 낮습니다.</strong></li>
 <li>쓰기는 더합니다. 지우기(erase)가 <strong>블록 단위</strong>라 랜덤 쓰기는 쓰기 증폭(write amplification)과 가비지 컬렉션 부담을 키웁니다.</li>
 </ul>
@@ -51,11 +51,11 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-랜덤-io를-줄여야-하나">왜 랜덤 I/O를 줄여야 하나<a href="#왜-랜덤-io를-줄여야-하나" class="hash-link" aria-label="왜 랜덤 I/O를 줄여야 하나에 대한 직접 링크" title="왜 랜덤 I/O를 줄여야 하나에 대한 직접 링크">​</a></h2>
 <p>정리하면 이렇습니다.</p>
 <ul>
-<li><strong>위치를 찾는 비용이 반복된다</strong> — HDD는 탐색+회전, SSD는 병렬성 이점을 덜 받아, 랜덤은 건마다 추가 비용을 냅니다.</li>
+<li><strong>위치를 찾는 비용이 반복된다</strong> — HDD는 탐색+회전, SSD는 병렬성 이점을 덜 받아, 랜덤은 건마다 추가 비용이 듭니다.</li>
 <li><strong>처리량이 낮다</strong> — 같은 시간에 읽을 수 있는 양이 순차보다 적습니다.</li>
 <li><strong>캐시·미리 읽기가 안 먹힌다</strong> — OS와 저장 장치는 &quot;다음에 이어질 블록&quot;을 미리 읽어 두는데, 위치가 연결되지 않으면 이 예측이 맞지 않습니다.</li>
 </ul>
-<p>데이터베이스 성능 튜닝의 큰 줄기가 <strong>&quot;랜덤 I/O를 줄이거나, 순차 I/O로 바꾸는 것&quot;</strong> 인 이유입니다. 그 도구의 대표가 인덱스입니다 — 그런데 인덱스는 랜덤 I/O를 <strong>줄이기도, 만들기도</strong> 합니다.</p>
+<p>데이터베이스 성능 튜닝의 큰 줄기가 <strong>&quot;랜덤 I/O를 줄이거나, 순차 I/O로 전환하는 것&quot;</strong> 인 이유입니다. 그 도구의 대표가 인덱스입니다 — 그런데 인덱스는 랜덤 I/O를 <strong>줄이기도, 만들기도</strong> 합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="인덱스-랜덤-액세스를-줄이는-도구">인덱스: 랜덤 액세스를 줄이는 도구<a href="#인덱스-랜덤-액세스를-줄이는-도구" class="hash-link" aria-label="인덱스: 랜덤 액세스를 줄이는 도구에 대한 직접 링크" title="인덱스: 랜덤 액세스를 줄이는 도구에 대한 직접 링크">​</a></h2>
 <p>인덱스가 없으면 조건에 맞는 행을 찾으려고 <strong>테이블 전체를 처음부터 끝까지</strong> 읽습니다(풀 테이블 스캔). 1,000만 행에서 10건을 찾으려 해도 1,000만 행을 다 읽습니다.</p>
 <p>인덱스(대개 B-tree)는 값이 <strong>정렬돼</strong> 있어, 조건에 맞는 위치로 <strong>바로</strong> 내려갑니다. 1,000만 행을 읽는 대신 트리를 몇 단계 타고 내려가 필요한 몇 건만 찾아냅니다.</p>
@@ -93,7 +93,7 @@
 <li><strong>HDD</strong>는 탐색+회전 때문에 랜덤이 순차보다 수십~수백 배 느리고, <strong>SSD</strong>는 격차가 줄었지만 순차가 여전히 유리합니다.</li>
 <li><strong>인덱스</strong>는 읽을 행을 좁혀 랜덤 액세스를 줄이지만, <strong>보조 인덱스의 행 조회 자체가 랜덤 I/O</strong>라 매칭 행이 많으면 비용이 커집니다.</li>
 <li>선택도가 낮으면 <strong>옵티마이저가 순차 풀스캔</strong>을 선택합니다 — 랜덤이 순차보다 비용이 크다는 비용 모델(PostgreSQL 기본 <code>random_page_cost</code> 4.0) 때문입니다.</li>
-<li><strong>커버링 인덱스·PK 범위 조회</strong>로 랜덤 조회를 순차로 바꾸는 것이 튜닝의 핵심 방향입니다.</li>
+<li><strong>커버링 인덱스·PK 범위 조회</strong>로 랜덤 조회를 순차로 전환하는 것이 튜닝의 핵심 방향입니다.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="참고">참고<a href="#참고" class="hash-link" aria-label="참고에 대한 직접 링크" title="참고에 대한 직접 링크">​</a></h2>
 <ul>

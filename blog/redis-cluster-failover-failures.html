@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -36,7 +36,7 @@
 <ul>
 <li>어떤 키가 어느 슬롯에 속하는지는 <strong><code>CRC16(key) % 16384</code></strong> 로 정해집니다.</li>
 <li>예를 들어 마스터 3대면 대략 <strong>슬롯 0–5460 / 5461–10922 / 10923–16383</strong> 을 나눠 맡습니다.</li>
-<li>클라이언트가 키를 요청하면, 그 키의 슬롯을 담당하는 마스터로 찾아갑니다(엉뚱한 노드에 물으면 <code>MOVED</code> 리다이렉트로 안내).</li>
+<li>클라이언트가 키를 요청하면, 그 키의 슬롯을 담당하는 마스터로 요청이 전달됩니다(엉뚱한 노드에 물으면 <code>MOVED</code> 리다이렉트로 안내).</li>
 </ul>
 <p><mark>슬롯은 &quot;키를 어느 마스터에 둘지&quot; 정하는 배분 단위이고, &quot;슬롯이 중단됐다&quot;는 건 그 범위의 키를 담당할 노드(마스터·레플리카)가 모두 사라졌다는 뜻입니다.</mark> 그래서 아래 이야기에서 &quot;한 슬롯을 담당할 노드가 없어진다&quot;는 곧 &quot;그 키들을 아무도 서비스하지 못한다&quot;가 됩니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="failover는-실제로-어떻게-발생하나">failover는 실제로 어떻게 발생하나<a href="#failover는-실제로-어떻게-발생하나" class="hash-link" aria-label="failover는 실제로 어떻게 발생하나에 대한 직접 링크" title="failover는 실제로 어떻게 발생하나에 대한 직접 링크">​</a></h2>
@@ -53,7 +53,7 @@
 <p>failover는 <strong>과반 마스터의 투표</strong>로 승인됩니다. 여기서 핵심은 <strong>레플리카가 살아 있어도, 투표해 줄 마스터가 과반이 안 되면 승격이 안 된다</strong>는 점입니다.</p>
 <ul>
 <li>마스터 3대(각 1 레플리카)인 클러스터에서 <strong>한 AZ가 통째로 내려가</strong> 마스터 2대가 동시에 사라지면, 남은 마스터는 1대뿐 — 과반(2/3)이 안 됩니다. 그 AZ의 레플리카들이 다른 AZ에 살아 있어도 <strong>마스터 과반 미달로 승격 실패</strong>합니다.</li>
-<li>스펙상 <strong>소수 파티션에 갇힌 마스터는 쓰기를 멈춥니다</strong>. 과반을 확보한 쪽만 쓰기를 이어갑니다.</li>
+<li>스펙상 <strong>소수 파티션에 갇힌 마스터는 쓰기를 멈춥니다</strong>. 과반을 확보한 쪽만 쓰기를 계속합니다.</li>
 </ul>
 <mark>failover는 &quot;장애가 난 마스터의 레플리카가 있느냐&quot;가 아니라 &quot;살아남은 마스터가 과반이냐&quot;에 달려 있습니다 — 그래서 마스터를 홀수(최소 3, 권장 5)로, 그리고 AZ에 고르게 분산해야 한 AZ 장애에도 과반이 유지됩니다.</mark>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="대응-방법">대응 방법<a href="#대응-방법" class="hash-link" aria-label="대응 방법에 대한 직접 링크" title="대응 방법에 대한 직접 링크">​</a></h3>

@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -27,7 +27,7 @@
 <li><strong>중복 예매 방지</strong> — 같은 좌석·같은 시간을 두 사람이 사지 못합니다.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-그냥-받으면-안-되나--rdb의-한계">왜 그냥 받으면 안 되나 — RDB의 한계<a href="#왜-그냥-받으면-안-되나--rdb의-한계" class="hash-link" aria-label="왜 그냥 받으면 안 되나 — RDB의 한계에 대한 직접 링크" title="왜 그냥 받으면 안 되나 — RDB의 한계에 대한 직접 링크">​</a></h2>
-<p>가장 단순한 구조는 &quot;요청 → API → DB&quot;입니다. API를 스케일아웃하고 앞에 로드밸런서를 둬도, 결국 <strong>예매를 확정하는 DB가 병목</strong>입니다. 좌석·주문은 정합성·무결성이 생명이라 보통 <strong>RDB</strong>를 쓰는데, RDB는 스케일아웃이 어렵고 스케일업은 비용이 급격히 오릅니다. 수백만 동시 요청이 좌석 테이블 한 곳으로 몰리면 <strong>락 경합과 커넥션 고갈</strong>로 DB가 먼저 한계에 닿습니다.</p>
+<p>가장 단순한 구조는 &quot;요청 → API → DB&quot;입니다. API를 스케일아웃하고 앞에 로드밸런서를 둬도, 결국 <strong>예매를 확정하는 DB가 병목</strong>입니다. 좌석·주문은 정합성·무결성이 생명이라 보통 <strong>RDB</strong>를 사용하는데, RDB는 스케일아웃이 어렵고 스케일업은 비용이 급격히 오릅니다. 수백만 동시 요청이 좌석 테이블 한 곳으로 몰리면 <strong>락 경합과 커넥션 고갈</strong>로 DB가 먼저 한계에 닿습니다.</p>
 <p>그래서 문제를 <strong>세 단계로 분리</strong>합니다.</p>
 <ol>
 <li><strong>대기열</strong> — 모든 요청이 DB로 직행하지 못하도록, 앞단(인메모리)에 줄을 세웁니다.</li>
@@ -50,7 +50,7 @@
 <p>MQ와 Redis 선택의 일반 기준은 <a href="/blog/message-queue-comparison">메시지 큐 비교</a>에서 설명했습니다.</p>
 <mark>&quot;선입선출&quot;만 보면 MQ지만, &quot;내 순번을 보여줘야 한다&quot;는 조회 요구가 붙으면 상태를 들고 순위를 즉시 답하는 Sorted Set이 맞습니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-입장-허가--스케줄러가-정해진-속도로-통과시킨다">2. 입장 허가 — 스케줄러가 정해진 속도로 통과시킨다<a href="#2-입장-허가--스케줄러가-정해진-속도로-통과시킨다" class="hash-link" aria-label="2. 입장 허가 — 스케줄러가 정해진 속도로 통과시킨다에 대한 직접 링크" title="2. 입장 허가 — 스케줄러가 정해진 속도로 통과시킨다에 대한 직접 링크">​</a></h2>
-<p>백그라운드 <strong>스케줄러</strong>가 대기열 앞에서 <strong>N명씩 꺼내</strong> &quot;입장 허가(Active)&quot; 상태로 옮깁니다. 이 N이 예매 단계로 내보내는 속도이고, 뒤 단계가 감당할 처리량에 맞춰 정합니다.</p>
+<p>백그라운드 <strong>스케줄러</strong>가 대기열 앞에서 <strong>N명씩 꺼내</strong> &quot;입장 허가(Active)&quot; 상태로 옮깁니다. 이 N이 예매 단계로 보내는 속도이고, 뒤 단계가 감당할 처리량에 맞춰 정합니다.</p>
 <div class="language-text codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-text codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">members = ZPOPMIN queue:{eventId} N               # 가장 앞 N명 원자적으로 꺼냄</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">for uid in members:</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">    SET active:{eventId}:{uid} 1 EX {activeTtl}   # 입장 허가 + 유효시간(TTL)</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 <ul>
 <li><strong>Active에 있는 사용자만</strong> 예매 페이지로 진입할 수 있습니다. 예매 API는 매 요청에서 <code>active:*</code> 키를 확인해, 없는 요청은 대기 화면으로 되돌립니다.</li>
@@ -63,10 +63,10 @@
 <li>소켓·SSE는 <strong>연결을 계속 유지</strong>해야 해서, 수십만 대기자면 수십만 개의 연결을 서버가 들고 있어야 합니다 — 자원 낭비가 큽니다.</li>
 <li>요구는 단순합니다. &quot;지금 내가 몇 번째인지 주기적으로 확인&quot;만 하면 됩니다. 완전한 실시간이 필요 없습니다.</li>
 </ul>
-<p>그래서 <strong>폴링(polling)</strong> 을 씁니다. 클라이언트가 <code>userId</code>로 <strong>대기 순번 + 입장 가능 여부</strong>를 돌려주는 API를 주기적으로 호출합니다. 여기에 두 가지 기법을 더합니다.</p>
+<p>그래서 <strong>폴링(polling)</strong> 을 사용합니다. 클라이언트가 <code>userId</code>로 <strong>대기 순번 + 입장 가능 여부</strong>를 돌려주는 API를 주기적으로 호출합니다. 여기에 두 가지 기법을 더합니다.</p>
 <ul>
 <li><strong>가변 주기</strong>: 순번이 많이 남았을 땐 5~10초에 한 번, 입장이 가까워질수록 주기를 줄여 자주 확인합니다.</li>
-<li><strong>지터(jitter)</strong>: 모든 사용자가 같은 간격으로 요청하면 폴링이 한꺼번에 몰립니다. 사용자마다 <strong>주기를 조금씩 랜덤</strong>하게 두어 폴링 부하를 분산합니다(지터로 부하를 분산하는 아이디어는 <a href="/blog/hotspot-traffic-isolation">핫스팟 트래픽 격리</a>에서도 씁니다).</li>
+<li><strong>지터(jitter)</strong>: 모든 사용자가 같은 간격으로 요청하면 폴링이 한꺼번에 몰립니다. 사용자마다 <strong>주기를 조금씩 랜덤</strong>하게 두어 폴링 부하를 분산합니다(지터로 부하를 분산하는 아이디어는 <a href="/blog/hotspot-traffic-isolation">핫스팟 트래픽 격리</a>에서도 사용합니다).</li>
 </ul>
 <mark>대기 순번은 완전한 실시간이 필요 없는 정보라, 연결을 유지하는 소켓·SSE 대신 가변 주기 폴링 + 지터로 가볍고 고르게 처리합니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-좌석-선점--lua로-원자적으로-확인차감">4. 좌석 선점 — Lua로 원자적으로 확인·차감<a href="#4-좌석-선점--lua로-원자적으로-확인차감" class="hash-link" aria-label="4. 좌석 선점 — Lua로 원자적으로 확인·차감에 대한 직접 링크" title="4. 좌석 선점 — Lua로 원자적으로 확인·차감에 대한 직접 링크">​</a></h2>
@@ -77,7 +77,7 @@
 <ul>
 <li>단순히 <code>DECR</code> 하나면 &quot;한 장만&quot; 상황엔 충분하지만, <strong>&quot;AVAILABLE일 때만&quot;·&quot;여러 좌석&quot;</strong> 같은 조건이 붙으면 조회+판단+차감을 한 번에 묶어야 하므로 Lua가 필요합니다.</li>
 <li>특정 <strong>좌석 하나</strong>의 중복 선점은 <code>SET seat:{showId}:{seatId} {userId} NX EX {holdTtl}</code> 로 &quot;키가 없을 때만 성공&quot;시켜 막습니다. <strong>hold TTL</strong>이 지나면 미결제 좌석이 자동으로 풀려, 따로 회수하는 처리를 두지 않아도 됩니다.</li>
-<li>더 복잡한 상호배제가 필요하면 <strong>분산 락</strong>을 씁니다(<a href="/blog/redis-distributed-lock">Redis 분산 락</a>). 앞단에서 부하를 줄이고 최종 정합성은 DB로 지키는 큰 구조는 <a href="/blog/large-scale-payment-distributed-lock">대규모 결제 분산 락</a>과 같습니다.</li>
+<li>더 복잡한 상호배제가 필요하면 <strong>분산 락</strong>을 사용합니다(<a href="/blog/redis-distributed-lock">Redis 분산 락</a>). 앞단에서 부하를 줄이고 최종 정합성은 DB로 지키는 큰 구조는 <a href="/blog/large-scale-payment-distributed-lock">대규모 결제 분산 락</a>과 같습니다.</li>
 </ul>
 <mark>초과 예매를 막는 핵심은 &quot;확인+차감&quot;을 원자적으로 묶는 것입니다 — Redis 단일 스레드 + Lua가 잔여 좌석 수만큼만 통과시킵니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-메시지-큐--db를-완전히-완충한다">5. 메시지 큐 — DB를 완전히 완충한다<a href="#5-메시지-큐--db를-완전히-완충한다" class="hash-link" aria-label="5. 메시지 큐 — DB를 완전히 완충한다에 대한 직접 링크" title="5. 메시지 큐 — DB를 완전히 완충한다에 대한 직접 링크">​</a></h2>
@@ -106,9 +106,9 @@
 <table><thead><tr><th>전략</th><th>순서 기준</th><th>내 순위 계산</th><th>입장 처리</th><th>특징</th></tr></thead><tbody><tr><td><strong>A. 글로벌 카운터</strong></td><td><code>INCR</code> 발급 번호</td><td>내 번호 − 처리 번호</td><td>K-way merge</td><td>정확하지만 <strong>카운터가 새 병목/SPOF</strong></td></tr><tr><td><strong>B. 분산 타임스탬프</strong></td><td>도착 시각(ms)</td><td>전 샤드 <code>ZCOUNT</code> 합산</td><td>K-way merge</td><td>정확하지만 <strong>조회 시 전 샤드 질의</strong>(시간 동기화 필요)</td></tr><tr><td><strong>C. 통계적 추정</strong></td><td>샤드 내 순위</td><td>내 샤드 순위 × 샤드 수</td><td>라운드 로빈</td><td><strong>근사치(오차)</strong>, 대신 성능·단순함·가용성 최고</td></tr></tbody></table>
 <ul>
 <li><strong>입장 처리의 K-way merge</strong> — 각 샤드는 이미 정렬돼 있으니, <strong>맨 앞 값만 비교해 가장 작은 것부터</strong> 하나씩 꺼내면 전역 순서로 병합됩니다. C의 <strong>라운드 로빈</strong>은 비교 없이 각 샤드에서 동일 비율로 꺼내는 방식이라 빠르지만, 샤드 간 인원 편차만큼 순서가 맞지 않습니다.</li>
-<li><strong>C의 근거와 한계</strong> — UUID가 균등 난수에 가까워 샤드에 고르게 분포한다는 가정입니다. 표본이 작은 <strong>초반</strong>과 잔여가 적은 <strong>후반</strong>엔 편향이 커집니다. 그래서 <strong>초반엔 B(전 샤드 집계), 안정되면 C</strong>로 바꾸는 <strong>하이브리드</strong>가 현실적입니다.</li>
+<li><strong>C의 근거와 한계</strong> — UUID가 균등 난수에 가까워 샤드에 고르게 분포한다는 가정입니다. 표본이 작은 <strong>초반</strong>과 잔여가 적은 <strong>후반</strong>엔 편향이 커집니다. 그래서 <strong>초반엔 B(전 샤드 집계), 안정되면 C</strong>를 적용하는 <strong>하이브리드</strong>가 현실적입니다.</li>
 </ul>
-<p>예매처럼 <strong>순위가 몇 등 달라져도 무방한</strong> 도메인이라면, 오차를 감수하고 성능·단순함을 얻는 <strong>C</strong>가 합리적일 때가 많습니다. 자체 구현 대신 검증된 대기열 솔루션(예: NetFUNNEL)을 쓰는 것도 선택지입니다.</p>
+<p>예매처럼 <strong>순위가 몇 등 달라져도 무방한</strong> 도메인이라면, 오차를 감수하고 성능·단순함을 얻는 <strong>C</strong>가 합리적일 때가 많습니다. 자체 구현 대신 검증된 대기열 솔루션(예: NetFUNNEL)을 사용하는 것도 선택지입니다.</p>
 <mark>클러스터는 부하를 분산하지만 &quot;전역 순서&quot;와 충돌합니다 — 정확한 순위(A·B)냐, 성능·가용성을 위한 근사(C)냐를 도메인의 오차 허용도로 정합니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="#정리" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>
 <ul>

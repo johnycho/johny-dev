@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -56,7 +56,7 @@
 <p>트래픽 상황별 캐시 스탬피드·핫키 대응은 <a href="/blog/commerce-cache-traffic-strategy">커머스 캐시·트래픽 전략</a>에서 케이스별로 정리했습니다. <mark>계층을 늘려도 만료 폭주는 사라지지 않으니, TTL 지터와 재생성 단일화를 각 계층에 함께 적용합니다.</mark></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="예고된-급등에-대비--캐시-워밍업과-핫-프로모션">예고된 급등에 대비 — 캐시 워밍업과 핫 프로모션<a href="#예고된-급등에-대비--캐시-워밍업과-핫-프로모션" class="hash-link" aria-label="예고된 급등에 대비 — 캐시 워밍업과 핫 프로모션에 대한 직접 링크" title="예고된 급등에 대비 — 캐시 워밍업과 핫 프로모션에 대한 직접 링크">​</a></h2>
 <p>선물하기에서 특히 어려운 상황은 <strong>핫 프로모션</strong>입니다. 특정 상품이 갑자기 프로모션 대상이 되면 그 상품 하나에 트래픽이 순식간에 몰립니다. 그런데 그 상품이 아직 캐시에 없으면(콜드), 첫 폭증 요청이 전부 캐시 미스가 되어 원본(DB)으로 한꺼번에 몰립니다 — 앞서 본 콜드 스타트 스탬피드가 가장 나쁜 타이밍에 터지는 것입니다.</p>
-<p>해법은 트래픽이 오기 <strong>전에 미리 캐시를 채워 두는 것</strong>(워밍업)입니다. 이걸 사람이 수동으로 하는 대신, <strong>인기·프로모션 예정 상품처럼 곧 트래픽이 몰릴 데이터를 자동으로 감지해 미리 로컬·Redis에 올려 둡니다</strong>(워밍업 자동화). 프로모션이 시작되는 순간엔 이미 캐시에 있으니, 첫 요청부터 캐시 히트로 받아 냅니다.</p>
+<p>해법은 트래픽이 오기 <strong>전에 미리 캐시를 채워 두는 것</strong>(워밍업)입니다. 이걸 사람이 수동으로 하는 대신, <strong>인기·프로모션 예정 상품처럼 곧 트래픽이 몰릴 데이터를 자동으로 감지해 미리 로컬·Redis에 올려 둡니다</strong>(워밍업 자동화). 프로모션이 시작되는 순간엔 이미 캐시에 있으니, 첫 요청부터 캐시 히트로 응답합니다.</p>
 <mark>핫 프로모션처럼 급등이 예상되는 데이터는 트래픽이 오기 전에 미리 채워(워밍업), 콜드 스타트 스탬피드 자체를 예방합니다.</mark>
 <p>여기에 더해, 트래픽이 몰리는 데이터는 만료를 기다렸다 다시 채우는 대신 <strong>초 단위로 백그라운드에서 미리 다시 읽어 갱신</strong>(refresh-ahead)합니다. 그러면 요청이 만료를 만나 원본으로 가는 일 없이도, 항상 최신에 가까운 값을 서빙할 수 있습니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리--다층-캐싱-체크리스트">정리 — 다층 캐싱 체크리스트<a href="#정리--다층-캐싱-체크리스트" class="hash-link" aria-label="정리 — 다층 캐싱 체크리스트에 대한 직접 링크" title="정리 — 다층 캐싱 체크리스트에 대한 직접 링크">​</a></h2>

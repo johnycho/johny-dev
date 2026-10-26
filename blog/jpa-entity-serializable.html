@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -22,7 +22,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-엔티티에-serializable을-붙이게-되나">왜 엔티티에 Serializable을 붙이게 되나<a href="#왜-엔티티에-serializable을-붙이게-되나" class="hash-link" aria-label="왜 엔티티에 Serializable을 붙이게 되나에 대한 직접 링크" title="왜 엔티티에 Serializable을 붙이게 되나에 대한 직접 링크">​</a></h2>
 <p>대부분은 &quot;필요하다고 오해&quot;해서입니다.</p>
 <ul>
-<li><strong>API 응답으로 내보내려고</strong> — 가장 흔한 오해. JSON 응답은 자바 직렬화(<code>Serializable</code>)와 <strong>무관</strong>합니다. Jackson은 필드·게터를 읽어 JSON을 만들 뿐, <code>Serializable</code>을 요구하지 않습니다.</li>
+<li><strong>API 응답으로 보내려고</strong> — 가장 흔한 오해. JSON 응답은 자바 직렬화(<code>Serializable</code>)와 <strong>무관</strong>합니다. Jackson은 필드·게터를 읽어 JSON을 만들 뿐, <code>Serializable</code>을 요구하지 않습니다.</li>
 <li><strong>HttpSession에 저장하려고</strong> — 세션 클러스터링(세션을 디스크·다른 서버로 복제)하면 자바 직렬화가 발생하긴 합니다. 하지만 엔티티를 세션에 저장하는 것 자체가 권장되지 않습니다.</li>
 <li><strong>2차 캐시에 올리려고</strong> — 분산 캐시 등 일부 구성은 직렬화를 요구할 수 있습니다(뒤의 &quot;예외&quot;).</li>
 <li><strong>레거시 습관·자바빈 규약</strong> — 그냥 관성적으로.</li>
@@ -49,11 +49,11 @@
 <ol>
 <li>로그인할 때 편의로 엔티티를 세션에 저장해 둡니다 — <code>session.setAttribute(&quot;loginUser&quot;, user)</code>. (<code>User</code>엔 <code>Serializable</code>, <code>orders</code>는 <code>LAZY</code>)</li>
 <li><strong>서버가 1대</strong>거나 &quot;같은 사용자는 늘 같은 서버로&quot; 붙는 스티키 세션이면, 세션은 그 서버 메모리에만 머뭅니다 → <strong>직렬화가 아예 안 일어남</strong> → 몇 달간 아무 문제 없음.</li>
-<li>그러다 세션을 <strong>서버 메모리가 아니라 외부 저장소(예: Redis)에 저장</strong>하도록 바꿉니다 — 서버가 여러 대면 어느 서버로 붙어도 로그인이 유지돼야 하고, 서버를 재시작·배포해도 로그인이 안 풀려야 하니까요. 그런데 세션을 Redis로 보내려면 자바 객체를 <strong>바이트로 변환(=직렬화)</strong> 해야 합니다. <strong>바로 이 순간 <code>user</code>가 처음으로 직렬화</strong>됩니다.</li>
-<li>그 순간 <code>user</code>를 바이트로 변환하다가 아직 안 불러온 <code>orders</code>(LAZY 프록시)를 건드립니다 → 트랜잭션은 이미 끝나 <code>LazyInitializationException</code>.</li>
+<li>그러다 세션을 <strong>서버 메모리가 아니라 외부 저장소(예: Redis)에 저장</strong>하도록 변경합니다 — 서버가 여러 대면 어느 서버로 붙어도 로그인이 유지돼야 하고, 서버를 재시작·배포해도 로그인이 안 풀려야 하니까요. 그런데 세션을 Redis로 보내려면 자바 객체를 <strong>바이트로 변환(=직렬화)</strong> 해야 합니다. <strong>바로 이 순간 <code>user</code>가 처음으로 직렬화</strong>됩니다.</li>
+<li>그 순간 <code>user</code>를 바이트로 변환하다가 아직 가져오지 않은 <code>orders</code>(LAZY 프록시)를 건드립니다 → 트랜잭션은 이미 끝나 <code>LazyInitializationException</code>.</li>
 <li>(겹치면) 직전 배포에서 <code>User</code>에 필드를 추가했다면, 이미 Redis에 저장돼 있던 옛 세션을 되읽을 때 <code>serialVersionUID</code>가 안 맞아 <code>InvalidClassException</code>까지 납니다.</li>
 </ol>
-<p><mark>여기서 &quot;평소 사용하지 않던 기능&quot;이란 세션을 서버 밖으로 내보내는 동작(다중 서버·배포·장애 복구)이고, 그게 처음 발동하는 순간에야 직렬화가 실행돼 문제가 드러납니다.</mark> 캐시도 똑같습니다 — 로컬 캐시일 땐 직렬화가 없다가, 분산 캐시로 바꾸면 그때 처음 직렬화되며 같은 문제가 납니다.</p>
+<p><mark>여기서 &quot;평소 사용하지 않던 기능&quot;이란 세션을 서버 밖으로 보내는 동작(다중 서버·배포·장애 복구)이고, 그게 처음 발동하는 순간에야 직렬화가 실행돼 문제가 드러납니다.</mark> 캐시도 똑같습니다 — 로컬 캐시일 땐 직렬화가 없다가, 분산 캐시로 변경하면 그때 처음 직렬화되며 같은 문제가 납니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="예외--정말-필요한-경우">예외 — 정말 필요한 경우<a href="#예외--정말-필요한-경우" class="hash-link" aria-label="예외 — 정말 필요한 경우에 대한 직접 링크" title="예외 — 정말 필요한 경우에 대한 직접 링크">​</a></h2>
 <ul>
 <li><strong>복합 키 클래스</strong>(<code>@EmbeddedId</code>·<code>@IdClass</code>)는 <strong>JPA 스펙상 <code>Serializable</code>이어야 합니다.</strong> 이건 정당한 사용입니다. (식별자 클래스이지 엔티티 본체가 아님)</li>
@@ -61,12 +61,12 @@
 </ul>
 <mark>정리하면 &quot;식별자(PK) 클래스&quot;는 Serializable이 맞고, &quot;엔티티 본체&quot;는 대부분 불필요합니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="헷갈리기-쉬운-것--api가-엔티티를-반환할-때-serializable과는-별개">헷갈리기 쉬운 것 — API가 엔티티를 반환할 때 (Serializable과는 별개)<a href="#헷갈리기-쉬운-것--api가-엔티티를-반환할-때-serializable과는-별개" class="hash-link" aria-label="헷갈리기 쉬운 것 — API가 엔티티를 반환할 때 (Serializable과는 별개)에 대한 직접 링크" title="헷갈리기 쉬운 것 — API가 엔티티를 반환할 때 (Serializable과는 별개)에 대한 직접 링크">​</a></h2>
-<p>지금까지는 자바 직렬화(<code>Serializable</code>) 이야기였습니다. 그런데 컨트롤러가 <code>return user;</code>처럼 <strong>엔티티를 그대로 응답으로 내보내는 것</strong>도 비슷한 문제가 있는데, 이건 <code>Serializable</code>이 아니라 <strong>JSON 직렬화(Jackson)</strong> 에서 나는 <strong>별개의</strong> 문제입니다(Jackson은 <code>Serializable</code>을 보지 않습니다).</p>
+<p>지금까지는 자바 직렬화(<code>Serializable</code>) 이야기였습니다. 그런데 컨트롤러가 <code>return user;</code>처럼 <strong>엔티티를 그대로 응답으로 보내는 것</strong>도 비슷한 문제가 있는데, 이건 <code>Serializable</code>이 아니라 <strong>JSON 직렬화(Jackson)</strong> 에서 나는 <strong>별개의</strong> 문제입니다(Jackson은 <code>Serializable</code>을 보지 않습니다).</p>
 <ul>
 <li>평소 사용하는 API는 응답에 필요한 연관이 우연히 이미 초기화됐거나, OSIV(뷰까지 트랜잭션 유지)로 <code>LAZY</code>가 그때그때 로딩돼 무탈합니다.</li>
 <li>그러다 <strong>어쩌다 한 번 호출되는 엔드포인트</strong>가 초기화 안 된 다른 <code>LAZY</code> 연관을 건드리면, Jackson이 미초기화 프록시를 직렬화하다 <code>LazyInitializationException</code>이 납니다.</li>
 </ul>
-<p><mark>즉 <code>Serializable</code>을 붙였는지와 무관하게, 엔티티를 응답으로 내보내는 것 자체가 LAZY·그래프라는 같은 근원의 문제를 유발합니다.</mark> 그래서 해법도 같습니다 — DTO로 분리.</p>
+<p><mark>즉 <code>Serializable</code>을 붙였는지와 무관하게, 엔티티를 응답으로 보내는 것 자체가 LAZY·그래프라는 같은 근원의 문제를 유발합니다.</mark> 그래서 해법도 같습니다 — DTO로 분리.</p>
 <blockquote>
 <p><strong>Q. <code>fetch join</code>·<code>@EntityGraph</code>로 미리 로딩하면 되지 않나?</strong></p>
 <p><strong>A.</strong> 부분적으로만 맞습니다. 미리 초기화한 연관은 <code>LazyInitializationException</code>을 피하지만, ① <strong>그래프에 안 넣은 다른 <code>LAZY</code> 연관</strong>은 여전히 프록시라 문제가 발생할 수 있고, ② 이건 <strong>쿼리마다</strong> 지정해야 해 하필 &quot;어쩌다 호출되는 엔드포인트&quot;에서 빠뜨리기 쉽습니다. 또한 자바 직렬화(세션·캐시)에서는 미리 초기화해봐야 <strong>초기화된 그래프가 오히려 더 크게 딸려가고</strong>, <code>serialVersionUID</code>·detached 문제는 그대로입니다. 미리 로딩은 증상 하나를 가릴 뿐, 경계를 넘기는 문제는 DTO로 끊어야 합니다.</p>

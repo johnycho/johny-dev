@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -25,7 +25,7 @@
 <!-- -->
 <p><mark>수정·삭제 없이 뒤에만 쌓고 순서대로 읽으니, 디스크가 가장 잘하는 순차 접근만 쓰게 됩니다.</mark> 덤으로 로그가 남아 여러 소비자가 재생할 수 있는 것도 이 구조 덕분입니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="2-os-페이지-캐시에-올리기">2. OS 페이지 캐시에 올리기<a href="#2-os-페이지-캐시에-올리기" class="hash-link" aria-label="2. OS 페이지 캐시에 올리기에 대한 직접 링크" title="2. OS 페이지 캐시에 올리기에 대한 직접 링크">​</a></h2>
-<p>Kafka 브로커는 <strong>자체 캐시를 크게 만들지 않고 OS 페이지 캐시(page cache)</strong> 에 의존합니다. 쓰기는 페이지 캐시에 기록하고 실제 디스크 반영(flush)은 OS에 맡기며, 읽기도 최근 데이터는 페이지 캐시에서 바로 나갑니다.</p>
+<p>Kafka 브로커는 <strong>자체 캐시를 크게 만들지 않고 OS 페이지 캐시(page cache)</strong> 에 의존합니다. 쓰기는 페이지 캐시에 기록하고 실제 디스크 반영(flush)은 OS에 맡기며, 읽기도 최근 데이터는 페이지 캐시에서 바로 처리됩니다.</p>
 <p><mark>컨슈머가 대체로 최신을 따라잡은 클러스터에서는 읽기가 디스크까지 가지 않고 페이지 캐시에서 처리됩니다.</mark> 캐시를 JVM 힙 밖(커널)에 두니 <strong>GC 부담이 없고</strong>, 브로커가 재시작해도 페이지 캐시는 데워진 채 남습니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="3-zero-copy--sendfile로-커널에서-바로-전송">3. Zero-copy — sendfile로 커널에서 바로 전송<a href="#3-zero-copy--sendfile로-커널에서-바로-전송" class="hash-link" aria-label="3. Zero-copy — sendfile로 커널에서 바로 전송에 대한 직접 링크" title="3. Zero-copy — sendfile로 커널에서 바로 전송에 대한 직접 링크">​</a></h2>
 <p>컨슈머로 데이터를 보낼 때가 핵심입니다. 전통적인 경로는 복사가 많습니다 — 디스크 → 페이지 캐시 → <strong>앱 버퍼(유저 공간)</strong> → 소켓 버퍼 → NIC. 유저 공간을 오가며 복사와 컨텍스트 스위치가 반복됩니다.</p>

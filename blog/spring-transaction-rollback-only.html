@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -30,7 +30,7 @@
 <p><mark>내부 <code>@Transactional</code>이 던진 예외는, 외부에서 무시해도 트랜잭션에 남긴 &quot;rollback-only&quot; 표시까지 지우지는 못합니다.</mark> 그래서 커밋 시점에 스프링이 &quot;이 트랜잭션은 롤백만 가능&quot;이라며 거부하고, 저장한 user까지 전부 롤백됩니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-스프링은-이렇게-동작하나">왜 스프링은 이렇게 동작하나<a href="#왜-스프링은-이렇게-동작하나" class="hash-link" aria-label="왜 스프링은 이렇게 동작하나에 대한 직접 링크" title="왜 스프링은 이렇게 동작하나에 대한 직접 링크">​</a></h2>
 <p><code>REQUIRED</code> 전파에서 내부 메서드는 <strong>새 트랜잭션이 아니라 상위 트랜잭션에 참여</strong>합니다(물리적으로 하나). 이 참여 구간에서 예외가 터지면, 스프링은 트랜잭션을 <strong>rollback-only</strong>로 표시합니다(<code>globalRollbackOnParticipationFailure</code> 기본값).</p>
-<p><mark>즉 &quot;예외를 잡았으니 없던 일&quot;이 아니라, 트랜잭션은 이미 오염돼 커밋할 수 없는 상태가 된 것입니다.</mark> 그래서 잡아도 소용이 없고, 커밋 때 <code>UnexpectedRollbackException</code>으로 드러납니다.</p>
+<p><mark>즉 &quot;예외를 처리했으니 없던 일&quot;이 아니라, 트랜잭션은 이미 오염돼 커밋할 수 없는 상태가 된 것입니다.</mark> 그래서 처리해도 소용이 없고, 커밋 때 <code>UnexpectedRollbackException</code>으로 드러납니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="해결--실패해도-되는-작업을-트랜잭션에서-분리한다">해결 — 실패해도 되는 작업을 트랜잭션에서 분리한다<a href="#해결--실패해도-되는-작업을-트랜잭션에서-분리한다" class="hash-link" aria-label="해결 — 실패해도 되는 작업을 트랜잭션에서 분리한다에 대한 직접 링크" title="해결 — 실패해도 되는 작업을 트랜잭션에서 분리한다에 대한 직접 링크">​</a></h2>
 <p>&quot;가입 쿠폰은 실패해도 가입은 되게&quot; 하려면, 그 작업이 <strong>부모 트랜잭션을 오염시키지 않게</strong> 경계를 나눠야 합니다.</p>
 <p><strong>방법 1 — 외부 호출을 트랜잭션 밖으로.</strong> 가장 깔끔합니다. 핵심 저장과 선택적 외부 작업을 분리합니다.</p>

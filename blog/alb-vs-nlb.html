@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -50,7 +50,7 @@
 <li><strong>소스 IP 보존</strong> — 백엔드가 <strong>실제 클라이언트 IP를 그대로</strong> 봅니다(ALB처럼 헤더로 전달하는 게 아니라 패킷 수준에서 보존). IP 기반 접근 제어·감사에 유리.</li>
 <li><strong>고정 IP / Elastic IP</strong> — AZ마다 고정 IP를 줄 수 있어, <strong>방화벽 화이트리스트</strong>에 넣기 좋습니다(ALB는 DNS 이름만 제공).</li>
 <li><strong>PrivateLink</strong> — VPC 엔드포인트 서비스를 만들 때 사용하는 진입점이 NLB입니다.</li>
-<li><strong>ALB를 타깃으로</strong> — NLB(고정 IP) 뒤에 ALB(L7 라우팅)를 둬서 양쪽 장점을 함께 사용할 수도 있습니다.</li>
+<li><strong>ALB를 타깃으로</strong> — NLB(고정 IP) 뒤에 ALB(L7 라우팅)를 배치해 양쪽 장점을 함께 사용할 수도 있습니다.</li>
 </ul>
 <mark>TCP/UDP·극한 성능·고정 IP·소스 IP 보존·PrivateLink가 필요하면 NLB입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="자주-헷갈리는--소스-ip와-고정-ip">자주 헷갈리는 — 소스 IP와 고정 IP<a href="#자주-헷갈리는--소스-ip와-고정-ip" class="hash-link" aria-label="자주 헷갈리는 — 소스 IP와 고정 IP에 대한 직접 링크" title="자주 헷갈리는 — 소스 IP와 고정 IP에 대한 직접 링크">​</a></h2>
@@ -91,7 +91,7 @@
 <p><mark>정리하면 ALB는 &quot;경로·호스트로 나눠 보내는&quot; <strong>큰 단위 라우팅</strong>에, Spring Cloud Gateway는 &quot;요청마다 인증·변환·제어까지&quot; 하는 <strong>세밀한 게이트웨이</strong>에 강합니다.</mark> 그래서 보통 함께 구성합니다.</p>
 <ul>
 <li>클라이언트 → <strong>ALB</strong>(TLS 종료·WAF·경로/호스트 라우팅) → <strong>Spring Cloud Gateway</strong>(요청별 인증·필터) → 마이크로서비스</li>
-<li>고정 IP가 필요하면 맨 앞에 NLB를 둬서 <code>NLB → ALB → Spring Cloud Gateway</code>로 구성하기도 합니다.</li>
+<li>고정 IP가 필요하면 맨 앞에 NLB를 배치해 <code>NLB → ALB → Spring Cloud Gateway</code>로 구성하기도 합니다.</li>
 </ul>
 <p>Spring Cloud Gateway는 기본이 WebFlux(리액티브) 기반이라, 비동기 처리 특성은 <a href="/blog/spring-webflux-vs-mvc">WebFlux vs MVC</a>를 참고하세요.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="선택-기준">선택 기준<a href="#선택-기준" class="hash-link" aria-label="선택 기준에 대한 직접 링크" title="선택 기준에 대한 직접 링크">​</a></h2>

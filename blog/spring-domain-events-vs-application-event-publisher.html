@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -64,7 +64,7 @@
 </ul>
 <p><strong>@DomainEvents</strong></p>
 <ul>
-<li>장점 — 도메인 모델이 발행자를 <strong>알 필요가 없어</strong>(DDD 순수성), 이벤트가 애그리거트의 상태 변화와 자연히 함께 나갑니다. 서비스는 <code>save</code>만 하면 됩니다.</li>
+<li>장점 — 도메인 모델이 발행자를 <strong>알 필요가 없어</strong>(DDD 순수성), 이벤트가 애그리거트의 상태 변화와 자연히 함께 발행됩니다. 서비스는 <code>save</code>만 하면 됩니다.</li>
 <li>단점 — <strong><code>save</code>를 거쳐야만</strong> 발행되고(아래 이슈), <code>@Transient</code>라 재로딩 시 유실되며, 목록을 비우지 않으면 중복 발행됩니다. Spring Data repository에 묶입니다.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="사용-시-실제로-겪는-이슈">사용 시 실제로 겪는 이슈<a href="#사용-시-실제로-겪는-이슈" class="hash-link" aria-label="사용 시 실제로 겪는 이슈에 대한 직접 링크" title="사용 시 실제로 겪는 이슈에 대한 직접 링크">​</a></h2>
@@ -83,14 +83,14 @@
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="-domainevents-목록을-비우지-않으면-중복-재로딩하면-유실">④ (@DomainEvents) 목록을 비우지 않으면 중복, 재로딩하면 유실<a href="#-domainevents-목록을-비우지-않으면-중복-재로딩하면-유실" class="hash-link" aria-label="④ (@DomainEvents) 목록을 비우지 않으면 중복, 재로딩하면 유실에 대한 직접 링크" title="④ (@DomainEvents) 목록을 비우지 않으면 중복, 재로딩하면 유실에 대한 직접 링크">​</a></h3>
 <p>이벤트는 <code>@Transient</code> 필드라 <strong>DB에 저장되지 않습니다.</strong> 두 가지 결과가 따릅니다.</p>
 <ul>
-<li><strong>중복 발행</strong> — 발행 후 목록을 비우지 않으면, 같은 인스턴스를 다시 <code>save</code>할 때 이전 이벤트가 또 나갑니다. <code>AbstractAggregateRoot</code>는 <code>@AfterDomainEventPublication</code>으로 자동으로 비우지만, 직접 구현하면 <strong>직접 비워야</strong> 합니다.</li>
+<li><strong>중복 발행</strong> — 발행 후 목록을 비우지 않으면, 같은 인스턴스를 다시 <code>save</code>할 때 이전 이벤트가 또 발행됩니다. <code>AbstractAggregateRoot</code>는 <code>@AfterDomainEventPublication</code>으로 자동으로 비우지만, 직접 구현하면 <strong>직접 비워야</strong> 합니다.</li>
 <li><strong>유실</strong> — <code>registerEvent</code>로 모아 둔 이벤트는 커밋돼도 DB에 남지 않습니다. 발행 없이 트랜잭션이 끝나거나, 다른 트랜잭션에서 엔티티를 <strong>새로 로드</strong>하면 그 목록은 비어 있습니다.</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="-async-리스너--예외가-조용히-사라진다">⑤ @Async 리스너 — 예외가 조용히 사라진다<a href="#-async-리스너--예외가-조용히-사라진다" class="hash-link" aria-label="⑤ @Async 리스너 — 예외가 조용히 사라진다에 대한 직접 링크" title="⑤ @Async 리스너 — 예외가 조용히 사라진다에 대한 직접 링크">​</a></h3>
 <p>동기 발행이 부담스러워 <code>@Async</code>를 붙이면 처리 방식이 달라집니다. 공식 문서 기준으로 비동기 리스너는 <strong>예외가 호출자에게 전파되지 않고</strong>(로그만 남습니다), 반환값으로 다음 이벤트를 발행할 수 없으며, <code>ThreadLocal</code>·로깅 컨텍스트도 기본적으로 전파되지 않습니다. 비동기는 &quot;실패해도 본 흐름과 무관한&quot; 작업에만 쓰고, 실패 처리·재시도는 리스너가 <strong>스스로</strong> 책임져야 합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="그래서-무엇을-언제-쓰나">그래서 무엇을 언제 쓰나<a href="#그래서-무엇을-언제-쓰나" class="hash-link" aria-label="그래서 무엇을 언제 쓰나에 대한 직접 링크" title="그래서 무엇을 언제 쓰나에 대한 직접 링크">​</a></h2>
 <ul>
-<li><strong><code>@DomainEvents</code></strong> — 이벤트가 <strong>애그리거트의 상태 변화에서 비롯</strong>되고, 도메인 모델을 Spring 인프라에서 깨끗하게 떼어 두고 싶을 때. &quot;애그리거트를 저장하면 그 사건이 함께 나간다&quot;가 자연스러운 경우입니다. DDD 레이어링과 함께 쓰면 잘 맞습니다(<a href="/blog/ddd-layered-multimodule">DDD 레이어드 멀티모듈</a>).</li>
+<li><strong><code>@DomainEvents</code></strong> — 이벤트가 <strong>애그리거트의 상태 변화에서 비롯</strong>되고, 도메인 모델을 Spring 인프라에서 깨끗하게 떼어 두고 싶을 때. &quot;애그리거트를 저장하면 그 사건이 함께 발행된다&quot;가 자연스러운 경우입니다. DDD 레이어링과 함께 쓰면 잘 맞습니다(<a href="/blog/ddd-layered-multimodule">DDD 레이어드 멀티모듈</a>).</li>
 <li><strong><code>ApplicationEventPublisher</code></strong> — 이벤트가 <strong>특정 저장과 묶이지 않거나</strong>(로그인·스케줄러·캐시), 발행 시점을 <strong>명시적으로 통제</strong>해야 하거나, Spring Data repository를 거치지 않는 경로일 때.</li>
 <li><strong>공통</strong> — 커밋 이후의 후속 처리는 어느 쪽이든 <code>@TransactionalEventListener(AFTER_COMMIT)</code>와 조합하고, 그 안에서의 DB 쓰기는 전파를 함께 점검합니다(<a href="/blog/after-commit-listener-db-write-loss">커밋 타이밍 글</a>).</li>
 </ul>

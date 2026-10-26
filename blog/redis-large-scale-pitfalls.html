@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -41,10 +41,10 @@
 <li>값이 잘 안 바뀌면 키를 여러 벌 복제해 분산(<code>hotkey:1</code>~<code>hotkey:N</code> 랜덤 읽기).</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-메모리evictionttl">4. 메모리·eviction·TTL<a href="#4-메모리evictionttl" class="hash-link" aria-label="4. 메모리·eviction·TTL에 대한 직접 링크" title="4. 메모리·eviction·TTL에 대한 직접 링크">​</a></h2>
-<p>Redis는 메모리 저장소라, 한계에 닿으면 <code>maxmemory-policy</code>에 따라 키를 <strong>밀어냅니다(eviction)</strong>. TTL 없이 계속 넣기만 하면 메모리가 무한정 늘어 결국 eviction이나 쓰기 거부가 납니다.</p>
+<p>Redis는 메모리 저장소라, 한계에 닿으면 <code>maxmemory-policy</code>에 따라 키를 <strong>퇴출합니다(eviction)</strong>. TTL 없이 계속 넣기만 하면 메모리가 무한정 늘어 결국 eviction이나 쓰기 거부가 납니다.</p>
 <p><strong>대처</strong>:</p>
 <ul>
-<li>캐시 용도면 <code>maxmemory</code> + <strong><code>allkeys-lru</code>/<code>allkeys-lfu</code></strong> 정책을 명시(자주 사용하지 않는 키부터 밀어냄).</li>
+<li>캐시 용도면 <code>maxmemory</code> + <strong><code>allkeys-lru</code>/<code>allkeys-lfu</code></strong> 정책을 명시(자주 사용하지 않는 키부터 제거함).</li>
 <li>캐시 키엔 <strong>반드시 TTL</strong>. 단, 많은 키의 TTL이 같은 시각에 몰리면 대량 만료가 한꺼번에 발생하니 <strong>만료 시각에 지터(랜덤 편차)</strong> 를 줍니다.</li>
 <li><code>evicted_keys</code>·<code>used_memory</code>를 모니터링(<a href="/blog/server-monitoring-analysis">서버 지표 읽기</a> 참고).</li>
 </ul>
@@ -69,7 +69,7 @@
 </blockquote>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="8-클러스터--멀티키-연산과-해시-태그">8. 클러스터 — 멀티키 연산과 해시 태그<a href="#8-클러스터--멀티키-연산과-해시-태그" class="hash-link" aria-label="8. 클러스터 — 멀티키 연산과 해시 태그에 대한 직접 링크" title="8. 클러스터 — 멀티키 연산과 해시 태그에 대한 직접 링크">​</a></h2>
 <p>Redis 클러스터는 키를 슬롯으로 나눠 여러 노드에 분산합니다. 그래서 <code>MGET</code>·<code>SINTER</code> 같은 <strong>여러 키를 함께 처리하는 명령은 키들이 같은 노드(슬롯)에 있어야</strong> 합니다. 그렇지 않으면 <code>CROSSSLOT</code> 오류가 발생합니다.</p>
-<p><strong>대처</strong>: 함께 처리할 키들을 같은 슬롯에 두도록 <strong>해시 태그</strong>(<code>{...}</code>)를 사용합니다 — 중괄호 안 부분만 슬롯 계산에 사용되므로 같은 태그면 같은 노드로 갑니다.</p>
+<p><strong>대처</strong>: 함께 처리할 키들을 같은 슬롯에 두도록 <strong>해시 태그</strong>(<code>{...}</code>)를 사용합니다 — 중괄호 안 부분만 슬롯 계산에 사용되므로 같은 태그면 같은 노드에 배정됩니다.</p>
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain"># 같은 슬롯으로 모으기 — {user:1000} 부분만 해시에 사용</span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">MSET {user:1000}:name &quot;Kim&quot; {user:1000}:tier &quot;gold&quot;</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 <mark>클러스터에선 &quot;함께 조회·연산할 키는 같은 해시 태그로 묶는다&quot;를 키 설계 단계에서 정합니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리--대용량-체크리스트">정리 — 대용량 체크리스트<a href="#정리--대용량-체크리스트" class="hash-link" aria-label="정리 — 대용량 체크리스트에 대한 직접 링크" title="정리 — 대용량 체크리스트에 대한 직접 링크">​</a></h2>

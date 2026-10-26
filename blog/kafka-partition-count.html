@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.2148ac79.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -25,9 +25,9 @@
 <!-- -->
 <p>파티션이 결정하는 것은 세 가지입니다.</p>
 <ul>
-<li><strong>병렬성의 상한</strong>: 한 파티션은 같은 컨슈머 그룹 안에서 <strong>한 컨슈머만</strong> 읽습니다. 그래서 컨슈머를 아무리 늘려도 파티션 수를 넘는 만큼은 놀게 됩니다.</li>
+<li><strong>병렬성의 상한</strong>: 한 파티션은 같은 컨슈머 그룹 안에서 <strong>한 컨슈머만</strong> 읽습니다. 그래서 컨슈머를 아무리 늘려도 파티션 수를 넘는 만큼은 유휴 상태가 됩니다.</li>
 <li><strong>순서 보장의 단위</strong>: Kafka는 <strong>파티션 안에서만</strong> 순서를 보장합니다. 토픽 전체의 순서는 보장하지 않습니다.</li>
-<li><strong>분산의 단위</strong>: 같은 키를 가진 메시지는 같은 파티션으로 갑니다(키 해시 기반). 그래서 &quot;키 단위 순서&quot;를 지키면서 부하를 나눌 수 있습니다.</li>
+<li><strong>분산의 단위</strong>: 같은 키를 가진 메시지는 같은 파티션으로 전송됩니다(키 해시 기반). 그래서 &quot;키 단위 순서&quot;를 지키면서 부하를 나눌 수 있습니다.</li>
 </ul>
 <mark>같은 컨슈머 그룹의 최대 병렬성은 파티션 수를 넘지 못합니다 — 이것이 파티션 수 산정의 출발점입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-처음에-신중히-정해야-하나">왜 처음에 신중히 정해야 하나<a href="#왜-처음에-신중히-정해야-하나" class="hash-link" aria-label="왜 처음에 신중히 정해야 하나에 대한 직접 링크" title="왜 처음에 신중히 정해야 하나에 대한 직접 링크">​</a></h2>
