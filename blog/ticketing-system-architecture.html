@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.0f34d02f.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -27,7 +27,7 @@
 <li><strong>중복 예매 방지</strong> — 같은 좌석·같은 시간을 두 사람이 사지 못합니다.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-그냥-받으면-안-되나--rdb의-한계">왜 그냥 받으면 안 되나 — RDB의 한계<a href="#왜-그냥-받으면-안-되나--rdb의-한계" class="hash-link" aria-label="왜 그냥 받으면 안 되나 — RDB의 한계에 대한 직접 링크" title="왜 그냥 받으면 안 되나 — RDB의 한계에 대한 직접 링크">​</a></h2>
-<p>가장 단순한 구조는 &quot;요청 → API → DB&quot;입니다. API를 스케일아웃하고 앞에 로드밸런서를 둬도, 결국 <strong>예매를 확정하는 DB가 병목</strong>입니다. 좌석·주문은 정합성·무결성이 생명이라 보통 <strong>RDB</strong>를 사용하는데, RDB는 스케일아웃이 어렵고 스케일업은 비용이 급격히 오릅니다. 수백만 동시 요청이 좌석 테이블 한 곳으로 몰리면 <strong>락 경합과 커넥션 고갈</strong>로 DB가 먼저 한계에 닿습니다.</p>
+<p>가장 단순한 구조는 &quot;요청 → API → DB&quot;입니다. API를 스케일아웃하고 앞에 로드밸런서를 배치해도, 결국 <strong>예매를 확정하는 DB가 병목</strong>입니다. 좌석·주문은 정합성·무결성이 생명이라 보통 <strong>RDB</strong>를 사용하는데, RDB는 스케일아웃이 어렵고 스케일업은 비용이 급격히 오릅니다. 수백만 동시 요청이 좌석 테이블 한 곳으로 몰리면 <strong>락 경합과 커넥션 고갈</strong>로 DB가 먼저 한계에 닿습니다.</p>
 <p>그래서 문제를 <strong>세 단계로 분리</strong>합니다.</p>
 <ol>
 <li><strong>대기열</strong> — 모든 요청이 DB로 직행하지 못하도록, 앞단(인메모리)에 줄을 세웁니다.</li>
@@ -97,7 +97,7 @@
 <p>여기까지는 대기열의 &quot;기능&quot;이었습니다. 그런데 <strong>대기열을 담당하는 Redis가 한 대뿐이면 그 한 대가 단일 장애점(SPOF)</strong> 입니다. 수백만이 몰리는 명절 예매에서 그 한 대에 장애가 발생하면 시스템 전체가 마비됩니다. 그래서 대기열 Redis의 <strong>고가용성(HA)</strong> 설계가 필요합니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="복제--sentinel--클러스터">복제 → Sentinel → 클러스터<a href="#복제--sentinel--클러스터" class="hash-link" aria-label="복제 → Sentinel → 클러스터에 대한 직접 링크" title="복제 → Sentinel → 클러스터에 대한 직접 링크">​</a></h3>
 <ul>
-<li><strong>복제(replication)</strong> — 리플리카를 둬 <strong>읽기(순위 조회)를 분산</strong>합니다. 예매는 쓰기보다 &quot;내 순번&quot; 조회가 훨씬 많기 때문입니다. 마스터에 쓰고 리플리카에서 읽되, 복제는 <strong>비동기</strong>라 수백 ms~수 초 <strong>지연</strong>이 생길 수 있습니다. 그래서 <strong>정확성이 필요한 등록·정확 순번은 마스터</strong>에서, <strong>지연을 감수해도 되는 통계성 조회는 리플리카</strong>로 나눕니다.</li>
+<li><strong>복제(replication)</strong> — 리플리카를 배치해 <strong>읽기(순위 조회)를 분산</strong>합니다. 예매는 쓰기보다 &quot;내 순번&quot; 조회가 훨씬 많기 때문입니다. 마스터에 쓰고 리플리카에서 읽되, 복제는 <strong>비동기</strong>라 수백 ms~수 초 <strong>지연</strong>이 생길 수 있습니다. 그래서 <strong>정확성이 필요한 등록·정확 순번은 마스터</strong>에서, <strong>지연을 감수해도 되는 통계성 조회는 리플리카</strong>로 나눕니다.</li>
 <li><strong>Sentinel</strong> — 복제 위에서 마스터 장애를 <strong>자동 감지·자동 승격</strong>합니다(수동 개입 불필요). 다만 복제 지연은 그대로라, 리플리카마다 반영 속도가 달라 <strong>순번이 들쭉날쭉</strong>해 보일 수 있습니다. 완화책은 같은 사용자를 같은 리플리카로 보내는 <strong>스티키 세션</strong>, 그리고 <strong>순위는 마스터에서 조회</strong>하기입니다.</li>
 <li><strong>클러스터(샤딩)</strong> — 동접이 전 국민 규모면 대기열 자체를 <strong>여러 키로 나눠 여러 마스터에 분산</strong>합니다. 진입 시 발급한 사용자 UUID를 해싱해 샤드를 정하면 <strong>읽기뿐 아니라 쓰기도 분산</strong>됩니다.</li>
 </ul>

@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.0f34d02f.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -62,7 +62,7 @@
 <li><strong>펜싱 토큰(fencing token)</strong> — 락 획득 시 단조 증가 토큰을 받아 자원이 검증하면, 멈췄다 되살아난 옛 소유자의 쓰기를 거부할 수 있습니다. (예시는 <a href="/blog/redis-distributed-lock">Redis 분산락</a>의 워치독 절)</li>
 <li><strong>HA 구성</strong> — Sentinel/Cluster로 가용성을 확보(안전성까지는 DB·펜싱이 보완).</li>
 <li><strong>락 실패 시 동작을 정의</strong> — Redis가 불가할 때 <strong>빠른 실패(요청 거절)</strong> 인지, <strong>폴백(DB 락으로 전환)</strong> 인지 미리 정합니다. 무한 대기 대신 <code>tryLock</code>에 대기 상한을 설정합니다.</li>
-<li><strong>재시도는 백오프로</strong> — 순간 장애·경합은 짧은 지수 백오프 재시도로 흡수하되, 한도를 둬 폭주를 막습니다.</li>
+<li><strong>재시도는 백오프로</strong> — 순간 장애·경합은 짧은 지수 백오프 재시도로 흡수하되, 한도를 정해 폭주를 막습니다.</li>
 <li><strong>정말 강한 합의가 필요하면</strong> — 리더 선출처럼 엄격한 상호배제가 필수면 ZooKeeper·etcd 같은 합의 기반 코디네이터를 고려합니다(대신 운영·지연 비용).</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="#정리" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>

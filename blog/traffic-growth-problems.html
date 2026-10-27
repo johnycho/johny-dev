@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.0f34d02f.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -31,7 +31,7 @@
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="스택별로-어디부터-문제가-생기나">스택별로 어디부터 문제가 생기나<a href="#스택별로-어디부터-문제가-생기나" class="hash-link" aria-label="스택별로 어디부터 문제가 생기나에 대한 직접 링크" title="스택별로 어디부터 문제가 생기나에 대한 직접 링크">​</a></h2>
 <p><strong>① 커넥션·스레드 풀 고갈</strong><br>
-가장 먼저 한계에 닿는 지점. 처리시간이 조금만 늘어도 동시 요청이 불어나 풀이 바닥납니다(리틀의 법칙: 동시 요청 = 유입 × 처리시간). 풀이 마르면 요청이 큐에서 대기하다 타임아웃. 자세히는 <a href="/blog/server-monitoring-analysis">서버 지표 읽기</a>의 리틀의 법칙 부분.</p>
+가장 먼저 한계에 닿는 지점. 처리시간이 조금만 늘어도 동시 요청이 불어나 풀이 바닥납니다(리틀의 법칙: 동시 요청 = 유입 × 처리시간). 풀이 고갈되면 요청이 큐에서 대기하다 타임아웃. 자세히는 <a href="/blog/server-monitoring-analysis">서버 지표 읽기</a>의 리틀의 법칙 부분.</p>
 <p><strong>② 캐시 — 히트율 저하·스탬피드·핫키</strong><br>
 트래픽이 늘면 캐시 미스가 왜 함께 늘까요? 이유는 크게 두 가지입니다.</p>
 <ul>

@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.b998251a.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.0f34d02f.js" defer="defer"></script>
 <script src="/assets/js/main.7953d5b6.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -54,7 +54,7 @@
 <p>풀 크기의 출발점은 작업 성격에서 나옵니다.</p>
 <ul>
 <li><strong>CPU바운드</strong>(계산 위주) — 스레드 ≈ <strong>코어 수(+1)</strong>. 더 늘리면 컨텍스트 스위칭 비용만 늘어남.</li>
-<li><strong>IO바운드</strong>(대기 위주) — 스레드 ≈ 코어 수 × (1 + 대기시간 / 연산시간). 대기가 길수록 스레드를 더 둬야 처리량이 오릅니다.</li>
+<li><strong>IO바운드</strong>(대기 위주) — 스레드 ≈ 코어 수 × (1 + 대기시간 / 연산시간). 대기가 길수록 스레드를 더 배치해야 처리량이 오릅니다.</li>
 <li><strong>리틀의 법칙으로 역산</strong> — 필요한 동시 처리 수 = 목표 처리율(TPS) × 평균 처리시간(s). 예: 초당 500건 × 0.2초 = 동시 100개 → 스레드/커넥션을 이 수준으로. (아래에서 조금 더)</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="리틀의-법칙-조금-더-파보기">리틀의 법칙 조금 더 파보기<a href="#리틀의-법칙-조금-더-파보기" class="hash-link" aria-label="리틀의 법칙 조금 더 파보기에 대한 직접 링크" title="리틀의 법칙 조금 더 파보기에 대한 직접 링크">​</a></h3>
