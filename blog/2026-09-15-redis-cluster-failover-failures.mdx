@@ -271,7 +271,7 @@ var topologyRefresh = ClusterTopologyRefreshOptions.builder()
 
 **"failover 되려면 AWS wrapper를 써야 하나?"** — Redis/Valkey에는 Aurora용 **AWS Advanced JDBC Wrapper** 같은 별도 드라이버가 필요하지 않습니다. ElastiCache에서 failover가 매끄럽게 되게 하려면 **표준 Lettuce를 AWS 권장 설정대로** 구성하면 됩니다(토폴로지 갱신 활성화, seed 노드 여럿, `dynamicRefreshSources`). 한 가지 더:
 
-- **클러스터 모드 비활성**(단일 프라이머리 + 레플리카)이면, failover 시 **프라이머리 엔드포인트의 DNS**가 새 노드를 가리키도록 바뀝니다. 이때 JVM의 DNS 캐시 TTL(`networkaddress.cache.ttl`)이 길면 옛 노드로 계속 접속합니다 — TTL을 짧게 둬야 새 프라이머리로 재접속합니다. 강등된 옛 프라이머리에 쓰기가 가서 `READONLY`가 지속되면 `LettuceConnectionFactory#resetConnection()`으로 커넥션을 리셋하는 대응이 알려져 있습니다.
+- **클러스터 모드 비활성**(단일 프라이머리 + 레플리카)이면, failover 시 **프라이머리 엔드포인트의 DNS**가 새 노드를 가리키도록 바뀝니다. 이때 JVM의 DNS 캐시 TTL(`networkaddress.cache.ttl`)이 길면 옛 노드로 계속 접속합니다 — TTL을 짧게 설정해야 새 프라이머리로 재접속합니다. 강등된 옛 프라이머리에 쓰기가 가서 `READONLY`가 지속되면 `LettuceConnectionFactory#resetConnection()`으로 커넥션을 리셋하는 대응이 알려져 있습니다.
 
 <mark>서버가 failover해도 클라이언트가 토폴로지를 갱신하지 않으면 장애는 계속됩니다 — Lettuce의 토폴로지 갱신(주기 + 적응형)을 활성화하는 것이 Spring + Redis 클러스터 운영의 사실상 필수 설정입니다.</mark>
 

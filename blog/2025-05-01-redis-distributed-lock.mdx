@@ -228,12 +228,12 @@ boolean acquired = lock.tryLock(3, 30, TimeUnit.SECONDS);
 예외가 발생해도 반드시 해제하고, 만료 뒤 **다른 스레드가 획득한 락을 잘못 해제**하는 것을 막습니다(위 코드처럼).
 
 **4) 임계 구역이 멈추지 않게 + 보유 시간 모니터링**<br />
-임계 구역 안의 DB·외부 호출에 **타임아웃**을 걸어 소유자가 무한정 멈추지 않게 하고, 락 보유 시간을 지표로 둬 비정상적으로 긴 홀드를 알림으로 잡습니다.
+임계 구역 안의 DB·외부 호출에 **타임아웃**을 걸어 소유자가 무한정 멈추지 않게 하고, 락 보유 시간을 지표로 삼아 비정상적으로 긴 홀드를 알림으로 잡습니다.
 
 ```java
 long start = System.nanoTime();
 try {
-    // 외부 호출엔 자체 타임아웃을 둬 무한정 멈추지 않게
+    // 외부 호출엔 자체 타임아웃을 설정해 무한정 멈추지 않게
     externalClient.call(data, Duration.ofSeconds(5));
 } finally {
     if (lock.isHeldByCurrentThread()) {

@@ -96,7 +96,7 @@ public void signUp(SignUpRequest req) {
 public void grantSignupCoupon(User user) { ... }
 ```
 
-<mark>핵심은 "잡느냐"가 아니라 "실패가 같은 트랜잭션을 오염시키지 않게 경계를 긋느냐"입니다.</mark> 외부 호출은 되도록 트랜잭션 밖에서 하는 편이 좋고(커넥션 점유·지연 문제도 함께 피함 — [외부 API 하나가 느려지자 서버 전체가 멈췄다](./external-api-timeout-server-hang)), 트랜잭션 안에 둬야 한다면 전파를 명확히 설계합니다.
+<mark>핵심은 "잡느냐"가 아니라 "실패가 같은 트랜잭션을 오염시키지 않게 경계를 긋느냐"입니다.</mark> 외부 호출은 되도록 트랜잭션 밖에서 하는 편이 좋고(커넥션 점유·지연 문제도 함께 피함 — [외부 API 하나가 느려지자 서버 전체가 멈췄다](./external-api-timeout-server-hang)), 트랜잭션 안에 포함해야 한다면 전파를 명확히 설계합니다.
 
 ## 정리
 
