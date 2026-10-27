@@ -233,7 +233,7 @@ SELECT * FROM users WHERE login_id = 10023456;
 
 **분석** — 이번엔 `possible_keys=idx_login_id`로 후보엔 올랐지만 `key=NULL`이라 **끝내 안 썼습니다**. `login_id`가 문자열인데 숫자와 비교하니 MySQL이 컬럼 쪽을 숫자로 변환(`CAST`)해 비교합니다 — 인덱스 정렬 순서와 맞지 않아 탐색 불가(§5②). `possible_keys`는 있는데 `key=NULL`이면 형변환·함수 가공을 먼저 의심합니다.
 
-**대응** — 타입을 통일해 문자열로 비교합니다(어플리케이션의 파라미터 바인딩 타입도 함께 점검).
+**대응** — 타입을 통일해 문자열로 비교합니다(애플리케이션의 파라미터 바인딩 타입도 함께 점검).
 
 ```sql
 SELECT * FROM users WHERE login_id = '10023456';

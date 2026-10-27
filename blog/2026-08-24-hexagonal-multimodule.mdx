@@ -26,25 +26,25 @@ date: 2026-08-24T10:00:00
 
 ## 전체 구성 한눈에
 
-실행 가능한 앱(인바운드 어댑터)들과, 그들이 공유하는 도메인·코어·아웃바운드 어댑터 모듈로 나눕니다.
+실행 가능한 애플리케이션(인바운드 어댑터)들과, 그들이 공유하는 도메인·코어·아웃바운드 어댑터 모듈로 나눕니다.
 
 ```
 root/
-├── app-api/                 # [인바운드] REST API 실행 앱
-├── app-consumer/            # [인바운드] 메시지 컨슈머 실행 앱
-├── app-batch/               # [인바운드] 배치 실행 앱
-├── app-cronjob/             # [인바운드] 크론잡 실행 앱
-├── app-exporter/            # [인바운드] 지표 export 실행 앱
+├── app-api/                 # [인바운드] REST API 실행 애플리케이션
+├── app-consumer/            # [인바운드] 메시지 컨슈머 실행 애플리케이션
+├── app-batch/               # [인바운드] 배치 실행 애플리케이션
+├── app-cronjob/             # [인바운드] 크론잡 실행 애플리케이션
+├── app-exporter/            # [인바운드] 지표 export 실행 애플리케이션
 │
 └── sub-module/              # 공유 도메인·코어·어댑터
-    ├── app-domain/          # 도메인 모델 + 어플리케이션(포트 in/out + 유스케이스 service)
+    ├── app-domain/          # 도메인 모델 + 애플리케이션(포트 in/out + 유스케이스 service)
     ├── app-core/            # 기술 공통 글루(공통 어댑터·설정·AOP·보안)
     ├── app-persistence/     # [아웃바운드 어댑터] DB (out 포트 구현)
     ├── app-external-api/    # [아웃바운드 어댑터] 외부 API (out 포트 구현)
     └── app-common/          # 공통 유틸
 ```
 
-여기서 핵심은 **유스케이스와 포트가 `app-domain` 모듈에 있다**는 점입니다. `app-domain` 모듈이 도메인 모델과 어플리케이션(포트·유스케이스)을 함께 담고, `app-core`는 여러 모듈이 함께 사용하는 **기술 글루**(공통 어댑터·설정·보안)입니다. 각 실행 앱은 `app-domain`·`app-core`에 필요한 아웃바운드 어댑터(`app-persistence`, `app-external-api`)를 조합해 만듭니다. **`app-domain`과 `app-core`는 어댑터 모듈을 의존하지 않고**, 반대로 어댑터가 이들을 의존합니다.
+여기서 핵심은 **유스케이스와 포트가 `app-domain` 모듈에 있다**는 점입니다. `app-domain` 모듈이 도메인 모델과 애플리케이션(포트·유스케이스)을 함께 담고, `app-core`는 여러 모듈이 함께 사용하는 **기술 글루**(공통 어댑터·설정·보안)입니다. 각 실행 애플리케이션은 `app-domain`·`app-core`에 필요한 아웃바운드 어댑터(`app-persistence`, `app-external-api`)를 조합해 만듭니다. **`app-domain`과 `app-core`는 어댑터 모듈을 의존하지 않고**, 반대로 어댑터가 이들을 의존합니다.
 
 말로만 보면 헷갈리니 "주문을 저장한다"는 기능으로 예를 들어 보겠습니다. 저장이 **필요하다**는 사실은 `app-domain`이 인터페이스(포트)로 선언하고, 그 인터페이스를 **어떻게** 저장하는지는 `app-persistence` 어댑터가 구현합니다. 유스케이스(`app-domain`의 `application/service`)는 인터페이스만 알 뿐 구현을 모릅니다.
 
@@ -82,7 +82,7 @@ public class OrderPersistenceAdapter implements SaveOrderPort {
 }
 ```
 
-화살표 방향이 핵심입니다. 유스케이스(`app-domain`의 `application/service`)도 `app-persistence`도 **둘 다 `app-domain`의 포트(인터페이스)를 향합니다.** 그래서 유스케이스가 `app-persistence`를 import하는 일이 없고, 실제 구현체를 주입하는 것은 실행 앱(구성 지점)이 DI로 합니다.
+화살표 방향이 핵심입니다. 유스케이스(`app-domain`의 `application/service`)도 `app-persistence`도 **둘 다 `app-domain`의 포트(인터페이스)를 향합니다.** 그래서 유스케이스가 `app-persistence`를 import하는 일이 없고, 실제 구현체를 주입하는 것은 실행 애플리케이션(구성 지점)이 DI로 합니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -104,9 +104,9 @@ ADP ..|> PORT : 구현
 
 ![PlantUML 유스케이스가 포트에 의존하고 어댑터가 포트를 구현](/img/c4/pu-hex-port.svg)
 
-유스케이스와 어댑터가 **둘 다 인터페이스(포트)를 향합니다.** 유스케이스는 `app-persistence`를 import하지 않고, 실제 구현체는 실행 앱이 DI로 주입합니다. 그래서 저장소를 JPA에서 다른 것으로 바꿔도 유스케이스·도메인 코드는 그대로입니다.
+유스케이스와 어댑터가 **둘 다 인터페이스(포트)를 향합니다.** 유스케이스는 `app-persistence`를 import하지 않고, 실제 구현체는 실행 애플리케이션이 DI로 주입합니다. 그래서 저장소를 JPA에서 다른 것으로 바꿔도 유스케이스·도메인 코드는 그대로입니다.
 
-<mark>실행 앱은 "어떤 어댑터를 끼울지"만 구성할 뿐, 비즈니스 규칙은 app-domain 모듈(모델·유스케이스)에 있습니다.</mark>
+<mark>실행 애플리케이션은 "어떤 어댑터를 끼울지"만 구성할 뿐, 비즈니스 규칙은 app-domain 모듈(모델·유스케이스)에 있습니다.</mark>
 
 ## 모듈별 책임과 패키지
 
@@ -116,7 +116,7 @@ ADP ..|> PORT : 구현
 
 ```
 root/
-├── app-api/                        # [인바운드 어댑터] REST 앱
+├── app-api/                        # [인바운드 어댑터] REST 애플리케이션
 │   └── api/
 │       ├── order/                  #   주문 컨텍스트
 │       │   ├── controller/         #     REST 컨트롤러 → in 포트 호출
@@ -127,8 +127,8 @@ root/
 └── sub-module/
     ├── app-common/                 # 공통 유틸
     ├── app-core/                   # 기술 공통 글루(adapter·aop·config·security·jpa)
-    ├── app-domain/                 # [모듈] 도메인 모델 + 어플리케이션 (헥사고날 코어)
-    │   ├── application/            #   [패키지] 어플리케이션 (컨텍스트별)
+    ├── app-domain/                 # [모듈] 도메인 모델 + 애플리케이션 (헥사고날 코어)
+    │   ├── application/            #   [패키지] 애플리케이션 (컨텍스트별)
     │   │   ├── order/              #     주문 컨텍스트
     │   │   │   ├── port/in/        #       인바운드 포트(유스케이스 인터페이스)
     │   │   │   ├── port/out/       #       아웃바운드 포트(persistence·kafka·external)
@@ -160,7 +160,7 @@ root/
             └── …/                  #   그 외 컨텍스트 (동일 구조)
 ```
 
-한 가지 구분할 점: **모듈 `app-domain`과 그 안의 `domain/` 패키지는 서로 다른 단위입니다.** 모듈(`app-domain`)은 빌드 단위로 어플리케이션(`application/`)과 도메인 모델(`domain/`)을 함께 담고, 그 아래 `builder`·`enums`·`exception`·`outbox`는 도메인 모델을 뒷받침하는 형제 패키지입니다. 즉 `app-domain`은 **모듈**, 그 안의 `domain/`은 그 모듈의 **도메인 모델 패키지**입니다.
+한 가지 구분할 점: **모듈 `app-domain`과 그 안의 `domain/` 패키지는 서로 다른 단위입니다.** 모듈(`app-domain`)은 빌드 단위로 애플리케이션(`application/`)과 도메인 모델(`domain/`)을 함께 담고, 그 아래 `builder`·`enums`·`exception`·`outbox`는 도메인 모델을 뒷받침하는 형제 패키지입니다. 즉 `app-domain`은 **모듈**, 그 안의 `domain/`은 그 모듈의 **도메인 모델 패키지**입니다.
 
 흐름은 단순합니다. 컨트롤러(인바운드 어댑터)가 **in 포트**를 호출하면 `app-domain` 모듈의 유스케이스(`application/…/service`)가 그 포트를 구현하면서 필요할 때 **out 포트**를 호출하고, 그 구현은 `app-persistence`·`app-external-api` 어댑터가 담당합니다.
 
@@ -237,11 +237,11 @@ C -->> IN : 6. 응답
 |---|---|---|
 | ① 요청 수신 | 인바운드 어댑터 | <mark>app-api</mark>/…/api/order/<mark>controller</mark>/OrderController |
 | ② in 포트 호출 | 인바운드 포트 | <mark>app-domain</mark>/…/application/order/<mark>port/in</mark>/PlaceOrderUseCase |
-| ③ 유스케이스 실행 | 어플리케이션(app-domain) | <mark>app-domain</mark>/…/application/order/<mark>service</mark>/PlaceOrderService |
+| ③ 유스케이스 실행 | 애플리케이션(app-domain) | <mark>app-domain</mark>/…/application/order/<mark>service</mark>/PlaceOrderService |
 | ④ out 포트 호출 | 아웃바운드 포트 | <mark>app-domain</mark>/…/application/order/<mark>port/out</mark>/SaveOrderPort |
 | ⑤ 실제 저장 | 아웃바운드 어댑터 | <mark>app-persistence</mark>/…/<mark>adapter</mark>/order/OrderPersistenceAdapter |
 
-유스케이스는 out 포트라는 인터페이스만 호출할 뿐, 그 구현이 어떤 어댑터인지는 실행 앱이 주입해 줍니다.
+유스케이스는 out 포트라는 인터페이스만 호출할 뿐, 그 구현이 어떤 어댑터인지는 실행 애플리케이션이 주입해 줍니다.
 
 <mark>인바운드 어댑터 → in 포트 → 유스케이스 → out 포트 → 아웃바운드 어댑터 → DB 순으로 이어지고, 유스케이스는 포트(인터페이스)만 알고 어댑터 구현은 모릅니다.</mark>
 
@@ -256,7 +256,7 @@ C -->> IN : 6. 응답
 
 ## 정리
 
-- 실행 앱(**인바운드 어댑터**) + 공유 `app-domain·app-core` + **아웃바운드 어댑터**(`app-persistence`·`app-external-api`)로 모듈을 나눕니다.
+- 실행 애플리케이션(**인바운드 어댑터**) + 공유 `app-domain·app-core` + **아웃바운드 어댑터**(`app-persistence`·`app-external-api`)로 모듈을 나눕니다.
 - 포트를 `in·out`으로 나눠 도메인과 어댑터의 접점을 인터페이스로만 정의합니다.
 - 의존성은 항상 **도메인 안쪽**으로 향하게 해, 인프라를 교체해도 도메인이 흔들리지 않게 합니다.
 

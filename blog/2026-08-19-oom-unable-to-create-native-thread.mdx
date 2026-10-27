@@ -63,14 +63,14 @@ stop
 
 ## 해결 — 클라이언트는 재사용, 동시성엔 상한
 
-- **`OkHttpClient`는 싱글톤으로 재사용** — 앱 전체가 하나(또는 소수)를 공유해 `Dispatcher`·커넥션 풀을 재사용합니다. **호출마다 생성 금지.**
+- **`OkHttpClient`는 싱글톤으로 재사용** — 애플리케이션 전체가 하나(또는 소수)를 공유해 `Dispatcher`·커넥션 풀을 재사용합니다. **호출마다 생성 금지.**
 - **Dispatcher에 동시 요청 상한** — `maxRequests` / `maxRequestsPerHost`로 폭증을 막습니다.
 - **retry는 상한 + 백오프** — 무한·중첩 재시도 금지.
 - **컨테이너 자원 한도 고려** — 스레드 스택(`-Xss`)·`ulimit`·컨테이너 메모리. 힙은 `-XX:MaxRAMPercentage`로 잡되 **힙 밖 몫을 남긴다**([JVM 튜닝](./jvm-tuning-scenarios)).
 
 ```java
 @Bean
-OkHttpClient okHttpClient() { // 앱당 하나만
+OkHttpClient okHttpClient() { // 애플리케이션당 하나만
     var client = new OkHttpClient.Builder()
             .connectTimeout(Duration.ofSeconds(1))
             .readTimeout(Duration.ofSeconds(2))

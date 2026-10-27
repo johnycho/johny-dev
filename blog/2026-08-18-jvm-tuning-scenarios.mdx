@@ -51,7 +51,7 @@ JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데
   unit="응답시간(ms)"
 />
 
-GC 로그를 열면 이러한 줄이 보입니다 — 맨 끝 `830.5ms`가 그 순간 앱이 멈춘 시간입니다(830ms면 그동안 모든 요청이 대기).
+GC 로그를 열면 이러한 줄이 보입니다 — 맨 끝 `830.5ms`가 그 순간 애플리케이션이 멈춘 시간입니다(830ms면 그동안 모든 요청이 대기).
 
 ```text
 [gc] GC(42) Pause Young (Normal) 1856M->512M(2048M) 830.5ms
@@ -70,7 +70,7 @@ GC 로그를 열면 이러한 줄이 보입니다 — 맨 끝 `830.5ms`가 그 �
 
 ## 상황 2 — 힙 OutOfMemoryError
 
-**증상**: `java.lang.OutOfMemoryError: Java heap space`로 앱이 종료된다.
+**증상**: `java.lang.OutOfMemoryError: Java heap space`로 애플리케이션이 종료된다.
 
 **판단이 먼저입니다** — 실제로 메모리가 부족한 건지, **누수**인지 구분해야 합니다. GC 로그에서 Full GC 뒤에도 사용량이 계속 우상향하면 누수 신호입니다.
 
@@ -151,7 +151,7 @@ $ kubectl describe pod my-app-xxxx
 -XX:MaxDirectMemorySize=256m  # NIO·네티 다이렉트 버퍼 상한
 ```
 
-<mark>컨테이너에선 `-Xmx` 고정값보다 `-XX:MaxRAMPercentage`로 비율 지정이 안전하고, 힙 밖 메모리 몫을 남겨 둬야 OOMKilled를 피합니다.</mark> 스레드 수가 많은 앱은 스택 총합도 무시 못 한다([스레드 풀](./spring-boot-thread-pools)).
+<mark>컨테이너에선 `-Xmx` 고정값보다 `-XX:MaxRAMPercentage`로 비율 지정이 안전하고, 힙 밖 메모리 몫을 남겨 둬야 OOMKilled를 피합니다.</mark> 스레드 수가 많은 애플리케이션은 스택 총합도 무시 못 한다([스레드 풀](./spring-boot-thread-pools)).
 
 ## 상황 5 — 처리량이 최우선인 배치
 
@@ -208,7 +208,7 @@ $ kubectl describe pod my-app-xxxx
 
 | GC | 성격 | 언제 |
 |---|---|---|
-| Serial | 단일 스레드, 작은 힙 | 아주 작은 앱·CLI |
+| Serial | 단일 스레드, 작은 힙 | 아주 작은 애플리케이션·CLI |
 | Parallel | 처리량 최우선 | 배치·백그라운드 작업 |
 | **G1 (기본)** | 정지·처리량 균형 | 대부분의 서비스(기본값) |
 | ZGC | 초저지연, 대용량 힙 | 정지 SLO가 엄격할 때 |
@@ -239,7 +239,7 @@ GC가 트래픽 증가로 어떻게 나빠지는지는 [트래픽이 늘면 어�
 
 | 용어 | 쉬운 뜻 |
 |---|---|
-| stop-the-world | GC가 앱 스레드를 잠시 멈추는 구간 |
+| stop-the-world | GC가 애플리케이션 스레드를 잠시 멈추는 구간 |
 | 힙 / 네이티브 | 객체 저장 영역 / 그 밖(메타·스택·버퍼) 메모리 |
 | Metaspace | 클래스 메타데이터를 저장하는 힙 밖 영역 |
 | OOMKilled | 컨테이너 메모리 한도 초과로 커널이 종료(137) |

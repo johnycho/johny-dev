@@ -241,9 +241,9 @@ cluster-replica-validity-factor 10
 
 ## 원인 ⑥ 클라이언트(드라이버)가 새 토폴로지를 못 따라간다
 
-여기까지는 서버 쪽 이야기였는데, **클라이언트가 failover를 못 따라가는** 경우가 실무에서 가장 자주 만나는 원인입니다. 서버는 정상적으로 승격했는데도 앱이 계속 중단된(또는 강등된) 노드로 요청하는 상황이죠. Spring Boot 기본 Redis 클라이언트인 **Lettuce**가 대표적입니다.
+여기까지는 서버 쪽 이야기였는데, **클라이언트가 failover를 못 따라가는** 경우가 실무에서 가장 자주 만나는 원인입니다. 서버는 정상적으로 승격했는데도 애플리케이션이 계속 중단된(또는 강등된) 노드로 요청하는 상황이죠. Spring Boot 기본 Redis 클라이언트인 **Lettuce**가 대표적입니다.
 
-- Lettuce는 **클러스터 토폴로지를 기본적으로 자동 갱신하지 않습니다.** failover로 리더가 바뀌어도 예전 토폴로지를 붙잡고 있어, `RedisCommandTimeoutException`이나 `READONLY`(강등된 옛 리더에 쓰기 시도) 오류가 **failover가 끝난 뒤에도 계속** 납니다 — "서버는 복구됐는데 앱만 복구되지 않는" 상태.
+- Lettuce는 **클러스터 토폴로지를 기본적으로 자동 갱신하지 않습니다.** failover로 리더가 바뀌어도 예전 토폴로지를 붙잡고 있어, `RedisCommandTimeoutException`이나 `READONLY`(강등된 옛 리더에 쓰기 시도) 오류가 **failover가 끝난 뒤에도 계속** 납니다 — "서버는 복구됐는데 애플리케이션만 복구되지 않는" 상태.
 ### 대응 방법
 
 **토폴로지 갱신을 활성화합니다.** **주기적 갱신**(`enablePeriodicRefresh`)과 **적응형 트리거**(`enableAllAdaptiveRefreshTriggers` — MOVED·ASK·재연결 타임아웃 이벤트가 오면 즉시 갱신)를 함께 활성화합니다. Spring Boot 3.x는 설정으로 노출합니다.
@@ -275,7 +275,7 @@ var topologyRefresh = ClusterTopologyRefreshOptions.builder()
 
 <mark>서버가 failover해도 클라이언트가 토폴로지를 갱신하지 않으면 장애는 계속됩니다 — Lettuce의 토폴로지 갱신(주기 + 적응형)을 활성화하는 것이 Spring + Redis 클러스터 운영의 사실상 필수 설정입니다.</mark>
 
-토폴로지 갱신을 활성화하는 것 외에도, 앱이 **failover 창**(승격까지 걸리는 몇 초)을 견디게 하는 대응을 함께 갖춥니다.
+토폴로지 갱신을 활성화하는 것 외에도, 애플리케이션이 **failover 창**(승격까지 걸리는 몇 초)을 견디게 하는 대응을 함께 갖춥니다.
 
 - **타임아웃을 짧고 명확하게** — 커맨드 타임아웃이 없거나 길면, 중단된 노드의 응답을 오래 기다리며 요청 스레드가 대기 상태에 빠져 [외부 지연이 서버 전체를 멈춘](./external-api-timeout-server-hang) 것과 같은 연쇄가 납니다. `spring.data.redis.timeout`(커맨드)과 커넥트 타임아웃을 짧게 잡아 **빨리 실패**하게 합니다.
 
@@ -314,7 +314,7 @@ class CacheConfig implements CachingConfigurer {
 - **재시도는 멱등·짧게** — 일시적 `MOVED`·타임아웃은 짧은 재시도로 넘어가지만, 멱등하지 않은 쓰기의 재시도는 중복을 낳을 수 있어 신중히.
 - **지표로 감시** — Redis 커맨드 지연·커넥션 오류·`master_link_status`를 대시보드에 올려, failover가 실제로 매끄럽게 넘어가는지 확인합니다.
 
-<mark>클라이언트 설정(토폴로지 갱신 + 짧은 타임아웃)과 어플리케이션 방어(캐시 폴백·서킷 브레이커)를 함께 갖춰야, 몇 초의 failover 창이 서비스 장애로 번지지 않습니다.</mark>
+<mark>클라이언트 설정(토폴로지 갱신 + 짧은 타임아웃)과 애플리케이션 방어(캐시 폴백·서킷 브레이커)를 함께 갖춰야, 몇 초의 failover 창이 서비스 장애로 번지지 않습니다.</mark>
 
 ## 실무 대비 체크리스트
 
@@ -322,8 +322,8 @@ class CacheConfig implements CachingConfigurer {
 - **`cluster-require-full-coverage`를 의식적으로 선택** — 부분 장애가 전면 장애로 번지는 게 더 나쁘면 `no`. 정합성이 우선이면 `yes`(기본).
 - **복제 지연을 모니터링** — `validity-factor`에 걸릴 만큼 뒤처진 레플리카는 승격하지 못합니다. 복제 랙·`master_link_status`를 감시합니다.
 - **`node-timeout`을 네트워크에 맞게** — 클라우드 멀티 AZ면 너무 짧게 잡아 false failover가 나지 않게.
-- **클라이언트 토폴로지 갱신을 활성화** — Lettuce는 기본이 꺼져 있습니다. `spring.data.redis.lettuce.cluster.refresh.adaptive=true` + 주기 갱신을 설정해, 서버 failover를 앱이 따라가게 합니다. ElastiCache 단일 프라이머리면 JVM DNS TTL도 짧게.
-- **failover를 실제로 테스트** — 마스터를 중단시켜 보고 승격 시간·CLUSTERDOWN 여부·**앱이 새 노드로 붙는지**를 확인합니다(카오스 테스트). 설정이 의도대로 동작하는지는 중단시켜 봐야 압니다.
+- **클라이언트 토폴로지 갱신을 활성화** — Lettuce는 기본이 꺼져 있습니다. `spring.data.redis.lettuce.cluster.refresh.adaptive=true` + 주기 갱신을 설정해, 서버 failover를 애플리케이션이 따라가게 합니다. ElastiCache 단일 프라이머리면 JVM DNS TTL도 짧게.
+- **failover를 실제로 테스트** — 마스터를 중단시켜 보고 승격 시간·CLUSTERDOWN 여부·**애플리케이션이 새 노드로 붙는지**를 확인합니다(카오스 테스트). 설정이 의도대로 동작하는지는 중단시켜 봐야 압니다.
 - **버전·매니지드 동작 확인** — 특정 버전의 승격 버그, 매니지드(ElastiCache 등)의 자체 failover 정책은 문서·릴리스 노트로 확인.
 
 ## 정리
@@ -334,7 +334,7 @@ class CacheConfig implements CachingConfigurer {
 - **레플리카 staleness**(`validity-factor`)로 뒤처진 레플리카는 승격 거부.
 - **`node-timeout`** 은 짧으면 false failover, 길면 감지 지연.
 - split-brain은 클러스터의 **`configEpoch`** 로 대개 해소되나 Sentinel·대량 재기동은 주의.
-- **클라이언트도 원인**입니다 — Lettuce는 토폴로지 자동 갱신이 **기본 꺼짐**이라, 활성화하지 않으면 서버가 failover해도 앱이 계속 중단된 노드를 붙잡습니다. (별도 AWS 드라이버가 아니라 Lettuce 설정 문제)
+- **클라이언트도 원인**입니다 — Lettuce는 토폴로지 자동 갱신이 **기본 꺼짐**이라, 활성화하지 않으면 서버가 failover해도 애플리케이션이 계속 중단된 노드를 붙잡습니다. (별도 AWS 드라이버가 아니라 Lettuce 설정 문제)
 - **failover는 반드시 중단시켜 테스트**합니다.
 
 ## 참고

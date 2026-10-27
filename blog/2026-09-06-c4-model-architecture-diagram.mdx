@@ -27,7 +27,7 @@ C4는 완전히 새로운 게 아니라, **UML과 4+1 뷰**에서 필요한 것�
 C4는 시스템의 **정적 구조**를 네 요소로 봅니다. 상위가 하위를 포함합니다.
 
 - **소프트웨어 시스템(Software System)** — 가장 높은 추상화. 사용자에게 가치를 주는 무언가(제품·서비스). 우리가 만드는 시스템 + **의존하는 외부 시스템**까지.
-- **컨테이너(Container)** — 시스템이 동작하려면 **실행되거나 저장돼야 하는 단위**(웹 앱·API 서버·DB 등). 독립적으로 실행·배포되는 런타임 경계. **주의: 도커와 무관** — C4는 도커 이전부터 이 용어를 썼습니다.
+- **컨테이너(Container)** — 시스템이 동작하려면 **실행되거나 저장돼야 하는 단위**(웹 애플리케이션·API 서버·DB 등). 독립적으로 실행·배포되는 런타임 경계. **주의: 도커와 무관** — C4는 도커 이전부터 이 용어를 썼습니다.
 - **컴포넌트(Component)** — 잘 정의된 인터페이스 뒤에 캡슐화된 관련 기능의 묶음. **개별 배포 단위가 아니라**, 컨테이너 안에서 다른 컴포넌트들과 **하나의 프로세스**로 동작합니다.
 - **코드(Code)** — 클래스·인터페이스·함수 등 언어의 기본 구성 요소로 실제 구현된 것.
 
@@ -96,8 +96,8 @@ LAYOUT_LEFT_RIGHT()
 
 Person(customer, "고객")
 System_Boundary(ib, "인터넷 뱅킹 시스템") {
-  Container(spa, "UI 앱", "JavaScript·Angular", "SPA")
-  Container(api, "백엔드 앱", "Java·Spring Boot", "REST API")
+  Container(spa, "UI 애플리케이션", "JavaScript·Angular", "SPA")
+  Container(api, "백엔드 애플리케이션", "Java·Spring Boot", "REST API")
   ContainerDb(db, "데이터베이스", "MySQL", "사용자·로그")
 }
 Rel(customer, spa, "사용", "HTTPS")
@@ -114,7 +114,7 @@ Rel(api, db, "읽기·쓰기", "MySQL")
 
 ### 레벨 3 — 컴포넌트
 
-컨테이너 하나(여기선 **백엔드 앱**)를 열어 내부 컴포넌트를 봅니다.
+컨테이너 하나(여기선 **백엔드 애플리케이션**)를 열어 내부 컴포넌트를 봅니다.
 
 <details>
 <summary>C4-PlantUML 코드</summary>
@@ -125,7 +125,7 @@ Rel(api, db, "읽기·쓰기", "MySQL")
 LAYOUT_LEFT_RIGHT()
 
 Person(customer, "고객")
-Container_Boundary(be, "백엔드 앱") {
+Container_Boundary(be, "백엔드 애플리케이션") {
   Component(login, "로그인 API")
   Component(summary, "계좌요약 API")
   Component(stmt, "명세서 API")
