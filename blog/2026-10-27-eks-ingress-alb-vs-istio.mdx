@@ -40,12 +40,12 @@ description: "같은 EKS 클러스터인데 어떤 서비스는 ALB 접근 로�
 
 <mark>핵심 한 줄 — **NLB는 L4라 HTTP 상태(400 등)를 아예 기록하지 못합니다.** 로그를 켜도 안 보입니다.</mark> L4/L7과 NLB·ALB의 차이 자체는 [ALB vs NLB](./alb-vs-nlb)에 따로 정리했습니다.
 
-## EKS에서 외부 트래픽을 받는 두 가지 길
+## EKS에서 외부 트래픽을 받는 두 가지 경로
 
 EKS(쿠버네티스) 서비스가 외부 요청을 받는 방식은 보통 둘 중 하나입니다.
 
-- **길 A — ALB** — 쿠버네티스 `Ingress` 리소스를 만들면 AWS Load Balancer Controller가 **ALB를 자동 생성**합니다. ALB가 **직접 L7**을 처리하므로 **접근 로그(S3)·CloudWatch 상태 메트릭이 남습니다.** 즉 EKS도 ALB를 사용합니다.
-- **길 B — Istio 인그레스(NLB → Envoy)** — 서비스 메시를 사용하면 외부 입구가 **istio-ingressgateway(Envoy)** 이고, 그 앞에 **NLB**를 배치해 트래픽을 받습니다. **L7(라우팅·상태코드·로그)은 Envoy가 담당**하고, 여기엔 **ALB가 들어가지 않습니다.**
+- **경로 A — ALB** — 쿠버네티스 `Ingress` 리소스를 만들면 AWS Load Balancer Controller가 **ALB를 자동 생성**합니다. ALB가 **직접 L7**을 처리하므로 **접근 로그(S3)·CloudWatch 상태 메트릭이 남습니다.** 즉 EKS도 ALB를 사용합니다.
+- **경로 B — Istio 인그레스(NLB → Envoy)** — 서비스 메시를 사용하면 외부 입구가 **istio-ingressgateway(Envoy)** 이고, 그 앞에 **NLB**를 배치해 트래픽을 받습니다. **L7(라우팅·상태코드·로그)은 Envoy가 담당**하고, 여기엔 **ALB가 들어가지 않습니다.**
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -61,8 +61,8 @@ rectangle "NLB\n(L4, TCP)" as NLB #FCE4EC
 rectangle "Envoy\n(L7, HTTP)" as ENV #E9F2E9
 rectangle "서비스(파드)" as S #FFF3E0
 
-C --> ALB : 길 A
-C --> NLB : 길 B
+C --> ALB : 경로 A
+C --> NLB : 경로 B
 ALB --> S : HTTP 로그 = ALB(S3)
 NLB --> ENV
 ENV --> S : HTTP 로그 = Envoy/애플리케이션
@@ -73,18 +73,18 @@ ENV --> S : HTTP 로그 = Envoy/애플리케이션
 
 ![PlantUML EKS 인그레스 두 경로 — ALB 직접 vs NLB→Envoy](/img/c4/pu-eks-ingress-paths.svg)
 
-<mark>같은 클러스터·같은 제품군이어도 서비스마다 경로가 다를 수 있습니다.</mark> ALB 경로 서비스는 ALB 접근 로그(S3)에 요청이 남아 요청 단위로 조회됐고, Istio(NLB) 경로 서비스는 ALB가 없으니 **ALB 로그에 아예 없고** 400은 Envoy나 애플리케이션이 남겨 **stdout → 로그 수집 스택**으로 전달됩니다. "어떤 건 ALB 로그에 있고 어떤 건 없다"의 이유는 **EKS 여부가 아니라, 그 서비스가 어느 길로 들어오느냐**였습니다.
+<mark>같은 클러스터·같은 제품군이어도 서비스마다 경로가 다를 수 있습니다.</mark> ALB 경로 서비스는 ALB 접근 로그(S3)에 요청이 남아 요청 단위로 조회됐고, Istio(NLB) 경로 서비스는 ALB가 없으니 **ALB 로그에 아예 없고** 400은 Envoy나 애플리케이션이 남겨 **stdout → 로그 수집 스택**으로 전달됩니다. "어떤 건 ALB 로그에 있고 어떤 건 없다"의 이유는 **EKS 여부가 아니라, 그 서비스가 어느 경로로 들어오느냐**였습니다.
 
 ## 그래서 로그·상태는 어디서 보나
 
 | 경로 | HTTP 상태(4XX/5XX) | 요청 단위 상세(URL·바이트) | 비고 |
 |---|---|---|---|
-| **ALB (길 A)** | CloudWatch `HTTPCode_ELB_4XX`/`Target_4XX` | **ALB 접근 로그(S3)** — 켜져 있을 때 | access log 꺼져 있으면 집계만, 요청 단위는 없음 |
-| **Istio/NLB (길 B)** | NLB엔 **없음**(L4). Envoy가 가진 상태 | **Envoy 접근 로그 / 애플리케이션 로그** → 로그 수집 스택 | NLB access log는 연결(TCP) 레벨뿐 |
+| **ALB (경로 A)** | CloudWatch `HTTPCode_ELB_4XX`/`Target_4XX` | **ALB 접근 로그(S3)** — 켜져 있을 때 | access log 꺼져 있으면 집계만, 요청 단위는 없음 |
+| **Istio/NLB (경로 B)** | NLB엔 **없음**(L4). Envoy가 가진 상태 | **Envoy 접근 로그 / 애플리케이션 로그** → 로그 수집 스택 | NLB access log는 연결(TCP) 레벨뿐 |
 
 추적할 때 순서는 이렇습니다.
 
-1. **이 서비스는 어느 길인가** — 로드밸런서 목록에서 ALB(`application`)인지 NLB(`network`, istio gateway)인지 확인합니다.
+1. **이 서비스는 어느 경로인가** — 로드밸런서 목록에서 ALB(`application`)인지 NLB(`network`, istio gateway)인지 확인합니다.
 2. **ALB 경로면** — CloudWatch로 `ELB_4XX`(LB가 반환한 것)인지 `Target_4XX`(애플리케이션이 반환한 것)인지 가르고, 접근 로그(S3)가 켜져 있으면 요청 단위로 봅니다.
 3. **Istio 경로면** — ALB 로그를 찾지 말고 **Envoy·애플리케이션 로그(로그 수집 스택)** 에서 상태·경로·시각으로 검색합니다.
 
