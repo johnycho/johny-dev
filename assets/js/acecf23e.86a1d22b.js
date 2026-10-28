@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkjohnycho_dev=self.webpackChunkjohnycho_dev||[]).push([[81903],{1912:e=>{e.exports=JSON.parse('{"blogBasePath":"/blog","blogTitle":"\ube14\ub85c\uadf8","authorsListPath":"/blog/authors"}')}}]);
