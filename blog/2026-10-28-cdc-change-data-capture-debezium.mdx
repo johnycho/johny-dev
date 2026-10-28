@@ -109,7 +109,7 @@ Kafka Connect에 아래 설정을 등록하면(`POST /connectors`), Debezium이 
 
 토픽 이름은 **`topic.prefix.데이터베이스.테이블`** 규칙을 따릅니다. 위 설정이면 `fulfillment.inventory.orders`, `fulfillment.inventory.customers` 토픽이 생깁니다. <mark>테이블마다 토픽이 하나씩 생기고, **기본 키**(primary key — 각 행을 유일하게 식별하는 값, 보통 `id`)를 메시지 키로 사용해 파티셔닝하므로 **같은 행(같은 기본 키)의 변경은 순서가 보존**됩니다.</mark>
 
-한편 `schema.history.internal.kafka.topic`(`schema-changes.inventory`)은 데이터 토픽과 **별개인 내부용 스키마 이력 토픽**입니다. binlog(ROW)에는 **컬럼 값만 있고 이름·타입이 없어서**, Debezium이 **DDL 변경 이력(테이블 구조)** 을 여기에 적어 두고 binlog를 해석할 때 참조합니다. 소비자가 읽는 게 아니라 **Debezium이 직접 쓰고 읽는** 토픽이라, 보통 **단일 파티션 + 무한 보존**으로 둬 사라지지 않게 합니다.
+한편 `schema.history.internal.kafka.topic`(`schema-changes.inventory`)은 데이터 토픽과 **별개인 내부용 스키마 이력 토픽**입니다. binlog(ROW)에는 **컬럼 값만 있고 이름·타입이 없어서**, Debezium이 **DDL 변경 이력(테이블 구조)** 을 여기에 적어 두고 binlog를 해석할 때 참조합니다. 소비자가 읽는 게 아니라 **Debezium이 직접 쓰고 읽는** 토픽이라, 보통 **단일 파티션 + 무한 보존**으로 설정해 사라지지 않게 합니다.
 
 ## 변경 이벤트 형식 — op·before·after
 
