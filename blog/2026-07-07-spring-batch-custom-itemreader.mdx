@@ -32,7 +32,7 @@ Spring Batch의 chunk step은 `read → process → write`를 청크 크기만�
 
 ## 제약 1. 읽는 조건을 쓰기에서 바꾼다
 
-인트로에서 언급한 문제가 구체적으로 드러나는 곳이 바로 여기입니다. `READY`를 읽어 `IN_PROGRESS`로 전이하니, <mark>조회할 때 거는 필터를 Writer가 바꿔 버립니다.</mark> 이 상태에서 OFFSET 페이징으로 읽으면 문제가 생깁니다.
+인트로에서 언급한 문제가 구체적으로 나타나는 곳이 바로 여기입니다. `READY`를 읽어 `IN_PROGRESS`로 전이하니, <mark>조회할 때 거는 필터를 Writer가 바꿔 버립니다.</mark> 이 상태에서 OFFSET 페이징으로 읽으면 문제가 생깁니다.
 
 ```
 1페이지: OFFSET 0   LIMIT 100  → 100건 처리 → IN_PROGRESS

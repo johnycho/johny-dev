@@ -80,7 +80,7 @@ public void place(OrderCommand cmd) {
 }
 ```
 
-`AbstractAggregateRoot` 없이 직접 구현하면 구조가 드러납니다. 이벤트는 **DB에 저장되지 않는 `@Transient` 필드**에 담기고, 발행 뒤에는 `@AfterDomainEventPublication` 메서드로 **비워야** 합니다.
+`AbstractAggregateRoot` 없이 직접 구현하면 구조가 나타납니다. 이벤트는 **DB에 저장되지 않는 `@Transient` 필드**에 담기고, 발행 뒤에는 `@AfterDomainEventPublication` 메서드로 **비워야** 합니다.
 
 ```java
 @Entity
@@ -156,7 +156,7 @@ PUB --> LIS : 동기 호출
 
 **ApplicationEventPublisher**
 
-- 장점 — 발행 시점·위치가 자유롭고(영속과 무관한 이벤트 포함), 흐름이 코드에 명시적으로 드러납니다. Spring Data 없이도 동작합니다.
+- 장점 — 발행 시점·위치가 자유롭고(영속과 무관한 이벤트 포함), 흐름이 코드에 명시적으로 나타납니다. Spring Data 없이도 동작합니다.
 - 단점 — 발행하는 코드가 발행자에 결합됩니다. 발행 시점을 손으로 챙겨야 해, **커밋 전에 발행해 버리는** 실수가 나기 쉽습니다.
 
 **@DomainEvents**

@@ -179,7 +179,7 @@ end note
 
 ![PlantUML 발행-연산자-구독 파이프라인 구조](/img/c4/pu-reactive-pipeline.svg)
 
-코드로 보면 이 연결 구조가 그대로 드러납니다.
+코드로 보면 이 연결 구조가 그대로 나타납니다.
 
 ```java
 Flux.range(1, 100)          // ① 소스: 1~100 발행
@@ -218,7 +218,7 @@ public Flux<OrderDto> paidOrders() {
 }
 ```
 
-이 요청 하나가 실행되는 과정을 시퀀스로 보면, **전체를 모으지 않고 한 건씩** 발행→변환→전송되는 게 드러납니다.
+이 요청 하나가 실행되는 과정을 시퀀스로 보면, **전체를 모으지 않고 한 건씩** 발행→변환→전송되는 게 나타납니다.
 
 <details>
 <summary>PlantUML 코드</summary>

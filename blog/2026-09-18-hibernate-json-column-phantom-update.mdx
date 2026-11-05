@@ -153,7 +153,7 @@ Hibernate가 deep-copy 방식으로 바뀐 버전(6.2 후기·6.3·6.4 이상, 7
 - **원소·값 타입에 `equals`/`hashCode`가 있는지.** 없으면 추가하거나 `@Mutability(Immutability.class)`를 검토합니다. Lombok `@Data`·`@Value`·`record`는 이미 있습니다 — `@Getter`만 있는 클래스가 위험 신호입니다.
 - **회귀 테스트 한 줄.** 저장 → `em.clear()` → 조회 → flush 후 `version`이 그대로인지 단언합니다. 이 한 줄이 재발을 막습니다.
 
-<mark>증상으로 찾는 법 — 읽기만 하는 API를 호출한 뒤 `version`이 올라가거나, 특정 JSON 컬럼만 SET하는 UPDATE가 반복되면 같은 건입니다. 전환 전후로 `version` 평균 증가량을 비교하면 빠르게 드러납니다.</mark>
+<mark>증상으로 찾는 법 — 읽기만 하는 API를 호출한 뒤 `version`이 올라가거나, 특정 JSON 컬럼만 SET하는 UPDATE가 반복되면 같은 건입니다. 전환 전후로 `version` 평균 증가량을 비교하면 빠르게 나타납니다.</mark>
 
 ## 관련 이슈 — 같은 전환에서 나온 다른 JSON 이슈
 

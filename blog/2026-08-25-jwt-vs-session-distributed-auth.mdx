@@ -76,7 +76,7 @@ stickiness.type                       = lb_cookie # 로드밸런서가 만든 �
 stickiness.lb_cookie.duration_seconds = 86400     # 하루 동안 같은 서버 유지
 ```
 
-**방식 2. 접속 IP를 번호표로** — 쿠키 없이, "같은 곳에서 온 요청(같은 IP)은 늘 같은 서버로" 라고 정하는 방식입니다. Nginx는 한 줄(`ip_hash`)이면 됩니다.
+**방식 2. 접속 IP를 번호표로** — 쿠키 없이, "같은 출처의 요청(같은 IP)은 늘 같은 서버로" 라고 정하는 방식입니다. Nginx는 한 줄(`ip_hash`)이면 됩니다.
 
 ```nginx
 upstream app {
