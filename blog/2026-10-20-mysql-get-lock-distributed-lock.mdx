@@ -77,7 +77,7 @@ note over pool : GET_LOCK과 RELEASE_LOCK은\n같은 커넥션이어야 한다
 
 ![PlantUML MySQL GET_LOCK 분산 락 흐름](/img/c4/pu-mysql-getlock.svg)
 
-## executeWithLock — 획득과 해제를 한곳에 묶기
+## executeWithLock — 획득과 해제를 한곳에 모으기
 
 커넥션을 직접 다루는 코드는 "획득 → 실행 → `finally`에서 해제"를 **고차 함수 하나로 감싸고**, 호출부는 임계 구역 로직만 넘기는 방식이 깔끔합니다. 그래야 커넥션 일치와 해제 누락을 구조적으로 막습니다.
 
@@ -108,7 +108,7 @@ executeWithLock("card:user:" + userId, 3, () -> {
 });
 ```
 
-<mark>이렇게 묶으면 `GET_LOCK`, `RELEASE_LOCK`이 항상 같은 커넥션을 쓰고, 어떤 경로로 끝나든 `finally`에서 반드시 해제됩니다.</mark> (락을 함수형으로 감싸는 아이디어는 Redis 락에서도 같습니다 — [대규모 결제 분산 락](./large-scale-payment-distributed-lock) 참고.)
+<mark>이렇게 한곳에 모으면 `GET_LOCK`, `RELEASE_LOCK`이 항상 같은 커넥션을 쓰고, 어떤 경로로 끝나든 `finally`에서 반드시 해제됩니다.</mark> (락을 함수형으로 감싸는 아이디어는 Redis 락에서도 같습니다 — [대규모 결제 분산 락](./large-scale-payment-distributed-lock) 참고.)
 
 ## 조심할 점 — 공짜가 아니다
 

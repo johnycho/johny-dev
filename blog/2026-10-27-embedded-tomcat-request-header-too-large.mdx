@@ -31,7 +31,7 @@ description: "대량 요청에서만 400이 나는데 애플리케이션 로그�
 
 ### 주의 — 서비스마다 인그레스(앞단)가 다르다
 
-처음엔 엉뚱한 ALB를 봤습니다. 같은 제품군이라도 서비스마다 앞단이 다를 수 있습니다. 어떤 서비스는 **ALB** 뒤에 있어 ALB 접근 로그(S3)와 상태 메트릭이 남지만, 어떤 서비스는 **Istio 인그레스**(`NLB(L4) → istio-ingressgateway(Envoy, L7) → 서비스`) 뒤에 있어 **HTTP는 Envoy가 처리하고 ALB가 없습니다.** 이 구조는 [같은 EKS인데 ALB 로그가 있고 없고](./eks-ingress-alb-vs-istio)에서 자세히 정리했습니다.
+처음에는 관련 없는 ALB를 확인했습니다. 같은 제품군이라도 서비스마다 앞단이 다를 수 있습니다. 어떤 서비스는 **ALB** 뒤에 있어 ALB 접근 로그(S3)와 상태 메트릭이 남지만, 어떤 서비스는 **Istio 인그레스**(`NLB(L4) → istio-ingressgateway(Envoy, L7) → 서비스`) 뒤에 있어 **HTTP는 Envoy가 처리하고 ALB가 없습니다.** 이 구조는 [같은 EKS인데 ALB 로그가 있고 없고](./eks-ingress-alb-vs-istio)에서 자세히 정리했습니다.
 
 문제의 서비스는 **Istio 경로**였습니다. 그래서 ALB 접근 로그에는 이 요청이 **아예 없고**(ALB를 안 타니까), NLB 접근 로그는 켜도 HTTP 상태가 안 남고, 애플리케이션, Envoy 로그는 **stdout → 로그 수집 스택(APM/로그 플랫폼)** 으로 전달됩니다. <mark>AWS 네이티브 ALB 로그로는 이 400을 요청 단위로 볼 수 없었고, 로그 수집 스택(여기선 Datadog)에서 찾아야 했습니다.</mark>
 

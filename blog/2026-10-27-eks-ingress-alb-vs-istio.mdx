@@ -101,4 +101,4 @@ ENV --> S : HTTP 로그 = Envoy/애플리케이션
 - 어떤 서비스가 어느 경로인지는 **그 서비스의 외부 호스트명이 어느 LB의 라우팅 규칙에 있는지**로 확인합니다. ALB의 호스트 규칙에 없으면 Istio(NLB) 경로일 가능성이 높습니다.
 - **NLB access log를 켜도 HTTP 상태는 안 나옵니다**(L4). HTTP가 필요하면 Envoy, 애플리케이션 로그를 봅니다.
 
-이 구조를 모른 채 엉뚱한 ALB 로그를 찾다 시간을 들인 실제 사례는 [애플리케이션 로그에 안 남는 400 추적](./embedded-tomcat-request-header-too-large)에서 이어서 설명합니다.
+이 구조를 모르고 관련 없는 ALB 로그를 찾다 시간을 들인 실제 사례는 [애플리케이션 로그에 안 남는 400 추적](./embedded-tomcat-request-header-too-large)에서 이어서 설명합니다.
