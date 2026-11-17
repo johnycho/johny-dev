@@ -57,7 +57,7 @@ long total = counter.sum();   // 모든 칸 + base 를 더한 현재 합계
 - **동시 갱신이 없을 때** 부르면 정확합니다.
 - **갱신이 도는 중**에 부르면 "그 시점 근처의 값"입니다(약간 뒤처질 수 있음).
 
-그래서 통계·모니터링 카운터처럼 "대략 맞으면 되고, 조용할 때 읽는" 용도에 잘 맞습니다. `reset()`(0으로 초기화)이나 `sumThenReset()`(합계를 읽고 바로 초기화)도 **갱신이 없는 시점**에 사용하는 걸 전제로 합니다.
+그래서 통계, 모니터링 카운터처럼 "대략 맞으면 되고, 조용할 때 읽는" 용도에 잘 맞습니다. `reset()`(0으로 초기화)이나 `sumThenReset()`(합계를 읽고 바로 초기화)도 **갱신이 없는 시점**에 사용하는 걸 전제로 합니다.
 
 ## 성능 — 고경합일수록 격차가 벌어진다
 
@@ -75,7 +75,7 @@ long total = counter.sum();   // 모든 칸 + base 를 더한 현재 합계
 
 ## 언제 사용하고, 언제 사용하면 안 되나
 
-**사용하기 좋은 경우 — 카운터·통계 집계**
+**사용하기 좋은 경우 — 카운터, 통계 집계**
 
 ```java
 // 예: 엔드포인트 호출 수 집계 (여러 워커 스레드가 동시에 증가)
@@ -88,7 +88,7 @@ metrics.report("requests", requestCount.sum());
 
 **사용하면 안 되는 경우 — "현재 값을 보고 판단"이 필요할 때**
 
-`LongAdder` 에는 `AtomicLong` 의 `compareAndSet`·`getAndIncrement` 같은 **읽고-판단-갱신을 원자적으로 묶는** 연산이 없습니다. <mark>"값이 N을 넘으면 막는다"처럼 현재 값에 기반해 원자적으로 분기·제어해야 하면 `LongAdder` 가 아니라 `AtomicLong` 을 사용해야 합니다.</mark> `LongAdder` 는 "정확히 얼마인지"보다 "많이·빠르게 누적"에 최적화된 도구입니다.
+`LongAdder` 에는 `AtomicLong` 의 `compareAndSet`, `getAndIncrement` 같은 **읽고-판단-갱신을 원자적으로 묶는** 연산이 없습니다. <mark>"값이 N을 넘으면 막는다"처럼 현재 값에 기반해 원자적으로 분기, 제어해야 하면 `LongAdder` 가 아니라 `AtomicLong` 을 사용해야 합니다.</mark> `LongAdder` 는 "정확히 얼마인지"보다 "많이, 빠르게 누적"에 최적화된 도구입니다.
 
 ## 언제부터 지원됐나 — Java 8부터
 
@@ -115,9 +115,9 @@ long peak = maxLatency.get();   // 120
 
 - `AtomicLong` 은 값 하나를 CAS로 다투므로 **고경합에서 재시도가 폭증**해 느려집니다.
 - `LongAdder` 는 **값을 여러 칸으로 나눠** 경합을 분산하고, 필요할 때 `sum()` 으로 합칩니다.
-- `sum()` 은 **원자적 스냅샷이 아니다** — 통계·카운터처럼 "대략 맞으면 되는" 용도에 적합.
+- `sum()` 은 **원자적 스냅샷이 아니다** — 통계와 카운터처럼 "대략 맞으면 되는" 용도에 적합.
 - **쓰기 잦고 읽기 적은** 카운터엔 `LongAdder`, **현재 값 기반 원자 제어**엔 `AtomicLong`.
-- **Java 8(1.8)** 부터 지원. 형제로 `DoubleAdder`·`LongAccumulator`·`DoubleAccumulator`.
+- **Java 8(1.8)** 부터 지원. 형제로 `DoubleAdder`, `LongAccumulator`, `DoubleAccumulator`.
 
 <mark>한 줄 요약: "많은 스레드가 그저 숫자를 누적만 하는" 상황이면 `AtomicLong` 대신 `LongAdder` 를 기본값으로 고려하면 됩니다.</mark>
 

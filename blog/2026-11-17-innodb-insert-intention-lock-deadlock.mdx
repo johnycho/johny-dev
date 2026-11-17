@@ -15,7 +15,7 @@ description: "운영에서 겪은 InnoDB 데드락을 현상 → 타임라인 �
 
 ## 무슨 일이 있었나
 
-이 시스템은 알림(메일·Slack)을 보냅니다. 성격이 다른 두 작업이 **같은 테이블**에 접근합니다.
+이 시스템은 알림(메일, Slack)을 보냅니다. 성격이 다른 두 작업이 **같은 테이블**에 접근합니다.
 
 - **알림 배치** — 밤에 실행돼, 많은 알림을 테이블에 한꺼번에 **새로 기록(`INSERT`)** 합니다.
 - **재발송(resend)** — 사람이 화면에서 상태를 변경하면, 기존 알림을 찾아 다시 보냅니다. 이때 `SELECT ... FOR UPDATE`, 즉 **찾은 행을 잠그는 조회**를 사용합니다.
@@ -99,7 +99,7 @@ deactivate B
   <rect x="20" y="178" width="267" height="27" rx="5" fill="#FBDCE4" stroke="#D06A86"/>
   <text x="153" y="196" text-anchor="middle" font-size="11" fill="#9E3A57">배치(A) 잠금 범위 — MAIL 락 + 갭 삽입 대기</text>
   <text x="220" y="227" text-anchor="middle" font-size="10" fill="#888888">← 인덱스 순서(idx) →</text>
-  <text x="220" y="250" text-anchor="middle" font-size="11" fill="#333333">겹치는 MAIL·갭 구간에서 서로를 기다려 교착</text>
+  <text x="220" y="250" text-anchor="middle" font-size="11" fill="#333333">겹치는 MAIL과 갭 구간에서 서로를 기다려 교착</text>
   <text x="220" y="267" text-anchor="middle" font-size="11" fill="#333333">→ MySQL이 resend를 강제 롤백</text>
 </svg>
 ```
@@ -115,7 +115,7 @@ deactivate B
 - **재발송(B)** 은 배치가 잠근 `MAIL` 레코드를 잠그려다 → **배치가 잠금을 해제하길 대기**.
 - **배치(A)** 는 재발송이 갭을 잠가 둔 그 지점에 삽입하려다 → **재발송이 잠금을 해제하길 대기**.
 
-<mark>A는 갭을, B는 레코드를 서로 기다려 누구도 진행하지 못합니다. InnoDB가 이 교착을 감지해 한쪽(재발송)을 강제 롤백해 해소합니다.</mark> (롤백·재시도 처리는 [try-catch로 잡았는데 왜 롤백될까](./spring-transaction-rollback-only)를 함께 보세요.)
+<mark>A는 갭을, B는 레코드를 서로 기다려 누구도 진행하지 못합니다. InnoDB가 이 교착을 감지해 한쪽(재발송)을 강제 롤백해 해소합니다.</mark> (롤백과 재시도 처리는 [try-catch로 잡았는데 왜 롤백될까](./spring-transaction-rollback-only)를 함께 보세요.)
 
 ## 그런데 INSERT가 갭 락을 거나?
 
@@ -143,8 +143,8 @@ deactivate B
 
 데드락이 생기려면 배치가 **잠금을 오래 유지**해야 합니다(그래야 재발송과 충돌할 구간이 생깁니다). 데드락 로그상 배치 트랜잭션은 수십 초 동안 열려 있었는데, 원인은 **한 번에 많은 건을 처리하면서 외부 발송을 트랜잭션 안에서 하나씩 끝낸** 데 있었습니다.
 
-- 배치가 **청크(예: 100건) 단위**로 동작하면서, 한 트랜잭션 안에서 **그 100건의 메일·Slack을 실제로 다 보낼 때까지** 트랜잭션을 닫지 않았습니다.
-- 메일·Slack을 외부로 보내는 것은 느린 작업이라, 그동안 레코드 잠금이 계속 유지됩니다.
+- 배치가 **청크(예: 100건) 단위**로 동작하면서, 한 트랜잭션 안에서 **그 100건의 메일과 Slack을 실제로 다 보낼 때까지** 트랜잭션을 닫지 않았습니다.
+- 메일과 Slack을 외부로 보내는 것은 느린 작업이라, 그동안 레코드 잠금이 계속 유지됩니다.
 
 <mark>느린 외부 작업을 트랜잭션 경계 안에서 처리해 트랜잭션이 길어졌고, 그만큼 교착이 생길 수 있는 구간도 커졌습니다. 청크를 작게 하거나 외부 발송을 트랜잭션 밖으로 빼면 트랜잭션이 짧아져 충돌 확률이 떨어집니다.</mark>
 
@@ -152,21 +152,21 @@ deactivate B
 
 이번 건에서 1차로 적용한 조치와, 함께 검토한 그 밖의 방안입니다.
 
-1. **재발송 트랜잭션을 READ COMMITTED로 (1차 적용)** — 그 트랜잭션의 격리 수준만 낮춰 **갭을 잠그는 동작을 없앴습니다.** `FOR UPDATE`가 `SLACK` 행만 잠그고 옆 `MAIL` 행·갭을 건드리지 않게 되어, 이 유형의 교착이 사라집니다. 격리 수준을 **그 트랜잭션에만** 낮춰 다른 로직은 그대로 둡니다([트랜잭션 격리 수준](./db-isolation-levels)).
+1. **재발송 트랜잭션을 READ COMMITTED로 (1차 적용)** — 그 트랜잭션의 격리 수준만 낮춰 **갭을 잠그는 동작을 없앴습니다.** `FOR UPDATE`가 `SLACK` 행만 잠그고 옆 `MAIL` 행, 갭을 건드리지 않게 되어, 이 유형의 교착이 사라집니다. 격리 수준을 **그 트랜잭션에만** 낮춰 다른 로직은 그대로 둡니다([트랜잭션 격리 수준](./db-isolation-levels)).
 2. **핸들러에 전환 상태 필터 (보완)** — 완료 전환처럼 재발송이 불필요한 경우엔 애초에 `FOR UPDATE`를 실행하지 않게 해, 불필요한 범위 잠금 자체를 없앱니다.
 3. **배치 트랜잭션 짧게 하기** — 청크를 작게 하거나 **외부 발송을 트랜잭션 밖으로 빼서**, 배치가 잠금을 유지하는 시간을 줄입니다.
-4. **인덱스 보강 / 직렬화** — 조회 조건 컬럼을 인덱스에 추가해 잠금 범위를 좁히거나([인덱스·실행계획](./mysql-index-btree-explain)), named lock으로 재발송을 한 번에 하나씩만 실행되도록 합니다([MySQL 네임드 락](./mysql-get-lock-distributed-lock)).
+4. **인덱스 보강 / 직렬화** — 조회 조건 컬럼을 인덱스에 추가해 잠금 범위를 좁히거나([인덱스, 실행계획](./mysql-index-btree-explain)), named lock으로 재발송을 한 번에 하나씩만 실행되도록 합니다([MySQL 네임드 락](./mysql-get-lock-distributed-lock)).
 
-<mark>핵심 대응은 **재발송 트랜잭션만 READ COMMITTED로 낮춰 갭 락을 없앤 것**입니다. 나머지(전환 상태 필터·트랜잭션 짧게 하기·인덱스 보강)는 같은 데드락이 다시 생기지 않게 하는 추가 대책입니다.</mark>
+<mark>핵심 대응은 **재발송 트랜잭션만 READ COMMITTED로 낮춰 갭 락을 없앤 것**입니다. 나머지(전환 상태 필터, 트랜잭션 짧게 하기, 인덱스 보강)는 같은 데드락이 다시 생기지 않게 하는 추가 대책입니다.</mark>
 
 ## 정리
 
 - 데드락은 **재발송의 넓은 범위 잠금(REPEATABLE READ next-key 락) ↔ 배치 `INSERT`의 삽입 의도**가 얽힌 순환 대기였습니다.
 - **직접 계기**는 사람의 상태 전환이 재발송을 자동 호출한 것, **교착이 길어진 이유**는 배치가 외부 발송을 트랜잭션 안에서 끝내느라 잠금을 오래 유지한 것입니다.
 - `INSERT`는 갭 락을 **거는** 게 아니라, `insert intention lock`으로 다른 트랜잭션이 보유한 갭 락에 **걸려 대기**합니다.
-- 1차 대응은 **갭을 잠그는 재발송을 그 트랜잭션에서만 READ COMMITTED로** 낮추는 것이고, 전환 상태 필터·트랜잭션 짧게 하기·인덱스 보강으로 재발을 막습니다.
+- 1차 대응은 **갭을 잠그는 재발송을 그 트랜잭션에서만 READ COMMITTED로** 낮추는 것이고, 전환 상태 필터, 트랜잭션 짧게 하기, 인덱스 보강으로 재발을 막습니다.
 
 ## 참고
 
-- [MySQL Reference Manual — InnoDB Locking (Record·Gap·Next-Key·Insert Intention)](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html)
+- [MySQL Reference Manual — InnoDB Locking (Record, Gap, Next-Key, Insert Intention)](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html)
 - `SHOW ENGINE INNODB STATUS`의 `LATEST DETECTED DEADLOCK` 섹션 — 어떤 트랜잭션이 무엇을 보유하고 무엇을 기다렸는지 그대로 보여줍니다.

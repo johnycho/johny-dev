@@ -285,7 +285,7 @@ public class SchedulerMessageConsumer implements MessageConsumer<String> {
 
 ## 마치며
 Kafka 기반 서비스에서 TraceId 불일치는 대부분 비표준 전파 방식(MDC 기반 커스텀 헤더)과
-OpenTelemetry 컨텍스트 추출·적용의 부재가 결합될 때 발생합니다.
+OpenTelemetry 컨텍스트 추출과 적용의 부재가 결합될 때 발생합니다.
 
 이번 개선을 통해
 - `OpenTelemetry Java Agent`가 자동으로 주입하는 `W3C traceparent` 헤더를 표준 전파 수단으로 통일하고,

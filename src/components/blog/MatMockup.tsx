@@ -135,7 +135,7 @@ export function MatPathToGCRoots() {
           <div className={`${styles.pathRow} ${r.root ? styles.rootRow : ''}`} key={i} style={{paddingLeft: `${0.7 + r.depth * 1.15}rem`}}>
             <span className={styles.pathIcon}>{r.icon}</span>
             <span className={styles.pathName}>{r.name}</span>
-            {r.field && <span className={styles.pathField}>&nbsp;·&nbsp;{r.field}</span>}
+            {r.field && <span className={styles.pathField}>&nbsp;/&nbsp;{r.field}</span>}
             {r.root && <span className={styles.rootTag}>GC ROOT</span>}
           </div>
         ))}

@@ -1,13 +1,13 @@
 ---
 slug: kubernetes-basics-to-gitops
-title: "쿠버네티스 기본기부터 실전 적용까지 — EKS·GitOps·무중단 배포"
+title: "쿠버네티스 기본기부터 실전 적용까지 — EKS, GitOps, 무중단 배포"
 authors: [ johnycho ]
 tags: [ architecture, system-design ]
 date: 2026-09-17T12:00:00
-description: "쿠버네티스의 기본 개념(Pod·Deployment·Service·선언형 상태)부터 매니지드 EKS, ArgoCD GitOps, Argo Rollouts 무중단 배포, 멀티 AZ 고가용성, CronJob 배치, Pod Identity 시크릿까지 실제 프로젝트 적용을 정리했습니다."
+description: "쿠버네티스의 기본 개념(Pod, Deployment, Service, 선언형 상태)부터 매니지드 EKS, ArgoCD GitOps, Argo Rollouts 무중단 배포, 멀티 AZ 고가용성, CronJob 배치, Pod Identity 시크릿까지 실제 프로젝트 적용을 정리했습니다."
 ---
 
-컨테이너로 서비스를 하나 띄우는 건 어렵지 않습니다. 그런데 그 컨테이너가 수십 개가 되고, 장애가 발생하면 다시 복구돼야 하고, 무중단으로 새 버전을 올려야 하고, 두 데이터센터에 나눠 기동돼 있어야 한다면 이야기가 달라집니다. 이 "여러 컨테이너를 대신 운영해 주는 도구"가 **쿠버네티스**입니다. 이 글은 쿠버네티스의 기본 개념부터 시작해, 제가 참여한 프로젝트에서 이를 **어떻게 실제 배포·운영에 적용했는지**까지 정리합니다. (클러스터가 내부적으로 어떤 구성 요소로 이루어지는지는 [쿠버네티스 구성 요소](/blog/kubernetes-components-architecture) 글에서 따로 정리했습니다.)
+컨테이너로 서비스를 하나 띄우는 건 어렵지 않습니다. 그런데 그 컨테이너가 수십 개가 되고, 장애가 발생하면 다시 복구돼야 하고, 무중단으로 새 버전을 올려야 하고, 두 데이터센터에 나눠 기동돼 있어야 한다면 이야기가 달라집니다. 이 "여러 컨테이너를 대신 운영해 주는 도구"가 **쿠버네티스**입니다. 이 글은 쿠버네티스의 기본 개념부터 시작해, 제가 참여한 프로젝트에서 이를 **어떻게 실제 배포와 운영에 적용했는지**까지 정리합니다. (클러스터가 내부적으로 어떤 구성 요소로 이루어지는지는 [쿠버네티스 구성 요소](/blog/kubernetes-components-architecture) 글에서 따로 정리했습니다.)
 
 <!-- truncate -->
 
@@ -32,7 +32,7 @@ import {AnimatedLineChart} from '@site/src/components/blog/MonitorCharts';
 
 - **Pod(파드)** — 쿠버네티스가 관리하는 **가장 작은 배포 단위**. 보통 컨테이너 하나(때로 여러 개)를 감싼 껍데기입니다. 파드는 **언제든 중단되고 새로 기동될 수 있는** 일회성 존재로 봅니다.
 - **Deployment(디플로이먼트)** — "이 이미지를 **몇 개(레플리카)** 띄워 둬라"를 선언하는 오브젝트. 실제로는 **ReplicaSet**을 통해 파드 개수를 유지합니다. 파드에 하나 장애가 발생하면 Deployment가 곧바로 새 파드를 채워 **선언한 개수를 지킵니다.**
-- **Service(서비스)** — 파드는 중단·재기동되며 IP가 계속 바뀌므로, 그 앞에 **고정된 진입점**을 배치하고 트래픽을 여러 파드에 **부하 분산**합니다. 외부에서 들어오는 경로는 **Ingress**가 담당합니다.
+- **Service(서비스)** — 파드는 중단, 재기동되며 IP가 계속 바뀌므로, 그 앞에 **고정된 진입점**을 배치하고 트래픽을 여러 파드에 **부하 분산**합니다. 외부에서 들어오는 경로는 **Ingress**가 담당합니다.
 
 이 관계를 실제 매니페스트(YAML)로 쓰면 이렇습니다. 값은 예시이며 이름은 일반화한 것입니다.
 
@@ -87,11 +87,11 @@ rectangle "Deployment\n(원하는 상태 선언)" as dep
 rectangle "ReplicaSet\n(레플리카 수 유지)" as rs
 rectangle "Pod 1 (컨테이너)" as p1
 rectangle "Pod 2 (컨테이너)" as p2
-rectangle "Service\n(고정 진입점·부하 분산)" as svc
+rectangle "Service\n(고정 진입점, 부하 분산)" as svc
 
 dep --> rs : 관리
-rs --> p1 : 생성·유지
-rs --> p2 : 생성·유지
+rs --> p1 : 생성, 유지
+rs --> p2 : 생성, 유지
 u --> svc
 svc --> p1 : 분배
 svc --> p2 : 분배
@@ -102,11 +102,11 @@ svc --> p2 : 분배
 
 ![PlantUML 쿠버네티스 기본 오브젝트 관계](/img/c4/k8s-objects.svg)
 
-이 오브젝트들은 **Namespace(네임스페이스)** 로 나누어 환경(dev·stg·운영)이나 팀별로 격리합니다. 그리고 이 모든 파드는 실제 서버인 **노드(Node)** 위에서 동작하고, 노드들의 묶음이 **클러스터**입니다.
+이 오브젝트들은 **Namespace(네임스페이스)** 로 나누어 환경(dev, stg, 운영)이나 팀별로 격리합니다. 그리고 이 모든 파드는 실제 서버인 **노드(Node)** 위에서 동작하고, 노드들의 묶음이 **클러스터**입니다.
 
 <mark>파드는 언제든 사라질 수 있는 일회성 단위이고, Deployment가 "선언한 개수"를 유지하며, Service가 그 앞에서 변하지 않는 진입점을 제공합니다.</mark>
 
-Service 타입(ClusterIP·NodePort·LoadBalancer)과 외부 HTTP 라우팅을 맡는 **Ingress**(그리고 Ingress Controller)의 개념·구성은 [쿠버네티스 구성 요소](/blog/kubernetes-components-architecture) 글의 네트워킹 부분에서 정리했습니다.
+Service 타입(ClusterIP, NodePort, LoadBalancer)과 외부 HTTP 라우팅을 맡는 **Ingress**(그리고 Ingress Controller)의 개념과 구성은 [쿠버네티스 구성 요소](/blog/kubernetes-components-architecture) 글의 네트워킹 부분에서 정리했습니다.
 
 ## 쿠버네티스의 핵심 철학 — 선언형과 원하는 상태
 
@@ -115,7 +115,7 @@ Service 타입(ClusterIP·NodePort·LoadBalancer)과 외부 HTTP 라우팅을 �
 - **명령형(예전 방식)**: "컨테이너를 켜라", "하나 더 띄워라"처럼 **단계를 직접 지시**합니다.
 - **선언형(쿠버네티스)**: "이 서비스는 항상 **레플리카 3개**여야 한다"처럼 **원하는 상태(desired state)** 만 적어 둡니다. 그러면 쿠버네티스가 현재 상태와 비교해, 부족하면 채우고 남으면 줄여 **끊임없이 그 상태로 맞춥니다.** 이 반복 과정을 **reconciliation(조정) 루프**라고 합니다.
 
-그래서 파드에 장애가 발생해도, 노드가 빠져도, 실수로 하나를 지워도 **선언한 상태로 자동 복구**됩니다. 뒤에서 볼 GitOps·self-heal이 전부 이 원리의 연장입니다.
+그래서 파드에 장애가 발생해도, 노드가 빠져도, 실수로 하나를 지워도 **선언한 상태로 자동 복구**됩니다. 뒤에서 볼 GitOps, self-heal이 전부 이 원리의 연장입니다.
 
 명령 몇 개로 직접 확인할 수 있습니다.
 
@@ -140,10 +140,10 @@ kubectl scale deployment my-app --replicas=4
 
 ## 매니지드 쿠버네티스(EKS)를 쓴 이유
 
-쿠버네티스는 기능이 많지만, **직접 운영하기는 까다롭습니다.** 클러스터의 제어를 맡는 **컨트롤 플레인**(API 서버·스케줄러·etcd 등)을 직접 설치·이중화·업그레이드·백업해야 하기 때문입니다. 프로젝트에서는 이 부담을 클라우드에 위임하는 **매니지드 쿠버네티스(AWS의 EKS)** 를 선택했습니다.
+쿠버네티스는 기능이 많지만, **직접 운영하기는 까다롭습니다.** 클러스터의 제어를 맡는 **컨트롤 플레인**(API 서버, 스케줄러, etcd 등)을 직접 설치, 이중화, 업그레이드, 백업해야 하기 때문입니다. 프로젝트에서는 이 부담을 클라우드에 위임하는 **매니지드 쿠버네티스(AWS의 EKS)** 를 선택했습니다.
 
 - 컨트롤 플레인은 클라우드가 관리하고, 우리는 **워크로드(파드)와 워커 노드**에 집중합니다.
-- 노드는 관리형 노드그룹으로 두고, 워크로드는 `nodeAffinity` 같은 규칙으로 **용도에 맞는 노드풀에 배치**해 격리·용량 관리를 합니다.
+- 노드는 관리형 노드그룹으로 두고, 워크로드는 `nodeAffinity` 같은 규칙으로 **용도에 맞는 노드풀에 배치**해 격리, 용량 관리를 합니다.
 
 노드 배치 규칙은 파드 스펙(`template.spec`)에 이렇게 넣습니다.
 
@@ -162,9 +162,9 @@ spec:
                 values: [ api ]
 ```
 
-<mark>매니지드 쿠버네티스는 "쿠버네티스를 운영하는 일" 자체를 클라우드에 맡기고, 팀은 애플리케이션 배포·운영에만 집중하게 해 줍니다.</mark>
+<mark>매니지드 쿠버네티스는 "쿠버네티스를 운영하는 일" 자체를 클라우드에 맡기고, 팀은 애플리케이션 배포와 운영에만 집중하게 해 줍니다.</mark>
 
-이 글에서 설명하는 AWS 인프라를 한 장으로 보면 이렇습니다. 개발자·CI가 이미지를 **ECR(Elastic Container Registry, 컨테이너 이미지 저장소)** 에 올리고 매니페스트를 **Git**에 커밋하면, **EKS(Elastic Kubernetes Service, 매니지드 쿠버네티스)** 안의 ArgoCD가 이를 감지해 **워커 노드(EC2, Elastic Compute Cloud 가상 서버)** 에 배포하고, 노드는 ECR에서 이미지를, **Secrets Manager**에서 시크릿을 가져옵니다. 각 요소는 이어지는 섹션에서 자세히 설명합니다.
+이 글에서 설명하는 AWS 인프라를 한 장으로 보면 이렇습니다. 개발자와 CI가 이미지를 **ECR(Elastic Container Registry, 컨테이너 이미지 저장소)** 에 올리고 매니페스트를 **Git**에 커밋하면, **EKS(Elastic Kubernetes Service, 매니지드 쿠버네티스)** 안의 ArgoCD가 이를 감지해 **워커 노드(EC2, Elastic Compute Cloud 가상 서버)** 에 배포하고, 노드는 ECR에서 이미지를, **Secrets Manager**에서 시크릿을 가져옵니다. 각 요소는 이어지는 섹션에서 자세히 설명합니다.
 
 <details>
 <summary>PlantUML 코드 (AWS 아이콘)</summary>
@@ -178,7 +178,7 @@ spec:
 !include <awslib14/SecurityIdentityCompliance/SecretsManager>
 !include <awslib14/Compute/EC2>
 !include <awslib14/General/User>
-title EKS·GitOps 인프라 관계도
+title EKS, GitOps 인프라 관계도
 
 User(dev, "개발자 / CI", "")
 rectangle "매니페스트 저장소 (Git)" as git
@@ -187,8 +187,8 @@ AWSCloudGroup(aws){
   ElasticContainerRegistry(ecr, "ECR", "컨테이너 이미지")
   SecretsManager(sm, "Secrets Manager", "애플리케이션 시크릿")
   ElasticKubernetesService(eks, "EKS 클러스터", "ArgoCD 포함")
-  EC2(nodea, "Worker Node · 가용영역 A", "Pod x2")
-  EC2(nodec, "Worker Node · 가용영역 C", "Pod x1")
+  EC2(nodea, "Worker Node, 가용영역 A", "Pod x2")
+  EC2(nodec, "Worker Node, 가용영역 C", "Pod x1")
 }
 
 dev --> ecr : 이미지 push
@@ -203,7 +203,7 @@ nodea --> sm : 시크릿 로드
 
 </details>
 
-![PlantUML EKS·GitOps AWS 인프라 관계도](/img/c4/k8s-aws.svg)
+![PlantUML EKS, GitOps AWS 인프라 관계도](/img/c4/k8s-aws.svg)
 
 ## 배포를 GitOps로 — "배포 = Git 커밋"
 
@@ -228,7 +228,7 @@ participant "매니페스트 저장소 (Git)" as git
 participant "ArgoCD" as argo
 participant "쿠버네티스 클러스터" as k8s
 
-dev -> reg : 컨테이너 이미지 빌드·푸시
+dev -> reg : 컨테이너 이미지 빌드, 푸시
 dev -> git : 매니페스트 커밋 (배포 = 커밋)
 argo -> git : 변경 감지 (주기적 동기화)
 argo -> k8s : 선언 상태를 클러스터에 apply
@@ -243,7 +243,7 @@ note over argo, k8s : 클러스터 상태가 Git 선언과 달라지면\nArgoCD�
 
 이 방식의 장점은 분명합니다.
 
-- **Git이 배포 이력**입니다. 언제·누가·무엇을 바꿨는지 커밋 로그에 남고, 되돌리기는 커밋 되돌리기입니다.
+- **Git이 배포 이력**입니다. 언제, 누가, 무엇을 바꿨는지 커밋 로그에 남고, 되돌리기는 커밋 되돌리기입니다.
 - 클러스터가 선언과 달라지면(누가 수동으로 손댔거나, 리소스가 유실됐거나) ArgoCD가 **원래 상태로 되돌립니다(self-heal).**
 - 배포 담당자에게 클러스터 접근 권한을 널리 줄 필요가 없습니다 — **저장소에 커밋할 권한**이면 충분합니다.
 
@@ -436,9 +436,9 @@ spec:
         target: { type: Utilization, averageUtilization: 60 }
 ```
 
-트래픽·장애 격리에는 **서비스 메시(Istio)** 를 함께 적용해, 서비스 간 통신 암호화(mTLS)와 트래픽 셰이핑·카나리 라우팅을 담당하게 했습니다.
+트래픽, 장애 격리에는 **서비스 메시(Istio)** 를 함께 적용해, 서비스 간 통신 암호화(mTLS)와 트래픽 셰이핑, 카나리 라우팅을 담당하게 했습니다.
 
-<mark>고가용성은 한 가지 장치가 아니라 AZ 이중화·self-heal·무중단 배포·오토스케일이 겹쳐서 만들어집니다 — 한 계층이 실패해도 다른 계층이 받칩니다.</mark>
+<mark>고가용성은 한 가지 장치가 아니라 AZ 이중화, self-heal, 무중단 배포와 오토스케일이 겹쳐서 만들어집니다 — 한 계층이 실패해도 다른 계층이 받칩니다.</mark>
 
 ## 배치는 CronJob — 중복 실행을 막는 법
 
@@ -479,10 +479,10 @@ spec:
 
 ## 시크릿과 권한 — 매니페스트에 비밀을 두지 않는다
 
-DB 비밀번호·API 키 같은 **시크릿을 매니페스트(Git)에 절대 넣지 않는** 원칙을 세웠습니다. GitOps라 매니페스트가 저장소에 그대로 남기 때문입니다.
+DB 비밀번호, API 키 같은 **시크릿을 매니페스트(Git)에 절대 넣지 않는** 원칙을 세웠습니다. GitOps라 매니페스트가 저장소에 그대로 남기 때문입니다.
 
 - **애플리케이션이 클라우드 시크릿 매니저에서 직접 로드**합니다. 매니페스트에는 "어디서 읽어라"만 있고 값은 없습니다.
-- 파드가 클라우드 자원(레지스트리·시크릿 매니저 등)에 접근할 때 사용하는 **권한은 Pod Identity로 부여**합니다. 각 서비스어카운트(SA)에 필요한 IAM 역할만 연결해, **파드에 최소 권한**만 줍니다. 접근 키를 컨테이너에 심지 않습니다.
+- 파드가 클라우드 자원(레지스트리, 시크릿 매니저 등)에 접근할 때 사용하는 **권한은 Pod Identity로 부여**합니다. 각 서비스어카운트(SA)에 필요한 IAM 역할만 연결해, **파드에 최소 권한**만 줍니다. 접근 키를 컨테이너에 심지 않습니다.
 
 무엇을 피하고 무엇을 했는지 예시로 보면 분명합니다.
 
@@ -559,15 +559,15 @@ kubectl patch cronjob my-batch -p '{"spec":{"suspend":true}}'
 | 용어 | 쉬운 뜻 |
 |---|---|
 | Pod | 컨테이너를 감싼 가장 작은 배포 단위(일회성) |
-| Deployment | 원하는 레플리카 개수를 선언·유지하는 오브젝트 |
+| Deployment | 원하는 레플리카 개수를 선언과 유지하는 오브젝트 |
 | ReplicaSet | Deployment가 파드 개수를 맞추려고 사용하는 하위 오브젝트 |
-| Service / Ingress | 파드 앞의 고정 진입점·부하 분산 / 외부 트래픽 경로 |
-| Namespace | 환경·팀별로 리소스를 나누는 격리 단위 |
-| 선언형·원하는 상태 | "무엇을 원하는지"만 적으면 시스템이 그 상태로 맞춤 |
+| Service / Ingress | 파드 앞의 고정 진입점, 부하 분산 / 외부 트래픽 경로 |
+| Namespace | 환경과 팀별로 리소스를 나누는 격리 단위 |
+| 선언형과 원하는 상태 | "무엇을 원하는지"만 적으면 시스템이 그 상태로 맞춤 |
 | EKS(매니지드 k8s) | 컨트롤 플레인 운영을 클라우드에 위임한 쿠버네티스 |
 | GitOps / ArgoCD | Git 커밋으로 배포하고, 선언 상태를 클러스터에 동기화 |
 | self-heal | 클러스터가 Git 선언과 달라지면 자동으로 롤백 |
-| Argo Rollouts | 카나리·블루-그린으로 점진 배포하는 도구 |
+| Argo Rollouts | 카나리와 블루-그린으로 점진 배포하는 도구 |
 | 가용영역(AZ) | 물리적으로 분리된 데이터센터 구역. 이중화의 단위 |
 | HPA | 부하에 따라 파드 수를 자동 조절하는 오토스케일러 |
 | CronJob | 스케줄에 맞춰 파드를 띄워 배치 작업을 수행 |

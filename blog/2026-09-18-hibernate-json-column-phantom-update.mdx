@@ -4,7 +4,7 @@ title: "조회만 했는데 UPDATE가 실행된다 — Hibernate 7 JSON 컬럼 d
 authors: [ johnycho ]
 tags: [ jpa, spring ]
 date: 2026-09-18T09:00:00
-description: "Spring Boot 4로 올리며 Hibernate가 6.2 → 7.x로 함께 올라가자, @JdbcTypeCode(SqlTypes.JSON) 컬럼을 가진 엔티티가 읽기만 해도 커밋 시점에 UPDATE가 실행되고 version이 올랐다. 원인(스냅샷 deep copy)과 해결(@Mutability·equals)을 정리한다."
+description: "Spring Boot 4로 올리며 Hibernate가 6.2 → 7.x로 함께 올라가자, @JdbcTypeCode(SqlTypes.JSON) 컬럼을 가진 엔티티가 읽기만 해도 커밋 시점에 UPDATE가 실행되고 version이 올랐다. 원인(스냅샷 deep copy)과 해결(@Mutability, equals)을 정리한다."
 ---
 
 <!-- truncate -->
@@ -79,7 +79,7 @@ hib --> svc : OptimisticLockException
 
 - **콜백 서비스가 쓰기 트랜잭션에서 조회한다.** 상태 콜백 서비스가 클래스 레벨 `@Transactional`이라, 읽기 경로도 쓰기 트랜잭션입니다. 이때 `items` 스냅샷이 JSON 왕복으로 떠집니다.
 - **아무것도 바꾸지 않았는데 dirty로 판정된다.** 호출되는 것은 상태 판정 메서드뿐인데, flush 시 `areEqual`이 false를 반환합니다.
-- **`items` UPDATE + `version` 증가.** `@DynamicUpdate`라 바뀐 컬럼만 포함되지만, `version`은 항상 SET·WHERE 양쪽에 포함됩니다.
+- **`items` UPDATE + `version` 증가.** `@DynamicUpdate`라 바뀐 컬럼만 포함되지만, `version`은 항상 SET, WHERE 양쪽에 포함됩니다.
 - **컨슈머의 정상 UPDATE와 충돌.** 같은 트랜잭션 안에서 발행한 메시지를 컨슈머가 먼저 처리해 행을 갱신하면, 뒤늦게 커밋되는 콜백 트랜잭션은 옛 `version`으로 0건을 맞습니다. **자기가 트리거한 작업과 자기가 충돌하는** 구조입니다.
 
 ## 검증
@@ -90,8 +90,8 @@ hib --> svc : OptimisticLockException
 |---|---|---|
 | Hibernate 6.2(초기) | 1 → 1 | UPDATE 없음 |
 | Hibernate 7.x | 1 → 2 | 조회만 했는데 UPDATE 발생 |
-| 7.x · `items` 빈 리스트(대조군) | 1 → 1 | 원인이 `items`임을 분리 확인 |
-| 7.x · `OrderItem`에 `equals` 추가 | 1 → 1 | 통과 |
+| 7.x, `items` 빈 리스트(대조군) | 1 → 1 | 원인이 `items`임을 분리 확인 |
+| 7.x, `OrderItem`에 `equals` 추가 | 1 → 1 | 통과 |
 
 ## 해결 — 스냅샷 비교를 값 기반으로 되돌린다
 
@@ -133,7 +133,7 @@ public int hashCode() {
 - **Lombok이면** `@EqualsAndHashCode` 한 줄로 같은 효과입니다. 값 객체 안에 다른 객체가 중첩돼 있으면 그 타입에도 필요합니다 — 비교는 끝까지 값 기반이어야 합니다.
 - **`record`는 이미 값 기반 `equals`를 갖습니다.** 다만 기존 클래스를 record로 변경하면 Jackson 역직렬화 경로가 달라지니, 기존 JSON 데이터 호환을 따로 검증해야 합니다.
 
-### 함께 손볼 것 — 트랜잭션·재시도
+### 함께 손볼 것 — 트랜잭션과 재시도
 
 원인을 없앤 뒤, 재발과 파급을 줄이는 두 가지를 같이 봅니다.
 
@@ -142,7 +142,7 @@ public int hashCode() {
 
 ## 점검 — 내 서비스도 해당되는가
 
-Hibernate가 deep-copy 방식으로 바뀐 버전(6.2 후기·6.3·6.4 이상, 7.x 포함)으로 올라간(또는 올라갈) 서비스는 아래 셋을 확인하면 됩니다.
+Hibernate가 deep-copy 방식으로 바뀐 버전(6.2 후기, 6.3, 6.4 이상, 7.x 포함)으로 올라간(또는 올라갈) 서비스는 아래 셋을 확인하면 됩니다.
 
 - **JSON 컬럼 전수 조사.** `@JdbcTypeCode(SqlTypes.JSON)`이 붙은 필드를 모두 찾습니다. 컬렉션이든 단일 POJO든 모두 대상입니다.
 
@@ -150,7 +150,7 @@ Hibernate가 deep-copy 방식으로 바뀐 버전(6.2 후기·6.3·6.4 이상, 7
   grep -rn "SqlTypes.JSON" --include="*.java" --include="*.kt" src/main
   ```
 
-- **원소·값 타입에 `equals`/`hashCode`가 있는지.** 없으면 추가하거나 `@Mutability(Immutability.class)`를 검토합니다. Lombok `@Data`·`@Value`·`record`는 이미 있습니다 — `@Getter`만 있는 클래스가 위험 신호입니다.
+- **원소, 값 타입에 `equals`/`hashCode`가 있는지.** 없으면 추가하거나 `@Mutability(Immutability.class)`를 검토합니다. Lombok `@Data`, `@Value`, `record`는 이미 있습니다 — `@Getter`만 있는 클래스가 위험 신호입니다.
 - **회귀 테스트 한 줄.** 저장 → `em.clear()` → 조회 → flush 후 `version`이 그대로인지 단언합니다. 이 한 줄이 재발을 막습니다.
 
 <mark>증상으로 찾는 법 — 읽기만 하는 API를 호출한 뒤 `version`이 올라가거나, 특정 JSON 컬럼만 SET하는 UPDATE가 반복되면 같은 건입니다. 전환 전후로 `version` 평균 증가량을 비교하면 빠르게 나타납니다.</mark>
@@ -169,5 +169,5 @@ implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
 - Hibernate가 JSON 컬럼 스냅샷을 **deep copy(직렬화 왕복)** 로 뜨도록 바뀌면서, 값 객체에 `equals`가 없으면 **조회만 해도 dirty**로 판정됩니다.
 - 이는 원래 있던 "in-place 변경 미감지" 버그([HHH-16682])를 고치며 생긴 부작용([HHH-18971])입니다. 결함(값 객체 `equals` 부재)은 전부터 있었고 버전업이 드러냈을 뿐입니다.
-- 해결: **① `@Mutability(Immutability.class)`**(항상 새 참조로 교체할 때·deep copy 자체를 끔) 또는 **② 값 객체에 `equals`/`hashCode`**. 읽기 경로 `readOnly`, 낙관적 락 재시도를 함께 손봅니다.
-- 6.2 후기·6.3·6.4·7.x로 올라가는 서비스는 **JSON 컬럼 전수 조사 + 회귀 테스트 한 줄**로 선제 점검할 수 있습니다.
+- 해결: **① `@Mutability(Immutability.class)`**(항상 새 참조로 교체할 때, deep copy 자체를 끔) 또는 **② 값 객체에 `equals`/`hashCode`**. 읽기 경로 `readOnly`, 낙관적 락 재시도를 함께 손봅니다.
+- 6.2 후기, 6.3, 6.4, 7.x로 올라가는 서비스는 **JSON 컬럼 전수 조사 + 회귀 테스트 한 줄**로 선제 점검할 수 있습니다.

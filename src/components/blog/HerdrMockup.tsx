@@ -76,7 +76,7 @@ export default function HerdrMockup() {
             <span className={styles.dot} style={{background: '#febc2e'}} />
             <span className={styles.dot} style={{background: '#28c840'}} />
           </span>
-          <span className={styles.title}>herdr · ~/work</span>
+          <span className={styles.title}>herdr: ~/work</span>
         </div>
 
         <div className={styles.body}>
@@ -109,7 +109,7 @@ export default function HerdrMockup() {
           {/* 메인 페인 — 포커스된 에이전트 터미널 */}
           <div className={styles.main}>
             <div className={styles.paneHead}>
-              <span className={styles.paneHeadTitle}>claude code · refactor auth</span>
+              <span className={styles.paneHeadTitle}>claude code: refactor auth</span>
               <Badge state="blocked" />
             </div>
             <div className={styles.term}>
@@ -135,7 +135,7 @@ export default function HerdrMockup() {
         </div>
       </div>
       <p className={styles.cap}>
-        herdr — 워크스페이스·페인과 에이전트 상태를 한눈에 보는 화면 (오리지널 목업, 실제 스크린샷 아님)
+        herdr — 워크스페이스, 페인과 에이전트 상태를 한눈에 보는 화면 (오리지널 목업, 실제 스크린샷 아님)
       </p>
     </>
   );

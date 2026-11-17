@@ -4,7 +4,7 @@ title: 'Throwable vs Exception — 예외 계층 구조와 catch 대상 고르�
 authors: [ johnycho ]
 tags: [ java ]
 date: 2026-10-12T12:00:00+09:00
-description: "Java 예외 계층에서 Throwable·Error·Exception·RuntimeException이 각각 무엇이고 어떻게 다른지, checked와 unchecked의 경계, catch (Throwable)과 catch (Exception)의 실전 차이를 정리합니다."
+description: "Java 예외 계층에서 Throwable, Error, Exception, RuntimeException이 각각 무엇이고 어떻게 다른지, checked와 unchecked의 경계, catch (Throwable)과 catch (Exception)의 실전 차이를 정리합니다."
 ---
 
 <!-- truncate -->
@@ -71,7 +71,7 @@ public class Throwable {
 }
 ```
 
-즉 `getMessage()`·`getCause()`·스택 트레이스 같은 기능은 `Error`든 `Exception`이든 **모두 공통으로** 가집니다. 둘의 차이는 기능이 아니라 **"애플리케이션이 이걸 처리해야 하는가"** 라는 용도에 있습니다.
+즉 `getMessage()`, `getCause()`, 스택 트레이스 같은 기능은 `Error`든 `Exception`이든 **모두 공통으로** 가집니다. 둘의 차이는 기능이 아니라 **"애플리케이션이 이걸 처리해야 하는가"** 라는 용도에 있습니다.
 
 ## Error — 처리하지 말아야 할 심각한 문제
 
@@ -132,13 +132,13 @@ try {
 
 <mark>이 코드는 `OutOfMemoryError`처럼 **그냥 종료되는 편이 나은 상황까지 처리하려다** 애플리케이션을 비정상 상태로 유지시킵니다.</mark> 그래서 일반적인 예외 처리에서는 `catch (Throwable)`을 사용하지 않고 `catch (Exception)`을 사용합니다.
 
-`Throwable`을 처리해야 하는 경우는 많지 않습니다 — 스레드 풀·프레임워크처럼 **작업 하나가 어떤 이유로든 실패해도 전체가 멈추면 안 되는** 최상위 경계에서, 로그를 남긴 뒤 다시 던지는(rethrow) 식으로 제한적으로 사용합니다. 그마저도 보통은 `Exception`으로 충분합니다.
+`Throwable`을 처리해야 하는 경우는 많지 않습니다 — 스레드 풀, 프레임워크처럼 **작업 하나가 어떤 이유로든 실패해도 전체가 멈추면 안 되는** 최상위 경계에서, 로그를 남긴 뒤 다시 던지는(rethrow) 식으로 제한적으로 사용합니다. 그마저도 보통은 `Exception`으로 충분합니다.
 
 ## 한 줄 정리
 
 | 구분 | 한마디로 | 대표 예 | 어떻게 대하나 |
 |---|---|---|---|
-| `Throwable` | 던지고 처리할 수 있는 모든 것의 **최상위** | (`Error`·`Exception`의 부모) | 직접 처리하지 않음 |
+| `Throwable` | 던지고 처리할 수 있는 모든 것의 **최상위** | (`Error`, `Exception`의 부모) | 직접 처리하지 않음 |
 | `Error` | JVM 수준의 **심각한 문제**(복구 불가) | `OutOfMemoryError`<br />`StackOverflowError` | ❌ 처리하지 말고 그대로 전파 |
 | `Exception`<br />(**checked**) | 충분히 예상되는 **외부 상황** | `IOException`<br />`SQLException` | ✅ `try-catch`로 처리하거나 `throws`<br />(컴파일러가 강제) |
 | `RuntimeException`<br />(**unchecked**) | 주로 **프로그래밍 실수** | `NullPointerException`<br />`IllegalArgumentException` | △ 처리하기보다 코드로 예방<br />(강제 없음) |

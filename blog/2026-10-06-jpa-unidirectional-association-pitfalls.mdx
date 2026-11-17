@@ -4,7 +4,7 @@ title: "JPA 단방향 연관관계 매핑의 문제점과 해결 — @OneToMany 
 authors: [ johnycho ]
 tags: [ jpa, spring ]
 date: 2026-10-06T12:00:00+09:00
-description: "JPA 연관관계를 단방향으로 매핑할 때 생기는 문제를 정리합니다. @OneToMany 단방향이 만드는 조인 테이블과 추가 UPDATE 쿼리, 그리고 다대일 단방향을 기본으로 삼고 필요할 때만 양방향으로 보완하는 해결 방향과 양방향의 주의점(무한 재귀·연관관계 편의 메서드)까지 설명합니다."
+description: "JPA 연관관계를 단방향으로 매핑할 때 생기는 문제를 정리합니다. @OneToMany 단방향이 만드는 조인 테이블과 추가 UPDATE 쿼리, 그리고 다대일 단방향을 기본으로 삼고 필요할 때만 양방향으로 보완하는 해결 방향과 양방향의 주의점(무한 재귀, 연관관계 편의 메서드)까지 설명합니다."
 ---
 
 <!-- truncate -->
@@ -15,7 +15,7 @@ JPA에서 연관관계를 어느 방향으로 매핑하느냐는 단순한 취�
 
 > **"FK가 없는 `@OneToMany` 쪽"이란?**
 >
-> FK 컬럼(`member_id`)은 **다(N)쪽인 `orders` 테이블에만** 있고, `@OneToMany`를 거는 **일(1)쪽 `Member` 테이블에는 FK가 없습니다**(`member`에는 `id`만, `orders`에는 `id`·`member_id`). 그 FK 없는 `Member`가 컬렉션을 주인처럼 관리하면, 자기 것이 아닌 `orders.member_id`를 원격으로 채우느라 추가 쿼리가 생깁니다 — 자세한 구조는 아래 "문제"에서 그림으로 봅니다.
+> FK 컬럼(`member_id`)은 **다(N)쪽인 `orders` 테이블에만** 있고, `@OneToMany`를 거는 **일(1)쪽 `Member` 테이블에는 FK가 없습니다**(`member`에는 `id`만, `orders`에는 `id`, `member_id`). 그 FK 없는 `Member`가 컬렉션을 주인처럼 관리하면, 자기 것이 아닌 `orders.member_id`를 원격으로 채우느라 추가 쿼리가 생깁니다 — 자세한 구조는 아래 "문제"에서 그림으로 봅니다.
 
 ## 연관관계 — "DB의 FK 하나를 누가 채우나"
 
@@ -28,7 +28,7 @@ JPA에서 연관관계를 어느 방향으로 매핑하느냐는 단순한 취�
 
 <mark>규칙은 하나입니다 — **FK 컬럼(`member_id`)을 가진 `orders`의 엔티티, 즉 `Order`가 주인**이고, 주인만 FK를 채웁니다. 주인이 아닌 쪽(`mappedBy`인 `Member.orders`)에서 컬렉션을 수정해도 DB의 FK는 변하지 않습니다.</mark>
 
-> 직관적으로는 "부모인 `Member`(일대다의 '1')가 주인"일 것 같지만, JPA의 주인은 **FK를 가진 자식 `Order`(일대다의 'N')** 입니다 — 방향(부모·자식)이 아니라 **FK 위치**로 정해집니다.
+> 직관적으로는 "부모인 `Member`(일대다의 '1')가 주인"일 것 같지만, JPA의 주인은 **FK를 가진 자식 `Order`(일대다의 'N')** 입니다 — 방향(부모, 자식)이 아니라 **FK 위치**로 정해집니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -115,7 +115,7 @@ class Member {
 }
 ```
 
-이렇게 하면 Hibernate는 FK를 어디에 둘지 몰라, **중간 조인 테이블(`member_orders`)** 을 만들어 다대다처럼 관리합니다. 테이블이 하나 더 생기고, 조회·저장 때마다 그 테이블을 거쳐 쿼리가 복잡해집니다.
+이렇게 하면 Hibernate는 FK를 어디에 둘지 몰라, **중간 조인 테이블(`member_orders`)** 을 만들어 다대다처럼 관리합니다. 테이블이 하나 더 생기고, 조회, 저장 때마다 그 테이블을 거쳐 쿼리가 복잡해집니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -259,18 +259,18 @@ endif
 
 </details>
 
-![PlantUML 단방향·양방향 선택 흐름](/img/c4/pu-jpa-association-decision.svg)
+![PlantUML 단방향, 양방향 선택 흐름](/img/c4/pu-jpa-association-decision.svg)
 
 - **`@ManyToOne` 단방향** — FK 가진 쪽에서만 참조하면 되는 대부분의 경우. 기본값으로 삼습니다.
 - **양방향** — 부모에서 자식 컬렉션 탐색이 실제로 필요할 때만. `@OneToMany`는 항상 `mappedBy`로 읽기 전용이어야 합니다.
-- **`@OneToMany` 단방향(주인)** — `mappedBy` 없이 부모가 컬렉션을 주인으로 관리하는 형태. 조인 테이블·추가 UPDATE 때문에 **특별한 이유가 없으면 사용하지 않습니다.**
+- **`@OneToMany` 단방향(주인)** — `mappedBy` 없이 부모가 컬렉션을 주인으로 관리하는 형태. 조인 테이블과 추가 UPDATE 때문에 **특별한 이유가 없으면 사용하지 않습니다.**
 
 ## 정리
 
 - 연관관계의 주인은 **FK를 가진 쪽**입니다 — 이 원칙을 어기면 DB가 FK를 채우려고 추가 쿼리를 발생시킵니다.
 - **`@OneToMany` 단방향**은 `@JoinColumn`이 없으면 **조인 테이블**, 있어도 **INSERT 후 추가 UPDATE**가 발생합니다.
-- 기본은 **`@ManyToOne` 단방향**, 부모→자식 탐색이 필요할 때만 **`@OneToMany(mappedBy)`로 양방향** 보완(테이블·쿼리 영향 없음).
-- 양방향은 **연관관계 편의 메서드**로 양쪽을 동기화하고, **직렬화 순환**(`@ToString`·JSON)을 끊습니다.
+- 기본은 **`@ManyToOne` 단방향**, 부모→자식 탐색이 필요할 때만 **`@OneToMany(mappedBy)`로 양방향** 보완(테이블, 쿼리 영향 없음).
+- 양방향은 **연관관계 편의 메서드**로 양쪽을 동기화하고, **직렬화 순환**(`@ToString`, JSON)을 끊습니다.
 
 ## 참고
 

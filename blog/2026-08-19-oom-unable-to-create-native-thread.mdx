@@ -8,7 +8,7 @@ date: 2026-08-19T12:00:00
 
 <!-- truncate -->
 
-**상황** — 배포 후 **반나절쯤 지나** 간헐적으로 Pod가 `OOMKilled`로 재시작됐습니다. 트래픽은 평소와 큰 차이가 없었고, 최근 변경은 **외부 추천 API 호출을 OkHttp로 추가하고 retry·timeout을 설정**한 것뿐이었습니다. <mark>힙을 아무리 봐도 여유가 있는데 왜 OOM이 날까요?</mark> (Spring Boot 3.x · Kotlin 1.9.x · Java 17 · OkHttp · Kubernetes)
+**상황** — 배포 후 **반나절쯤 지나** 간헐적으로 Pod가 `OOMKilled`로 재시작됐습니다. 트래픽은 평소와 큰 차이가 없었고, 최근 변경은 **외부 추천 API 호출을 OkHttp로 추가하고 retry, timeout을 설정**한 것뿐이었습니다. <mark>힙을 아무리 봐도 여유가 있는데 왜 OOM이 날까요?</mark> (Spring Boot 3.x, Kotlin 1.9.x, Java 17, OkHttp, Kubernetes)
 
 ```text
 ERROR c.e.RecommendController : Unexpected error
@@ -32,7 +32,7 @@ java.lang.OutOfMemoryError: unable to create native thread:
 `OkHttp Dispatcher`의 스레드가 계속 쌓이는 구조였습니다. 흔한 원인 두 가지:
 
 - **OkHttpClient를 호출마다 새로 생성** — `OkHttpClient`는 자체 `Dispatcher`(스레드 풀)와 커넥션 풀을 가집니다. 요청마다 새로 만들면 스레드 풀도 계속 생겨 **회수되지 않고 누적**됩니다.
-- **비동기 `enqueue`를 상한 없이 + retry 증폭** — 실패가 재시도로 늘어나 대기·실행 스레드가 더 쌓입니다.
+- **비동기 `enqueue`를 상한 없이 + retry 증폭** — 실패가 재시도로 늘어나 대기, 실행 스레드가 더 쌓입니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -63,10 +63,10 @@ stop
 
 ## 해결 — 클라이언트는 재사용, 동시성엔 상한
 
-- **`OkHttpClient`는 싱글톤으로 재사용** — 애플리케이션 전체가 하나(또는 소수)를 공유해 `Dispatcher`·커넥션 풀을 재사용합니다. **호출마다 생성 금지.**
+- **`OkHttpClient`는 싱글톤으로 재사용** — 애플리케이션 전체가 하나(또는 소수)를 공유해 `Dispatcher`, 커넥션 풀을 재사용합니다. **호출마다 생성 금지.**
 - **Dispatcher에 동시 요청 상한** — `maxRequests` / `maxRequestsPerHost`로 폭증을 막습니다.
-- **retry는 상한 + 백오프** — 무한·중첩 재시도 금지.
-- **컨테이너 자원 한도 고려** — 스레드 스택(`-Xss`)·`ulimit`·컨테이너 메모리. 힙은 `-XX:MaxRAMPercentage`로 잡되 **힙 밖 몫을 남긴다**([JVM 튜닝](./jvm-tuning-scenarios)).
+- **retry는 상한 + 백오프** — 무한, 중첩 재시도 금지.
+- **컨테이너 자원 한도 고려** — 스레드 스택(`-Xss`), `ulimit`, 컨테이너 메모리. 힙은 `-XX:MaxRAMPercentage`로 잡되 **힙 밖 몫을 남긴다**([JVM 튜닝](./jvm-tuning-scenarios)).
 
 ```java
 @Bean
@@ -86,8 +86,8 @@ OkHttpClient okHttpClient() { // 애플리케이션당 하나만
 ## 정리
 
 - `unable to create native thread`는 **힙이 아니라 네이티브 스레드 한도** 문제입니다. `OOMKilled`도 힙 밖 메모리 초과입니다.
-- 원인은 **OkHttpClient 재생성·상한 없는 비동기·retry 증폭**으로 스레드가 몇 시간에 걸쳐 누적된 것입니다.
-- 해결은 **클라이언트 싱글톤 재사용 · Dispatcher 상한 · retry 상한 · 컨테이너 자원 한도 고려**.
+- 원인은 **OkHttpClient 재생성, 상한 없는 비동기, retry 증폭**으로 스레드가 몇 시간에 걸쳐 누적된 것입니다.
+- 해결은 **클라이언트 싱글톤 재사용, Dispatcher 상한, retry 상한, 컨테이너 자원 한도 고려**.
 - <mark>배포 직후가 아니라 몇 시간 뒤 발생하는 건 "천천히 쌓이는" 누수의 전형입니다.</mark>
 
 느린 외부 호출이 유발하는 다른 장애는 [외부 API 하나가 느려지자 서버 전체가 멈췄다](./external-api-timeout-server-hang)도 함께 보세요.
@@ -97,6 +97,6 @@ OkHttpClient okHttpClient() { // 애플리케이션당 하나만
 | 용어 | 쉬운 뜻 |
 |---|---|
 | 네이티브 스레드 | JVM 힙 밖, OS가 관리하는 실제 스레드(스택 메모리 사용) |
-| unable to create native thread | 스레드를 더 못 만드는 상태(개수·네이티브 메모리 한도) |
+| unable to create native thread | 스레드를 더 못 만드는 상태(개수, 네이티브 메모리 한도) |
 | OOMKilled | 컨테이너 메모리 한도 초과로 커널이 종료(exit 137) |
-| Dispatcher | OkHttp가 요청을 실행하는 스레드 풀·큐 |
+| Dispatcher | OkHttp가 요청을 실행하는 스레드 풀, 큐 |

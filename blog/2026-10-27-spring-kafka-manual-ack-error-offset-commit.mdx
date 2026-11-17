@@ -71,11 +71,11 @@ public DefaultErrorHandler defaultErrorHandler() {
 
 연결 고리는 이렇습니다 — <mark>`@KafkaListener`(**`plainMessageContainerFactory`**) → **①** 팩토리(`AckMode.MANUAL` + `setCommonErrorHandler`) → **②** `DefaultErrorHandler`(recoverer + `addNotRetryableExceptions`).</mark> 즉 리스너에서 던진 예외는 결국 **②의 recoverer까지 전달됩니다.**
 
-여기서 **recoverer(복구기)** 는 따로 떨어진 객체가 아니라, ②에서 `new DefaultErrorHandler(recoverer, backOff)`의 **첫 번째 인자로 넘긴 람다**(`(consumerRecord, exception) -> { 로그 + Slack }`)입니다. 재시도가 끝났거나 예외가 비재시도로 분류되면, **컨테이너가 이 람다를 호출**해 "이 레코드는 복구(포기)했다"고 처리합니다. 아래부터는 이 ①·②를 기준으로 설명합니다.
+여기서 **recoverer(복구기)** 는 따로 떨어진 객체가 아니라, ②에서 `new DefaultErrorHandler(recoverer, backOff)`의 **첫 번째 인자로 넘긴 람다**(`(consumerRecord, exception) -> { 로그 + Slack }`)입니다. 재시도가 끝났거나 예외가 비재시도로 분류되면, **컨테이너가 이 람다를 호출**해 "이 레코드는 복구(포기)했다"고 처리합니다. 아래부터는 이 ①, ②를 기준으로 설명합니다.
 
 ## MANUAL ack의 흔한 오해 — "내가 ack해야만 커밋"은 정상 경로 한정
 
-`AckMode.MANUAL`에서 **정상적으로 메서드가 끝나는** 경우라면, 오프셋은 `acknowledge()`를 호출할 때만 커밋됩니다. 여기까지는 맞습니다. 그래서 위 코드에서 **플래그가 꺼져 있으면**(예외 없이 `if`를 건너뜀) `acknowledge()`가 호출되지 않아 그 레코드는 커밋되지 않고, 재시작·리밸런스 때 다시 전달됩니다.
+`AckMode.MANUAL`에서 **정상적으로 메서드가 끝나는** 경우라면, 오프셋은 `acknowledge()`를 호출할 때만 커밋됩니다. 여기까지는 맞습니다. 그래서 위 코드에서 **플래그가 꺼져 있으면**(예외 없이 `if`를 건너뜀) `acknowledge()`가 호출되지 않아 그 레코드는 커밋되지 않고, 재시작, 리밸런스 때 다시 전달됩니다.
 
 <mark>문제는 "예외로 끝나는" 경우입니다.</mark> 예외는 `acknowledge()`를 건너뛰는 것으로 끝나지 않고, **리스너 밖으로 전파되어 컨테이너의 에러 핸들러로** 전달됩니다. 그다음은 내 `acknowledge()`가 아니라 **에러 핸들러**가 오프셋을 좌우합니다.
 
@@ -108,7 +108,7 @@ default boolean isAckAfterHandle() {
 
 에러 핸들러가 예외를 **다시 던지지 않고** 레코드를 처리(복구)하면, 컨테이너(`KafkaMessageListenerContainer`)가 `isAckAfterHandle()`이 `true`인지 보고 **그 레코드의 오프셋을 커밋**합니다. <mark>`DefaultErrorHandler`는 이 값을 재정의하지 않으므로 기본 `true` — recoverer가 `return`(정상 종료)하는 순간 그 레코드의 오프셋이 커밋됩니다(`acknowledge()`와 무관).</mark> 이 자동 커밋을 막으려면 `isAckAfterHandle()`을 `false`로 재정의합니다.
 
-소스: [`CommonErrorHandler.isAckAfterHandle()`](https://github.com/spring-projects/spring-kafka/blob/main/spring-kafka/src/main/java/org/springframework/kafka/listener/CommonErrorHandler.java) · 실제 커밋은 [`KafkaMessageListenerContainer`](https://github.com/spring-projects/spring-kafka/blob/main/spring-kafka/src/main/java/org/springframework/kafka/listener/KafkaMessageListenerContainer.java)의 `invokeErrorHandler`가 수행합니다.
+소스: [`CommonErrorHandler.isAckAfterHandle()`](https://github.com/spring-projects/spring-kafka/blob/main/spring-kafka/src/main/java/org/springframework/kafka/listener/CommonErrorHandler.java), 실제 커밋은 [`KafkaMessageListenerContainer`](https://github.com/spring-projects/spring-kafka/blob/main/spring-kafka/src/main/java/org/springframework/kafka/listener/KafkaMessageListenerContainer.java)의 `invokeErrorHandler`가 수행합니다.
 
 ## 더 큰 문제 — `addNotRetryableExceptions(RuntimeException.class)`
 
@@ -134,7 +134,7 @@ else (아니오)
 endif
 :recoverer 실행(log + Slack);
 :실패 레코드 건너뛰고(seek)\n그 오프셋 커밋;
-:메시지 유실\n처리·재시도·DLT 모두 안 됨;
+:메시지 유실\n처리, 재시도, DLT 모두 안 됨;
 stop
 @enduml
 ```
@@ -148,7 +148,7 @@ stop
 3. recoverer(여기선 로그 + Slack 알림)가 실행되고 `return` — 즉 **복구 완료**로 간주.
 4. 실패 레코드를 건너뛰고 **그 오프셋이 커밋**됩니다.
 
-결과적으로 <mark>그 메시지는 **처리되지도, 재시도되지도, DLT로 보존되지도 않은 채 건너뛰어집니다** — Slack 알림만 남고 메시지는 유실됩니다.</mark> "MANUAL ack라 `acknowledge()` 안 하면 안전하다"는 가정이 성립하지 않는 지점입니다. 오프셋·전달 보장의 기본은 [Kafka 전달 시맨틱](./kafka-delivery-semantics)에 정리돼 있습니다.
+결과적으로 <mark>그 메시지는 **처리되지도, 재시도되지도, DLT로 보존되지도 않은 채 건너뛰어집니다** — Slack 알림만 남고 메시지는 유실됩니다.</mark> "MANUAL ack라 `acknowledge()` 안 하면 안전하다"는 가정이 성립하지 않는 지점입니다. 오프셋, 전달 보장의 기본은 [Kafka 전달 시맨틱](./kafka-delivery-semantics)에 정리돼 있습니다.
 
 ## 그럼 어떻게 해야 하나
 
@@ -156,7 +156,7 @@ stop
 
 ### ① 비재시도 범위를 좁힌다
 
-`addNotRetryableExceptions`는 **넘긴 예외와 그 하위 클래스**를 "재시도 안 함"으로 분류합니다. 그래서 `RuntimeException`을 넣으면 그 아래 거의 모든 예외가 걸려 `FixedBackOff`가 무의미해집니다. 정말 재시도가 의미 없는 예외(잘못된 입력·역직렬화 오류 등)만 지정하세요.
+`addNotRetryableExceptions`는 **넘긴 예외와 그 하위 클래스**를 "재시도 안 함"으로 분류합니다. 그래서 `RuntimeException`을 넣으면 그 아래 거의 모든 예외가 걸려 `FixedBackOff`가 무의미해집니다. 정말 재시도가 의미 없는 예외(잘못된 입력, 역직렬화 오류 등)만 지정하세요.
 
 ```java
 // 검증·역직렬화 오류만 즉시 스킵, 나머지는 FixedBackOff로 재시도
@@ -167,7 +167,7 @@ errorHandler.addNotRetryableExceptions(IllegalArgumentException.class, Deseriali
 
 ### ② 유실이 문제면 recoverer를 DLT로 교체한다
 
-지금 recoverer는 로그·Slack뿐이라 메시지가 사라집니다. Spring이 제공하는 **`DeadLetterPublishingRecoverer`** 는 실패 레코드를 **죽은 편지 토픽(dead-letter topic, 기본 `<원본토픽>.DLT`)으로 다시 발행**해 보존합니다(발행용 `KafkaTemplate`이 필요).
+지금 recoverer는 로그, Slack뿐이라 메시지가 사라집니다. Spring이 제공하는 **`DeadLetterPublishingRecoverer`** 는 실패 레코드를 **죽은 편지 토픽(dead-letter topic, 기본 `<원본토픽>.DLT`)으로 다시 발행**해 보존합니다(발행용 `KafkaTemplate`이 필요).
 
 ```java
 // 1) DLT 발행용 KafkaTemplate (이미 있으면 재사용)
@@ -217,7 +217,7 @@ factory.setCommonErrorHandler(containerStoppingErrorHandler());
 
 이 핸들러는 예외가 나면 **컨테이너를 중단**시킵니다. 커밋되지 않은 그 레코드는 전진하지 않으므로, 컨테이너를 다시 시작하면(수동 또는 헬스체크 재기동) **같은 레코드부터 다시 소비**합니다 — "조용히 건너뛰는" 대신 멈춰서 사람이 개입하게 하는 선택입니다.
 
-참고로 여기 나온 `DefaultErrorHandler`·`DeadLetterPublishingRecoverer`·`CommonContainerStoppingErrorHandler`는 **직접 구현하는 게 아니라 Spring Kafka가 제공하는 내장 클래스**(`org.springframework.kafka.listener` 패키지)입니다. 직접 만드는 건 recoverer 람다 정도이고, 나머지는 가져다 설정만 하면 됩니다.
+참고로 여기 나온 `DefaultErrorHandler`, `DeadLetterPublishingRecoverer`, `CommonContainerStoppingErrorHandler`는 **직접 구현하는 게 아니라 Spring Kafka가 제공하는 내장 클래스**(`org.springframework.kafka.listener` 패키지)입니다. 직접 만드는 건 recoverer 람다 정도이고, 나머지는 가져다 설정만 하면 됩니다.
 
 → [Container stopping error handler](https://docs.spring.io/spring-kafka/reference/kafka/annotation-error-handling.html#container-stopping-error-handlers)
 
@@ -235,7 +235,7 @@ errorHandler.setCommitRecovered(true);
 
 둘의 차이는 **복구 레코드를 "언제" 커밋하느냐**입니다.
 
-- **기본값 `commitRecovered=false`** — 에러 핸들러가 복구 레코드를 **직접 즉시 커밋하지는 않고** seek로 건너뛰기만 합니다. 그 오프셋은 **다음 커밋 시점**에 함께 커밋됩니다 — 뒤 레코드가 처리·커밋될 때 같이(오프셋 커밋은 누적이라, 어떤 레코드의 오프셋을 커밋하면 **그보다 앞선 레코드는 모두 처리된 것으로 간주**됩니다. 건너뛴 레코드도 그 앞이면 함께 포함). 그래서 복구 직후부터 다음 커밋 사이에 앱이 죽으면 그 레코드가 **다시 와서 또 복구**될 수 있습니다.
+- **기본값 `commitRecovered=false`** — 에러 핸들러가 복구 레코드를 **직접 즉시 커밋하지는 않고** seek로 건너뛰기만 합니다. 그 오프셋은 **다음 커밋 시점**에 함께 커밋됩니다 — 뒤 레코드가 처리, 커밋될 때 같이(오프셋 커밋은 누적이라, 어떤 레코드의 오프셋을 커밋하면 **그보다 앞선 레코드는 모두 처리된 것으로 간주**됩니다. 건너뛴 레코드도 그 앞이면 함께 포함). 그래서 복구 직후부터 다음 커밋 사이에 앱이 죽으면 그 레코드가 **다시 와서 또 복구**될 수 있습니다.
 - **`MANUAL_IMMEDIATE` + `commitRecovered=true`** — 복구 **즉시** 그 레코드의 오프셋을 커밋합니다. 다음 커밋을 기다리지 않아 위 같은 공백이 없고, "복구하면 바로 커밋"이라는 의도가 코드에 분명히 나타납니다.
 
 → [commitRecovered](https://docs.spring.io/spring-kafka/reference/kafka/annotation-error-handling.html#default-eh)
@@ -256,7 +256,7 @@ public void onMessageAll(String message, Acknowledgment acknowledgment) {
 - `AckMode.MANUAL`에서 **정상 종료**는 `acknowledge()`를 호출해야만 커밋되지만, **예외로 끝나면** 오프셋은 `DefaultErrorHandler`가 좌우합니다.
 - `DefaultErrorHandler`는 재시도 소진(또는 **비재시도 예외는 첫 실패**)에 **recoverer를 호출하고 실패 레코드의 오프셋을 커밋**해 건너뜁니다 — `acknowledge()`와 무관하게.
 - `addNotRetryableExceptions(RuntimeException.class)`는 **거의 모든 예외를 재시도 없이 즉시 건너뛰게** 만들어, `FixedBackOff` 재시도를 사실상 무력화합니다.
-- 그래서 `isEnabled(...)` 예외는 **재시도 없이 복구·스킵 → 오프셋 커밋 → 메시지 유실**로 이어집니다. 보존이 필요하면 **DLT**, 재시도가 필요하면 **비재시도 범위를 좁혀야** 합니다.
+- 그래서 `isEnabled(...)` 예외는 **재시도 없이 복구, 스킵 → 오프셋 커밋 → 메시지 유실**로 이어집니다. 보존이 필요하면 **DLT**, 재시도가 필요하면 **비재시도 범위를 좁혀야** 합니다.
 
 ## 참고
 

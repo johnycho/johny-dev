@@ -1,20 +1,20 @@
 ---
 slug: db-shared-exclusive-locks
-title: 'DB 락 — 공유락(S)·배타락(X)과 격리 수준별 대기·데드락'
+title: 'DB 락 — 공유락(S), 배타락(X)과 격리 수준별 대기, 데드락'
 authors: [ johnycho ]
 tags: [ database ]
 date: 2026-09-23T17:00:00+09:00
-description: "공유락(S)·배타락(X)의 개념과 호환성, 그리고 READ COMMITTED·REPEATABLE READ·SERIALIZABLE 격리 수준별로 언제 락을 획득하고 대기하거나 데드락이 발생하는지를 MySQL InnoDB 기준 예시·다이어그램으로 정리합니다."
+description: "공유락(S), 배타락(X)의 개념과 호환성, 그리고 READ COMMITTED, REPEATABLE READ, SERIALIZABLE 격리 수준별로 언제 락을 획득하고 대기하거나 데드락이 발생하는지를 MySQL InnoDB 기준 예시와 다이어그램으로 정리합니다."
 ---
 
 <!-- truncate -->
 
-DB는 여러 트랜잭션이 같은 데이터를 동시에 건드릴 때 **락(lock)** 으로 순서를 정리합니다. 락에는 읽기용 **공유락(S)** 과 쓰기용 **배타락(X)** 이 있고, <mark>어떤 락을 언제 획득하느냐는 **격리 수준에 따라 달라져** 대기·데드락 양상도 바뀝니다.</mark> 개념부터 격리 수준별 동작, SERIALIZABLE의 구체적 상황까지 MySQL InnoDB 기준으로 정리합니다. (격리 수준 자체는 [DB 트랜잭션 격리 수준](./db-isolation-levels) 참고.)
+DB는 여러 트랜잭션이 같은 데이터를 동시에 건드릴 때 **락(lock)** 으로 순서를 정리합니다. 락에는 읽기용 **공유락(S)** 과 쓰기용 **배타락(X)** 이 있고, <mark>어떤 락을 언제 획득하느냐는 **격리 수준에 따라 달라져** 대기, 데드락 양상도 바뀝니다.</mark> 개념부터 격리 수준별 동작, SERIALIZABLE의 구체적 상황까지 MySQL InnoDB 기준으로 정리합니다. (격리 수준 자체는 [DB 트랜잭션 격리 수준](./db-isolation-levels) 참고.)
 
 ## 공유락(S)과 배타락(X)
 
 - **공유락(S, shared)** — **읽기**용. 여러 트랜잭션이 같은 행에 **동시에 S락을 획득할 수 있습니다**(읽기끼리는 서로 방해 안 함). `SELECT ... FOR SHARE`(구 `LOCK IN SHARE MODE`).
-- **배타락(X, exclusive)** — **수정·삭제**용. **한 트랜잭션만** 획득할 수 있고, 다른 트랜잭션은 S든 X든 획득하지 못합니다. `UPDATE`·`DELETE`·`INSERT`, `SELECT ... FOR UPDATE`.
+- **배타락(X, exclusive)** — **수정, 삭제**용. **한 트랜잭션만** 획득할 수 있고, 다른 트랜잭션은 S든 X든 획득하지 못합니다. `UPDATE`, `DELETE`, `INSERT`, `SELECT ... FOR UPDATE`.
 
 호환성은 이 한 표로 요약됩니다(공식: [InnoDB Locking](https://dev.mysql.com/doc/refman/8.0/en/innodb-locking.html)).
 
@@ -35,7 +35,7 @@ DB는 여러 트랜잭션이 같은 데이터를 동시에 건드릴 때 **락(l
 
 ## 대기와 데드락은 다르다
 
-- **대기(lock wait)** — 한 방향으로 기다리는 상태. 상대가 커밋·롤백해 락을 해제하면 이어서 진행합니다. 대기가 너무 길어지면 타임아웃 오류가 납니다.
+- **대기(lock wait)** — 한 방향으로 기다리는 상태. 상대가 커밋, 롤백해 락을 해제하면 이어서 진행합니다. 대기가 너무 길어지면 타임아웃 오류가 납니다.
 - **데드락(deadlock)** — 둘 이상이 **서로 상대의 락을 기다리는 순환**. 아무도 해소하지 못해 InnoDB가 감지해 **한쪽을 롤백**합니다(오류 1213). 롤백된 쪽은 애플리케이션이 다시 실행해야 합니다.
 
 가장 단순한 대기 — 같은 행을 두 트랜잭션이 UPDATE(둘 다 X락):
@@ -88,19 +88,19 @@ note over A, B : 서로 상대의 락을 기다림 → 데드락 (InnoDB가 한�
 
 같은 SQL이라도 격리 수준에 따라 **획득하는 락이 다릅니다.** (InnoDB 기준, 일반 `SELECT`는 잠그지 않는 조회를 말합니다.)
 
-| 격리 수준 | 일반 SELECT | 잠그는 읽기·UPDATE·DELETE | 대기·데드락 경향 |
+| 격리 수준 | 일반 SELECT | 잠그는 읽기, UPDATE, DELETE | 대기, 데드락 경향 |
 |---|---|---|---|
 | **READ COMMITTED** | 락 없음(MVCC 스냅샷) | **레코드 락만**(gap 락 없음) | 적음 |
 | **REPEATABLE READ** | 락 없음(MVCC 스냅샷) | **next-key 락**(레코드+gap) | gap 때문에 넓음 |
 | **SERIALIZABLE** | **S락(FOR SHARE)으로 승격** | next-key 락 | 읽기도 충돌해 급증 |
 
-- **READ COMMITTED** — 일반 `SELECT`는 락 없이 스냅샷을 읽고, 잠그는 읽기·쓰기도 **레코드(행) 락만** 획득합니다(gap 락은 외래키·중복키 검사에만). 그래서 대기·데드락이 가장 적습니다.
-- **REPEATABLE READ** — 일반 `SELECT`는 스냅샷이지만, 잠그는 읽기·쓰기는 **next-key 락(레코드+그 앞 gap)** 을 획득합니다. gap까지 잠가 phantom을 막는 대신, 잠금 충돌·데드락 범위가 넓습니다(gap 락 데드락은 [격리 수준 글](./db-isolation-levels)에서 다룸).
+- **READ COMMITTED** — 일반 `SELECT`는 락 없이 스냅샷을 읽고, 잠그는 읽기와 쓰기도 **레코드(행) 락만** 획득합니다(gap 락은 외래키, 중복키 검사에만). 그래서 대기와 데드락이 가장 적습니다.
+- **REPEATABLE READ** — 일반 `SELECT`는 스냅샷이지만, 잠그는 읽기와 쓰기는 **next-key 락(레코드+그 앞 gap)** 을 획득합니다. gap까지 잠가 phantom을 막는 대신, 잠금 충돌, 데드락 범위가 넓습니다(gap 락 데드락은 [격리 수준 글](./db-isolation-levels)에서 다룸).
 - **SERIALIZABLE** — 결정적 차이는 **일반 `SELECT`까지 자동으로 공유락으로 바뀐다**는 점입니다.
 
-## SERIALIZABLE은 언제 대기·데드락이 생기나
+## SERIALIZABLE은 언제 대기와 데드락이 생기나
 
-SERIALIZABLE에서는 (autocommit이 꺼진 트랜잭션이면) InnoDB가 **모든 일반 `SELECT`를 `SELECT ... FOR SHARE`로 자동 변환**합니다 — 즉 **읽기만 해도 S락**을 잡습니다([공식 문서](https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-isolation-levels.html)). 그래서 RC·RR에서는 안 생기던 대기·데드락이 생깁니다.
+SERIALIZABLE에서는 (autocommit이 꺼진 트랜잭션이면) InnoDB가 **모든 일반 `SELECT`를 `SELECT ... FOR SHARE`로 자동 변환**합니다 — 즉 **읽기만 해도 S락**을 잡습니다([공식 문서](https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-isolation-levels.html)). 그래서 RC, RR에서는 안 생기던 대기와 데드락이 생깁니다.
 
 ### 케이스 A — 읽기가 쓰기를 막는다(대기)
 
@@ -115,7 +115,7 @@ participant "행 id=1" as R
 participant "트랜잭션 B" as B
 A -> R : SELECT id=1 → (자동) FOR SHARE, S락 획득
 B -> R : UPDATE id=1 → X락 요청
-note over B : A의 S락과 충돌 → 대기\n(RC·RR이면 A의 SELECT는 락이 없어 안 기다림)
+note over B : A의 S락과 충돌 → 대기\n(RC, RR이면 A의 SELECT는 락이 없어 안 기다림)
 A -> R : COMMIT → S락 해제
 B -> R : 대기 풀림 → 진행
 @enduml
@@ -125,7 +125,7 @@ B -> R : 대기 풀림 → 진행
 
 ![PlantUML SERIALIZABLE 읽기가 쓰기를 막음](/img/c4/pu-lock-serializable-wait.svg)
 
-A가 그냥 조회만 했는데도 S락이 걸려, B의 `UPDATE`가 대기합니다. <mark>RC·RR이면 A의 일반 `SELECT`는 락이 없어 B가 기다리지 않지만, SERIALIZABLE에서는 읽기가 쓰기를 막습니다.</mark>
+A가 그냥 조회만 했는데도 S락이 걸려, B의 `UPDATE`가 대기합니다. <mark>RC, RR이면 A의 일반 `SELECT`는 락이 없어 B가 기다리지 않지만, SERIALIZABLE에서는 읽기가 쓰기를 막습니다.</mark>
 
 ```sql
 -- 세션 A (SERIALIZABLE, autocommit off)     -- 세션 B
@@ -171,7 +171,7 @@ UPDATE account SET balance=100         -- A: X락 요청 → B의 S락 대기
                                        -- B: X락 요청 → A의 S락 대기 → 데드락!
 ```
 
-<mark>SERIALIZABLE은 가장 안전하지만, 읽기까지 락을 획득해 이렇게 대기·데드락이 급증합니다 — 정말 강한 일관성이 필요한 구간에만 사용하고, 평소엔 RC·RR로 유지하는 편이 낫습니다.</mark>
+<mark>SERIALIZABLE은 가장 안전하지만, 읽기까지 락을 획득해 이렇게 대기와 데드락이 급증합니다 — 정말 강한 일관성이 필요한 구간에만 사용하고, 평소엔 RC, RR로 유지하는 편이 낫습니다.</mark>
 
 ## 데드락이 발생하면: 어떤 메시지가 뜨고 무엇이 롤백되나
 
@@ -195,7 +195,7 @@ ERROR 1205 (HY000): Lock wait timeout exceeded; try restarting transaction
 
 - `innodb_lock_wait_timeout`(기본 50초)을 넘으면 발생합니다. <mark>기본적으로 **트랜잭션 전체가 아니라 그 문장(statement)만 롤백**되고 트랜잭션 자체는 살아 있습니다.</mark> 전체를 롤백하려면 `innodb_rollback_on_timeout`을 켭니다.
 
-스프링(Spring)에서는 이 오류들이 예외로 변환됩니다 — MySQL의 `1213`·`1205`는 모두 `DeadlockLoserDataAccessException`(→ `ConcurrencyFailureException` 계열)으로 올라오니, 이를 받아 재시도하면 됩니다.
+스프링(Spring)에서는 이 오류들이 예외로 변환됩니다 — MySQL의 `1213`, `1205`는 모두 `DeadlockLoserDataAccessException`(→ `ConcurrencyFailureException` 계열)으로 올라오니, 이를 받아 재시도하면 됩니다.
 
 ```java
 @Retryable(retryFor = DeadlockLoserDataAccessException.class,
@@ -205,7 +205,7 @@ public void transfer(Long from, Long to, int amount) { ... }
 // 데드락으로 롤백되면 짧게 기다렸다가 최대 3번까지 자동 재시도
 ```
 
-## 대기·데드락을 줄이려면
+## 대기와 데드락을 줄이려면
 
 - **락 획득 순서를 통일** — 모든 트랜잭션이 행을 항상 같은 순서로 잡으면 순환(데드락)이 안 생깁니다.
 - **트랜잭션을 짧게** — 락을 보유한 시간이 짧을수록 충돌이 줄어듭니다.
@@ -217,7 +217,7 @@ public void transfer(Long from, Long to, int amount) { ... }
 
 ## 정리
 
-- **S락(읽기)은 서로 공존**하지만, **X락(쓰기)은 S·X 모두와 충돌**해 대기합니다.
+- **S락(읽기)은 서로 공존**하지만, **X락(쓰기)은 S, X 모두와 충돌**해 대기합니다.
 - 대기는 한 방향 기다림, **데드락은 서로 기다리는 순환**(InnoDB가 한쪽 롤백).
 - <mark>격리 수준이 락을 변경합니다 — RC는 레코드 락만, RR은 next-key(gap) 락, SERIALIZABLE은 읽기까지 S락.</mark>
 - SERIALIZABLE에서는 **읽기가 쓰기를 막고(대기)**, **읽고 나서 각자 쓰면 데드락**이 납니다. 강한 일관성이 꼭 필요한 곳에만 사용합니다.

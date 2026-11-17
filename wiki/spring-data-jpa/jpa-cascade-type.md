@@ -8,7 +8,7 @@ tags: [ spring, jpa ]
 
 `CascadeType`은 **부모 엔티티에 수행한 영속성 작업을 연관된 자식 엔티티에도 전파할지**를 결정하는 옵션입니다.
 
-> 즉, 부모를 저장·수정·삭제할 때  
+> 즉, 부모를 저장, 수정, 삭제할 때  
 > 자식에게도 같은 작업을 자동으로 적용할 것인지를 의미합니다.
 
 ---
@@ -156,7 +156,7 @@ public enum CascadeType {
 
 ---
 
-### 저장·수정만 전파하고 싶을 때
+### 저장과 수정만 전파하고 싶을 때
 ```java
 @OneToOne(
   cascade = {CascadeType.PERSIST, CascadeType.MERGE}

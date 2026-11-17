@@ -4,7 +4,7 @@ title: G1(Garbage-First) GC 동작 과정
 tags: [ java ]
 ---
 
-Java 17·21의 기본 GC인 **G1GC(Garbage-First Garbage Collector)** 는  
+Java 17, 21의 기본 GC인 **G1GC(Garbage-First Garbage Collector)** 는  
 “<mark>힙을 잘게 나누고, 쓰레기가 많은 곳부터 조금씩 치운다</mark>”는 개념으로 설계된 GC입니다.
 
 ---
@@ -193,6 +193,6 @@ G1GC는 “한 번에 다 치우는 GC”가 아니라
 그래서:
 - 대용량 힙
 - 서버 애플리케이션
-- Java 17·21 환경
+- Java 17, 21 환경
 
 에서 기본 GC로 사용되고 있습니다.

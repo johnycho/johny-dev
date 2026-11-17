@@ -90,7 +90,7 @@ results.add(r);                          // 스레드 안전, 외부 동기화 �
 List<Result> list = new ArrayList<>(results);   // 이제 한 스레드가 읽어 옮김
 ```
 
-**`Collections.synchronizedList`의 주의점 — 순회는 따로 감싸야 합니다.** 이건 `add`·`get` 같은 **개별 메서드에만** 락이 걸립니다. 그래서 `add(r)` 한 번은 안전하지만, `for`/`iterator`로 **순회**할 때는 내부적으로 `hasNext()`·`next()`가 이어지는데, 그 사이 다른 스레드가 `add`하면 `ConcurrentModificationException`이 납니다. 순회 구간은 이렇게 **직접 락으로 감싸야** 합니다.
+**`Collections.synchronizedList`의 주의점 — 순회는 따로 감싸야 합니다.** 이건 `add`, `get` 같은 **개별 메서드에만** 락이 걸립니다. 그래서 `add(r)` 한 번은 안전하지만, `for`/`iterator`로 **순회**할 때는 내부적으로 `hasNext()`, `next()`가 이어지는데, 그 사이 다른 스레드가 `add`하면 `ConcurrentModificationException`이 납니다. 순회 구간은 이렇게 **직접 락으로 감싸야** 합니다.
 
 ```java
 List<Result> results = Collections.synchronizedList(new ArrayList<>());
@@ -144,10 +144,10 @@ ids.parallelStream().forEach(id -> { if (call(id).ok()) count.increment(); });
 
 ## 정리
 
-- `ArrayList`·평범한 컬렉션은 단일 스레드용이라, **동시 `add`는 조용한 데이터 손실**을 유발합니다.
+- `ArrayList`, 평범한 컬렉션은 단일 스레드용이라, **동시 `add`는 조용한 데이터 손실**을 유발합니다.
 - **가장 먼저 "공유를 없애라"** — 결과를 반환해 한 스레드가 모으면 문제가 사라집니다.
-- 꼭 공유해야 하면 `ConcurrentLinkedQueue`·`ConcurrentHashMap` 등 **동시성 자료구조**를 사용합니다.
-- 람다 안 `int[]` 카운터도 비원자적이라, 카운터는 `AtomicInteger`·`LongAdder`로 처리합니다.
+- 꼭 공유해야 하면 `ConcurrentLinkedQueue`, `ConcurrentHashMap` 등 **동시성 자료구조**를 사용합니다.
+- 람다 안 `int[]` 카운터도 비원자적이라, 카운터는 `AtomicInteger`, `LongAdder`로 처리합니다.
 - <mark>동시성 버그는 "가끔"만 재현돼 찾기 어려우니, 공유 상태를 처음부터 만들지 않는 게 최선입니다.</mark>
 
 ### 용어 한 줄 정리

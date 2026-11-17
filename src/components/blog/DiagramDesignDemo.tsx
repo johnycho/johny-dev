@@ -64,7 +64,7 @@ export default function DiagramDesignDemo() {
 
           {/* eyebrow */}
           <text x="48" y="36" fill={ACCENT} fontSize="11" letterSpacing="2" className={styles.mono}>
-            ARCHITECTURE · 테스트
+            ARCHITECTURE: 테스트
           </text>
 
           {/* nodes */}
@@ -80,7 +80,7 @@ export default function DiagramDesignDemo() {
         </svg>
       </div>
       <p className={styles.cap}>
-        diagram-design 스타일·반응형 모델 재현 (테스트용 샘플 — 실제 스킬 출력 아님)
+        diagram-design 스타일과 반응형 모델 재현 (테스트용 샘플 — 실제 스킬 출력 아님)
       </p>
     </>
   );

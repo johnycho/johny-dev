@@ -58,7 +58,7 @@ export default function RetainedHeapDiagram() {
   return (
     <div style={{margin: '1rem 0'}}>
       <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.3rem'}}>
-        <span style={rootChip}>GC 루트 — static 필드·스레드 등</span>
+        <span style={rootChip}>GC 루트 — static 필드, 스레드 등</span>
         <span style={{marginLeft: '1.1rem', color: 'var(--site-muted)', fontSize: '0.8rem'}}>↓ 참조</span>
         <div style={dashedBox}>
           <span style={dashedLabel}>이 상자 전체 = 캐시 Map의 ‘유지 크기’(retained)</span>

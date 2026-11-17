@@ -1,13 +1,13 @@
 ---
 slug: kafka-transactions-exactly-once
-title: "Kafka 트랜잭션으로 Exactly-Once — 멱등 프로듀서·트랜잭션·read_committed"
+title: "Kafka 트랜잭션으로 Exactly-Once — 멱등 프로듀서, 트랜잭션, read_committed"
 authors: [ johnycho ]
 tags: [ kafka, system-design ]
 ---
 
 <!-- truncate -->
 
-Kafka에서 "메시지를 정확히 한 번" 처리하기는 쉽지 않습니다. 재시도하면 중복(at-least-once), 안 하면 유실(at-most-once) 위험이 있죠([전달 보장 정리](./kafka-delivery-semantics) 참고). Kafka는 이 사이를 메우려고 **exactly-once(EOS)** 를 제공합니다. 이 글은 세 가지를 차례로 정리합니다 — <mark>**EOS가 정확히 무슨 뜻인지**, **Kafka의 어느 지점에서 그것을 충족하는지**, 그러려면 **무슨 설정·조건이 필요한지**.</mark>
+Kafka에서 "메시지를 정확히 한 번" 처리하기는 쉽지 않습니다. 재시도하면 중복(at-least-once), 안 하면 유실(at-most-once) 위험이 있죠([전달 보장 정리](./kafka-delivery-semantics) 참고). Kafka는 이 사이를 메우려고 **exactly-once(EOS)** 를 제공합니다. 이 글은 세 가지를 차례로 정리합니다 — <mark>**EOS가 정확히 무슨 뜻인지**, **Kafka의 어느 지점에서 그것을 충족하는지**, 그러려면 **무슨 설정과 조건이 필요한지**.</mark>
 
 ## EOS란 — "한 번 전달"이 아니라 "결과가 한 번 반영"
 
@@ -19,9 +19,9 @@ Kafka에서 "메시지를 정확히 한 번" 처리하기는 쉽지 않습니다
 
 여기서 가장 흔히 오해하는 지점이 있습니다. <mark>EOS는 "메시지가 네트워크로 딱 한 번 전송된다"는 뜻이 아닙니다.</mark> 재시도 때문에 물리적 전송은 여러 번 발생할 수 있습니다. EOS가 보장하는 건 **그 처리 결과가 정확히 한 번만 반영**된다는 것입니다 — 중복 전송은 브로커가 막아 내고, 중간에 실패한 처리는 전부 취소됩니다.
 
-Kafka는 이 보장을 **세 가지 메커니즘의 조합**으로 만듭니다: **멱등 프로듀서 · 트랜잭션 · `read_committed` 컨슈머**. 각각이 **중복이나 유실이 생기는** 서로 다른 지점을 막습니다.
+Kafka는 이 보장을 **세 가지 메커니즘의 조합**으로 만듭니다: **멱등 프로듀서, 트랜잭션, `read_committed` 컨슈머**. 각각이 **중복이나 유실이 생기는** 서로 다른 지점을 막습니다.
 
-## EOS는 어디서 충족되나 — 중복·유실이 생기는 네 지점을 막는다
+## EOS는 어디서 충족되나 — 중복과 유실이 생기는 네 지점을 막는다
 
 중복이나 유실이 생길 수 있는 지점은 네 곳이고, 각 지점을 담당 메커니즘이 하나씩 막습니다.
 
@@ -29,10 +29,10 @@ Kafka는 이 보장을 **세 가지 메커니즘의 조합**으로 만듭니다:
 |---|---|---|---|
 | ① 프로듀서 재시도 | 같은 메시지를 **중복 전송** | 멱등 프로듀서 | `enable.idempotence=true`, `acks=all` |
 | ② 결과 쓰기 vs 오프셋 커밋 | 한쪽만 성공 → **중복/유실** | 트랜잭션(read-process-write) | `transactional.id`, `sendOffsetsToTransaction` |
-| ③ 다운스트림 읽기 | abort·미커밋 메시지를 **읽어 버림** | `read_committed` 컨슈머 | `isolation.level=read_committed` |
-| ④ 좀비 프로듀서 | 되살아난 옛 인스턴스가 **중복 기록** | 좀비 펜싱(epoch) | `transactional.id` 고정·유일 |
+| ③ 다운스트림 읽기 | abort, 미커밋 메시지를 **읽어 버림** | `read_committed` 컨슈머 | `isolation.level=read_committed` |
+| ④ 좀비 프로듀서 | 되살아난 옛 인스턴스가 **중복 기록** | 좀비 펜싱(epoch) | `transactional.id` 고정, 유일 |
 
-<mark>중요한 전제: 이 네 지점은 전부 "Kafka 토픽 안"에서의 이야기입니다.</mark> 처리 중 외부 DB·API까지 "정확히 한 번"으로 묶이지는 않습니다(아래 경계 섹션). 이어지는 섹션에서 ①~④를 차례로 봅니다.
+<mark>중요한 전제: 이 네 지점은 전부 "Kafka 토픽 안"에서의 이야기입니다.</mark> 처리 중 외부 DB, API까지 "정확히 한 번"으로 묶이지는 않습니다(아래 경계 섹션). 이어지는 섹션에서 ①~④를 차례로 봅니다.
 
 ①~④가 read-process-write 흐름의 어느 단계에서 작동하는지 시간 순서로 보면 이렇습니다. 여기서 **멱등 프로듀서**는 토픽 A를 만든 상류가 아니라, **처리기가 토픽 B로 보내는 프로듀서**를 가리킵니다.
 
@@ -76,7 +76,7 @@ participant "다운스트림\n컨슈머" as D
 
 D -> B : poll (read)
 B --> D : 커밋된 레코드만
-note over B, D : ③ read_committed\n커밋된 것만 읽고\nabort·미커밋은 제외
+note over B, D : ③ read_committed\n커밋된 것만 읽고\nabort, 미커밋은 제외
 @enduml
 ```
 
@@ -98,7 +98,7 @@ note over B, D : ③ read_committed\n커밋된 것만 읽고\nabort·미커밋�
 
 > **"그 중복은 멱등성이 막지 않나?" — 아니요**
 >
-> 멱등성의 중복 제거는 **PID · 파티션 · 시퀀스 번호**를 키로, **같은 프로듀서 세션이 같은 `send`를 재전송**한 경우만 제거합니다. 재시작 후의 재처리는 "같은 send의 재전송"이 아니라 입력을 다시 읽어 **새로 만든** `send`입니다 — 재시작으로 PID가 새로 발급되고 시퀀스도 0부터 시작하니, 브로커 눈에는 **정상적인 새 메시지**로 보여 막히지 않습니다. 즉 멱등성은 "네트워크 재전송 중복"은 막아도 "오프셋 미커밋으로 인한 재처리 중복"은 막지 못합니다.
+> 멱등성의 중복 제거는 **PID, 파티션, 시퀀스 번호**를 키로, **같은 프로듀서 세션이 같은 `send`를 재전송**한 경우만 제거합니다. 재시작 후의 재처리는 "같은 send의 재전송"이 아니라 입력을 다시 읽어 **새로 만든** `send`입니다 — 재시작으로 PID가 새로 발급되고 시퀀스도 0부터 시작하니, 브로커 눈에는 **정상적인 새 메시지**로 보여 막히지 않습니다. 즉 멱등성은 "네트워크 재전송 중복"은 막아도 "오프셋 미커밋으로 인한 재처리 중복"은 막지 못합니다.
 
 그래서 전송과 오프셋 커밋을 **한 트랜잭션**으로 묶어, 함께 확정하거나 함께 취소해야 합니다.
 
@@ -133,9 +133,9 @@ group 하나의 트랜잭션
   alt 성공
     App -> App : commitTransaction()
     note over App, B : 결과 + 오프셋을 **함께 확정**\n→ 효과가 정확히 한 번
-  else 처리·전송 실패
+  else 처리, 전송 실패
     App -> App : abortTransaction()
-    note over App, B : 결과·오프셋 **둘 다 취소**\n→ 다음 poll에서 재처리
+    note over App, B : 결과, 오프셋 **둘 다 취소**\n→ 다음 poll에서 재처리
   end
 end
 @enduml
@@ -151,7 +151,7 @@ commit되면 결과와 오프셋이 함께 확정되고, 중간에 실패해 abo
 
 **Spring 없이 순수 Kafka 클라이언트**로 작성할 때의 코드입니다. 보통 **독립 실행되는 Java 애플리케이션**(`main` 하나)이 이 루프를 실행합니다. 흐름은 네 단계입니다.
 
-1. **설정값을 `Properties`(= `props`)에 넣습니다** — 서버 주소·`transactional.id`·직렬화기 등.
+1. **설정값을 `Properties`(= `props`)에 넣습니다** — 서버 주소, `transactional.id`, 직렬화기 등.
 2. **그 `props`를 `new KafkaProducer<>(props)`에 넘겨 프로듀서를 생성합니다** — 바로 이 지점에서 설정이 적용됩니다(컨슈머도 자기 `Properties`로 똑같이 생성).
 3. **`initTransactions()`를 애플리케이션 기동 때 한 번** 호출합니다.
 4. **`while` 루프**에서 `poll → send → 오프셋 포함 → commit`을 반복합니다.
@@ -231,8 +231,8 @@ public void onMessage(ConsumerRecord<String, String> rec) {
 
 예를 들어 한 파티션에 메시지가 이렇게 쌓였다고 합시다 — `M1`(커밋됨), `M2`(아직 커밋 안 된 트랜잭션), `M3`(그 트랜잭션이 결국 abort됨).
 
-- **`read_uncommitted`(기본값)** — `M1`·`M2`·`M3`을 **전부 읽습니다.** 아직 확정도 안 됐고 심지어 롤백된 `M3`까지 처리해 버려, "없던 일"이 돼야 할 메시지가 다운스트림으로 전달됩니다.
-- **`read_committed`** — **커밋된 `M1`만** 읽고, 미커밋·abort된 것은 건너뜁니다.
+- **`read_uncommitted`(기본값)** — `M1`, `M2`, `M3`을 **전부 읽습니다.** 아직 확정도 안 됐고 심지어 롤백된 `M3`까지 처리해 버려, "없던 일"이 돼야 할 메시지가 다운스트림으로 전달됩니다.
+- **`read_committed`** — **커밋된 `M1`만** 읽고, 미커밋, abort된 것은 건너뜁니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -248,8 +248,8 @@ frame "파티션 로그 (왼 → 오 시간순)" as LOG {
   M1 -[hidden]right- M2
   M2 -[hidden]right- M3
 }
-rectangle "read_uncommitted (기본값)\nM1 · M2 · M3 전부 읽음\n(롤백된 M3까지 처리!)" as RU #FFEBEE
-rectangle "read_committed\n커밋된 M1만 읽음\n(미커밋·abort는 건너뜀)" as RC #E8F5E9
+rectangle "read_uncommitted (기본값)\nM1, M2, M3 전부 읽음\n(롤백된 M3까지 처리!)" as RU #FFEBEE
+rectangle "read_committed\n커밋된 M1만 읽음\n(미커밋, abort는 건너뜀)" as RC #E8F5E9
 LOG --> RU
 LOG --> RC
 @enduml
@@ -265,7 +265,7 @@ LOG --> RC
 
 분산 환경에선 "종료된 줄 알았던 옛 프로듀서(좀비)"가 되살아나 중복을 쓸 수 있습니다. `transactional.id`는 트랜잭션을 활성화하는 것 외에 **이 문제를 막는 핵심**입니다.
 
-<mark>같은 `transactional.id`로 새 프로듀서가 트랜잭션을 시작하면 브로커가 epoch를 올리고, 이전 epoch(좀비)의 쓰기·커밋을 거절합니다.</mark> 그래서 `transactional.id`는 **논리적 프로듀서마다 고정·유일**해야 합니다(재시작해도 같은 값). read-process-write에서는 보통 입력 파티션 기준으로 안정적으로 배정합니다.
+<mark>같은 `transactional.id`로 새 프로듀서가 트랜잭션을 시작하면 브로커가 epoch를 올리고, 이전 epoch(좀비)의 쓰기와 커밋을 거절합니다.</mark> 그래서 `transactional.id`는 **논리적 프로듀서마다 고정, 유일**해야 합니다(재시작해도 같은 값). read-process-write에서는 보통 입력 파티션 기준으로 안정적으로 배정합니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -292,7 +292,7 @@ BK --> Z : 거절 (ProducerFencedException)\nepoch 0 < 현재 1
 
 ## 경계 — EOS는 "Kafka 안에서"만이다
 
-가장 자주 오해하는 지점입니다. Kafka 트랜잭션의 exactly-once는 **Kafka 토픽 읽기·쓰기와 오프셋 커밋** 사이에서 성립합니다. <mark>처리 중간에 **외부 DB에 쓰거나 외부 API를 호출**하면, 그건 Kafka 트랜잭션이 롤백해 주지 않습니다.</mark> "Kafka로 보내면서 DB에도 확실히 한 번"이 필요하면 트랜잭션만으로는 안 되고, [Outbox 패턴](./kafka-outbox-exactly-once) 같은 방식으로 DB 트랜잭션과 발행을 묶어야 합니다.
+가장 자주 오해하는 지점입니다. Kafka 트랜잭션의 exactly-once는 **Kafka 토픽 읽기, 쓰기와 오프셋 커밋** 사이에서 성립합니다. <mark>처리 중간에 **외부 DB에 쓰거나 외부 API를 호출**하면, 그건 Kafka 트랜잭션이 롤백해 주지 않습니다.</mark> "Kafka로 보내면서 DB에도 확실히 한 번"이 필요하면 트랜잭션만으로는 안 되고, [Outbox 패턴](./kafka-outbox-exactly-once) 같은 방식으로 DB 트랜잭션과 발행을 묶어야 합니다.
 
 <details>
 <summary>PlantUML 코드</summary>
@@ -318,11 +318,11 @@ note bottom of API : 트랜잭션 밖 — 재처리 시\n중복 호출 가능
 
 </details>
 
-![PlantUML EOS 경계 — Kafka 트랜잭션은 외부 DB·API를 되돌리지 못한다](/img/c4/pu-kafka-eos-boundary.svg)
+![PlantUML EOS 경계 — Kafka 트랜잭션은 외부 DB, API를 되돌리지 못한다](/img/c4/pu-kafka-eos-boundary.svg)
 
 ## Kafka Streams는 이 전부를 자동으로 해준다
 
-Kafka Streams는 Kafka 위에서 도는 **스트림 처리 라이브러리**입니다(내부에 프로듀서·컨슈머를 감싸고 있습니다). 직접 트랜잭션을 다루지 않고 Streams로 파이프라인을 구성한다면, 앞의 ①~④를 손으로 구성할 필요 없이 **설정 한 줄**이면 됩니다.
+Kafka Streams는 Kafka 위에서 도는 **스트림 처리 라이브러리**입니다(내부에 프로듀서, 컨슈머를 감싸고 있습니다). 직접 트랜잭션을 다루지 않고 Streams로 파이프라인을 구성한다면, 앞의 ①~④를 손으로 구성할 필요 없이 **설정 한 줄**이면 됩니다.
 
 ```properties
 processing.guarantee=exactly_once_v2
@@ -354,42 +354,42 @@ CFG --> RT
 
 > **`exactly_once_v2` vs 옛 `exactly_once`**
 >
-> v1(`exactly_once`)은 **입력 파티션마다 프로듀서를 하나씩** 만들어, 파티션이 많으면 프로듀서·트랜잭션이 함께 늘었습니다. v2(KIP-447, 브로커 2.5+)는 **인스턴스당 프로듀서 하나**로 여러 파티션을 처리하도록 오프셋 커밋 프로토콜을 개선해 확장성이 크게 좋아졌습니다. v1은 deprecated이므로 새로 작성한다면 **v2**를 선택합니다.
+> v1(`exactly_once`)은 **입력 파티션마다 프로듀서를 하나씩** 만들어, 파티션이 많으면 프로듀서, 트랜잭션이 함께 늘었습니다. v2(KIP-447, 브로커 2.5+)는 **인스턴스당 프로듀서 하나**로 여러 파티션을 처리하도록 오프셋 커밋 프로토콜을 개선해 확장성이 크게 좋아졌습니다. v1은 deprecated이므로 새로 작성한다면 **v2**를 선택합니다.
 
-단, 경계는 그대로입니다 — Streams의 EOS도 **Kafka 토픽 사이에서만** 성립하고, 처리 중 외부 DB·API 호출까지 롤백해 주지는 않습니다.
+단, 경계는 그대로입니다 — Streams의 EOS도 **Kafka 토픽 사이에서만** 성립하고, 처리 중 외부 DB, API 호출까지 롤백해 주지는 않습니다.
 
-## EOS 설정·조건 한눈에
+## EOS 설정, 조건 한눈에
 
-직접 프로듀서/컨슈머를 사용한다면 아래 설정을 **전부** 갖춰야 EOS가 성립합니다 — 하나라도 빠지면 앞의 ①~④ 중 한 곳에서 중복·유실이 생깁니다. 각 설정이 **어느 지점을 막는지**까지 묶어 보면 이렇습니다.
+직접 프로듀서/컨슈머를 사용한다면 아래 설정을 **전부** 갖춰야 EOS가 성립합니다 — 하나라도 빠지면 앞의 ①~④ 중 한 곳에서 중복과 유실이 생깁니다. 각 설정이 **어느 지점을 막는지**까지 묶어 보면 이렇습니다.
 
 | 어디 | 설정 | 값 | 무엇을 막나 |
 |---|---|---|---|
-| 프로듀서 | `transactional.id` | 고정·유일한 값 | ② 트랜잭션 활성화 + ④ 좀비 펜싱 |
+| 프로듀서 | `transactional.id` | 고정, 유일한 값 | ② 트랜잭션 활성화 + ④ 좀비 펜싱 |
 | 프로듀서 | `enable.idempotence` | `true` (위를 설정하면 자동) | ① 전송 재시도 중복 |
 | 프로듀서 | `acks` | `all` | ① 멱등성의 전제 |
-| 컨슈머 | `isolation.level` | `read_committed` | ③ abort·미커밋 메시지 읽힘 |
+| 컨슈머 | `isolation.level` | `read_committed` | ③ abort, 미커밋 메시지 읽힘 |
 | 컨슈머 | `enable.auto.commit` | `false` | ② 오프셋을 트랜잭션으로 커밋 |
 
 설정 밖에서 챙길 것도 있습니다.
 
 - **처리 코드 순서**: `initTransactions()` 1회 → `beginTransaction` → `send` + `sendOffsetsToTransaction` → `commit`/`abort`.
-- **운영 조건**: `transactional.id`는 재시작해도 같은 값이어야 좀비 펜싱이 동작합니다(보통 입력 파티션 기준 배정). 트랜잭션은 브로커·클라이언트 0.11+, `exactly_once_v2`는 **브로커 2.5+** 가 필요합니다.
+- **운영 조건**: `transactional.id`는 재시작해도 같은 값이어야 좀비 펜싱이 동작합니다(보통 입력 파티션 기준 배정). 트랜잭션은 브로커, 클라이언트 0.11+, `exactly_once_v2`는 **브로커 2.5+** 가 필요합니다.
 
-**Kafka Streams면** 위 표·조건 전부를 `processing.guarantee=exactly_once_v2` 한 줄이 대신합니다.
+**Kafka Streams면** 위 표, 조건 전부를 `processing.guarantee=exactly_once_v2` 한 줄이 대신합니다.
 
 ## 정리
 
 <mark>Kafka EOS는 "메시지를 한 번 보낸다"가 아니라 "**처리 결과가 정확히 한 번 반영된다**"는 보장입니다.</mark>
 
 - **뜻** — 전송은 여러 번일 수 있어도, 중복은 막히고 실패는 취소돼 **효과가 한 번만** 남습니다.
-- **방법** — **멱등 프로듀서 · 트랜잭션(read-process-write) · `read_committed` 컨슈머**, 세 가지 조합.
+- **방법** — **멱등 프로듀서, 트랜잭션(read-process-write), `read_committed` 컨슈머**, 세 가지 조합.
 - **네 지점을 각각 막습니다** (문제 → 막는 장치):
   - ① 전송 재시도 중복 → **멱등 프로듀서**
-  - ② 결과·오프셋이 따로 커밋되는 것 → **트랜잭션(read-process-write)**
-  - ③ 다운스트림이 abort·미커밋을 읽는 것 → **`read_committed` 컨슈머**
+  - ② 결과와 오프셋이 따로 커밋되는 것 → **트랜잭션(read-process-write)**
+  - ③ 다운스트림이 abort, 미커밋을 읽는 것 → **`read_committed` 컨슈머**
   - ④ 좀비(옛 프로듀서)의 중복 기록 → **`transactional.id` 좀비 펜싱**
 - **핵심 패턴** — read-process-write: 결과와 오프셋을 **한 트랜잭션**에 묶습니다.
-- **설정** — 프로듀서 `transactional.id`·`idempotence`·`acks=all` / 컨슈머 `read_committed`·`auto.commit=false`.
+- **설정** — 프로듀서 `transactional.id`, `idempotence`, `acks=all` / 컨슈머 `read_committed`, `auto.commit=false`.
 - **경계** — Kafka 토픽 사이에서만. 외부 DB까지면 [Outbox](./kafka-outbox-exactly-once).
 - **Kafka Streams** — `processing.guarantee=exactly_once_v2` 한 줄로 위 전부를 대신.
 

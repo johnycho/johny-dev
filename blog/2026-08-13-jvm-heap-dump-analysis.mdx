@@ -23,8 +23,8 @@ import RetainedHeapDiagram from '@site/src/components/blog/RetainedHeapDiagram';
 
 - **OOM(OutOfMemoryError)** — 가장 명확한 신호. 종료되는 그 순간의 힙을 자동으로 남기게 해두는 게 정석입니다(아래 옵션).
 - **메모리 누수 의심** — 트래픽은 그대론데 힙이 **계단처럼 우상향**하고 GC를 해도 안 내려갈 때. [서버 모니터링 글](./server-monitoring-analysis)에서 설명한 "톱니의 최저점(GC 직후)이 계속 올라가는" 패턴이 전형입니다.
-- **GC 과부하** — GC가 너무 자주·오래 돌아 CPU를 소모하고 응답이 느려질 때. 힙에 쓸데없이 살아있는 객체가 많은지 확인.
-- **예상보다 큰 힙** — 특정 요청·배치 후 힙이 크게 뛰고 안 빠질 때.
+- **GC 과부하** — GC가 너무 자주, 오래 돌아 CPU를 소모하고 응답이 느려질 때. 힙에 쓸데없이 살아있는 객체가 많은지 확인.
+- **예상보다 큰 힙** — 특정 요청, 배치 후 힙이 크게 뛰고 안 빠질 때.
 
 <mark>핵심은 "회수돼야 할 객체가 안 회수되고 쌓이는가"입니다.</mark> 아래처럼 GC 직후 최저점이 우상향이면 덤프를 뜰 때입니다.
 
@@ -59,14 +59,14 @@ jcmd <pid> GC.heap_dump /var/log/app/heap.hprof
 jmap -dump:live,format=b,file=heap.hprof <pid>
 ```
 
-<mark>주의: 덤프를 뜨면 그 순간 JVM이 멈춥니다(stop-the-world)</mark> — 덤프 크기는 대략 힙 크기만 하니(수 GB), 디스크·시간·순단을 감안해야 합니다. 컨테이너/쿠버네티스면 파드에 디스크 여유가 있는지, 뜬 뒤 `kubectl cp`로 빼낼 수 있는지 확인하세요. `live` 옵션은 full GC를 먼저 돌려 **정말 살아남은 것만** 남기므로 분석이 깔끔합니다(누수 추적에 유리).
+<mark>주의: 덤프를 뜨면 그 순간 JVM이 멈춥니다(stop-the-world)</mark> — 덤프 크기는 대략 힙 크기만 하니(수 GB), 디스크, 시간, 순단을 감안해야 합니다. 컨테이너/쿠버네티스면 파드에 디스크 여유가 있는지, 뜬 뒤 `kubectl cp`로 빼낼 수 있는지 확인하세요. `live` 옵션은 full GC를 먼저 돌려 **정말 살아남은 것만** 남기므로 분석이 깔끔합니다(누수 추적에 유리).
 
 ## 3. 무엇으로 여나
 
 `.hprof` 파일은 전용 분석 도구로 엽니다.
 
-- **[Eclipse MAT(Memory Analyzer Tool)](https://eclipse.dev/mat/)** — 사실상 표준. 리텐션·도미네이터·GC 루트 경로·누수 의심 리포트를 다 제공. 큰 덤프는 헤드리스 모드로 인덱싱하고 MAT 자체의 힙(`-vmargs -Xmx`)도 넉넉히 줘야 합니다.
-- **[VisualVM](https://visualvm.github.io/) / [JProfiler](https://www.ej-technologies.com/jprofiler) / [YourKit](https://www.yourkit.com/)** — GUI 프로파일러. 라이브 프로파일링까지 필요하면. (VisualVM은 무료, JProfiler·YourKit은 상용)
+- **[Eclipse MAT(Memory Analyzer Tool)](https://eclipse.dev/mat/)** — 사실상 표준. 리텐션, 도미네이터, GC 루트 경로, 누수 의심 리포트를 다 제공. 큰 덤프는 헤드리스 모드로 인덱싱하고 MAT 자체의 힙(`-vmargs -Xmx`)도 넉넉히 줘야 합니다.
+- **[VisualVM](https://visualvm.github.io/) / [JProfiler](https://www.ej-technologies.com/jprofiler) / [YourKit](https://www.yourkit.com/)** — GUI 프로파일러. 라이브 프로파일링까지 필요하면. (VisualVM은 무료, JProfiler, YourKit은 상용)
 
 > 실제 화면은 각 도구 공식 페이지에서 볼 수 있습니다. 아래는 MAT의 주요 뷰가 보여주는 내용을 예시 값으로 나타낸 것입니다.
 
@@ -111,7 +111,7 @@ stop
 
 1. **Leak Suspects 리포트** — MAT가 자동으로 "이게 수상하다"를 보여줍니다. 대개 여기서 방향이 잡힙니다.
 2. **도미네이터 트리** — 유지 크기 큰 순으로 정렬. 맨 위에 있는 게 메모리를 가장 많이 차지한 객체입니다.
-3. **히스토그램** — 클래스별 인스턴스 수·크기. "왜 `String`이/이 엔트리가 수백만 개지?" 같은 이상 수치를 찾습니다.
+3. **히스토그램** — 클래스별 인스턴스 수, 크기. "왜 `String`이/이 엔트리가 수백만 개지?" 같은 이상 수치를 찾습니다.
 4. **Path to GC Roots** — 의심 객체를 우클릭 → *"Merge Shortest Paths to GC Roots"*, 이때 **soft/weak 참조는 제외**합니다. <mark>이게 "왜 이 객체가 안 지워지는지" — 붙잡고 있는 참조 경로를 그대로 보여줍니다.</mark>
 5. **원인 코드 특정** — 그 참조 경로의 출발점(어느 `static` 컬렉션, 어느 캐시, 어느 `ThreadLocal`)을 코드에서 찾아 고칩니다.
 6. **베이스라인 비교(있으면)** — 평시 덤프와 문제 덤프를 MAT의 *Compare*로 비교하면, **무엇이 늘었는지**가 바로 나타납니다.
@@ -124,8 +124,8 @@ stop
 
 | 라벨 | 뜻 |
 |---|---|
-| Overview | 힙 전체 요약(총 크기·객체 수) |
-| Histogram | 클래스별 인스턴스 수·크기 목록 |
+| Overview | 힙 전체 요약(총 크기, 객체 수) |
+| Histogram | 클래스별 인스턴스 수, 크기 목록 |
 | Dominator Tree | 유지 크기 큰 순으로 정렬한 트리 |
 | Leak Suspects | 누수 의심 자동 리포트 |
 | Objects | 인스턴스 개수 |
@@ -136,7 +136,7 @@ stop
 
 <MatDominatorTree />
 
-**히스토그램** — 클래스별 인스턴스 수·크기. "왜 이게 백만 개지?"를 찾습니다.
+**히스토그램** — 클래스별 인스턴스 수, 크기. "왜 이게 백만 개지?"를 찾습니다.
 
 <MatHistogram />
 
@@ -151,17 +151,17 @@ stop
 원인은 대개 이 목록 안에 있습니다.
 
 - **끝없이 커지는 `static` 컬렉션** — 전역 `Map`/`List`에 계속 넣기만 하고 안 비움.
-- **경계 없는 캐시** — 최대 크기·만료 없는 자체 캐시. (도미네이터 트리 최상단 단골)
+- **경계 없는 캐시** — 최대 크기, 만료 없는 자체 캐시. (도미네이터 트리 최상단 단골)
 - **`ThreadLocal` 미정리** — 스레드 풀에서 재사용되는 스레드에 값이 남아 누적. 요청 끝에 `remove()` 필수.
-- **리스너·콜백 미해제** — 등록만 하고 해제 안 해 대상이 계속 참조됨.
-- **`ClassLoader` 누수** — 잦은 재배포 시 옛 클래스로더가 안 풀려 클래스·static이 전부 남음.
+- **리스너, 콜백 미해제** — 등록만 하고 해제 안 해 대상이 계속 참조됨.
+- **`ClassLoader` 누수** — 잦은 재배포 시 옛 클래스로더가 안 풀려 클래스와 static이 전부 남음.
 
 ## 정리
 
 - 힙 덤프는 **그 순간 힙의 전체 스냅샷** — 메트릭이 "얼마나"라면 덤프는 "무엇이".
-- **OOM 자동 덤프 옵션은 프로덕션에 상시** 걸어두고, 살아있는 프로세스는 `jcmd ... GC.heap_dump`로 뜹니다(STW·크기 주의).
+- **OOM 자동 덤프 옵션은 프로덕션에 상시** 걸어두고, 살아있는 프로세스는 `jcmd ... GC.heap_dump`로 뜹니다(STW, 크기 주의).
 - **MAT**로 열어 **유지 크기(retained) → 도미네이터 트리 → Path to GC Roots** 순으로 원인과 참조 경로를 좁힙니다.
-- 원인은 대개 **static 컬렉션·무한 캐시·ThreadLocal·미해제 리스너·클래스로더**.
+- 원인은 대개 **static 컬렉션, 무한 캐시, ThreadLocal, 미해제 리스너, 클래스로더**.
 
 <mark>지표로 누수를 감지하고([모니터링](./server-monitoring-analysis)), 힙 덤프로 "무엇이 누수되는지"를 확인합니다 — 이 둘이 한 세트입니다.</mark> 실제 OOM을 좇았던 사례는 [테스트 컨텍스트 OOM 글](./spring-datajpatest-context-oom)에서도 설명했습니다.
 

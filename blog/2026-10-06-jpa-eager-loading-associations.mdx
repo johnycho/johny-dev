@@ -1,15 +1,15 @@
 ---
 slug: jpa-eager-loading-associations
-title: "JPA 연관관계 즉시 로딩 — JPQL·QueryDSL·EntityGraph·Native·DTO로 하는 법과 착각"
+title: "JPA 연관관계 즉시 로딩 — JPQL, QueryDSL, EntityGraph, Native, DTO로 하는 법과 착각"
 authors: [ johnycho ]
 tags: [ jpa, spring ]
 date: 2026-10-06T15:00:00+09:00
-description: "LAZY 연관관계를 조회 시점에 함께 가져오는 방법을 JPQL fetch join·QueryDSL·@EntityGraph·네이티브 쿼리·DTO 프로젝션별로 코드와 함께 정리합니다. 그리고 join만 하면·EAGER면·findById면 즉시 로딩될 거라 착각하기 쉬운 경우를 실제 쿼리로 살펴봅니다."
+description: "LAZY 연관관계를 조회 시점에 함께 가져오는 방법을 JPQL fetch join, QueryDSL, @EntityGraph, 네이티브 쿼리, DTO 프로젝션별로 코드와 함께 정리합니다. 그리고 join만 하면, EAGER면, findById면 즉시 로딩될 거라 착각하기 쉬운 경우를 실제 쿼리로 살펴봅니다."
 ---
 
 <!-- truncate -->
 
-연관관계는 기본을 **지연 로딩(LAZY)** 으로 삼는 게 정석입니다. 그런데 특정 조회에서는 연관 엔티티를 **그 쿼리에서 함께** 가져와야 합니다(N+1·`LazyInitializationException` 방지). 문제는 "즉시 로딩"을 하는 방법이 접근 방식마다 다르고, **즉시 로딩될 거라 착각하기 쉬운 코드**가 많다는 점입니다. 방법별로 코드와 실제 쿼리를 보며 정리합니다.
+연관관계는 기본을 **지연 로딩(LAZY)** 으로 삼는 게 정석입니다. 그런데 특정 조회에서는 연관 엔티티를 **그 쿼리에서 함께** 가져와야 합니다(N+1, `LazyInitializationException` 방지). 문제는 "즉시 로딩"을 하는 방법이 접근 방식마다 다르고, **즉시 로딩될 거라 착각하기 쉬운 코드**가 많다는 점입니다. 방법별로 코드와 실제 쿼리를 보며 정리합니다.
 
 <mark>핵심은 **"조인했다고 로딩되는 게 아니라, `fetch`로 연관 엔티티를 함께 영속화해야 로딩된다"** 는 점입니다 — 그래서 방법마다 fetch join에 해당하는 장치를 명시적으로 지정해야 합니다.</mark>
 
@@ -87,7 +87,7 @@ Order findGraph(@Param("id") Long id);
 
 ## 4. DTO 프로젝션 — 엔티티를 로딩하지 않고 "값만" 가져온다
 
-필요한 필드만 DTO로 바로 뽑으면, 연관 데이터도 **같은 쿼리의 조인으로** 가져옵니다. 다만 이건 **엄밀히는 연관 엔티티의 "즉시 로딩"이 아닙니다** — 엔티티·프록시를 만들지 않고 **스칼라 값**을 선택할 뿐입니다.
+필요한 필드만 DTO로 바로 뽑으면, 연관 데이터도 **같은 쿼리의 조인으로** 가져옵니다. 다만 이건 **엄밀히는 연관 엔티티의 "즉시 로딩"이 아닙니다** — 엔티티와 프록시를 만들지 않고 **스칼라 값**을 선택할 뿐입니다.
 
 ```java
 // JPQL 생성자 표현식
@@ -139,7 +139,7 @@ select o from Order o join o.member m where m.name = :name
 select o from Order o join fetch o.member where o.member.name = :name
 ```
 
-조인은 **필터링·정렬용**이고, 로딩은 **`fetch`가 있어야** 합니다. 둘은 다릅니다.
+조인은 **필터링, 정렬용**이고, 로딩은 **`fetch`가 있어야** 합니다. 둘은 다릅니다.
 
 ### ② `FetchType.EAGER`로 변경하면 JPQL도 한 번에 될 거라 생각한다
 
@@ -183,7 +183,7 @@ DTO는 **선택한 값만** 가진 평범한 객체입니다. `o.member.name`만
 
 | 방법 | 즉시 로딩 장치 | 비고 |
 |---|---|---|
-| JPQL | `join fetch` | 컬렉션은 `distinct`, 다중 컬렉션·페이징 주의 |
+| JPQL | `join fetch` | 컬렉션은 `distinct`, 다중 컬렉션, 페이징 주의 |
 | QueryDSL | `.fetchJoin()` | 빠뜨리면 조인만 되고 로딩되지 않음 |
 | `@EntityGraph` | `attributePaths` | 쿼리 없이 그래프 지정, 컬렉션+페이징은 메모리 페이징 |
 | DTO 프로젝션 | 조인 + 값 선택 | 엔티티 로딩이 아님(값만), 조회 전용에 최적 |
@@ -191,7 +191,7 @@ DTO는 **선택한 값만** 가진 평범한 객체입니다. `o.member.name`만
 
 ## 정리
 
-- 기본은 **LAZY**, 즉시 로딩은 조회할 때마다 **`join fetch`·`.fetchJoin()`·`@EntityGraph` 중 하나를 명시**해야 합니다.
+- 기본은 **LAZY**, 즉시 로딩은 조회할 때마다 **`join fetch`, `.fetchJoin()`, `@EntityGraph` 중 하나를 명시**해야 합니다.
 - **JPQL `join fetch` / QueryDSL `.fetchJoin()` / `@EntityGraph`** 가 실제 "한 쿼리 즉시 로딩"입니다.
 - **DTO 프로젝션**은 값만 가져오는 것이라 지연 로딩 문제 자체가 없지만, 엔티티는 아닙니다.
 - **네이티브 쿼리**는 fetch join이 되지 않아, 연관 로딩에는 적합하지 않습니다.

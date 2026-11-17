@@ -31,6 +31,6 @@
 
   <text x="220" y="227" text-anchor="middle" font-size="10" fill="#888888">← 인덱스 순서(idx) →</text>
 
-  <text x="220" y="250" text-anchor="middle" font-size="11" fill="#333333">겹치는 MAIL·갭 구간에서 서로를 기다려 교착</text>
+  <text x="220" y="250" text-anchor="middle" font-size="11" fill="#333333">겹치는 MAIL과 갭 구간에서 서로를 기다려 교착</text>
   <text x="220" y="267" text-anchor="middle" font-size="11" fill="#333333">→ MySQL이 resend를 강제 롤백</text>
 </svg>
