@@ -1,0 +1,185 @@
+---
+slug: jpa-managed-entity-criteria
+title: "조회 결과는 언제 영속 상태가 되나 — JPQL, QueryDSL, 네이티브, DTO별 영속화 기준과 연관관계 로딩"
+authors: [ johnycho ]
+tags: [ jpa, spring ]
+date: 2026-11-17T13:10:00+09:00
+description: "같은 데이터를 조회해도 JPQL, QueryDSL JPA, 네이티브 쿼리, DTO 프로젝션, QueryDSL SQL 중 무엇을 사용했는지에 따라 결과가 영속 엔티티일 수도, 단순 값일 수도 있습니다. 영속화 기준과 그에 따른 변경 감지, 지연 로딩, fetch join 가능 여부를 정리합니다."
+---
+
+<!-- truncate -->
+
+JPA에서는 엔티티를 조회한 뒤 필드만 변경하면 커밋 시점에 UPDATE가 실행되고(변경 감지), LAZY 연관관계에 접근하면 그때 추가 쿼리가 실행됩니다(지연 로딩). 두 기능 모두 **결과가 영속성 컨텍스트에 등록된 엔티티**일 때만 동작합니다. 그런데 조회 방법이 JPQL, QueryDSL, 네이티브 쿼리, DTO 프로젝션으로 다양해지면 "지금 받은 객체가 영속 상태인가"가 코드만 보고는 분명하지 않습니다.
+
+<mark>기준은 **"`EntityManager`를 통해, 엔티티 타입으로 받은 결과인가"** 입니다. 조회 문법(JPQL, QueryDSL, 네이티브)과는 관계가 없습니다.</mark>
+
+## 영속 상태란
+
+영속성 컨텍스트는 `EntityManager`가 관리하는 **엔티티 저장소**입니다. 여기에 등록된 엔티티(영속 상태, managed)는 다음 기능을 사용할 수 있습니다.
+
+- **1차 캐시와 동일성 보장** — 같은 트랜잭션에서 같은 ID로 조회하면 같은 인스턴스를 돌려줍니다.
+- **변경 감지(dirty checking)** — 필드를 변경하면 flush 시점에 UPDATE가 실행됩니다.
+- **지연 로딩** — LAZY 연관관계에 접근할 때 프록시가 쿼리를 실행해 값을 채웁니다.
+
+엔티티는 네 가지 상태 중 한 가지입니다.
+
+| 상태 | 설명 | 들어가는 방법 |
+|---|---|---|
+| 비영속(new/transient) | `new`로 만들었을 뿐, 컨텍스트와 무관 | `new Order()` |
+| 영속(managed) | 컨텍스트가 관리 | `persist`, 조회 결과, `merge`의 반환값 |
+| 준영속(detached) | 한때 영속이었지만 지금은 관리되지 않음 | `detach`, `clear`, `close`, 트랜잭션 종료 |
+| 삭제(removed) | 삭제 예정 | `remove` |
+
+엔티티 매니저와 영속성 컨텍스트의 기초는 [엔티티 매니저 wiki](/wiki/spring-data-jpa/jpa-entity-manager)에 정리돼 있습니다.
+
+## 저장할 때의 기준 — `persist`와 `merge`
+
+저장 쪽에서 헷갈리는 지점은 **`merge`가 넘긴 객체를 영속 상태로 만들지 않는다**는 점입니다.
+
+```java
+Order detached = ...;                 // 준영속 객체
+Order managed = em.merge(detached);   // 영속 상태의 "복사본"을 반환
+
+managed.changeStatus(PAID);    // 반영됨 (영속)
+detached.changeStatus(PAID);   // 반영되지 않음 (여전히 준영속)
+```
+
+Spring Data JPA의 `save()`는 엔티티가 새것이면 `persist`, 아니면 `merge`를 호출합니다. 그래서 <mark>`save()`의 **반환값**을 사용해야 영속 엔티티를 사용한다는 것이 보장됩니다.</mark> 새 엔티티 판단 기준(`@Id`, `@Version`, `Persistable`)은 [새로운 Entity 판단 기준](/wiki/spring-data-jpa/jpa-new-entity)을 참고합니다.
+
+```java
+// spring-data-jpa: SimpleJpaRepository#save (발췌)
+public <S extends T> S save(S entity) {
+    ...
+    if (entityInformation.isNew(entity)) {
+        entityManager.persist(entity);
+        return entity;
+    } else {
+        return entityManager.merge(entity);
+    }
+}
+```
+
+→ 새 엔티티면 넘긴 객체 자체가 영속 상태가 되고, 기존 엔티티면 `merge`가 돌려준 다른 인스턴스가 영속 상태입니다. ([SimpleJpaRepository.java](https://github.com/spring-projects/spring-data-jpa/blob/main/spring-data-jpa/src/main/java/org/springframework/data/jpa/repository/support/SimpleJpaRepository.java))
+
+## 조회할 때의 기준 — 방법별 정리
+
+같은 `orders` 테이블을 여러 방법으로 조회해 보고, 결과가 영속 상태인지 차례로 확인합니다.
+
+### ① `em.find`, Spring Data JPA `findById` — 영속
+
+`em.find`는 영속성 컨텍스트를 먼저 확인하고, 없으면 DB에서 읽어 **등록한 뒤** 돌려줍니다.
+
+### ② JPQL, QueryDSL JPA로 엔티티를 SELECT — 영속
+
+```java
+List<Order> a = em.createQuery("select o from Order o", Order.class)
+                  .getResultList();
+
+List<Order> b = queryFactory.selectFrom(order)
+                            .fetch();
+```
+
+QueryDSL JPA는 JPQL로 변환돼 `EntityManager`에서 실행되므로 JPQL과 결과가 같습니다. 두 방법 모두 결과 행으로 만든 엔티티를 영속성 컨텍스트에 등록합니다.
+
+> **이미 컨텍스트에 같은 ID 엔티티가 있으면?**
+>
+> JPQL은 1차 캐시를 확인하지 않고 **항상 SQL을 실행**합니다. 그 뒤 같은 ID의 엔티티가 이미 영속 상태라면 **새로 읽은 행은 버리고 기존 인스턴스를 반환**합니다. 그래서 같은 트랜잭션에서 아직 flush하지 않은 변경이 있어도 조회 결과로 덮어쓰이지 않고, 동일성(`a.get(0) == b.get(0)`)이 유지됩니다.
+
+### ③ 네이티브 쿼리 + 엔티티 클래스 — 영속
+
+네이티브 SQL이라도 **결과 타입을 엔티티 클래스로 지정**하면 영속 상태가 됩니다.
+
+```java
+List<Order> orders = em.createNativeQuery("select * from orders where status = 'PAID'", Order.class)
+                       .getResultList();
+```
+
+```java
+// Spring Data JPA — 반환 타입이 엔티티면 동일
+@Query(value = "select * from orders where status = 'PAID'", nativeQuery = true)
+List<Order> findPaidNative();
+```
+
+결과 컬럼이 엔티티 매핑의 모든 컬럼을 포함해야 하고, 빠진 컬럼이 있으면 매핑 단계에서 예외가 발생합니다. 반대로 결과 타입을 지정하지 않은 `createNativeQuery(sql)`는 `Object[]`를 돌려주며 영속 상태와 무관합니다.
+
+### ④ DTO 프로젝션 — 비영속(값)
+
+```java
+// JPQL 생성자 표현식
+em.createQuery("select new com.example.OrderSummary(o.id, o.amount) from Order o", OrderSummary.class);
+
+// QueryDSL JPA
+queryFactory.select(Projections.constructor(OrderSummary.class, order.id, order.amount))
+            .from(order)
+            .fetch();
+```
+
+DTO는 엔티티가 아니므로 영속성 컨텍스트에 등록되지 않습니다. 필드를 변경해도 UPDATE가 실행되지 않고, 연관관계도 없습니다. Spring Data JPA의 인터페이스 프로젝션(`interface OrderView { Long getId(); }`)도 선택한 값만 담은 객체라 같은 결과입니다.
+
+<mark>같은 QueryDSL JPA라도 `selectFrom(order)`는 영속 엔티티를, `select(Projections...)`는 단순 값을 돌려줍니다 — **조회 도구가 아니라 SELECT 대상이 결과의 상태를 정합니다.**</mark>
+
+### ⑤ QueryDSL SQL, `JdbcTemplate` — 비영속(값)
+
+JPA를 거치지 않으므로 결과는 항상 영속성 컨텍스트와 무관합니다. 결과를 엔티티 클래스에 담더라도 그 객체는 `new`로 만든 것과 같은 비영속 객체입니다. 두 QueryDSL 모듈의 실행 경로 차이는 [Spring Data JPA, QueryDSL JPA, QueryDSL SQL은 어떻게 다른가](/blog/querydsl-jpa-vs-sql-spring-data-jpa)에서 설명했습니다.
+
+### ⑥ 벌크 연산 — 컨텍스트를 우회
+
+`update`, `delete` JPQL(벌크 연산)은 영속성 컨텍스트를 거치지 않고 **DB를 직접 수정**합니다. 이미 영속 상태인 엔티티는 변경된 값을 반영하지 못한 채 남습니다.
+
+```java
+Order o = em.find(Order.class, 1L);               // status = READY
+em.createQuery("update Order o set o.status = 'PAID'")
+  .executeUpdate();
+o.getStatus();                                     // 여전히 READY (컨텍스트 값)
+```
+
+Spring Data JPA에서는 `@Modifying(clearAutomatically = true)`로 벌크 연산 후 컨텍스트를 비워, 다음 조회가 DB 값을 읽게 합니다.
+
+### 방법별 요약
+
+| 조회 방법 | 결과 | 변경 감지 | 지연 로딩 |
+|---|---|---|---|
+| `em.find`, `findById` | 영속 엔티티 | O | O |
+| JPQL, QueryDSL JPA로 엔티티 SELECT | 영속 엔티티 | O | O |
+| 네이티브 쿼리 + 엔티티 클래스 | 영속 엔티티 | O | O |
+| DTO 프로젝션(JPQL, QueryDSL, 인터페이스) | 값 | X | X |
+| 결과 타입 없는 네이티브 쿼리 | `Object[]` | X | X |
+| QueryDSL SQL, `JdbcTemplate` | 값 | X | X |
+
+> **영속 상태인데 변경 감지가 되지 않는 경우**
+>
+> Hibernate의 읽기 전용 힌트(`org.hibernate.readOnly`)나 Spring의 `@Transactional(readOnly = true)`로 조회한 엔티티는 **영속 상태이지만 스냅샷을 만들지 않아** 변경 감지 대상에서 빠집니다. 지연 로딩과 1차 캐시는 그대로 동작합니다. 조회 전용 화면에서 메모리를 줄이려고 사용하는 설정이고, 이 상태에서 필드를 변경해도 UPDATE는 실행되지 않습니다.
+
+## 연관관계 로딩은 방법마다 되나
+
+연관관계 로딩은 두 가지로 나눠 봐야 합니다.
+
+- **지연 로딩(나중에 접근할 때 로딩)** — 결과가 **영속 엔티티이기만 하면** 조회 방법과 상관없이 동작합니다. 네이티브 쿼리로 가져온 엔티티도 LAZY 연관에 접근하면 추가 쿼리가 실행됩니다.
+- **즉시 로딩(조회 시점에 함께 로딩)** — 연관 엔티티를 **같은 쿼리에서 함께 영속화하는 장치**가 있어야 합니다. 이 장치는 조회 방법마다 다릅니다.
+
+| 조회 방법 | 지연 로딩 | 한 쿼리로 함께 로딩 |
+|---|---|---|
+| Spring Data JPA | O | `@EntityGraph` 또는 `@Query`의 `join fetch` |
+| JPQL | O | `join fetch` |
+| QueryDSL JPA | O | `.join(...).fetchJoin()` |
+| 네이티브 쿼리 + 엔티티 클래스 | O | fetch join 문법 없음 (Hibernate `addJoin` 등 구현체 API로만 가능) |
+| DTO 프로젝션 | X | 조인 후 필요한 값을 SELECT (엔티티 로딩이 아님) |
+| QueryDSL SQL | X (연관관계 개념 없음) | SQL 조인으로 값만 조회 |
+
+<mark>지연 로딩은 "영속 엔티티인가"로, 즉시 로딩은 "fetch join에 해당하는 장치가 있는가"로 판단합니다.</mark> 그리고 지연 로딩은 **영속성 컨텍스트가 열려 있을 때만** 가능하므로, 트랜잭션이 끝난 뒤(준영속) 접근하면 `LazyInitializationException`이 발생합니다.
+
+방법별 코드와 "조인했는데 왜 로딩되지 않나" 같은 착각 사례는 [JPA 연관관계 즉시 로딩](/blog/jpa-eager-loading-associations)에서 실제 쿼리와 함께 정리했습니다.
+
+## 정리
+
+- 결과가 영속 상태인지는 **`EntityManager`를 통해 엔티티 타입으로 받았는지**로 정해집니다. JPQL, QueryDSL JPA, 네이티브 쿼리 모두 엔티티를 SELECT하면 영속 상태입니다.
+- **DTO 프로젝션, QueryDSL SQL, `JdbcTemplate`** 결과는 값이라 변경 감지와 지연 로딩이 없습니다.
+- `merge`와 `save()`는 **반환값**이 영속 엔티티입니다.
+- JPQL은 항상 SQL을 실행하지만, 이미 영속 상태인 엔티티는 **기존 인스턴스를 유지**합니다. 반대로 벌크 연산은 컨텍스트를 우회하므로 이후 조회 전에 컨텍스트를 비웁니다.
+- 지연 로딩은 영속 엔티티라면 어떤 방법이든 동작하고, 즉시 로딩은 `join fetch`, `fetchJoin()`, `@EntityGraph`처럼 **명시적인 장치**가 필요합니다.
+
+## 참고
+
+- [Jakarta Persistence 3.1 명세 — 3.2 Entity Instance's Life Cycle](https://jakarta.ee/specifications/persistence/3.1/jakarta-persistence-spec-3.1.html)
+- [Hibernate ORM User Guide — Persistence Contexts](https://docs.hibernate.org/orm/6.6/userguide/html_single/Hibernate_User_Guide.html)
+- [Spring Data JPA — Modifying Queries](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html#jpa.modifying-queries)
