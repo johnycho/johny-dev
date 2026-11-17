@@ -51,7 +51,7 @@
 </ul>
 <p><mark>A는 갭을, B는 레코드를 서로 기다려 누구도 진행하지 못합니다. InnoDB가 이 교착을 감지해 한쪽(재발송)을 강제 롤백해 해소합니다.</mark> (롤백·재시도 처리는 <a href="https://johnycho.dev/blog/spring-transaction-rollback-only">try-catch로 잡았는데 왜 롤백될까</a>를 함께 보세요.)</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="그런데-insert가-갭-락을-거나">그런데 INSERT가 갭 락을 거나?<a href="https://johnycho.dev/blog/innodb-insert-intention-lock-deadlock#%EA%B7%B8%EB%9F%B0%EB%8D%B0-insert%EA%B0%80-%EA%B0%AD-%EB%9D%BD%EC%9D%84-%EA%B1%B0%EB%82%98" class="hash-link" aria-label="그런데 INSERT가 갭 락을 거나?에 대한 직접 링크" title="그런데 INSERT가 갭 락을 거나?에 대한 직접 링크">​</a></h2>
-<p>여기서 제목의 질문에 답하겠습니다. 방금 배치의 <code>INSERT</code>가 갭 앞에서 대기했지만, 그렇다고 <strong><code>INSERT</code>가 갭 락을 "거는" 것은 아닙니다.</strong> 요지만 먼저 말하면 — <code>INSERT</code>는 "여기에 넣겠다"는 <strong>의도만 표시</strong>(insert intention lock)할 뿐 갭 자체를 잠그지 않습니다. 다만 <strong>다른 트랜잭션이 이미 그 갭을 잠가 놨으면</strong> 해제될 때까지 기다립니다.</p>
+<p>여기서 제목의 질문에 답하겠습니다. 방금 배치의 <code>INSERT</code>가 갭 앞에서 대기했지만, 그렇다고 <strong><code>INSERT</code>가 갭 락을 "거는" 것은 아닙니다.</strong> 핵심만 먼저 말하면 — <code>INSERT</code>는 "여기에 넣겠다"는 <strong>의도만 표시</strong>(insert intention lock)할 뿐 갭 자체를 잠그지 않습니다. 다만 <strong>다른 트랜잭션이 이미 그 갭을 잠가 놨으면</strong> 해제될 때까지 기다립니다.</p>
 <p>먼저 InnoDB가 사용하는 잠금 종류를 정리하면 이렇습니다.</p>
 <table><thead><tr><th>락</th><th>대상</th><th>설명</th></tr></thead><tbody><tr><td>record lock</td><td>인덱스 레코드 1건</td><td>그 행만 잠금</td></tr><tr><td>gap lock</td><td>레코드 사이 간격(gap)</td><td>그 갭에 새 행이 들어오는 걸 막음</td></tr><tr><td>next-key lock</td><td>record + gap</td><td>범위 조회 시 기본으로 적용되는 락(REPEATABLE READ)</td></tr><tr><td>insert intention lock</td><td>삽입하려는 gap</td><td><code>INSERT</code>가 갭에 들어가기 전 요청하는 "삽입 의도" 락</td></tr></tbody></table>
 <p><code>INSERT</code>가 갭과 상호작용하는 방식은 이렇습니다.</p>
