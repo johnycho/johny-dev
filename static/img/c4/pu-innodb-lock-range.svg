@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="282" viewBox="0 0 440 282" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+  <rect x="0" y="0" width="440" height="282" fill="#FFFFFF"/>
+  <text x="220" y="26" text-anchor="middle" font-size="13" font-weight="700" fill="#222222">인덱스 위에서 두 작업의 잠금 범위가 겹친다</text>
+
+  <!-- 겹침(교착) 구간 표시 -->
+  <rect x="15" y="48" width="277" height="162" rx="7" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+
+  <!-- resend(B) 잠금 범위 막대 : SLACK + 갭 + MAIL 전체 -->
+  <rect x="20" y="54" width="400" height="27" rx="5" fill="#D6E4FB" stroke="#4C7FE0"/>
+  <text x="220" y="72" text-anchor="middle" font-size="11" fill="#26508F">resend(B) 잠금 범위 — next-key 락 (SLACK + 갭 + MAIL)</text>
+
+  <!-- 인덱스 레코드 3칸 -->
+  <rect x="20" y="100" width="133" height="58" rx="4" fill="#FCE4EC" stroke="#E0A8BC"/>
+  <rect x="153" y="100" width="134" height="58" rx="4" fill="#FFF3E0" stroke="#E8C98F"/>
+  <rect x="287" y="100" width="133" height="58" rx="4" fill="#EEF3FB" stroke="#B9CBE8"/>
+
+  <text x="86" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="#222222">MAIL 레코드</text>
+  <text x="86" y="137" text-anchor="middle" font-size="9.5" fill="#444444">배치가 잠금 보유</text>
+  <text x="86" y="151" text-anchor="middle" font-size="9.5" fill="#B0486A">resend가 대기</text>
+
+  <text x="220" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="#222222">갭 (빈 구간)</text>
+  <text x="220" y="137" text-anchor="middle" font-size="9.5" fill="#444444">resend가 잠금</text>
+  <text x="220" y="151" text-anchor="middle" font-size="9.5" fill="#B0486A">배치가 삽입 대기</text>
+
+  <text x="353" y="120" text-anchor="middle" font-size="12" font-weight="700" fill="#222222">SLACK 레코드</text>
+  <text x="353" y="137" text-anchor="middle" font-size="9.5" fill="#444444">resend의 대상</text>
+
+  <!-- 배치(A) 잠금 범위 막대 : MAIL + 갭 -->
+  <rect x="20" y="178" width="267" height="27" rx="5" fill="#FBDCE4" stroke="#D06A86"/>
+  <text x="153" y="196" text-anchor="middle" font-size="11" fill="#9E3A57">배치(A) 잠금 범위 — MAIL 락 + 갭 삽입 대기</text>
+
+  <text x="220" y="227" text-anchor="middle" font-size="10" fill="#888888">← 인덱스 순서(idx) →</text>
+
+  <text x="220" y="250" text-anchor="middle" font-size="11" fill="#333333">겹치는 MAIL·갭 구간에서 서로를 기다려 교착</text>
+  <text x="220" y="267" text-anchor="middle" font-size="11" fill="#333333">→ MySQL이 resend를 강제 롤백</text>
+</svg>
