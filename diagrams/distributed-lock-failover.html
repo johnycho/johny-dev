@@ -4974,7 +4974,7 @@ OTHER DEALINGS IN THE FONT SOFTWARE.
     }
   </style>
 <style id="blog-chrome-hide">
-/* 블로그 임베드용: 다이어그램 + cards만, 편집 크롬·컨트롤 숨김. hover 오버레이(화살표 흐름) 유지 */
+/* 블로그 임베드용: 다이어그램 + cards만, 편집 크롬, 컨트롤 숨김. hover 오버레이(화살표 흐름) 유지 */
 .toolbar, .guided-views, .header, .node-finder,
 .diagram-nav, .route-probe, .overview-map, .semantic-lens, .focus-chip { display: none !important; }
 /* 뷰포트 채우기(100dvh) 해제 → 내용 자연 높이. iframe 되먹임 팽창 방지 */
@@ -5190,11 +5190,11 @@ body { display: block !important; }
         <path data-edge-from="master" data-edge-to="replica" data-edge-label="복제(비동기)" data-edge-key="1" data-edge-id="repl" data-composition-points="380,47;356,47;356,253;380,253" d="M 380 47 L 364 47 Q 356 47 356 55 L 356 245 Q 356 253 364 253 L 380 253" class="a-dashed" stroke-width="1.5" marker-end="url(#arrowhead-dashed)"/>
         <path data-edge-from="replica" data-edge-to="master" data-edge-label="페일오버 승격" data-edge-key="2" data-edge-id="promote" data-composition-points="580,260;604,260;604,40;580,40" d="M 580 260 L 596 260 Q 604 260 604 252 L 604 48 Q 604 40 596 40 L 580 40" class="a-default" stroke-width="1.5" marker-end="url(#arrowhead)"/>
         <path data-edge-from="cb" data-edge-to="replica" data-edge-label="같은 락 획득 성공" data-edge-key="3" data-edge-id="cb-replica" data-composition-points="200,267;380,267" d="M 200 267 L 380 267" class="a-emphasis" stroke-width="1.8" marker-end="url(#arrowhead-emphasis)"/>
-        <path data-edge-from="cb" data-edge-to="ca" data-edge-label="A·B 동시 진입(위반)" data-edge-key="4" data-edge-id="conflict" data-composition-points="120,225;120,69" d="M 120 225 L 120 69" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
+        <path data-edge-from="cb" data-edge-to="ca" data-edge-label="A, B 동시 진입(위반)" data-edge-key="4" data-edge-id="conflict" data-composition-points="120,225;120,69" d="M 120 225 L 120 69" class="a-security" stroke-width="1.5" marker-end="url(#arrowhead-security)"/>
 
         <!-- Components -->
         <g id="node-ca" data-node-id="ca" data-node-label="클라이언트 A" tabindex="0" role="button" aria-label="Focus 클라이언트 A, 애플리케이션, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="애플리케이션" data-node-context="Architecture component">
-          <title>클라이언트 A · 애플리케이션 · Architecture component</title>
+          <title>클라이언트 A, 애플리케이션, Architecture component</title>
           <rect x="40" y="5" width="160" height="64" rx="6" class="c-mask"/>
           <rect x="40" y="5" width="160" height="64" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(46 11) scale(0.6875)">
@@ -5205,7 +5205,7 @@ body { display: block !important; }
         </g>
 
         <g id="node-master" data-node-id="master" data-node-label="마스터" tabindex="0" role="button" aria-label="Focus 마스터, Redis, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="Redis" data-node-tag="복제 전 다운" data-node-context="Architecture component">
-          <title>마스터 · Redis · Architecture component · 복제 전 다운</title>
+          <title>마스터, Redis, Architecture component, 복제 전 다운</title>
           <rect x="380" y="5" width="200" height="70" rx="6" class="c-mask"/>
           <rect x="380" y="5" width="200" height="70" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(386 11) scale(0.6875)">
@@ -5218,7 +5218,7 @@ body { display: block !important; }
         </g>
 
         <g id="node-cb" data-node-id="cb" data-node-label="클라이언트 B" tabindex="0" role="button" aria-label="Focus 클라이언트 B, 애플리케이션, Architecture component" aria-pressed="false" data-node-kind="backend" data-node-sublabel="애플리케이션" data-node-context="Architecture component">
-          <title>클라이언트 B · 애플리케이션 · Architecture component</title>
+          <title>클라이언트 B, 애플리케이션, Architecture component</title>
           <rect x="40" y="225" width="160" height="64" rx="6" class="c-mask"/>
           <rect x="40" y="225" width="160" height="64" rx="6" class="c-backend" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="backend" class="semantic-sigil s-backend" transform="translate(46 231) scale(0.6875)">
@@ -5229,7 +5229,7 @@ body { display: block !important; }
         </g>
 
         <g id="node-replica" data-node-id="replica" data-node-label="복제본 → 새 마스터" tabindex="0" role="button" aria-label="Focus 복제본 → 새 마스터, Redis, Architecture component" aria-pressed="false" data-node-kind="database" data-node-sublabel="Redis" data-node-tag="락 기록 없음" data-node-context="Architecture component">
-          <title>복제본 → 새 마스터 · Redis · Architecture component · 락 기록 없음</title>
+          <title>복제본 → 새 마스터, Redis, Architecture component, 락 기록 없음</title>
           <rect x="380" y="225" width="200" height="70" rx="6" class="c-mask"/>
           <rect x="380" y="225" width="200" height="70" rx="6" class="c-database" stroke-width="1.5"/>
           <g aria-hidden="true" data-semantic-sigil="database" class="semantic-sigil s-database" transform="translate(386 231) scale(0.6875)">
@@ -5258,9 +5258,9 @@ body { display: block !important; }
           <rect x="244.2" y="247" width="91.6" height="14" rx="3" class="c-mask"/>
           <text x="290" y="257" class="t-backend" font-size="8" text-anchor="middle">같은 락 획득 성공</text>
         </g>
-        <g data-detail="context" data-edge-from="cb" data-edge-to="ca" data-edge-label="A·B 동시 진입(위반)" data-edge-key="4" data-edge-id="conflict">
+        <g data-detail="context" data-edge-from="cb" data-edge-to="ca" data-edge-label="A, B 동시 진입(위반)" data-edge-key="4" data-edge-id="conflict">
           <rect x="69.4" y="205" width="101.2" height="14" rx="3" class="c-mask"/>
-          <text x="120" y="215" class="t-security" font-size="8" text-anchor="middle">A·B 동시 진입(위반)</text>
+          <text x="120" y="215" class="t-security" font-size="8" text-anchor="middle">A, B 동시 진입(위반)</text>
         </g>
 
         <!-- Boundary labels (foreground masks keep routes out of titles) -->
@@ -5493,7 +5493,7 @@ body { display: block !important; }
         </div>
         <ul>
           <li>&bull; B가 같은 락을 다시 획득 성공</li>
-          <li>&bull; A·B 동시 진입 → 상호배제 깨짐</li>
+          <li>&bull; A, B 동시 진입 → 상호배제 깨짐</li>
         </ul>
       </div>
     </div>
