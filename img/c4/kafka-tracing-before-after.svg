@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="392" viewBox="0 0 440 392" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="392" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">컨슈머의 traceId가 달라지는 이유와 개선</text>
+<rect x="14" y="34" width="200" height="24" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="50" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">기존 방식 (문제점 1, 2)</text>
+<rect x="226" y="34" width="200" height="24" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="326.0" y="50" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">개선 방식</text>
+<rect x="14" y="70" width="200" height="56" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="114.0" y="87.0" font-size="10.5" fill="#555555" text-anchor="middle" font-weight="bold">프로듀서</text>
+<text x="114.0" y="103.0" font-size="10.5" fill="#333" text-anchor="middle">Agent가 traceparent 주입</text>
+<text x="114.0" y="118.0" font-size="10.5" fill="#333" text-anchor="middle">인터셉터가 traceId 헤더 추가</text>
+<rect x="226" y="70" width="200" height="56" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="326.0" y="87.0" font-size="10.5" fill="#555555" text-anchor="middle" font-weight="bold">프로듀서</text>
+<text x="326.0" y="103.0" font-size="10.5" fill="#333" text-anchor="middle">Agent가 traceparent 주입</text>
+<text x="326.0" y="118.0" font-size="10.5" fill="#333" text-anchor="middle">traceparent로 전파 수단 통일</text>
+<line x1="114.0" y1="126" x2="114.0" y2="141" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="326.0" y1="126" x2="326.0" y2="141" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="142" width="200" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="114.0" y="158.5" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">Kafka 레코드 헤더</text>
+<text x="114.0" y="174.5" font-size="10" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">traceparent, traceId</text>
+<rect x="226" y="142" width="200" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="326.0" y="158.5" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">Kafka 레코드 헤더</text>
+<text x="326.0" y="174.5" font-size="10" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">traceparent</text>
+<line x1="114.0" y1="182" x2="114.0" y2="197" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="326.0" y1="182" x2="326.0" y2="197" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="198" width="200" height="56" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="215.0" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨슈머 인터셉터</text>
+<text x="114.0" y="231.0" font-size="10.5" fill="#333" text-anchor="middle">traceId를 MDC에 설정</text>
+<text x="114.0" y="246.0" font-size="10.5" fill="#333" text-anchor="middle">여러 레코드면 특정 레코드 값만 반영</text>
+<rect x="226" y="198" width="200" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="326.0" y="215.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">컨슈머 (메시지마다)</text>
+<text x="326.0" y="231.0" font-size="10.5" fill="#333" text-anchor="middle">traceparent에서 컨텍스트 복원</text>
+<text x="326.0" y="246.0" font-size="10.5" fill="#333" text-anchor="middle">현재 스레드에 컨텍스트 적용</text>
+<line x1="114.0" y1="254" x2="114.0" y2="269" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="326.0" y1="254" x2="326.0" y2="269" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="270" width="200" height="56" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="287.0" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">OpenTelemetry 컨텍스트</text>
+<text x="114.0" y="303.0" font-size="10.5" fill="#333" text-anchor="middle">traceparent 추출 로직 없음</text>
+<text x="114.0" y="318.0" font-size="10.5" fill="#333" text-anchor="middle">새 traceId로 스팬 시작</text>
+<rect x="226" y="270" width="200" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="326.0" y="287.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">OpenTelemetry 컨텍스트</text>
+<text x="326.0" y="303.0" font-size="10.5" fill="#333" text-anchor="middle">복원한 컨텍스트에서</text>
+<text x="326.0" y="318.0" font-size="10.5" fill="#333" text-anchor="middle">비즈니스 로직 실행</text>
+<line x1="114.0" y1="326" x2="114.0" y2="341" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="326.0" y1="326" x2="326.0" y2="341" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="342" width="200" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="364" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">프로듀서와 컨슈머의 traceId 불일치</text>
+<rect x="226" y="342" width="200" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="326.0" y="364" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">같은 traceId로 스팬 연결</text>
+</svg>

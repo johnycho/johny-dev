@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="388" viewBox="0 0 440 388" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="388" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">외부 결제 API 호출에 재시도와 회로 차단기 적용</text>
+<rect x="170" y="36" width="160" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="250" y="55" font-size="11" fill="#333" text-anchor="middle">결제 승인 요청</text>
+<line x1="250" y1="66" x2="250" y2="84" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="170" y="84" width="160" height="30" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="250" y="103" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">PG API 호출</text>
+<line x1="250" y1="114" x2="250" y2="132" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polygon points="250,132.0 325.0,162 250,192.0 175.0,162" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="250" y="166" font-size="11" fill="#333" text-anchor="middle">호출 성공?</text>
+<line x1="325" y1="162" x2="360" y2="162" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="340" y="155" font-size="10" fill="#888" text-anchor="middle">Y</text>
+<rect x="360" y="146" width="72" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="396" y="158.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">결제 승인</text>
+<text x="396" y="172.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">처리</text>
+<line x1="250" y1="192" x2="250" y2="214" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="258" y="207" font-size="10" fill="#888" text-anchor="start">N</text>
+<polygon points="250,215.0 335.0,250 250,285.0 165.0,250" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="250" y="246.4" font-size="10.5" fill="#333" text-anchor="middle">실패가</text>
+<text x="250" y="260.9" font-size="10.5" fill="#333" text-anchor="middle">일정 횟수 이상?</text>
+<line x1="165" y1="250" x2="108" y2="250" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="150" y="243" font-size="10" fill="#888" text-anchor="middle">N</text>
+<rect x="18" y="232" width="90" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="63" y="246.4" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">재시도</text>
+<text x="63" y="260.9" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">(Retry)</text>
+<polyline points="63,232 63,99 168,99" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="250" y1="285" x2="250" y2="306" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="258" y="300" font-size="10" fill="#888" text-anchor="start">Y</text>
+<rect x="155" y="306" width="190" height="44" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="250" y="324.4" font-size="10.5" fill="#B52B27" text-anchor="middle" font-weight="bold">회로 차단기(Circuit Breaker)</text>
+<text x="250" y="338.9" font-size="10.5" fill="#B52B27" text-anchor="middle" font-weight="bold">사용자에게 실패 안내</text>
+<text x="220.0" y="374" font-size="10" fill="#888" text-anchor="middle">장애가 다른 서비스로 확산되지 않고 시스템 전체의 안정성이 유지됩니다</text>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="282" viewBox="0 0 440 282" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="282" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">서버가 여러 대일 때 세션을 찾지 못하는 경우</text>
+<rect x="10" y="90" width="84" height="52" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="52" y="112.4" font-size="10.5" fill="#26508F" text-anchor="middle">브라우저</text>
+<text x="52" y="126.9" font-size="10.5" fill="#26508F" text-anchor="middle">세션 ID: abc</text>
+<rect x="124" y="90" width="84" height="52" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="166" y="112.4" font-size="10.5" fill="#333" text-anchor="middle">로드</text>
+<text x="166" y="126.9" font-size="10.5" fill="#333" text-anchor="middle">밸런서</text>
+<line x1="94" y1="116" x2="122" y2="116" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="256" y="40" width="174" height="62" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="266" y="57" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold">서버 1</text>
+<text x="343" y="76.7" font-size="10.5" fill="#333" text-anchor="middle">세션 abc → 유저 A</text>
+<text x="343" y="90.7" font-size="10.5" fill="#333" text-anchor="middle">(이 서버에서 생성)</text>
+<rect x="256" y="132" width="174" height="62" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="266" y="149" font-size="10.5" fill="#B52B27" text-anchor="start" font-weight="bold">서버 2</text>
+<text x="343" y="168.7" font-size="10.5" fill="#B52B27" text-anchor="middle">세션 abc 없음</text>
+<text x="343" y="182.7" font-size="10.5" fill="#B52B27" text-anchor="middle">사용자를 식별하지 못함</text>
+<line x1="208" y1="104" x2="254" y2="74" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="226" y="80" font-size="9.5" fill="#888" text-anchor="middle">요청 1</text>
+<line x1="208" y1="128" x2="254" y2="160" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="226" y="160" font-size="9.5" fill="#888" text-anchor="middle">요청 2</text>
+<text x="10" y="214" font-size="10.5" fill="#333" text-anchor="start" font-weight="bold">해결책 (인프라는 더 복잡해집니다)</text>
+<rect x="10" y="224" width="205" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="112.5" y="243.7" font-size="10.5" fill="#2E6B2E" text-anchor="middle">스티키 세션</text>
+<text x="112.5" y="257.7" font-size="10.5" fill="#2E6B2E" text-anchor="middle">같은 사용자를 같은 서버로 고정</text>
+<rect x="225" y="224" width="205" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="327.5" y="243.7" font-size="10.5" fill="#2E6B2E" text-anchor="middle">중앙 세션 저장소 (Redis 등)</text>
+<text x="327.5" y="257.7" font-size="10.5" fill="#2E6B2E" text-anchor="middle">모든 서버가 같은 저장소 조회</text>
+</svg>

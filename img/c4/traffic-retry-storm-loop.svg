@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="296" viewBox="0 0 440 296" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4C7FE0"/></marker></defs>
+<rect x="0" y="0" width="440" height="296" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">재시도 폭풍: 재시도가 부하를 키우는 악순환</text>
+<rect x="148" y="41" width="144" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220" y="62" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">서비스가 느려짐</text>
+<rect x="268" y="111" width="144" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="340" y="132" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">클라이언트가 재시도</text>
+<rect x="148" y="181" width="144" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="202" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">요청 수 증가</text>
+<rect x="28" y="111" width="144" height="34" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="100" y="132" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">서비스가 더 느려짐</text>
+<line x1="292" y1="58" x2="340" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="340" y1="145" x2="292" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="148" y1="198" x2="100" y2="147" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="100" y1="111" x2="148" y2="58" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="220" y="126" font-size="10" fill="#888" text-anchor="middle">반복될수록</text>
+<text x="220" y="141" font-size="10" fill="#888" text-anchor="middle">부하가 커짐</text>
+<rect x="20" y="232" width="400" height="50" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="220" y="252" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">악순환을 막는 방법</text>
+<text x="220" y="270" font-size="10.5" fill="#333" text-anchor="middle">타임아웃, 서킷 브레이커, 백오프(지터), 로드 셰딩</text>
+</svg>

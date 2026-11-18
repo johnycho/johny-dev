@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="380" viewBox="0 0 440 380" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="380" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">조회 결과가 영속 상태인지 정하는 기준</text>
+<rect x="20" y="38" width="250" height="38" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="145.0" y="61" font-size="11" fill="#333" text-anchor="middle">EntityManager를 거쳐 실행하는가?</text>
+<line x1="270" y1="57" x2="294" y2="57" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="280.0" y="72" font-size="9.5" fill="#888" text-anchor="middle">N</text>
+<rect x="296" y="32" width="134" height="50" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="363.0" y="47.2" font-size="10.5" fill="#333" text-anchor="middle">⑥ QueryDSL SQL,</text>
+<text x="363.0" y="60.2" font-size="10.5" fill="#333" text-anchor="middle">JdbcTemplate</text>
+<text x="363.0" y="76" font-size="10.5" fill="#555555" text-anchor="middle" font-weight="bold">비영속(값)</text>
+<line x1="145.0" y1="76" x2="145.0" y2="102" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="153.0" y="93" font-size="9.5" fill="#888" text-anchor="start">Y</text>
+<rect x="20" y="102" width="250" height="38" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="145.0" y="125" font-size="11" fill="#333" text-anchor="middle">SELECT로 조회하는가?</text>
+<line x1="270" y1="121" x2="294" y2="121" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="280.0" y="136" font-size="9.5" fill="#888" text-anchor="middle">N</text>
+<rect x="296" y="96" width="134" height="50" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="363.0" y="111.2" font-size="10.5" fill="#333" text-anchor="middle">⑦ 벌크 연산</text>
+<text x="363.0" y="124.2" font-size="10.5" fill="#333" text-anchor="middle">(UPDATE, DELETE)</text>
+<text x="363.0" y="140" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨텍스트 우회</text>
+<line x1="145.0" y1="140" x2="145.0" y2="166" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="153.0" y="157" font-size="9.5" fill="#888" text-anchor="start">Y</text>
+<rect x="60" y="166" width="320" height="38" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="189" font-size="11" fill="#333" text-anchor="middle">SELECT 대상(결과 타입)이 엔티티 클래스인가?</text>
+<line x1="117" y1="204" x2="117" y2="236" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="125" y="224" font-size="9.5" fill="#888" text-anchor="start">Y</text>
+<line x1="323" y1="204" x2="323" y2="236" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="331" y="224" font-size="9.5" fill="#888" text-anchor="start">N</text>
+<rect x="17" y="236" width="200" height="112" rx="6" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1.5"/>
+<text x="117.0" y="254" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">영속 엔티티</text>
+<text x="27" y="274" font-size="10.5" fill="#333" text-anchor="start">① em.find, findById</text>
+<text x="27" y="289" font-size="10.5" fill="#333" text-anchor="start">② JPQL, QueryDSL JPA로</text>
+<text x="41" y="304" font-size="10.5" fill="#333" text-anchor="start">엔티티 SELECT</text>
+<text x="27" y="319" font-size="10.5" fill="#333" text-anchor="start">③ 네이티브 쿼리 + 엔티티 클래스</text>
+<line x1="27" y1="324" x2="207" y2="324" stroke="#CCC" stroke-width="1.2"/>
+<text x="117.0" y="339" font-size="10" fill="#2E6B2E" text-anchor="middle">변경 감지 O, 지연 로딩 O</text>
+<rect x="223" y="236" width="200" height="112" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="323.0" y="254" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="bold">비영속(값)</text>
+<text x="233" y="274" font-size="10.5" fill="#333" text-anchor="start">④ 네이티브 쿼리 + 결과 타입 없음</text>
+<text x="247" y="289" font-size="10.5" fill="#333" text-anchor="start">(Object[])</text>
+<text x="233" y="304" font-size="10.5" fill="#333" text-anchor="start">⑤ DTO 프로젝션</text>
+<text x="247" y="319" font-size="10.5" fill="#333" text-anchor="start">(JPQL, QueryDSL, 인터페이스)</text>
+<line x1="233" y1="324" x2="413" y2="324" stroke="#CCC" stroke-width="1.2"/>
+<text x="323.0" y="339" font-size="10" fill="#555555" text-anchor="middle">변경 감지 X, 지연 로딩 X</text>
+<text x="220.0" y="368" font-size="9.5" fill="#888" text-anchor="middle">조회 도구(JPQL, QueryDSL, 네이티브)가 아니라 SELECT 대상이 상태를 정합니다</text>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="266" viewBox="0 0 440 266" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="266" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">방법별 연관 로딩과 결과 형태</text>
+<rect x="9" y="36" width="126" height="26" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="72.0" y="53" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">방법</text>
+<rect x="137" y="36" width="148" height="26" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="211.0" y="53" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">연관 데이터 조회</text>
+<rect x="287" y="36" width="144" height="26" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="359.0" y="53" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">결과 객체</text>
+<rect x="9" y="68" width="126" height="30" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="72.0" y="87" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">JPQL join fetch</text>
+<rect x="137" y="68" width="148" height="30" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="211.0" y="87" font-size="10.5" fill="#2E6B2E" text-anchor="middle">같은 SELECT로 로딩</text>
+<rect x="287" y="68" width="144" height="30" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="359.0" y="87" font-size="10.5" fill="#2E6B2E" text-anchor="middle">영속 엔티티</text>
+<rect x="9" y="102" width="126" height="30" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="72.0" y="121" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">QueryDSL .fetchJoin()</text>
+<rect x="137" y="102" width="148" height="30" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="211.0" y="121" font-size="10.5" fill="#2E6B2E" text-anchor="middle">같은 SELECT로 로딩</text>
+<rect x="287" y="102" width="144" height="30" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="359.0" y="121" font-size="10.5" fill="#2E6B2E" text-anchor="middle">영속 엔티티</text>
+<rect x="9" y="136" width="126" height="30" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="72.0" y="155" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">@EntityGraph</text>
+<rect x="137" y="136" width="148" height="30" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="211.0" y="155" font-size="10.5" fill="#2E6B2E" text-anchor="middle">같은 SELECT로 로딩</text>
+<rect x="287" y="136" width="144" height="30" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="359.0" y="155" font-size="10.5" fill="#2E6B2E" text-anchor="middle">영속 엔티티</text>
+<rect x="9" y="170" width="126" height="30" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="72.0" y="189" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">DTO 프로젝션</text>
+<rect x="137" y="170" width="148" height="30" rx="4" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="211.0" y="189" font-size="10.5" fill="#8A6400" text-anchor="middle">같은 SELECT, 값만</text>
+<rect x="287" y="170" width="144" height="30" rx="4" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="359.0" y="189" font-size="10.5" fill="#8A6400" text-anchor="middle">DTO (엔티티 아님)</text>
+<rect x="9" y="204" width="126" height="30" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="72.0" y="223" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">네이티브 쿼리</text>
+<rect x="137" y="204" width="148" height="30" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="211.0" y="223" font-size="10.5" fill="#9E3A57" text-anchor="middle">로딩되지 않음 (프록시)</text>
+<rect x="287" y="204" width="144" height="30" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="359.0" y="223" font-size="10.5" fill="#2E6B2E" text-anchor="middle">영속 엔티티</text>
+<rect x="4" y="66" width="432" height="102" rx="6" fill="none" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220.0" y="254" font-size="10" fill="#888" text-anchor="middle">점선 안 세 가지가 한 쿼리로 엔티티까지 채우는 즉시 로딩입니다</text>
+</svg>

@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="442" viewBox="0 0 440 442" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="442" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Outbox 패턴 전체 흐름과 중복이 생기는 지점</text>
+<rect x="16" y="38" width="236" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="134.0" y="54.4" font-size="11" fill="#26508F" text-anchor="middle">애플리케이션</text>
+<text x="134.0" y="69.3" font-size="11" fill="#26508F" text-anchor="middle">비즈니스 로직 수행</text>
+<line x1="134.0" y1="78" x2="134.0" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="94" width="236" height="74" rx="6" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="26" y="110" font-size="10.5" fill="#8A6400" text-anchor="start" font-weight="bold">하나의 DB 트랜잭션</text>
+<rect x="26" y="120" width="104" height="38" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="78" y="135.4" font-size="10.5" fill="#333" text-anchor="middle">비즈니스</text>
+<text x="78" y="149.9" font-size="10.5" fill="#333" text-anchor="middle">테이블 변경</text>
+<rect x="138" y="120" width="104" height="38" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="190" y="135.4" font-size="10.5" fill="#333" text-anchor="middle">Outbox INSERT</text>
+<text x="190" y="149.9" font-size="10.5" fill="#333" text-anchor="middle">(PENDING)</text>
+<rect x="272" y="98" width="152" height="66" rx="4" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="280" y="113" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">Exactly-once</text>
+<text x="280" y="129" font-size="10" fill="#333" text-anchor="start">데이터 변경과 이벤트</text>
+<text x="280" y="143" font-size="10" fill="#333" text-anchor="start">기록이 함께 커밋되어</text>
+<text x="280" y="157" font-size="10" fill="#333" text-anchor="start">이벤트 유실 없음</text>
+<line x1="252" y1="131" x2="272" y2="131" stroke="#BBB" stroke-dasharray="2 2"/>
+<line x1="134.0" y1="168" x2="134.0" y2="184" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="186" width="236" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="134.0" y="202.3" font-size="11" fill="#26508F" text-anchor="middle">Outbox Relay (폴링)</text>
+<text x="134.0" y="217.3" font-size="11" fill="#26508F" text-anchor="middle">PENDING 조회 → 발행 → SENT</text>
+<line x1="134.0" y1="226" x2="134.0" y2="256" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="148.0" cy="241" r="8" fill="#FDECEC" stroke="#D9534F" stroke-width="1.5"/><path d="M144.5,237.5 L151.5,244.5 M151.5,237.5 L144.5,244.5" stroke="#D9534F" stroke-width="1.8"/>
+<text x="160.0" y="245" font-size="10" fill="#B52B27" text-anchor="start">타임아웃</text>
+<rect x="272" y="192" width="152" height="66" rx="4" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="280" y="207" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold">At-least-once</text>
+<text x="280" y="223" font-size="10" fill="#333" text-anchor="start">성공 여부를 확정할 수 없어</text>
+<text x="280" y="237" font-size="10" fill="#333" text-anchor="start">다시 발행하면 같은</text>
+<text x="280" y="251" font-size="10" fill="#333" text-anchor="start">이벤트가 중복 발행</text>
+<line x1="210.0" y1="241" x2="272" y2="241" stroke="#BBB" stroke-dasharray="2 2"/>
+<rect x="16" y="258" width="236" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="134.0" y="278" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">Kafka</text>
+<line x1="134.0" y1="290" x2="134.0" y2="316" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="272" y="276" width="152" height="52" rx="4" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="280" y="291" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold">At-least-once</text>
+<text x="280" y="307" font-size="10" fill="#333" text-anchor="start">Consumer가 같은 메시지를</text>
+<text x="280" y="321" font-size="10" fill="#333" text-anchor="start">재처리할 수 있음</text>
+<line x1="134.0" y1="303" x2="272" y2="303" stroke="#BBB" stroke-dasharray="2 2"/>
+<rect x="16" y="318" width="236" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="134.0" y="334.4" font-size="11" fill="#26508F" text-anchor="middle">Consumer</text>
+<text x="134.0" y="349.4" font-size="11" fill="#26508F" text-anchor="middle">eventId로 처리 여부 확인</text>
+<line x1="84.0" y1="358" x2="72" y2="379" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="72.0" y="372" font-size="9.5" fill="#888" text-anchor="end">처음</text>
+<line x1="184.0" y1="358" x2="196" y2="379" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="196.0" y="372" font-size="9.5" fill="#888" text-anchor="start">이미 처리함</text>
+<rect x="16" y="380" width="112" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="72" y="399.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle">비즈니스 로직 수행</text>
+<text x="72" y="413.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle">처리 이력 기록</text>
+<rect x="140" y="380" width="112" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="196" y="399.4" font-size="10.5" fill="#555" text-anchor="middle">비즈니스 로직</text>
+<text x="196" y="413.9" font-size="10.5" fill="#555" text-anchor="middle">건너뛰기</text>
+<rect x="272" y="372" width="152" height="66" rx="4" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="280" y="387" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">Effectively exactly-once</text>
+<text x="280" y="403" font-size="10" fill="#333" text-anchor="start">메시지는 중복될 수 있지만</text>
+<text x="280" y="417" font-size="10" fill="#333" text-anchor="start">비즈니스 결과는</text>
+<text x="280" y="431" font-size="10" fill="#333" text-anchor="start">한 번만 반영</text>
+<line x1="252" y1="403" x2="272" y2="403" stroke="#BBB" stroke-dasharray="2 2"/>
+</svg>

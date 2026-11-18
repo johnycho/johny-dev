@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="286" viewBox="0 0 440 286" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="286" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Redis 장애가 발생했을 때 주문 조회</text>
+<rect x="15" y="36" width="200" height="24" rx="4" fill="#FDECEC" stroke="#D9534F"/>
+<text x="115" y="52" font-size="11.5" fill="#B52B27" text-anchor="middle" font-weight="bold">내결함성이 없는 경우</text>
+<rect x="30" y="74" width="170" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115" y="97.7" font-size="10.5" fill="#333" text-anchor="middle">주문 조회 요청</text>
+<line x1="115" y1="114" x2="115" y2="128" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="30" y="130" width="170" height="40" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="115" y="146.4" font-size="10.5" fill="#333" text-anchor="middle">Redis 캐시 조회</text>
+<text x="115" y="160.9" font-size="10.5" fill="#333" text-anchor="middle">(장애로 실패)</text>
+<line x1="115" y1="170" x2="115" y2="184" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="30" y="186" width="170" height="40" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="115" y="209.7" font-size="10.5" fill="#333" text-anchor="middle">예외 발생</text>
+<line x1="115" y1="226" x2="115" y2="240" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="30" y="242" width="170" height="30" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="115" y="261" font-size="11.5" fill="#B52B27" text-anchor="middle" font-weight="bold">주문 조회 실패</text>
+<rect x="225" y="36" width="200" height="24" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="325" y="52" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">내결함성이 적용된 경우</text>
+<rect x="240" y="74" width="170" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="325" y="97.7" font-size="10.5" fill="#333" text-anchor="middle">주문 조회 요청</text>
+<line x1="325" y1="114" x2="325" y2="128" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="240" y="130" width="170" height="40" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="325" y="146.4" font-size="10.5" fill="#333" text-anchor="middle">Redis 캐시 조회</text>
+<text x="325" y="160.9" font-size="10.5" fill="#333" text-anchor="middle">(장애로 실패)</text>
+<line x1="325" y1="170" x2="325" y2="184" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="240" y="186" width="170" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="325" y="209.7" font-size="10.5" fill="#333" text-anchor="middle">DB로 대체 조회</text>
+<line x1="325" y1="226" x2="325" y2="240" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="240" y="242" width="170" height="30" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="325" y="261" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">주문 조회 정상 처리</text>
+</svg>

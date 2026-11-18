@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="374" viewBox="0 0 440 374" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="374" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">특화 자료구조: 저장하는 값과 조회 방식</text>
+<rect x="10" y="36" width="420" height="104" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="20" y="56" font-size="12" fill="#333" text-anchor="start" font-weight="bold">Geospatial</text>
+<rect x="20" y="66" width="48.599999999999994" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="44.3" y="79" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">stores</text>
+<text x="20" y="104" font-size="10" fill="#555" text-anchor="start">위경도 → 지오해시,</text>
+<text x="20" y="120" font-size="10" fill="#555" text-anchor="start">Sorted Set에 저장</text>
+<circle cx="330" cy="88" r="40" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<circle cx="330" cy="88" r="3" fill="#D06A86"/>
+<text x="330" y="103" font-size="9.5" fill="#9E3A57" text-anchor="middle">기준 위치</text>
+<circle cx="310" cy="70" r="3" fill="#4C7FE0"/>
+<text x="310" y="64" font-size="9" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">gangnam</text>
+<circle cx="346" cy="62" r="3" fill="#4C7FE0"/>
+<circle cx="388" cy="116" r="3" fill="#BBB"/>
+<text x="388" y="130" font-size="9" fill="#888" text-anchor="middle">반경 밖</text>
+<line x1="330" y1="88" x2="370" y2="88" stroke="#888" stroke-width="1.2" stroke-dasharray="3 3"/>
+<text x="354" y="84" font-size="9" fill="#555" text-anchor="middle">3 km</text>
+<text x="200" y="76" font-size="10" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">GEOSEARCH</text>
+<text x="200" y="92" font-size="10" fill="#555" text-anchor="middle">반경 안 위치 찾기</text>
+<rect x="10" y="148" width="420" height="104" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="20" y="168" font-size="12" fill="#333" text-anchor="start" font-weight="bold">Vector Set</text>
+<rect x="20" y="178" width="36.4" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="38.2" y="191" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">docs</text>
+<text x="20" y="216" font-size="10" fill="#555" text-anchor="start">임베딩(숫자 배열)</text>
+<text x="20" y="232" font-size="10" fill="#555" text-anchor="start">Redis 8에서 추가</text>
+<rect x="150" y="176" width="40" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="170" y="190" font-size="9.5" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">doc-1</text>
+<rect x="192" y="176" width="108" height="20" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="246" y="190" font-size="9.5" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">[0.1, 0.2, 0.3]</text>
+<rect x="150" y="202" width="40" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="170" y="216" font-size="9.5" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">doc-2</text>
+<rect x="192" y="202" width="108" height="20" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="246" y="216" font-size="9.5" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">[0.9, 0.1, 0.4]</text>
+<rect x="150" y="228" width="150" height="20" rx="3" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="225" y="242" font-size="9.5" fill="#8A6400" text-anchor="middle" font-family="Menlo, Consolas, monospace">질의 [0.1, 0.2, 0.25]</text>
+<line x1="300" y1="238" x2="346" y2="200" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="348" y="186" width="74" height="30" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="385" y="197.6" font-size="9.5" fill="#2E6B2E" text-anchor="middle">가장 비슷한</text>
+<text x="385" y="211.1" font-size="9.5" fill="#2E6B2E" text-anchor="middle">N개 (VSIM)</text>
+<rect x="10" y="260" width="420" height="104" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="20" y="280" font-size="12" fill="#333" text-anchor="start" font-weight="bold">Time Series</text>
+<rect x="20" y="290" width="30.299999999999997" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="35.15" y="303" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">cpu</text>
+<text x="20" y="328" font-size="10" fill="#555" text-anchor="start">타임스탬프 + 값</text>
+<text x="20" y="344" font-size="10" fill="#555" text-anchor="start">보존 기간, 다운샘플링</text>
+<line x1="160" y1="346" x2="420" y2="346" stroke="#999" stroke-width="1.2"/>
+<text x="420" y="358" font-size="9" fill="#888" text-anchor="end">시간 →</text>
+<polyline points="170,316 200,304 230,310 260,288 290,298 320,284 350,291 380,276 410,282" fill="none" stroke="#4C7FE0" stroke-width="1.5"/>
+<circle cx="170" cy="316" r="2.5" fill="#4C7FE0"/>
+<circle cx="200" cy="304" r="2.5" fill="#4C7FE0"/>
+<circle cx="230" cy="310" r="2.5" fill="#4C7FE0"/>
+<circle cx="260" cy="288" r="2.5" fill="#4C7FE0"/>
+<circle cx="290" cy="298" r="2.5" fill="#4C7FE0"/>
+<circle cx="320" cy="284" r="2.5" fill="#4C7FE0"/>
+<circle cx="350" cy="291" r="2.5" fill="#4C7FE0"/>
+<circle cx="380" cy="276" r="2.5" fill="#4C7FE0"/>
+<circle cx="410" cy="282" r="2.5" fill="#4C7FE0"/>
+<rect x="166" y="268" width="110" height="16" rx="3" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="221" y="280" font-size="8.5" fill="#8A6400" text-anchor="middle" font-family="Menlo, Consolas, monospace">TS.ADD cpu * 73.4</text>
+</svg>

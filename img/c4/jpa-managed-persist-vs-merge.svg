@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="338" viewBox="0 0 440 338" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="338" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">save()가 호출하는 persist와 merge의 차이</text>
+<rect x="262" y="36" width="166" height="266" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="345.0" y="54" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">영속성 컨텍스트</text>
+<text x="14" y="70" font-size="10" fill="#555" text-anchor="start" font-weight="bold">새 엔티티 (isNew = true)</text>
+<rect x="14" y="80" width="110" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="69" y="98.4" font-size="10.5" fill="#333" text-anchor="middle">order</text>
+<text x="69" y="112.9" font-size="10.5" fill="#333" text-anchor="middle">비영속</text>
+<line x1="124" y1="102" x2="276" y2="102" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="193" y="96" font-size="9.5" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">persist(order)</text>
+<rect x="278" y="80" width="134" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1.5"/>
+<text x="345.0" y="98.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle">order</text>
+<text x="345.0" y="112.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle">같은 객체가 영속</text>
+<text x="345.0" y="140" font-size="9.5" fill="#555" text-anchor="middle">넘긴 객체를 그대로 반환</text>
+<text x="14" y="166" font-size="10" fill="#555" text-anchor="start" font-weight="bold">기존 엔티티 (isNew = false)</text>
+<rect x="14" y="176" width="110" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="69" y="194.4" font-size="10.5" fill="#333" text-anchor="middle">detached</text>
+<text x="69" y="208.9" font-size="10.5" fill="#333" text-anchor="middle">준영속</text>
+<line x1="124" y1="198" x2="276" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="193" y="192" font-size="9.5" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">merge(detached)</text>
+<text x="193" y="212" font-size="9.5" fill="#888" text-anchor="middle">값을 복사</text>
+<rect x="278" y="176" width="134" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1.5"/>
+<text x="345.0" y="194.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle">managed</text>
+<text x="345.0" y="208.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle">다른 인스턴스가 영속</text>
+<text x="345.0" y="236" font-size="9.5" fill="#555" text-anchor="middle">이 인스턴스를 반환</text>
+<rect x="14" y="250" width="110" height="42" rx="4" fill="#FDECEC" stroke="#D9534F"/>
+<text x="69" y="267.5" font-size="10" fill="#B52B27" text-anchor="middle">변경해도</text>
+<text x="69" y="281.5" font-size="10" fill="#B52B27" text-anchor="middle">반영되지 않음</text>
+<line x1="69" y1="220" x2="69" y2="250" stroke="#CCC" stroke-width="1.2" stroke-dasharray="3 3"/>
+<rect x="278" y="250" width="134" height="42" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="345.0" y="267.5" font-size="10" fill="#2E6B2E" text-anchor="middle">변경하면</text>
+<text x="345.0" y="281.5" font-size="10" fill="#2E6B2E" text-anchor="middle">UPDATE에 반영</text>
+<line x1="345.0" y1="242" x2="345.0" y2="250" stroke="#CCC" stroke-width="1.2" stroke-dasharray="3 3"/>
+<text x="14" y="326" font-size="9.5" fill="#888" text-anchor="start">save()의 반환값을 사용해야 두 경우 모두 영속 엔티티를 사용합니다</text>
+</svg>
