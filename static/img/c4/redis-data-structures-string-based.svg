@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="458" viewBox="0 0 440 458" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="458" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">String 기반 자료구조: Bitmap과 HyperLogLog</text>
+<rect x="10" y="36" width="420" height="186" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="24" y="58" font-size="13" fill="#333" text-anchor="start" font-weight="bold">Bitmap</text>
+<text x="416" y="58" font-size="9.5" fill="#888" text-anchor="end">비트 한 개 = 사용자 한 명의 출석 여부</text>
+<rect x="24" y="70" width="92" height="22" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="70" y="85" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">user:active</text>
+<text x="126" y="85" font-size="10.5" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">SETBIT user:active 1001 1</text>
+<rect x="36" y="114" width="40" height="28" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="56.0" y="133" font-size="12" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">0</text>
+<text x="56.0" y="158" font-size="9.5" fill="#888" text-anchor="middle">0</text>
+<rect x="82" y="114" width="40" height="28" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="102.0" y="133" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">1</text>
+<text x="102.0" y="158" font-size="9.5" fill="#888" text-anchor="middle">1</text>
+<rect x="128" y="114" width="40" height="28" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="148.0" y="133" font-size="12" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">0</text>
+<text x="148.0" y="158" font-size="9.5" fill="#888" text-anchor="middle">2</text>
+<text x="195.0" y="132" font-size="12" fill="#888" text-anchor="middle">…</text>
+<rect x="220" y="114" width="40" height="28" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="240.0" y="133" font-size="12" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">0</text>
+<text x="240.0" y="158" font-size="9.5" fill="#888" text-anchor="middle">1000</text>
+<rect x="266" y="114" width="40" height="28" rx="3" fill="#D6E4FB" stroke="#4C7FE0"/>
+<text x="286.0" y="133" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">1</text>
+<text x="286.0" y="158" font-size="9.5" fill="#888" text-anchor="middle">1001</text>
+<rect x="312" y="114" width="40" height="28" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="332.0" y="133" font-size="12" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">0</text>
+<text x="332.0" y="158" font-size="9.5" fill="#888" text-anchor="middle">1002</text>
+<text x="379.0" y="132" font-size="12" fill="#888" text-anchor="middle">…</text>
+<text x="286" y="108" font-size="9.5" fill="#26508F" text-anchor="middle" font-weight="bold">ID 1001 출석</text>
+<text x="24" y="176" font-size="10" fill="#555" text-anchor="start">오프셋(비트 위치) = 사용자 ID</text>
+<rect x="24" y="186" width="392" height="26" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220" y="203" font-size="10" fill="#2E6B2E" text-anchor="middle">사용자 1억 명도 1억 비트(약 12MB)면 저장할 수 있습니다</text>
+<rect x="10" y="232" width="420" height="214" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="24" y="254" font-size="13" fill="#333" text-anchor="start" font-weight="bold">HyperLogLog</text>
+<text x="416" y="254" font-size="9.5" fill="#888" text-anchor="end">원소는 저장하지 않고 개수만 추정</text>
+<rect x="24" y="266" width="80" height="22" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="64" y="281" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">visitors</text>
+<text x="114" y="281" font-size="10.5" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">PFADD visitors user1 user2 user1</text>
+<rect x="24" y="302" width="70" height="22" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="59" y="317" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">user1</text>
+<line x1="94" y1="313" x2="140" y2="339" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="24" y="332" width="70" height="22" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="59" y="347" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">user2</text>
+<line x1="94" y1="343" x2="140" y2="339" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="24" y="362" width="70" height="22" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="59" y="377" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">user1</text>
+<line x1="94" y1="373" x2="140" y2="339" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="142" y="324" width="74" height="30" rx="4" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="179" y="343" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">해시</text>
+<line x1="216" y1="339" x2="240" y2="339" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="242" y="306" width="174" height="66" rx="4" fill="#FFFFFF" stroke="#999999"/>
+<text x="329" y="322" font-size="9.5" fill="#555" text-anchor="middle">레지스터 (고정 크기, 최대 12KB)</text>
+<rect x="252" y="332" width="16" height="16" rx="2" fill="#EEF3FB" stroke="#B9CBE8"/>
+<rect x="272" y="332" width="16" height="16" rx="2" fill="#EEF3FB" stroke="#B9CBE8"/>
+<rect x="292" y="332" width="16" height="16" rx="2" fill="#EEF3FB" stroke="#B9CBE8"/>
+<rect x="312" y="332" width="16" height="16" rx="2" fill="#EEF3FB" stroke="#B9CBE8"/>
+<rect x="332" y="332" width="16" height="16" rx="2" fill="#EEF3FB" stroke="#B9CBE8"/>
+<rect x="352" y="332" width="16" height="16" rx="2" fill="#EEF3FB" stroke="#B9CBE8"/>
+<rect x="372" y="332" width="16" height="16" rx="2" fill="#EEF3FB" stroke="#B9CBE8"/>
+<rect x="392" y="332" width="16" height="16" rx="2" fill="#EEF3FB" stroke="#B9CBE8"/>
+<text x="329" y="366" font-size="9.5" fill="#555" text-anchor="middle">원소 수와 관계없이 크기 일정</text>
+<line x1="329" y1="372" x2="329" y2="392" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="214" y="394" width="202" height="34" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="315" y="414.7" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">PFCOUNT visitors → 약 2</text>
+<text x="24" y="408" font-size="10" fill="#555" text-anchor="start">같은 user1은 한 번만</text>
+<text x="24" y="424" font-size="10" fill="#555" text-anchor="start">반영되고, 오차는 약 1%</text>
+</svg>
