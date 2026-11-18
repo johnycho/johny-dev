@@ -250,17 +250,62 @@ interface UserJpaRepository extends JpaRepository<UserJpaEntity, String> {
 
 ### 패키지 구조 요약
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="284" viewBox="0 0 440 284" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="284" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">패키지 구조</text>
+<line x1="22" y1="80" x2="36" y2="80" stroke="#BBBBBB"/>
+<line x1="22" y1="63" x2="22" y2="80" stroke="#BBBBBB"/>
+<line x1="22" y1="104" x2="36" y2="104" stroke="#BBBBBB"/>
+<line x1="22" y1="80" x2="22" y2="104" stroke="#BBBBBB"/>
+<line x1="44" y1="128" x2="58" y2="128" stroke="#BBBBBB"/>
+<line x1="44" y1="111" x2="44" y2="128" stroke="#BBBBBB"/>
+<line x1="44" y1="152" x2="58" y2="152" stroke="#BBBBBB"/>
+<line x1="44" y1="128" x2="44" y2="152" stroke="#BBBBBB"/>
+<line x1="44" y1="176" x2="58" y2="176" stroke="#BBBBBB"/>
+<line x1="44" y1="152" x2="44" y2="176" stroke="#BBBBBB"/>
+<line x1="22" y1="200" x2="36" y2="200" stroke="#BBBBBB"/>
+<line x1="22" y1="104" x2="22" y2="200" stroke="#BBBBBB"/>
+<line x1="44" y1="224" x2="58" y2="224" stroke="#BBBBBB"/>
+<line x1="44" y1="207" x2="44" y2="224" stroke="#BBBBBB"/>
+<line x1="44" y1="248" x2="58" y2="248" stroke="#BBBBBB"/>
+<line x1="44" y1="224" x2="44" y2="248" stroke="#BBBBBB"/>
+<path d="M16 51 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="34" y="60" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">com.example.user</text>
+<path d="M38 75 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="56" y="84" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">domain/</text>
+<text x="112.19999999999999" y="83.5" font-size="9.5" fill="#888" text-anchor="start">User (순수 도메인)</text>
+<path d="M38 99 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="56" y="108" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">application/</text>
+<path d="M60 123 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="78" y="132" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">port/in/</text>
+<text x="140.8" y="131.5" font-size="9.5" fill="#888" text-anchor="start">RegisterUserUseCase, Command (인바운드 포트)</text>
+<path d="M60 147 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="78" y="156" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">port/out/</text>
+<text x="147.4" y="155.5" font-size="9.5" fill="#888" text-anchor="start">SaveUserPort, LoadUserPort (아웃바운드 포트)</text>
+<path d="M60 171 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="78" y="180" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">service/</text>
+<text x="140.8" y="179.5" font-size="9.5" fill="#888" text-anchor="start">RegisterUserService (유즈케이스)</text>
+<path d="M38 195 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="56" y="204" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">adapter/</text>
+<path d="M60 219 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="78" y="228" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">in/web/</text>
+<text x="134.2" y="227.5" font-size="9.5" fill="#888" text-anchor="start">UserController (인바운드 어댑터)</text>
+<path d="M60 243 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="78" y="252" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">out/persistence/</text>
+<text x="78" y="266" font-size="9.5" fill="#888" text-anchor="start">UserPersistenceAdapter, JPA (아웃바운드 어댑터)</text>
+</svg>
 ```
-com.example.user
-├── domain/                     # User (순수 도메인)
-├── application/
-│   ├── port/in/                # RegisterUserUseCase, Command  (인바운드 포트)
-│   ├── port/out/               # SaveUserPort, LoadUserPort    (아웃바운드 포트)
-│   └── service/                # RegisterUserService           (유즈케이스)
-└── adapter/
-    ├── in/web/                 # UserController                (인바운드 어댑터)
-    └── out/persistence/        # UserPersistenceAdapter, JPA   (아웃바운드 어댑터)
-```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hexagonal-package-tree.svg" alt="com.example.user 아래 domain, application(port/in, port/out, service), adapter(in/web, out/persistence) 패키지와 각 패키지에 들어가는 클래스" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ---
 
@@ -273,36 +318,109 @@ interface(포트)가 있을 때 코드는 두 가지 일을 합니다.
 
 포트는 항상 이 둘 사이에 껴 있습니다:
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="200" viewBox="0 0 440 200" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">포트는 호출과 구현 사이에 있습니다</text>
+<rect x="130" y="40" width="180" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="67" font-size="11" fill="#8A6400" text-anchor="middle" font-weight="bold">interface(포트)</text>
+<rect x="10" y="140" width="180" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="100" y="167" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">[호출하는 쪽]</text>
+<rect x="250" y="140" width="180" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="340" y="167" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">[구현하는 쪽]</text>
+<line x1="100" y1="140" x2="175" y2="88" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="122" y="108" font-size="10.5" fill="#26508F" text-anchor="end" font-weight="bold">호출</text>
+<line x1="340" y1="140" x2="265" y2="88" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ah)"/>
+<text x="318" y="108" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">구현</text>
+</svg>
 ```
-[호출하는 쪽] ──▶ interface(포트) ◀── [구현하는 쪽]
-```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hexagonal-port-between.svg" alt="호출하는 쪽은 포트(interface)를 호출하고 구현하는 쪽은 포트를 구현하는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ### 인바운드일 때
 
-```
-UserController  ──호출──▶  RegisterUserUseCase  ◀──구현──  RegisterUserService
- (어댑터)                    (인바운드 포트)                (유즈케이스=코어)
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="200" viewBox="0 0 440 200" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">인바운드</text>
+<rect x="130" y="40" width="180" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="60" font-size="11" fill="#8A6400" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">RegisterUserUseCase</text>
+<text x="220" y="76" font-size="9.5" fill="#888" text-anchor="middle">(인바운드 포트)</text>
+<rect x="10" y="140" width="180" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="100" y="160" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">UserController</text>
+<text x="100" y="176" font-size="9.5" fill="#888" text-anchor="middle">(어댑터)</text>
+<rect x="250" y="140" width="180" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="340" y="160" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">RegisterUserService</text>
+<text x="340" y="176" font-size="9.5" fill="#888" text-anchor="middle">(유즈케이스=코어)</text>
+<line x1="100" y1="140" x2="175" y2="88" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="122" y="108" font-size="10.5" fill="#26508F" text-anchor="end" font-weight="bold">호출</text>
+<line x1="340" y1="140" x2="265" y2="88" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ah)"/>
+<text x="318" y="108" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">구현</text>
+</svg>
 ```
 
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hexagonal-port-inbound.svg" alt="인바운드에서 UserController(어댑터)가 RegisterUserUseCase(인바운드 포트)를 호출하고 RegisterUserService(코어)가 구현하는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 - 어댑터(Controller)가 **호출하는 쪽**
-- 코어(Service)가 **구현하는 쪽** (만든다)
+- 코어(Service)가 **구현하는 쪽**
 
 ### 아웃바운드일 때
 
-```
-RegisterUserService  ──호출──▶  SaveUserPort  ◀──구현──  UserPersistenceAdapter
- (유즈케이스=코어)                (아웃바운드 포트)          (어댑터)
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="200" viewBox="0 0 440 200" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">아웃바운드</text>
+<rect x="130" y="40" width="180" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="60" font-size="11" fill="#8A6400" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">SaveUserPort</text>
+<text x="220" y="76" font-size="9.5" fill="#888" text-anchor="middle">(아웃바운드 포트)</text>
+<rect x="10" y="140" width="180" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="100" y="160" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">RegisterUserService</text>
+<text x="100" y="176" font-size="9.5" fill="#888" text-anchor="middle">(유즈케이스=코어)</text>
+<rect x="250" y="140" width="180" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="340" y="160" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">UserPersistenceAdapter</text>
+<text x="340" y="176" font-size="9.5" fill="#888" text-anchor="middle">(어댑터)</text>
+<line x1="100" y1="140" x2="175" y2="88" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="122" y="108" font-size="10.5" fill="#26508F" text-anchor="end" font-weight="bold">호출</text>
+<line x1="340" y1="140" x2="265" y2="88" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#ah)"/>
+<text x="318" y="108" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">구현</text>
+</svg>
 ```
 
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hexagonal-port-outbound.svg" alt="아웃바운드에서 RegisterUserService(코어)가 SaveUserPort(아웃바운드 포트)를 호출하고 UserPersistenceAdapter(어댑터)가 구현하는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 - 코어(Service)가 **호출하는 쪽**
-- 어댑터(Persistence)가 **구현하는 쪽** (만든다)
+- 어댑터(Persistence)가 **구현하는 쪽**
 
 ### "뒤집혀 있다"는 게 이 말
 
 | | 어댑터가 하는 일 | 코어가 하는 일 |
 |---|---|---|
-| **인바운드** | 포트를 **호출** | 포트를 **구현**(만든다) |
-| **아웃바운드** | 포트를 **구현**(만든다) | 포트를 **호출** |
+| **인바운드** | 포트를 **호출** | 포트를 **구현** |
+| **아웃바운드** | 포트를 **구현** | 포트를 **호출** |
 
 → <mark>어댑터가 인바운드에서는 "호출하는 쪽", 아웃바운드에서는 "만드는 쪽" — 정확히 역할이 반대(뒤집힘)</mark>. 코어도 마찬가지로 반대.
 
@@ -310,10 +428,33 @@ RegisterUserService  ──호출──▶  SaveUserPort  ◀──구현── 
 
 기준은 딱 한 가지: **"화살표(의존성)는 항상 코어 안쪽을 향해야 한다."**
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="110" viewBox="0 0 440 110" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="110" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">의존성 방향은 항상 코어 안쪽</text>
+<rect x="10" y="40" width="116" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="68" y="64" font-size="13" fill="#26508F" text-anchor="middle" font-weight="bold">밖</text>
+<text x="68" y="82" font-size="9.5" fill="#555" text-anchor="middle">(인바운드 어댑터)</text>
+<rect x="162" y="40" width="116" height="56" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="64" font-size="13" fill="#8A6400" text-anchor="middle" font-weight="bold">안</text>
+<text x="220" y="82" font-size="9.5" fill="#555" text-anchor="middle">(코어)</text>
+<rect x="314" y="40" width="116" height="56" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="372" y="64" font-size="13" fill="#2E6B2E" text-anchor="middle" font-weight="bold">밖</text>
+<text x="372" y="82" font-size="9.5" fill="#555" text-anchor="middle">(아웃바운드 어댑터)</text>
+<line x1="128" y1="68" x2="160" y2="68" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="312" y1="68" x2="280" y2="68" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>
 ```
-        밖 ────────▶ 안 ◀──────── 밖
-   (인바운드 어댑터) (코어) (아웃바운드 어댑터)
-```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hexagonal-dependency-direction.svg" alt="인바운드 어댑터와 아웃바운드 어댑터 양쪽 밖에서 코어 안쪽을 향하는 의존성 방향" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 - 인바운드: 밖(어댑터)이 안(코어)을 부르니까 → 자연스럽게 화살표가 안쪽으로 감. 그냥 호출하면 됨.
 - 아웃바운드: 안(코어)이 밖(DB)을 사용해야 하는데… 이러면 화살표가 **밖으로** 나가버림. ❌ 규칙 위반!

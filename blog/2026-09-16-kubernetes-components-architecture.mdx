@@ -203,7 +203,7 @@ GET /apis/discovery.k8s.io/v1/endpointslices?watch=true&resourceVersion=12345
 {"type":"ADDED","object":{ ... }}
 ```
 
-이 "LIST 후 WATCH, 연결이 끊기면 다시 연결" 처리는 쿠버네티스 Go 라이브러리(client-go)의 **informer**가 맡고, 각 부품은 이를 사용합니다.
+이 "LIST 후 WATCH, 연결이 종료되면 다시 연결" 처리는 쿠버네티스 Go 라이브러리(client-go)의 **informer**가 맡고, 각 부품은 이를 사용합니다.
 
 여러 부품의 watch가 이어지는 예로, 파드 한 개가 새로 기동하면 다음 순서로 모든 노드의 kube-proxy 규칙에 반영됩니다.
 

@@ -131,7 +131,7 @@ class MySubscriber implements Subscriber<Integer> {
 }
 ```
 
-여기서는 `onSubscribe`와 `onNext`에서 `request(1)`로 **한 건씩만** 요청해 받도록 `n`을 정했습니다. `s.request(256)`처럼 크게 잡으면 한 번에 더 많이 받고, `Long.MAX_VALUE`면 사실상 백프레셔 없이 받는 대로 처리합니다.
+여기서는 `onSubscribe`와 `onNext`에서 `request(1)`로 **한 건씩만** 요청해 받도록 `n`을 정했습니다. `s.request(256)`처럼 크게 설정하면 한 번에 더 많이 받고, `Long.MAX_VALUE`면 사실상 백프레셔 없이 받는 대로 처리합니다.
 
 반면 Reactor, WebFlux처럼 프레임워크가 구독을 대행하면 이 `n`을 대신 정해 줍니다.
 
@@ -366,7 +366,7 @@ public void consume(org.reactivestreams.Publisher<Event> source) {
 }
 ```
 
-<mark>정리하면 스프링에서 Reactive Streams가 필요한 건 **대용량 스트리밍, 실시간 푸시(SSE), 다중 논블로킹 호출 합성**처럼 흐름 제어와 논블로킹이 실익을 주는 경우입니다 — 단순 CRUD엔 과합니다(그럴 땐 MVC나 [가상 스레드](./virtual-threads-in-production)).</mark>
+<mark>정리하면 스프링에서 Reactive Streams가 필요한 건 **대용량 스트리밍, 실시간 푸시(SSE), 다중 논블로킹 호출 합성**처럼 흐름 제어와 논블로킹의 실익이 있는 경우입니다 — 단순 CRUD엔 과합니다(그럴 땐 MVC나 [가상 스레드](./virtual-threads-in-production)).</mark>
 
 ## 표준이 보장하는 것과 아닌 것
 

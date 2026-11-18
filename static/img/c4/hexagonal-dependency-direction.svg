@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="110" viewBox="0 0 440 110" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="110" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">의존성 방향은 항상 코어 안쪽</text>
+<rect x="10" y="40" width="116" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="68" y="64" font-size="13" fill="#26508F" text-anchor="middle" font-weight="bold">밖</text>
+<text x="68" y="82" font-size="9.5" fill="#555" text-anchor="middle">(인바운드 어댑터)</text>
+<rect x="162" y="40" width="116" height="56" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="64" font-size="13" fill="#8A6400" text-anchor="middle" font-weight="bold">안</text>
+<text x="220" y="82" font-size="9.5" fill="#555" text-anchor="middle">(코어)</text>
+<rect x="314" y="40" width="116" height="56" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="372" y="64" font-size="13" fill="#2E6B2E" text-anchor="middle" font-weight="bold">밖</text>
+<text x="372" y="82" font-size="9.5" fill="#555" text-anchor="middle">(아웃바운드 어댑터)</text>
+<line x1="128" y1="68" x2="160" y2="68" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="312" y1="68" x2="280" y2="68" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>

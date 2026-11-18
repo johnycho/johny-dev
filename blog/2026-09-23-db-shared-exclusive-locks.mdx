@@ -100,7 +100,7 @@ note over A, B : 서로 상대의 락을 기다림 → 데드락 (InnoDB가 한�
 
 ## SERIALIZABLE은 언제 대기와 데드락이 생기나
 
-SERIALIZABLE에서는 (autocommit이 꺼진 트랜잭션이면) InnoDB가 **모든 일반 `SELECT`를 `SELECT ... FOR SHARE`로 자동 변환**합니다 — 즉 **읽기만 해도 S락**을 잡습니다([공식 문서](https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-isolation-levels.html)). 그래서 RC, RR에서는 안 생기던 대기와 데드락이 생깁니다.
+SERIALIZABLE에서는 (autocommit이 꺼진 트랜잭션이면) InnoDB가 **모든 일반 `SELECT`를 `SELECT ... FOR SHARE`로 자동 변환**합니다 — 즉 **읽기만 해도 S락**을 획득합니다([공식 문서](https://dev.mysql.com/doc/refman/8.0/en/innodb-transaction-isolation-levels.html)). 그래서 RC, RR에서는 안 생기던 대기와 데드락이 생깁니다.
 
 ### 케이스 A — 읽기가 쓰기를 막는다(대기)
 
@@ -207,7 +207,7 @@ public void transfer(Long from, Long to, int amount) { ... }
 
 ## 대기와 데드락을 줄이려면
 
-- **락 획득 순서를 통일** — 모든 트랜잭션이 행을 항상 같은 순서로 잡으면 순환(데드락)이 안 생깁니다.
+- **락 획득 순서를 통일** — 모든 트랜잭션이 행을 항상 같은 순서로 획득하면 순환(데드락)이 안 생깁니다.
 - **트랜잭션을 짧게** — 락을 보유한 시간이 짧을수록 충돌이 줄어듭니다.
 - **인덱스로 락 범위를 좁힌다** — 적절한 인덱스가 없으면 넓은 범위를 잠가 충돌이 커집니다.
 - **필요 이상 높은 격리를 피한다** — SERIALIZABLE 남용 금지. 특정 갱신만 보호하려면 격리 수준을 올리기보다 `SELECT ... FOR UPDATE`로 그 행만 잠급니다.

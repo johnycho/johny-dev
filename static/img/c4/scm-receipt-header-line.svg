@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="220" viewBox="0 0 440 220" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="220" fill="#FFFFFF"/>
+<path d="M16,16 h196 v188 h-196 z" fill="#FFFFFF" stroke="#999999"/>
+<text x="114.0" y="38" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">영수증</text>
+<line x1="26" y1="48" x2="202" y2="48" stroke="#999" stroke-dasharray="3 3"/>
+<rect x="24" y="56" width="180" height="52" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="34" y="77" font-size="11" fill="#26508F" text-anchor="start">날짜: 2026-10-20</text>
+<text x="34" y="96" font-size="11" fill="#26508F" text-anchor="start">매장: 강남점</text>
+<line x1="26" y1="118" x2="202" y2="118" stroke="#999" stroke-dasharray="3 3"/>
+<rect x="24" y="128" width="180" height="24" rx="4" fill="#FBDCE4" stroke="#D06A86"/>
+<text x="34" y="144" font-size="11" fill="#9E3A57" text-anchor="start">우유</text>
+<text x="120" y="144" font-size="11" fill="#9E3A57" text-anchor="end">2개</text>
+<text x="194" y="144" font-size="11" fill="#9E3A57" text-anchor="end">3,000원</text>
+<rect x="24" y="158" width="180" height="24" rx="4" fill="#FBDCE4" stroke="#D06A86"/>
+<text x="34" y="174" font-size="11" fill="#9E3A57" text-anchor="start">빵</text>
+<text x="120" y="174" font-size="11" fill="#9E3A57" text-anchor="end">1개</text>
+<text x="194" y="174" font-size="11" fill="#9E3A57" text-anchor="end">2,000원</text>
+<line x1="26" y1="192" x2="202" y2="192" stroke="#999" stroke-dasharray="3 3"/>
+<path d="M218,56 h6 v52 h-6" fill="none" stroke="#4C7FE0" stroke-width="1.5"/>
+<line x1="224" y1="82" x2="240" y2="82" stroke="#4C7FE0" stroke-width="1.2"/>
+<rect x="240" y="58" width="188" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="250" y="77" font-size="11.5" fill="#26508F" text-anchor="start" font-weight="bold">윗부분 = 헤더</text>
+<text x="250" y="95" font-size="10.5" fill="#333" text-anchor="start">거래 1건의 공통 정보</text>
+<path d="M218,128 h6 v54 h-6" fill="none" stroke="#D06A86" stroke-width="1.5"/>
+<line x1="224" y1="155" x2="240" y2="155" stroke="#D06A86" stroke-width="1.2"/>
+<rect x="240" y="131" width="188" height="48" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="250" y="150" font-size="11.5" fill="#9E3A57" text-anchor="start" font-weight="bold">아래 각 줄 = 라인</text>
+<text x="250" y="168" font-size="10.5" fill="#333" text-anchor="start">품목별 상세</text>
+</svg>

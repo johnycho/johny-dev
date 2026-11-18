@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="608" viewBox="0 0 440 608" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="608" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">멀티모듈 전체 구성</text>
+<rect x="16" y="35" width="11" height="9" rx="2" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="31" y="43" font-size="10" fill="#555" text-anchor="start">실행 서비스</text>
+<rect x="93.14" y="35" width="11" height="9" rx="2" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="108.14" y="43" font-size="10" fill="#555" text-anchor="start">공유 모듈</text>
+<rect x="161.46" y="35" width="11" height="9" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="176.46" y="43" font-size="10" fill="#555" text-anchor="start">기술 공통 모듈</text>
+<rect x="252.46" y="35" width="11" height="9" rx="2" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="267.46000000000004" y="43" font-size="10" fill="#555" text-anchor="start">ETL 모듈</text>
+<path d="M21,71 V84.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V118.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V138.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V158.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V178.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V198.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V226.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V246.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V266.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V294.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,301 V314.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,301 V334.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V354.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,361 V374.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,361 V394.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,361 V414.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V434.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,441 V454.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,441 V474.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V494.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V514.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V534.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V562.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V582.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M18,60.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="35" y="68" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">root/</text>
+<path d="M33,80.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="88" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">store-service/</text>
+<rect x="50" y="93.5" width="25.6" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="62.8" y="102.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">실행</text>
+<text x="80.6" y="102" font-size="9.5" fill="#777" text-anchor="start">자기 컨텍스트를 domain, application, infra, presentation로 구성</text>
+<path d="M33,114.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="122" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">admin-service/</text>
+<rect x="150.708" y="113.5" width="25.6" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="163.5" y="122.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">실행</text>
+<text x="181.3" y="122" font-size="9.5" fill="#777" text-anchor="start">어드민</text>
+<path d="M33,134.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="142" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">promotion-service/</text>
+<rect x="177.196" y="133.5" width="25.6" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="190.0" y="142.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">실행</text>
+<text x="207.8" y="142" font-size="9.5" fill="#777" text-anchor="start">프로모션, 컨텐츠</text>
+<path d="M33,154.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="162" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">websocket-service/</text>
+<rect x="177.196" y="153.5" width="25.6" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="190.0" y="162.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">실행</text>
+<text x="207.8" y="162" font-size="9.5" fill="#777" text-anchor="start">실시간(웹소켓)</text>
+<path d="M33,174.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="182" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">scheduler-service/</text>
+<rect x="177.196" y="173.5" width="25.6" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="190.0" y="182.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">실행</text>
+<text x="207.8" y="182" font-size="9.5" fill="#777" text-anchor="start">스케줄러</text>
+<path d="M33,194.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="202" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">etl-service/</text>
+<rect x="137.464" y="193.5" width="25.6" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="150.3" y="202.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">실행</text>
+<text x="168.1" y="202" font-size="9.5" fill="#777" text-anchor="start">집계, ETL API</text>
+<path d="M33,222.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1"/>
+<text x="50" y="230" font-size="11" fill="#2E6B2E" text-anchor="start" font-family="Menlo, Consolas, monospace">shared-domain/</text>
+<rect x="150.708" y="221.5" width="25.6" height="13" rx="3" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="0.8"/><text x="163.5" y="230.9" font-size="9" fill="#2E6B2E" text-anchor="middle" font-weight="bold">공유</text>
+<text x="181.3" y="230" font-size="9.5" fill="#777" text-anchor="start">여러 서비스가 쓰는 공용 도메인(엔티티, 인터페이스)</text>
+<path d="M33,242.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1"/>
+<text x="50" y="250" font-size="11" fill="#2E6B2E" text-anchor="start" font-family="Menlo, Consolas, monospace">shared-service-infra/</text>
+<rect x="197.062" y="241.5" width="25.6" height="13" rx="3" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="0.8"/><text x="209.9" y="250.9" font-size="9" fill="#2E6B2E" text-anchor="middle" font-weight="bold">공유</text>
+<text x="227.7" y="250" font-size="9.5" fill="#777" text-anchor="start">공용 응용, 인프라</text>
+<path d="M33,262.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1"/>
+<text x="50" y="270" font-size="11" fill="#2E6B2E" text-anchor="start" font-family="Menlo, Consolas, monospace">platform/</text>
+<rect x="117.598" y="261.5" width="25.6" height="13" rx="3" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="0.8"/><text x="130.4" y="270.9" font-size="9" fill="#2E6B2E" text-anchor="middle" font-weight="bold">공유</text>
+<text x="148.2" y="270" font-size="9.5" fill="#777" text-anchor="start">공통 도메인, 정책</text>
+<path d="M33,290.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="50" y="298" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">jdbc-module/</text>
+<rect x="137.464" y="289.5" width="43.3" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="159.1" y="298.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">기술공통</text>
+<text x="185.8" y="298" font-size="9.5" fill="#777" text-anchor="start">DB 접근</text>
+<path d="M48,310.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="65" y="318" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">jdbc-core/</text>
+<path d="M48,330.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="65" y="338" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">jdbc-jpa/</text>
+<path d="M33,350.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="50" y="358" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">web-module/</text>
+<rect x="130.84199999999998" y="349.5" width="43.3" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="152.5" y="358.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">기술공통</text>
+<text x="179.1" y="358" font-size="9.5" fill="#777" text-anchor="start">웹 계층(공통 컨트롤러, 필터)</text>
+<path d="M48,370.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="65" y="378" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">web-core/</text>
+<path d="M48,390.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="65" y="398" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">web-front/</text>
+<path d="M48,410.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="65" y="418" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">web-back/</text>
+<path d="M33,430.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="50" y="438" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">feign-module/</text>
+<rect x="144.086" y="429.5" width="43.3" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="165.7" y="438.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">기술공통</text>
+<text x="192.4" y="438" font-size="9.5" fill="#777" text-anchor="start">외부 연동 클라이언트</text>
+<path d="M48,450.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="65" y="458" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">feign-core/</text>
+<path d="M48,470.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="65" y="478" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">example-client/</text>
+<path d="M33,490.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="50" y="498" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">message-module/</text>
+<rect x="157.32999999999998" y="489.5" width="43.3" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="179.0" y="498.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">기술공통</text>
+<text x="205.6" y="498" font-size="9.5" fill="#777" text-anchor="start">메시징(Kafka 등)</text>
+<path d="M33,510.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="50" y="518" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">metric-module/</text>
+<rect x="150.708" y="509.5" width="43.3" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="172.4" y="518.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">기술공통</text>
+<text x="199.0" y="518" font-size="9.5" fill="#777" text-anchor="start">관측(메트릭, 트레이싱)</text>
+<path d="M33,530.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="50" y="538" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">test-module/</text>
+<rect x="137.464" y="529.5" width="43.3" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="159.1" y="538.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">기술공통</text>
+<text x="185.8" y="538" font-size="9.5" fill="#777" text-anchor="start">테스트 지원</text>
+<path d="M33,558.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="50" y="566" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">etl-common/</text>
+<rect x="130.84199999999998" y="557.5" width="23.1" height="13" rx="3" fill="#FCE4EC" stroke="#D06A86" stroke-width="0.8"/><text x="142.4" y="566.9" font-size="9" fill="#9E3A57" text-anchor="middle" font-weight="bold">ETL</text>
+<text x="158.9" y="566" font-size="9.5" fill="#777" text-anchor="start">집계 공통 도메인</text>
+<path d="M33,578.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="50" y="586" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">etl-batch-job/</text>
+<rect x="150.708" y="577.5" width="23.1" height="13" rx="3" fill="#FCE4EC" stroke="#D06A86" stroke-width="0.8"/><text x="162.3" y="586.9" font-size="9" fill="#9E3A57" text-anchor="middle" font-weight="bold">ETL</text>
+<text x="178.8" y="586" font-size="9.5" fill="#777" text-anchor="start">배치 잡</text>
+</svg>

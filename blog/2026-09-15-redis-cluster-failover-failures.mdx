@@ -195,14 +195,14 @@ redis-cli -c CONFIG SET cluster-require-full-coverage no
 
 - **너무 짧으면**: 느린 네트워크, GC 스톱 등 일시적 지연을 장애로 오판해 **불필요한 failover**(false failover)가 발생합니다. 승격과 재동기화가 반복되며 오히려 불안정해집니다.
 - **너무 길면**: 실제 장애를 늦게 감지해 **failover가 지연**됩니다. 그동안 해당 슬롯은 멈춰 있습니다.
-- 네트워크 품질과 허용 다운타임에 맞춰 잡습니다(빠른 감지 2~5초 vs 안정적 15초).
+- 네트워크 품질과 허용 다운타임에 맞춰 설정합니다(빠른 감지 2~5초 vs 안정적 15초).
 
 ### 대응 방법
 
 **각 노드 `redis.conf`** 에 설정합니다(단위 ms).
 
 ```properties
-# 기본 15000. 멀티 AZ 등 지연이 있으면 너무 짧게 잡아 false failover 나지 않게
+# 기본 15000. 멀티 AZ 등 지연이 있으면 너무 짧게 설정해 false failover 나지 않게
 cluster-node-timeout 5000
 ```
 
@@ -210,8 +210,8 @@ cluster-node-timeout 5000
 
 레플리카가 살아 있고 과반도 충분한데 승격이 안 되기도 합니다. **데이터가 너무 오래됐을 때(stale)** 입니다. Redis는 마스터와의 연결이 오래 끊겼던 레플리카를 "믿을 수 없다"고 보고 **승격 후보에서 제외**합니다.
 
-- `cluster-replica-validity-factor`(구 `cluster-slave-validity-factor`, 기본 `10`)가 이 기준입니다. 레플리카가 마스터와 끊긴 시간이 **`cluster-node-timeout`(원인 ③의 그 값) × factor** 를 넘으면 승격하지 않습니다. 예: `cluster-node-timeout 5000` + `factor 10` → **50초** 넘게 끊겼던 레플리카는 제외.
-- 실제 이슈들에서 *"마스터와 허용치보다 오래 끊겨 있어 레플리카가 failover하지 못했다"* 는 보고가 나옵니다(예: 복제가 밀린 상태에서 마스터에 장애가 난 경우).
+- `cluster-replica-validity-factor`(구 `cluster-slave-validity-factor`, 기본 `10`)가 이 기준입니다. 레플리카가 마스터와 연결이 단절된 시간이 **`cluster-node-timeout`(원인 ③의 그 값) × factor** 를 넘으면 승격하지 않습니다. 예: `cluster-node-timeout 5000` + `factor 10` → **50초** 넘게 끊겼던 레플리카는 제외.
+- 실제 이슈들에서 *"마스터와 허용치보다 오래 연결이 단절되어 레플리카가 failover하지 못했다"* 는 보고가 나옵니다(예: 복제가 밀린 상태에서 마스터에 장애가 난 경우).
 - 이 값을 `0`으로 두면 "아무리 뒤처져도 승격"이 됩니다 — 가용성은 오르지만 **오래된 데이터로 서비스**하는 위험을 감수하는 것입니다.
 
 ### 대응 방법
@@ -277,7 +277,7 @@ var topologyRefresh = ClusterTopologyRefreshOptions.builder()
 
 토폴로지 갱신을 활성화하는 것 외에도, 애플리케이션이 **failover 창**(승격까지 걸리는 몇 초)을 견디게 하는 대응을 함께 갖춥니다.
 
-- **타임아웃을 짧고 명확하게** — 커맨드 타임아웃이 없거나 길면, 중단된 노드의 응답을 오래 기다리며 요청 스레드가 대기 상태에 빠져 [외부 지연이 서버 전체를 멈춘](./external-api-timeout-server-hang) 것과 같은 연쇄가 납니다. `spring.data.redis.timeout`(커맨드)과 커넥트 타임아웃을 짧게 잡아 **빨리 실패**하게 합니다.
+- **타임아웃을 짧고 명확하게** — 커맨드 타임아웃이 없거나 길면, 중단된 노드의 응답을 오래 기다리며 요청 스레드가 대기 상태에 빠져 [외부 지연이 서버 전체를 멈춘](./external-api-timeout-server-hang) 것과 같은 연쇄가 납니다. `spring.data.redis.timeout`(커맨드)과 커넥트 타임아웃을 짧게 설정해 **빨리 실패**하게 합니다.
 
 ```yaml
 spring:
@@ -318,10 +318,10 @@ class CacheConfig implements CachingConfigurer {
 
 ## 실무 대비 체크리스트
 
-- **마스터는 홀수, 최소 3(권장 5), AZ에 고르게** — 한 AZ 장애에도 **과반 마스터**가 남아 투표가 성립하게. 레플리카만 늘리는 것으로는 과반 문제가 안 풀립니다.
+- **마스터는 홀수, 최소 3(권장 5), AZ에 고르게** — 한 AZ 장애에도 **과반 마스터**가 남아 투표가 성립하게. 레플리카만 늘리는 것으로는 과반 문제가 해결되지 않습니다.
 - **`cluster-require-full-coverage`를 의식적으로 선택** — 부분 장애가 전면 장애로 번지는 게 더 나쁘면 `no`. 정합성이 우선이면 `yes`(기본).
 - **복제 지연을 모니터링** — `validity-factor`에 걸릴 만큼 뒤처진 레플리카는 승격하지 못합니다. 복제 랙, `master_link_status`를 감시합니다.
-- **`node-timeout`을 네트워크에 맞게** — 클라우드 멀티 AZ면 너무 짧게 잡아 false failover가 나지 않게.
+- **`node-timeout`을 네트워크에 맞게** — 클라우드 멀티 AZ면 너무 짧게 설정해 false failover가 나지 않게.
 - **클라이언트 토폴로지 갱신을 활성화** — Lettuce는 기본이 꺼져 있습니다. `spring.data.redis.lettuce.cluster.refresh.adaptive=true` + 주기 갱신을 설정해, 서버 failover를 애플리케이션이 따라가게 합니다. ElastiCache 단일 프라이머리면 JVM DNS TTL도 짧게.
 - **failover를 실제로 테스트** — 마스터를 중단시켜 보고 승격 시간, CLUSTERDOWN 여부, **애플리케이션이 새 노드로 붙는지**를 확인합니다(카오스 테스트). 설정이 의도대로 동작하는지는 중단시켜 봐야 압니다.
 - **버전, 매니지드 동작 확인** — 특정 버전의 승격 버그, 매니지드(ElastiCache 등)의 자체 failover 정책은 문서, 릴리스 노트로 확인.

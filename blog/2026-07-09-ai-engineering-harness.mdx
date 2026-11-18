@@ -17,7 +17,7 @@ LLM은 세션마다 아무 맥락 없이 시작합니다. 프로세스를 모델
 
 해법은 발상을 뒤집는 것입니다. <mark>프로세스, 상태, 규칙, 안전장치를 모델의 기억이 아니라 파일 시스템에 명시해 두면, 세션이 바뀌어도 같은 절차가 재현됩니다.</mark>
 
-그래서 만든 것이 **하네스**입니다. 코드 저장소 위에 올린 최소한의 메타 레이어로, 코드 자체는 전혀 건드리지 않고 *"어떻게 일할지"* 만 정의합니다. 말(馬)이 아니라 마구(馬具, harness) — 방향을 잡아주는 장치죠.
+그래서 만든 것이 **하네스**입니다. 코드 저장소 위에 올린 최소한의 메타 레이어로, 코드 자체는 전혀 건드리지 않고 *"어떻게 일할지"* 만 정의합니다. 말(馬)이 아니라 마구(馬具, harness) — 방향을 정해 주는 장치입니다.
 
 ---
 
@@ -25,19 +25,66 @@ LLM은 세션마다 아무 맥락 없이 시작합니다. 프로세스를 모델
 
 워크스페이스는 세 가지 영역으로 나뉩니다 — **상태, 기록, 하네스 부품**.
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="414" viewBox="0 0 440 414" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="414" fill="#FFFFFF"/>
+<rect x="34" y="76" width="396" height="34" rx="4" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<line x1="25" y1="34" x2="25" y2="231" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="25" y1="51" x2="38" y2="51" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="25" y1="87" x2="38" y2="87" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="25" y1="123" x2="38" y2="123" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="25" y1="159" x2="38" y2="159" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="25" y1="195" x2="38" y2="195" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="25" y1="231" x2="38" y2="231" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="47" y1="236" x2="47" y2="375" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="47" y1="267" x2="60" y2="267" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="47" y1="303" x2="60" y2="303" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="47" y1="339" x2="60" y2="339" stroke="#BBBBBB" stroke-width="1"/>
+<line x1="47" y1="375" x2="60" y2="375" stroke="#BBBBBB" stroke-width="1"/>
+<path d="M18,25 h5 l1.5,-2 h7.5 v11 h-14 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="38" y="33" font-size="11.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">claude-workspace/</text>
+<path d="M41,44 h8 l4,4 v10 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="60" y="55" font-size="11.5" fill="#26508F" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">CLAUDE.md</text>
+<text x="60" y="70" font-size="9.5" fill="#777777" text-anchor="start">인덱스: 언제 무엇을 호출하는지</text>
+<path d="M41,80 h8 l4,4 v10 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="60" y="91" font-size="11.5" fill="#26508F" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">CONTEXT.md</text>
+<text x="60" y="106" font-size="9.5" text-anchor="start"><tspan fill="#E0A000">★</tspan><tspan fill="#777777"> 활성 티켓 인덱스 + Focus(지금 주로 작업 중인 티켓)</tspan></text>
+<path d="M40,119 h5 l1.5,-2 h7.5 v11 h-14 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="60" y="127" font-size="11.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">tickets/</text>
+<text x="60" y="142" font-size="9.5" fill="#777777" text-anchor="start">작업(티켓)별 영구 기록</text>
+<path d="M40,155 h5 l1.5,-2 h7.5 v11 h-14 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="60" y="163" font-size="11.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">projects/</text>
+<text x="60" y="178" font-size="9.5" fill="#777777" text-anchor="start">저장소별 컨벤션 (&lt;repo&gt;/CLAUDE.md, ARCHITECTURE.md)</text>
+<path d="M40,191 h5 l1.5,-2 h7.5 v11 h-14 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="60" y="199" font-size="11.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">wiki/</text>
+<text x="60" y="214" font-size="9.5" fill="#777777" text-anchor="start">decisions(ADR), patterns, incidents, troubleshooting</text>
+<path d="M40,227 h5 l1.5,-2 h7.5 v11 h-14 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="60" y="235" font-size="11.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">.claude/</text>
+<text x="60" y="250" font-size="9.5" fill="#777777" text-anchor="start">하네스 부품 (Claude Code가 자동 인식)</text>
+<path d="M62,263 h5 l1.5,-2 h7.5 v11 h-14 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="82" y="271" font-size="11.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">commands/</text>
+<text x="82" y="286" font-size="9.5" fill="#777777" text-anchor="start">슬래시 커맨드 — 사용자가 호출하는 절차</text>
+<path d="M62,299 h5 l1.5,-2 h7.5 v11 h-14 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="82" y="307" font-size="11.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">agents/</text>
+<text x="82" y="322" font-size="9.5" fill="#777777" text-anchor="start">서브에이전트 — 격리 컨텍스트 위임</text>
+<path d="M62,335 h5 l1.5,-2 h7.5 v11 h-14 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="82" y="343" font-size="11.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">skills/</text>
+<text x="82" y="358" font-size="9.5" fill="#777777" text-anchor="start">자동 로드되는 지식</text>
+<path d="M62,371 h5 l1.5,-2 h7.5 v11 h-14 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="82" y="379" font-size="11.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">hooks/</text>
+<text x="82" y="394" font-size="9.5" fill="#777777" text-anchor="start">도구 호출 시점의 정책 강제</text>
+</svg>
 ```
-claude-workspace/
-├── CLAUDE.md          # 인덱스: 언제 무엇을 호출하나
-├── CONTEXT.md         # ⭐ 활성 티켓 인덱스 + Focus(지금 주로 작업 중인 티켓)
-├── tickets/           # 작업(티켓)별 영구 기록
-├── projects/          # 저장소별 컨벤션 (<repo>/CLAUDE.md, ARCHITECTURE.md)
-├── wiki/              # decisions(ADR) · patterns · incidents · troubleshooting
-└── .claude/           # 하네스 부품 (Claude Code가 자동 인식)
-    ├── commands/      # 슬래시 커맨드 — 사용자가 부르는 절차
-    ├── agents/        # 서브에이전트 — 격리 컨텍스트 위임
-    ├── skills/        # 자동 로드되는 지식
-    └── hooks/         # 도구 호출 시점의 정책 강제
-```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/ai-harness-workspace-tree.svg" alt="claude-workspace 디렉터리 구조와 각 파일, 폴더의 역할" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 핵심은 경계입니다. 코드 원본은 읽기 전용으로, 실제 작업은 워크트리 사본에서 이뤄지고, <mark>"일하는 방식"은 전부 이 메타 워크스페이스가 소유합니다.</mark> 코드와 프로세스를 물리적으로 분리하는 것이 출발점입니다.
 
@@ -94,14 +141,58 @@ claude-workspace/
 
 이 네 가지가 이렇게 맞물립니다.
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="278" viewBox="0 0 440 278" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="278" fill="#FFFFFF"/>
+<rect x="20" y="14" width="110" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="75" y="33" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">사용자 입력</text>
+<line x1="130" y1="29" x2="168" y2="29" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="170" y="14" width="120" height="30" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="230" y="33" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">메인 Claude</text>
+<line x1="40" y1="56" x2="40" y2="245" stroke="#888" stroke-width="1.2"/>
+<line x1="40" y1="56" x2="230" y2="56" stroke="#888" stroke-width="1.2"/>
+<line x1="230" y1="44" x2="230" y2="56" stroke="#888" stroke-width="1.2"/>
+<line x1="40" y1="83" x2="54" y2="83" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="56" y="62" width="118" height="42" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115" y="86.7" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">/command 호출</text>
+<line x1="174" y1="83" x2="194" y2="83" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="196" y="62" width="232" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="206" y="79" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">commands/&lt;name&gt;.md</text>
+<text x="206" y="95" font-size="10.5" fill="#333" text-anchor="start">프롬프트로 주입</text>
+<line x1="40" y1="137" x2="54" y2="137" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="56" y="116" width="118" height="42" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115" y="133.4" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">상황 인지</text>
+<text x="115" y="147.9" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">→ 자동</text>
+<line x1="174" y1="137" x2="194" y2="137" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="196" y="116" width="232" height="42" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="206" y="133" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">skills/&lt;name&gt;/SKILL.md</text>
+<text x="206" y="149" font-size="10.5" fill="#333" text-anchor="start">컨텍스트에 추가</text>
+<line x1="40" y1="191" x2="54" y2="191" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="56" y="170" width="118" height="42" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115" y="194.7" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">Agent 도구 호출</text>
+<line x1="174" y1="191" x2="194" y2="191" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="196" y="170" width="232" height="42" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="206" y="187" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">agents/&lt;name&gt;.md</text>
+<text x="206" y="203" font-size="10.5" fill="#333" text-anchor="start">격리 실행 (결과만 반환)</text>
+<line x1="40" y1="245" x2="54" y2="245" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="56" y="224" width="118" height="42" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115" y="248.7" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">Edit/Write/Bash</text>
+<line x1="174" y1="245" x2="194" y2="245" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="196" y="224" width="232" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="206" y="241" font-size="10.5" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">hooks/&lt;name&gt;.sh</text>
+<text x="206" y="257" font-size="10.5" text-anchor="start"><tspan fill="#2E6B2E" font-weight="bold">exit 0</tspan><tspan fill="#333"> 통과 / </tspan><tspan fill="#9E3A57" font-weight="bold">exit 2</tspan><tspan fill="#333"> 차단</tspan></text>
+</svg>
 ```
-사용자 입력 → 메인 Claude
-              │
-              ├─ /command 호출 ──→ commands/<name>.md 가 프롬프트로 주입
-              ├─ 상황 인지 → 자동 ─→ skills/<name>/SKILL.md 가 컨텍스트에 추가
-              ├─ Agent 도구 호출 ─→ agents/<name>.md 를 격리 실행 (결과만 반환)
-              └─ Edit/Write/Bash ─→ hooks/<name>.sh (exit 0 통과 / exit 2 차단)
-```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/ai-harness-parts-flow.svg" alt="메인 Claude가 command, skill, agent, hook 부품을 각각 어떤 방식으로 사용하는지 보여 주는 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>같은 일을 두 부품에 넣지 않는 것이 핵심 — 호출 주체(사용자, 모델, 시스템)와 격리 여부로 부품이 나뉩니다.</mark> 예를 들어 "사용자가 명시적으로 호출하는 절차"는 command, "AI가 알아서 로드해야 할 지식"은 skill입니다.
 
@@ -149,7 +240,7 @@ stop
 
 ![PlantUML 티켓 워크플로 루프](/img/c4/pu-ticket-workflow.svg)
 
-<mark>작업 하나가 계획 → 구현 → 리뷰 → PR → 배포 → 마무리까지 정해진 커맨드를 따라 진행됩니다.</mark> 각 단계가 끝날 때마다 `CONTEXT.md`의 상태 필드가 즉시 갱신되므로, 중간에 세션이 끊겨도 다음 세션이 "어디까지 왔는지"를 파일에서 그대로 읽습니다.
+<mark>작업 하나가 계획 → 구현 → 리뷰 → PR → 배포 → 마무리까지 정해진 커맨드를 따라 진행됩니다.</mark> 각 단계가 끝날 때마다 `CONTEXT.md`의 상태 필드가 즉시 갱신되므로, 중간에 세션이 종료되어도 다음 세션이 "어디까지 왔는지"를 파일에서 그대로 읽습니다.
 
 무거운 일은 이 루프 중간에서 **격리 컨텍스트로 위임**합니다. 예를 들어 `/review`는 `code-reviewer` 서브에이전트를 호출해 diff 점검을 별도 컨텍스트에서 돌리고, 결과 요약 한 통만 메인으로 돌려받습니다. 메인 대화가 리뷰 로그로 오염되지 않습니다.
 

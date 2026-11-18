@@ -28,21 +28,85 @@ date: 2026-08-24T10:00:00
 
 실행 가능한 애플리케이션(인바운드 어댑터)들과, 그들이 공유하는 도메인, 코어, 아웃바운드 어댑터 모듈로 나눕니다.
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="349" viewBox="0 0 440 349" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="349" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">헥사고날 멀티모듈 전체 구성</text>
+<rect x="16" y="35" width="11" height="9" rx="2" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="31" y="43" font-size="10" fill="#555" text-anchor="start">인바운드 (실행 애플리케이션)</text>
+<rect x="170.0" y="35" width="11" height="9" rx="2" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="185.0" y="43" font-size="10" fill="#555" text-anchor="start">도메인 + 애플리케이션</text>
+<rect x="292.5" y="35" width="11" height="9" rx="2" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="307.5" y="43" font-size="10" fill="#555" text-anchor="start">기술 공통</text>
+<rect x="16" y="52" width="11" height="9" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="31" y="60" font-size="10" fill="#555" text-anchor="start">아웃바운드 어댑터</text>
+<rect x="119.60000000000001" y="52" width="11" height="9" rx="2" fill="#F7F7F7" stroke="#999999"/>
+<text x="134.60000000000002" y="60" font-size="10" fill="#555" text-anchor="start">공유 묶음, 유틸</text>
+<path d="M21,88 V101.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,88 V121.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,88 V141.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,88 V161.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,88 V181.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,88 V209.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,216 V229.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,216 V263.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,216 V283.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,216 V303.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M36,216 V323.5 H46" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M18,77.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="35" y="85" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">root/</text>
+<path d="M33,97.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="105" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">app-api/</text>
+<rect x="110.976" y="96.5" width="43.3" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="132.6" y="105.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">인바운드</text>
+<text x="159.3" y="105" font-size="9.5" fill="#777" text-anchor="start">REST API 실행 애플리케이션</text>
+<path d="M33,117.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="125" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">app-consumer/</text>
+<rect x="144.086" y="116.5" width="43.3" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="165.7" y="125.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">인바운드</text>
+<text x="192.4" y="125" font-size="9.5" fill="#777" text-anchor="start">메시지 컨슈머 실행 애플리케이션</text>
+<path d="M33,137.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="145" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">app-batch/</text>
+<rect x="124.22" y="136.5" width="43.3" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="145.9" y="145.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">인바운드</text>
+<text x="172.5" y="145" font-size="9.5" fill="#777" text-anchor="start">배치 실행 애플리케이션</text>
+<path d="M33,157.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="165" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">app-cronjob/</text>
+<rect x="137.464" y="156.5" width="43.3" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="159.1" y="165.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">인바운드</text>
+<text x="185.8" y="165" font-size="9.5" fill="#777" text-anchor="start">크론잡 실행 애플리케이션</text>
+<path d="M33,177.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="50" y="185" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">app-exporter/</text>
+<rect x="144.086" y="176.5" width="43.3" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="165.7" y="185.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">인바운드</text>
+<text x="192.4" y="185" font-size="9.5" fill="#777" text-anchor="start">지표 export 실행 애플리케이션</text>
+<path d="M33,205.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="50" y="213" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">sub-module/</text>
+<text x="130.8" y="213" font-size="9.5" fill="#777" text-anchor="start">공유 도메인, 코어, 어댑터</text>
+<path d="M48,225.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="65" y="233" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">app-domain/</text>
+<text x="65" y="247" font-size="9.5" fill="#777" text-anchor="start">도메인 모델 + 애플리케이션(포트 in/out + 유스케이스 service)</text>
+<path d="M48,259.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1"/>
+<text x="65" y="267" font-size="11" fill="#2E6B2E" text-anchor="start" font-family="Menlo, Consolas, monospace">app-core/</text>
+<text x="132.6" y="267" font-size="9.5" fill="#777" text-anchor="start">기술 공통 글루(공통 어댑터, 설정, AOP, 보안)</text>
+<path d="M48,279.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="65" y="287" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">app-persistence/</text>
+<rect x="178.952" y="278.5" width="83.6" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="220.8" y="287.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">아웃바운드 어댑터</text>
+<text x="267.6" y="287" font-size="9.5" fill="#777" text-anchor="start">DB (out 포트 구현)</text>
+<path d="M48,299.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="65" y="307" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">app-external-api/</text>
+<rect x="185.574" y="298.5" width="83.6" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="227.4" y="307.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">아웃바운드 어댑터</text>
+<text x="274.2" y="307" font-size="9.5" fill="#777" text-anchor="start">외부 API (out 포트 구현)</text>
+<path d="M48,319.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="65" y="327" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">app-common/</text>
+<text x="145.8" y="327" font-size="9.5" fill="#777" text-anchor="start">공통 유틸</text>
+</svg>
 ```
-root/
-├── app-api/                 # [인바운드] REST API 실행 애플리케이션
-├── app-consumer/            # [인바운드] 메시지 컨슈머 실행 애플리케이션
-├── app-batch/               # [인바운드] 배치 실행 애플리케이션
-├── app-cronjob/             # [인바운드] 크론잡 실행 애플리케이션
-├── app-exporter/            # [인바운드] 지표 export 실행 애플리케이션
-│
-└── sub-module/              # 공유 도메인·코어·어댑터
-    ├── app-domain/          # 도메인 모델 + 애플리케이션(포트 in/out + 유스케이스 service)
-    ├── app-core/            # 기술 공통 글루(공통 어댑터·설정·AOP·보안)
-    ├── app-persistence/     # [아웃바운드 어댑터] DB (out 포트 구현)
-    ├── app-external-api/    # [아웃바운드 어댑터] 외부 API (out 포트 구현)
-    └── app-common/          # 공통 유틸
-```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hexagonal-multimodule-root-tree.svg" alt="인바운드 실행 애플리케이션 다섯 개와 sub-module 아래 app-domain, app-core, 아웃바운드 어댑터 두 개, app-common으로 이루어진 헥사고날 멀티모듈 트리" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 여기서 핵심은 **유스케이스와 포트가 `app-domain` 모듈에 있다**는 점입니다. `app-domain` 모듈이 도메인 모델과 애플리케이션(포트, 유스케이스)을 함께 담고, `app-core`는 여러 모듈이 함께 사용하는 **기술 글루**(공통 어댑터, 설정, 보안)입니다. 각 실행 애플리케이션은 `app-domain`, `app-core`에 필요한 아웃바운드 어댑터(`app-persistence`, `app-external-api`)를 조합해 만듭니다. **`app-domain`과 `app-core`는 어댑터 모듈을 의존하지 않고**, 반대로 어댑터가 이들을 의존합니다.
 
@@ -114,51 +178,244 @@ ADP ..|> PORT : 구현
 
 모듈별 역할과 대표 패키지를 앞의 전체 구성과 같은 트리로 펼치면 이렇습니다.
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="695" viewBox="0 0 440 695" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="695" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">모듈별 패키지 (1) 인바운드 어댑터와 app-domain</text>
+<rect x="16" y="35" width="11" height="9" rx="2" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="31" y="43" font-size="10" fill="#555" text-anchor="start">인바운드 어댑터</text>
+<rect x="110.78" y="35" width="11" height="9" rx="2" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="125.78" y="43" font-size="10" fill="#555" text-anchor="start">app-domain (헥사고날 코어)</text>
+<rect x="262.26" y="35" width="11" height="9" rx="2" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="277.26" y="43" font-size="10" fill="#555" text-anchor="start">기술 공통</text>
+<rect x="330.58" y="35" width="11" height="9" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="345.58" y="43" font-size="10" fill="#555" text-anchor="start">아웃바운드 어댑터</text>
+<rect x="16" y="52" width="11" height="9" rx="2" fill="#F7F7F7" stroke="#999999"/>
+<text x="31" y="60" font-size="10" fill="#555" text-anchor="start">공통</text>
+<path d="M21,88 V101.5 H30" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M35,108 V121.5 H44" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M49,128 V141.5 H58" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M63,148 V161.5 H72" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M63,148 V181.5 H72" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M49,128 V201.5 H58" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M49,128 V221.5 H58" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,88 V249.5 H30" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M35,256 V269.5 H44" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M35,256 V289.5 H44" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M35,256 V309.5 H44" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M49,316 V329.5 H58" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M63,336 V349.5 H72" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M77,356 V369.5 H86" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M77,356 V389.5 H86" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M77,356 V409.5 H86" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M63,336 V429.5 H72" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M63,336 V449.5 H72" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M49,316 V469.5 H58" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M63,476 V489.5 H72" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M63,476 V509.5 H72" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M63,476 V529.5 H72" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M49,316 V549.5 H58" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M49,316 V569.5 H58" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M49,316 V589.5 H58" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M49,316 V609.5 H58" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M35,256 V629.5 H44" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M35,256 V649.5 H44" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M18,77.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="35" y="85" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">root/</text>
+<path d="M32,97.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="49" y="105" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">app-api/</text>
+<rect x="109.976" y="96.5" width="74.8" height="13" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="0.8"/><text x="147.4" y="105.9" font-size="9" fill="#26508F" text-anchor="middle" font-weight="bold">인바운드 어댑터</text>
+<text x="189.8" y="105" font-size="9.5" fill="#777" text-anchor="start">REST 애플리케이션</text>
+<path d="M46,117.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="63" y="125" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">api/</text>
+<path d="M60,137.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="77" y="145" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">order/</text>
+<text x="124.7" y="145" font-size="9.5" fill="#777" text-anchor="start">주문 컨텍스트</text>
+<path d="M74,157.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="91" y="165" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">controller/</text>
+<text x="171.8" y="165" font-size="9.5" fill="#777" text-anchor="start">REST 컨트롤러 → in 포트 호출</text>
+<path d="M74,177.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="91" y="185" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">dto/</text>
+<text x="125.5" y="185" font-size="9.5" fill="#777" text-anchor="start">요청, 응답 DTO</text>
+<path d="M60,197.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="77" y="205" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">member/</text>
+<text x="131.4" y="205" font-size="9.5" fill="#777" text-anchor="start">회원 컨텍스트 (동일 구조)</text>
+<path d="M60,217.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFFFFF" stroke="#4C7FE0" stroke-width="1" stroke-dasharray="2 1.5"/>
+<text x="77" y="225" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">…/</text>
+<text x="98.2" y="225" font-size="9.5" fill="#777" text-anchor="start">그 외 컨텍스트 (동일 구조)</text>
+<path d="M32,245.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="49" y="253" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">sub-module/</text>
+<path d="M46,265.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="63" y="273" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">app-common/</text>
+<text x="143.8" y="273" font-size="9.5" fill="#777" text-anchor="start">공통 유틸</text>
+<path d="M46,285.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1"/>
+<text x="63" y="293" font-size="11" fill="#2E6B2E" text-anchor="start" font-family="Menlo, Consolas, monospace">app-core/</text>
+<text x="130.6" y="293" font-size="9.5" fill="#777" text-anchor="start">기술 공통 글루(adapter, aop, config, security, jpa)</text>
+<path d="M46,305.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="63" y="313" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">app-domain/</text>
+<rect x="143.84199999999998" y="304.5" width="25.6" height="13" rx="3" fill="#FCE4EC" stroke="#D06A86" stroke-width="0.8"/><text x="156.6" y="313.9" font-size="9" fill="#9E3A57" text-anchor="middle" font-weight="bold">모듈</text>
+<text x="174.4" y="313" font-size="9.5" fill="#777" text-anchor="start">도메인 모델 + 애플리케이션 (헥사고날 코어)</text>
+<path d="M60,325.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="77" y="333" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">application/</text>
+<rect x="164.464" y="324.5" width="34.5" height="13" rx="3" fill="#FCE4EC" stroke="#D06A86" stroke-width="0.8"/><text x="181.7" y="333.9" font-size="9" fill="#9E3A57" text-anchor="middle" font-weight="bold">패키지</text>
+<text x="204.0" y="333" font-size="9.5" fill="#777" text-anchor="start">애플리케이션 (컨텍스트별)</text>
+<path d="M74,345.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="91" y="353" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">order/</text>
+<text x="138.7" y="353" font-size="9.5" fill="#777" text-anchor="start">주문 컨텍스트</text>
+<path d="M88,365.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="105" y="373" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">port/in/</text>
+<text x="166.0" y="373" font-size="9.5" fill="#777" text-anchor="start">인바운드 포트(유스케이스 인터페이스)</text>
+<path d="M88,385.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="105" y="393" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">port/out/</text>
+<text x="172.6" y="393" font-size="9.5" fill="#777" text-anchor="start">아웃바운드 포트(persistence, kafka, external)</text>
+<path d="M88,405.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="105" y="413" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">service/</text>
+<text x="166.0" y="413" font-size="9.5" fill="#777" text-anchor="start">유스케이스 구현</text>
+<path d="M74,425.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="91" y="433" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">member/</text>
+<text x="145.4" y="433" font-size="9.5" fill="#777" text-anchor="start">회원 컨텍스트 (동일 구조)</text>
+<path d="M74,445.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFFFFF" stroke="#D06A86" stroke-width="1" stroke-dasharray="2 1.5"/>
+<text x="91" y="453" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">…/</text>
+<text x="112.2" y="453" font-size="9.5" fill="#777" text-anchor="start">그 외 컨텍스트 (동일 구조)</text>
+<path d="M60,465.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="77" y="473" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">domain/</text>
+<rect x="131.35399999999998" y="464.5" width="34.5" height="13" rx="3" fill="#FCE4EC" stroke="#D06A86" stroke-width="0.8"/><text x="148.6" y="473.9" font-size="9" fill="#9E3A57" text-anchor="middle" font-weight="bold">패키지</text>
+<text x="170.9" y="473" font-size="9.5" fill="#777" text-anchor="start">도메인 모델 (컨텍스트별)</text>
+<path d="M74,485.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="91" y="493" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">order/</text>
+<text x="138.7" y="493" font-size="9.5" fill="#777" text-anchor="start">주문 엔티티, 도메인 서비스</text>
+<path d="M74,505.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="91" y="513" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">member/</text>
+<text x="145.4" y="513" font-size="9.5" fill="#777" text-anchor="start">회원 컨텍스트 (동일 구조)</text>
+<path d="M74,525.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFFFFF" stroke="#D06A86" stroke-width="1" stroke-dasharray="2 1.5"/>
+<text x="91" y="533" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">…/</text>
+<text x="112.2" y="533" font-size="9.5" fill="#777" text-anchor="start">그 외 컨텍스트 (동일 구조)</text>
+<path d="M60,545.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="77" y="553" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">builder/</text>
+<rect x="137.976" y="544.5" width="34.5" height="13" rx="3" fill="#FCE4EC" stroke="#D06A86" stroke-width="0.8"/><text x="155.2" y="553.9" font-size="9" fill="#9E3A57" text-anchor="middle" font-weight="bold">패키지</text>
+<text x="177.5" y="553" font-size="9.5" fill="#777" text-anchor="start">도메인 객체 빌더</text>
+<path d="M60,565.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="77" y="573" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">enums/</text>
+<rect x="124.732" y="564.5" width="34.5" height="13" rx="3" fill="#FCE4EC" stroke="#D06A86" stroke-width="0.8"/><text x="142.0" y="573.9" font-size="9" fill="#9E3A57" text-anchor="middle" font-weight="bold">패키지</text>
+<text x="164.2" y="573" font-size="9.5" fill="#777" text-anchor="start">공통 열거형</text>
+<path d="M60,585.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="77" y="593" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">exception/</text>
+<rect x="151.22" y="584.5" width="34.5" height="13" rx="3" fill="#FCE4EC" stroke="#D06A86" stroke-width="0.8"/><text x="168.5" y="593.9" font-size="9" fill="#9E3A57" text-anchor="middle" font-weight="bold">패키지</text>
+<text x="190.7" y="593" font-size="9.5" fill="#777" text-anchor="start">도메인 예외</text>
+<path d="M60,605.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="77" y="613" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">outbox/</text>
+<rect x="131.35399999999998" y="604.5" width="34.5" height="13" rx="3" fill="#FCE4EC" stroke="#D06A86" stroke-width="0.8"/><text x="148.6" y="613.9" font-size="9" fill="#9E3A57" text-anchor="middle" font-weight="bold">패키지</text>
+<text x="170.9" y="613" font-size="9.5" fill="#777" text-anchor="start">트랜잭셔널 아웃박스(이벤트 발행)</text>
+<path d="M46,625.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="63" y="633" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">app-persistence/</text>
+<rect x="176.952" y="624.5" width="83.6" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="218.8" y="633.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">아웃바운드 어댑터</text>
+<text x="265.6" y="633" font-size="9.5" fill="#777" text-anchor="start">out 포트를 JPA로 구현</text>
+<path d="M46,645.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="63" y="653" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">app-external-api/</text>
+<rect x="183.574" y="644.5" width="83.6" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="225.4" y="653.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">아웃바운드 어댑터</text>
+<text x="272.2" y="653" font-size="9.5" fill="#777" text-anchor="start">out 포트를 외부 API로 구현</text>
+<text x="220.0" y="679" font-size="9.5" fill="#888" text-anchor="middle">app-persistence, app-external-api의 하위 패키지는 다음 그림에 이어집니다</text>
+</svg>
 ```
-root/
-├── app-api/                        # [인바운드 어댑터] REST 애플리케이션
-│   └── api/
-│       ├── order/                  #   주문 컨텍스트
-│       │   ├── controller/         #     REST 컨트롤러 → in 포트 호출
-│       │   └── dto/                #     요청·응답 DTO
-│       ├── member/                 #   회원 컨텍스트 (동일 구조)
-│       └── …/                      #   그 외 컨텍스트 (동일 구조)
-│
-└── sub-module/
-    ├── app-common/                 # 공통 유틸
-    ├── app-core/                   # 기술 공통 글루(adapter·aop·config·security·jpa)
-    ├── app-domain/                 # [모듈] 도메인 모델 + 애플리케이션 (헥사고날 코어)
-    │   ├── application/            #   [패키지] 애플리케이션 (컨텍스트별)
-    │   │   ├── order/              #     주문 컨텍스트
-    │   │   │   ├── port/in/        #       인바운드 포트(유스케이스 인터페이스)
-    │   │   │   ├── port/out/       #       아웃바운드 포트(persistence·kafka·external)
-    │   │   │   └── service/        #       유스케이스 구현
-    │   │   ├── member/             #     회원 컨텍스트 (동일 구조)
-    │   │   └── …/                  #     그 외 컨텍스트 (동일 구조)
-    │   ├── domain/                 #   [패키지] 도메인 모델 (컨텍스트별)
-    │   │   ├── order/              #     주문 엔티티·도메인 서비스
-    │   │   ├── member/             #     회원 컨텍스트 (동일 구조)
-    │   │   └── …/                  #     그 외 컨텍스트 (동일 구조)
-    │   ├── builder/                #   [패키지] 도메인 객체 빌더
-    │   ├── enums/                  #   [패키지] 공통 열거형
-    │   ├── exception/              #   [패키지] 도메인 예외
-    │   └── outbox/                 #   [패키지] 트랜잭셔널 아웃박스(이벤트 발행)
-    ├── app-persistence/            # [아웃바운드 어댑터] out 포트를 JPA로 구현
-    │   ├── adapter/                #   out 포트 구현(어댑터)
-    │   │   ├── order/              #     주문 컨텍스트
-    │   │   ├── member/             #     회원 컨텍스트 (동일 구조)
-    │   │   └── …/                  #     그 외 컨텍스트 (동일 구조)
-    │   ├── entity/                 #   JPA 엔티티
-    │   └── repository/             #   Spring Data 리포지토리
-    │       ├── order/              #     주문 컨텍스트
-    │       ├── member/             #     회원 컨텍스트 (동일 구조)
-    │       └── …/                  #     그 외 컨텍스트 (동일 구조)
-    └── app-external-api/           # [아웃바운드 어댑터] out 포트를 외부 API로 구현
-        └── adapter/
-            ├── order/              #   주문 컨텍스트
-            ├── member/             #   회원 컨텍스트 (동일 구조)
-            └── …/                  #   그 외 컨텍스트 (동일 구조)
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hexagonal-multimodule-tree-inbound-core.svg" alt="app-api의 컨텍스트별 controller, dto 패키지와 app-domain 모듈의 application, domain, builder, enums, exception, outbox 패키지 트리" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="410" viewBox="0 0 440 410" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="410" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">모듈별 패키지 (2) 아웃바운드 어댑터</text>
+<rect x="16" y="35" width="11" height="9" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="31" y="43" font-size="10" fill="#555" text-anchor="start">app-persistence (DB)</text>
+<rect x="144.8" y="35" width="11" height="9" rx="2" fill="#F1ECF8" stroke="#9C7FC9"/>
+<text x="159.8" y="43" font-size="10" fill="#555" text-anchor="start">app-external-api (외부 API)</text>
+<rect x="306.36" y="35" width="11" height="9" rx="2" fill="#F7F7F7" stroke="#999999"/>
+<text x="321.36" y="43" font-size="10" fill="#555" text-anchor="start">상위 폴더</text>
+<path d="M21,71 V84.5 H32" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M37,91 V104.5 H48" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M53,111 V124.5 H64" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M69,131 V144.5 H80" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M69,131 V164.5 H80" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M69,131 V184.5 H80" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M53,111 V204.5 H64" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M53,111 V224.5 H64" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M69,231 V244.5 H80" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M69,231 V264.5 H80" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M69,231 V284.5 H80" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M37,91 V304.5 H48" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M53,311 V324.5 H64" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M69,331 V344.5 H80" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M69,331 V364.5 H80" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M69,331 V384.5 H80" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M18,60.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="35" y="68" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">root/</text>
+<path d="M34,80.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="51" y="88" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">sub-module/</text>
+<path d="M50,100.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="67" y="108" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">app-persistence/</text>
+<rect x="180.952" y="99.5" width="83.6" height="13" rx="3" fill="#FFF3E0" stroke="#E0A000" stroke-width="0.8"/><text x="222.8" y="108.9" font-size="9" fill="#8A6400" text-anchor="middle" font-weight="bold">아웃바운드 어댑터</text>
+<text x="269.6" y="108" font-size="9.5" fill="#777" text-anchor="start">out 포트를 JPA로 구현</text>
+<path d="M66,120.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="83" y="128" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">adapter/</text>
+<text x="144.0" y="128" font-size="9.5" fill="#777" text-anchor="start">out 포트 구현(어댑터)</text>
+<path d="M82,140.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="99" y="148" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">order/</text>
+<text x="146.7" y="148" font-size="9.5" fill="#777" text-anchor="start">주문 컨텍스트</text>
+<path d="M82,160.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="99" y="168" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">member/</text>
+<text x="153.4" y="168" font-size="9.5" fill="#777" text-anchor="start">회원 컨텍스트 (동일 구조)</text>
+<path d="M82,180.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFFFFF" stroke="#E0A000" stroke-width="1" stroke-dasharray="2 1.5"/>
+<text x="99" y="188" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">…/</text>
+<text x="120.2" y="188" font-size="9.5" fill="#777" text-anchor="start">그 외 컨텍스트 (동일 구조)</text>
+<path d="M66,200.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="83" y="208" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">entity/</text>
+<text x="137.4" y="208" font-size="9.5" fill="#777" text-anchor="start">JPA 엔티티</text>
+<path d="M66,220.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="83" y="228" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">repository/</text>
+<text x="163.8" y="228" font-size="9.5" fill="#777" text-anchor="start">Spring Data 리포지토리</text>
+<path d="M82,240.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="99" y="248" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">order/</text>
+<text x="146.7" y="248" font-size="9.5" fill="#777" text-anchor="start">주문 컨텍스트</text>
+<path d="M82,260.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="99" y="268" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">member/</text>
+<text x="153.4" y="268" font-size="9.5" fill="#777" text-anchor="start">회원 컨텍스트 (동일 구조)</text>
+<path d="M82,280.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFFFFF" stroke="#E0A000" stroke-width="1" stroke-dasharray="2 1.5"/>
+<text x="99" y="288" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">…/</text>
+<text x="120.2" y="288" font-size="9.5" fill="#777" text-anchor="start">그 외 컨텍스트 (동일 구조)</text>
+<path d="M50,300.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F1ECF8" stroke="#9C7FC9" stroke-width="1"/>
+<text x="67" y="308" font-size="11" fill="#5E4391" text-anchor="start" font-family="Menlo, Consolas, monospace">app-external-api/</text>
+<rect x="187.574" y="299.5" width="83.6" height="13" rx="3" fill="#F1ECF8" stroke="#9C7FC9" stroke-width="0.8"/><text x="229.4" y="308.9" font-size="9" fill="#5E4391" text-anchor="middle" font-weight="bold">아웃바운드 어댑터</text>
+<text x="276.2" y="308" font-size="9.5" fill="#777" text-anchor="start">out 포트를 외부 API로 구현</text>
+<path d="M66,320.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F1ECF8" stroke="#9C7FC9" stroke-width="1"/>
+<text x="83" y="328" font-size="11" fill="#5E4391" text-anchor="start" font-family="Menlo, Consolas, monospace">adapter/</text>
+<path d="M82,340.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F1ECF8" stroke="#9C7FC9" stroke-width="1"/>
+<text x="99" y="348" font-size="11" fill="#5E4391" text-anchor="start" font-family="Menlo, Consolas, monospace">order/</text>
+<text x="146.7" y="348" font-size="9.5" fill="#777" text-anchor="start">주문 컨텍스트</text>
+<path d="M82,360.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F1ECF8" stroke="#9C7FC9" stroke-width="1"/>
+<text x="99" y="368" font-size="11" fill="#5E4391" text-anchor="start" font-family="Menlo, Consolas, monospace">member/</text>
+<text x="153.4" y="368" font-size="9.5" fill="#777" text-anchor="start">회원 컨텍스트 (동일 구조)</text>
+<path d="M82,380.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFFFFF" stroke="#9C7FC9" stroke-width="1" stroke-dasharray="2 1.5"/>
+<text x="99" y="388" font-size="11" fill="#5E4391" text-anchor="start" font-family="Menlo, Consolas, monospace">…/</text>
+<text x="120.2" y="388" font-size="9.5" fill="#777" text-anchor="start">그 외 컨텍스트 (동일 구조)</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hexagonal-multimodule-tree-outbound.svg" alt="app-persistence의 adapter, entity, repository 패키지와 app-external-api의 adapter 패키지를 컨텍스트별로 나눈 트리" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 한 가지 구분할 점: **모듈 `app-domain`과 그 안의 `domain/` 패키지는 서로 다른 단위입니다.** 모듈(`app-domain`)은 빌드 단위로 애플리케이션(`application/`)과 도메인 모델(`domain/`)을 함께 담고, 그 아래 `builder`, `enums`, `exception`, `outbox`는 도메인 모델을 뒷받침하는 형제 패키지입니다. 즉 `app-domain`은 **모듈**, 그 안의 `domain/`은 그 모듈의 **도메인 모델 패키지**입니다.
 

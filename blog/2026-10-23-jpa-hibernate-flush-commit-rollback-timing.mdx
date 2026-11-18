@@ -151,7 +151,7 @@ public void order() {
 - **unchecked 예외(`RuntimeException`, `Error`)** — 기본적으로 **롤백**합니다.
 - **checked 예외(`IOException` 등)** — 기본적으로 **롤백하지 않고 커밋**합니다. 롤백하려면 `@Transactional(rollbackFor = Exception.class)`로 명시해야 합니다.
 
-flush로 이미 SQL이 실행됐더라도 롤백이면 DB가 전부 되돌립니다. 그래서 **flush됐다는 사실만으로 데이터가 남았다고 믿으면 안 됩니다.** 한편 안쪽 트랜잭션이 롤백 표시(rollback-only)를 남기면 상위 트랜잭션에서 `UnexpectedRollbackException`이 발생하는데, 이 메커니즘은 [try-catch로 잡았는데 왜 롤백될까](./spring-transaction-rollback-only)에서 정리했습니다.
+flush로 이미 SQL이 실행됐더라도 롤백이면 DB가 전부 되돌립니다. 그래서 **flush됐다는 사실만으로 데이터가 남았다고 믿으면 안 됩니다.** 한편 안쪽 트랜잭션이 롤백 표시(rollback-only)를 남기면 상위 트랜잭션에서 `UnexpectedRollbackException`이 발생하는데, 이 메커니즘은 [try-catch로 처리했는데 왜 롤백될까](./spring-transaction-rollback-only)에서 정리했습니다.
 
 ## 자주 하는 오해 몇 가지
 

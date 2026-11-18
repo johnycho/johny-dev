@@ -13,7 +13,7 @@ description: "LAZY 연관관계를 조회 시점에 함께 가져오는 방법�
 
 <mark>핵심은 **"조인했다고 로딩되는 게 아니라, `fetch`로 연관 엔티티를 함께 영속화해야 로딩된다"** 는 점입니다 — 그래서 방법마다 fetch join에 해당하는 장치를 명시적으로 지정해야 합니다.</mark>
 
-예시 엔티티는 이렇게 잡습니다 — `Order`는 `Member`(다대일)와 `OrderItem`(일대다)을 **LAZY** 로 참조합니다.
+예시 엔티티는 이렇게 정의합니다 — `Order`는 `Member`(다대일)와 `OrderItem`(일대다)을 **LAZY** 로 참조합니다.
 
 ```java
 @Entity

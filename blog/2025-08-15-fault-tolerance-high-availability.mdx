@@ -158,24 +158,46 @@ Redis 장애가 발생해 캐시 조회에 실패하더라도 DB로 대체 조�
 #### 상황
 - 웹 서버 3대가 로드밸런서 뒤에서 서비스를 제공합니다.
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="306" viewBox="0 0 440 306" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="306" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Server B 장애 시 로드밸런서의 트래픽 분배</text>
+<rect x="170" y="38" width="100" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="58" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">사용자</text>
+<line x1="220" y1="70" x2="220" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="130" y="94" width="180" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="110.4" font-size="10.5" fill="#26508F" text-anchor="middle">로드밸런서</text>
+<text x="220" y="124.9" font-size="10.5" fill="#26508F" text-anchor="middle">헬스체크로 장애 감지</text>
+<line x1="180" y1="134" x2="70" y2="190" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="192" width="120" height="52" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="70" y="214" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Server A</text>
+<text x="70" y="232" font-size="10" fill="#2E6B2E" text-anchor="middle">정상</text>
+<line x1="220" y1="134" x2="220" y2="190" stroke="#D9534F" stroke-width="1.2" stroke-dasharray="4 3"/>
+<circle cx="220" cy="164" r="9" fill="#FFFFFF" stroke="#D9534F"/>
+<text x="220" y="168" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">✕</text>
+<rect x="160" y="192" width="120" height="52" rx="6" fill="#FDECEC" stroke="#D9534F" stroke-dasharray="4 3"/>
+<text x="220" y="214" font-size="11.5" fill="#B52B27" text-anchor="middle" font-weight="bold">Server B</text>
+<text x="220" y="232" font-size="10" fill="#B52B27" text-anchor="middle">DOWN</text>
+<line x1="260" y1="134" x2="370" y2="190" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="310" y="192" width="120" height="52" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="370" y="214" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Server C</text>
+<text x="370" y="232" font-size="10" fill="#2E6B2E" text-anchor="middle">정상</text>
+<text x="120" y="168" font-size="9.5" fill="#2E6B2E" text-anchor="middle">트래픽 분배</text>
+<text x="320" y="168" font-size="9.5" fill="#2E6B2E" text-anchor="middle">트래픽 분배</text>
+<rect x="20" y="262" width="400" height="30" rx="4" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="220" y="281" font-size="10.5" fill="#8A6400" text-anchor="middle">Server B는 분배 대상에서 제외되고, 요청은 A와 C가 처리합니다</text>
+</svg>
 ```
-                ┌─────────────┐
-                │    User     │
-                └─────────────┘
-                       │
-                       ▼
-              ┌─────────────────┐
-              │  Load Balancer  │
-              └─────────────────┘
-                       │
-      ┌────────────────┴───────────────┐
-      │                │               │
-      ▼                ▼               ▼
-┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-│  Server A   │ │  Server B   │ │  Server C   │
-│             │ │   (DOWN)    │ │             │
-└─────────────┘ └─────────────┘ └─────────────┘
-```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/fault-tolerance-ha-lb-failover.svg" alt="로드밸런서가 헬스체크로 Server B의 장애를 감지해 분배 대상에서 제외하고, 트래픽을 Server A와 Server C로만 보내는 그림" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 **장애 발생**
 - Server B가 다운됩니다.
@@ -199,6 +221,50 @@ Redis 장애가 발생해 캐시 조회에 실패하더라도 DB로 대체 조�
 #### 고가용성 적용
 - 배치 서버를 다중화하고 Quartz Cluster 또는 Kubernetes CronJob과 같은 클러스터링 기술을 도입합니다. 
 - 서버 A에 장애가 발생하면 서버 B가 다음 스케줄을 대신 실행하여 배치 작업이 특정 서버에 종속되지 않도록 합니다.
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="376" viewBox="0 0 440 376" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="376" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">배치 서버 장애: 단일 서버와 다중화 비교</text>
+<rect x="10" y="36" width="420" height="118" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="24" y="58" font-size="12" fill="#333" text-anchor="start" font-weight="bold">서버 1대에서 실행</text>
+<rect x="24" y="72" width="110" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="79" y="88.4" font-size="10.5" fill="#26508F" text-anchor="middle">스케줄</text>
+<text x="79" y="102.9" font-size="10.5" fill="#26508F" text-anchor="middle">하루 1회</text>
+<line x1="134" y1="92" x2="164" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="166" y="72" width="110" height="40" rx="6" fill="#FDECEC" stroke="#D9534F" stroke-dasharray="4 3"/>
+<text x="221" y="88.4" font-size="10.5" fill="#B52B27" text-anchor="middle" font-weight="bold">배치 서버</text>
+<text x="221" y="102.9" font-size="10.5" fill="#B52B27" text-anchor="middle" font-weight="bold">실행 중 다운</text>
+<line x1="276" y1="92" x2="306" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="308" y="72" width="108" height="40" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="362" y="96" font-size="10.5" fill="#B52B27" text-anchor="middle" font-weight="bold">배치 작업 실패</text>
+<text x="220" y="140" font-size="10" fill="#555" text-anchor="middle">실행할 서버가 없어 작업이 그대로 실패합니다</text>
+<rect x="10" y="168" width="420" height="196" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="24" y="190" font-size="12" fill="#333" text-anchor="start" font-weight="bold">다중화 + 클러스터링</text>
+<rect x="24" y="204" width="392" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="220.4" font-size="10.5" fill="#26508F" text-anchor="middle">Quartz Cluster 또는 Kubernetes CronJob</text>
+<text x="220" y="234.9" font-size="10.5" fill="#26508F" text-anchor="middle">실행할 서버를 클러스터가 정함</text>
+<line x1="140" y1="244" x2="110" y2="272" stroke="#D9534F" stroke-width="1.2" stroke-dasharray="4 3"/>
+<line x1="300" y1="244" x2="330" y2="270" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="274" width="140" height="44" rx="6" fill="#FDECEC" stroke="#D9534F" stroke-dasharray="4 3"/>
+<text x="110" y="292.4" font-size="10.5" fill="#B52B27" text-anchor="middle" font-weight="bold">서버 A</text>
+<text x="110" y="306.9" font-size="10.5" fill="#B52B27" text-anchor="middle" font-weight="bold">장애 발생</text>
+<rect x="260" y="274" width="140" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="330" y="292.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">서버 B</text>
+<text x="330" y="306.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">다음 스케줄 대신 실행</text>
+<text x="220" y="344" font-size="10" fill="#555" text-anchor="middle">배치 작업이 특정 서버에 종속되지 않습니다</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/fault-tolerance-ha-batch-cluster.svg" alt="서버 1대에서 실행하면 서버가 다운될 때 배치 작업이 실패하고, 다중화와 클러스터링을 적용하면 서버 A에 장애가 발생해도 서버 B가 다음 스케줄을 대신 실행하는 비교 그림" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ---
 

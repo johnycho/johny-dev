@@ -165,11 +165,11 @@ end note
 
 > `seq_page_cost`(순차 페이지 읽기) 기본값 **1.0**, `random_page_cost`(랜덤 페이지 읽기) 기본값 **4.0**
 
-랜덤 페이지 읽기를 순차의 **4배**로 잡아 둔 것입니다. [PostgreSQL 공식 문서](https://www.postgresql.org/docs/current/runtime-config-query.html)(Planner Cost Constants)는 그 근거를 이렇게 설명합니다.
+랜덤 페이지 읽기를 순차의 **4배**로 설정해 둔 것입니다. [PostgreSQL 공식 문서](https://www.postgresql.org/docs/current/runtime-config-query.html)(Planner Cost Constants)는 그 근거를 이렇게 설명합니다.
 
 > Random access to durable storage is normally much more expensive than four times sequential access. However, a lower default is used (4.0) because the majority of random accesses to storage, such as indexed reads, are assumed to be in cache.
 
-즉 위 문장은 "내구성 있는 저장소의 랜덤 접근은 보통 순차의 4배보다도 훨씬 비용이 크지만, 인덱스 읽기 같은 랜덤 접근 대부분이 캐시에 있다고 가정해 4.0으로 낮춰 잡았다"는 뜻입니다. **데이터가 SSD에 있거나 대부분 캐시에 올라와 있으면 `random_page_cost`를 낮춰** 옵티마이저가 인덱스를 더 적극적으로 사용하게 조정할 수 있습니다.
+즉 위 문장은 "내구성 있는 저장소의 랜덤 접근은 보통 순차의 4배보다도 훨씬 비용이 크지만, 인덱스 읽기 같은 랜덤 접근 대부분이 캐시에 있다고 가정해 4.0으로 낮춰 설정했다"는 뜻입니다. **데이터가 SSD에 있거나 대부분 캐시에 올라와 있으면 `random_page_cost`를 낮춰** 옵티마이저가 인덱스를 더 적극적으로 사용하게 조정할 수 있습니다.
 
 ## 랜덤 조회를 줄이는 방법
 
