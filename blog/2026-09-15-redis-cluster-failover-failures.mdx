@@ -310,7 +310,7 @@ class CacheConfig implements CachingConfigurer {
 }
 ```
 
-- **서킷 브레이커, 폴백** — failover 창 동안 Redis 호출이 계속 타임아웃 나면, Resilience4j 서킷 브레이커로 잠시 **호출을 차단하고 폴백**해 스레드, 지연 누적을 막습니다. [다층 캐시](./multi-layer-caching)의 로컬 캐시가 이 완충을 돕습니다.
+- **서킷 브레이커, 폴백** — failover 창 동안 Redis 호출이 계속 타임아웃이 발생하면, Resilience4j 서킷 브레이커로 잠시 **호출을 차단하고 폴백**해 스레드, 지연 누적을 막습니다. [다층 캐시](./multi-layer-caching)의 로컬 캐시가 이 완충을 돕습니다.
 - **재시도는 멱등, 짧게** — 일시적 `MOVED`, 타임아웃은 짧은 재시도로 넘어가지만, 멱등하지 않은 쓰기의 재시도는 중복을 낳을 수 있어 신중히.
 - **지표로 감시** — Redis 커맨드 지연, 커넥션 오류, `master_link_status`를 대시보드에 올려, failover가 실제로 매끄럽게 넘어가는지 확인합니다.
 

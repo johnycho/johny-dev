@@ -19,6 +19,6 @@
   <rect x="153" y="184" width="267" height="27" rx="5" fill="#FBDCE4" stroke="#D06A86"/>
   <text x="286" y="202" text-anchor="middle" font-size="11" fill="#9E3A57">배치(A): MAIL 락 보유 + 갭에 삽입 대기</text>
   <text x="220" y="236" text-anchor="middle" font-size="10" fill="#888888">← 인덱스 순서 (line_id, type, sent_at) →</text>
-  <text x="220" y="259" text-anchor="middle" font-size="11" fill="#333333">겹치는 갭과 MAIL 구간에서 서로를 기다려 교착</text>
+  <text x="220" y="259" text-anchor="middle" font-size="11" fill="#333333">중복되는 갭과 MAIL 구간에서 서로를 기다려 교착</text>
   <text x="220" y="276" text-anchor="middle" font-size="11" fill="#333333">→ MySQL이 resend를 강제 롤백</text>
 </svg>

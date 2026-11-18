@@ -11,7 +11,7 @@
 <rect x="16" y="52" width="11" height="9" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
 <text x="31" y="60" font-size="10" fill="#555" text-anchor="start">아웃바운드 어댑터</text>
 <rect x="119.60000000000001" y="52" width="11" height="9" rx="2" fill="#F7F7F7" stroke="#999999"/>
-<text x="134.60000000000002" y="60" font-size="10" fill="#555" text-anchor="start">공유 묶음, 유틸</text>
+<text x="134.60000000000002" y="60" font-size="10" fill="#555" text-anchor="start">공유 코드, 유틸</text>
 <path d="M21,88 V101.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
 <path d="M21,88 V121.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>
 <path d="M21,88 V141.5 H31" fill="none" stroke="#C4C4C4" stroke-width="1"/>

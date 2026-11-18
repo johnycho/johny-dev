@@ -36,15 +36,21 @@ def extract_terms(path):
                 terms.add(p)
     return terms
 
+SVG_TEXT = re.compile(r"<text[^>]*>([^<]+)</text>")
+
 def body_lines(path):
-    """코드펜스(```) 밖 줄만 (원래 줄번호 유지)."""
-    out, infence = [], False
+    """코드펜스(```) 밖 줄 + ```svg 펜스 안의 <text> 내용(그림 속 라벨도 지양어 대상). 원래 줄번호 유지."""
+    out, infence, insvg = [], False, False
     for i, ln in enumerate(open(path, encoding="utf-8"), 1):
         if ln.startswith("```"):
             infence = not infence
+            insvg = infence and ln.strip().startswith("```svg")
             continue
         if not infence:
             out.append((i, ln.rstrip("\n")))
+        elif insvg:
+            for m in SVG_TEXT.finditer(ln):
+                out.append((i, m.group(1)))
     return out
 
 # 평서체(비존댓) 종결 — 줄 끝이 '…다.'인데 '…니다.'(존댓말)가 아닌 경우(한다/된다/낮다 등). </mark>·따옴표·괄호는 무시.
@@ -72,7 +78,7 @@ FLANK = re.compile(
     r'|\*\*[^*\n]*`\*\*[가-힣A-Za-z0-9]')             # **…`code`**한글 (백틱으로 끝나는 볼드)
 
 # 지양어 표면형을 우연히 포함하는 별개 단어(오탐 방지용 마스킹)
-MASK = re.compile(r"부담|분담|담당|담백|상담|면담|대담")
+MASK = re.compile(r"부담|분담|담당|담백|상담|면담|대담|헥사고날|지오해시")
 
 def is_target_line(line):
     s = line.strip()

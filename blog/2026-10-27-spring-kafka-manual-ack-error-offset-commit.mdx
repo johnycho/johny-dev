@@ -4,12 +4,12 @@ title: "MANUAL ack인데 왜 오프셋이 커밋될까 — DefaultErrorHandler�
 authors: [ johnycho ]
 tags: [ kafka, spring ]
 date: 2026-10-27T18:00:00+09:00
-description: "AckMode.MANUAL로 acknowledge()를 직접 호출하는 Kafka 리스너에서, 예외가 나면 오프셋이 커밋될까? DefaultErrorHandler가 복구(recover) 후 실패 레코드의 오프셋을 커밋해 건너뛰는 동작과, addNotRetryableExceptions(RuntimeException.class)가 재시도를 전부 무력화하는 문제를 코드와 함께 정리합니다."
+description: "AckMode.MANUAL로 acknowledge()를 직접 호출하는 Kafka 리스너에서, 예외가 발생하면 오프셋이 커밋될까? DefaultErrorHandler가 복구(recover) 후 실패 레코드의 오프셋을 커밋해 건너뛰는 동작과, addNotRetryableExceptions(RuntimeException.class)가 재시도를 전부 무력화하는 문제를 코드와 함께 정리합니다."
 ---
 
 <!-- truncate -->
 
-`AckMode.MANUAL`로 두고 직접 `acknowledge()`를 호출하는 Kafka 리스너에서 이러한 질문을 받았습니다 — **리스너 첫 줄에서 예외가 나면 오프셋이 커밋될까?**
+`AckMode.MANUAL`로 두고 직접 `acknowledge()`를 호출하는 Kafka 리스너에서 이러한 질문을 받았습니다 — **리스너 첫 줄에서 예외가 발생하면 오프셋이 커밋될까?**
 
 ```java
 @KafkaListener(topics = "${spring.kafka.topics.goods-all}",
@@ -215,7 +215,7 @@ public CommonErrorHandler containerStoppingErrorHandler() {
 factory.setCommonErrorHandler(containerStoppingErrorHandler());
 ```
 
-이 핸들러는 예외가 나면 **컨테이너를 중단**시킵니다. 커밋되지 않은 그 레코드는 전진하지 않으므로, 컨테이너를 다시 시작하면(수동 또는 헬스체크 재기동) **같은 레코드부터 다시 소비**합니다 — "조용히 건너뛰는" 대신 멈춰서 사람이 개입하게 하는 선택입니다.
+이 핸들러는 예외가 발생하면 **컨테이너를 중단**시킵니다. 커밋되지 않은 그 레코드는 전진하지 않으므로, 컨테이너를 다시 시작하면(수동 또는 헬스체크 재기동) **같은 레코드부터 다시 소비**합니다 — "조용히 건너뛰는" 대신 멈춰서 사람이 개입하게 하는 선택입니다.
 
 참고로 여기 나온 `DefaultErrorHandler`, `DeadLetterPublishingRecoverer`, `CommonContainerStoppingErrorHandler`는 **직접 구현하는 게 아니라 Spring Kafka가 제공하는 내장 클래스**(`org.springframework.kafka.listener` 패키지)입니다. 직접 만드는 건 recoverer 람다 정도이고, 나머지는 가져다 설정만 하면 됩니다.
 

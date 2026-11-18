@@ -106,7 +106,7 @@ CU = TPS × MRT      →      TPS = CU / MRT
 <text x="364" y="205" font-size="9.5" fill="#888" text-anchor="middle">W (체류시간)</text>
 <text x="364" y="223" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">MRT</text>
 <text x="364" y="237" font-size="9.5" fill="#555" text-anchor="middle">평균 응답시간</text>
-<text x="220.0" y="260" font-size="10" fill="#888" text-anchor="middle">↓  L = λ × W 를 서버 지표로 바꾸면</text>
+<text x="220.0" y="260" font-size="10" fill="#888" text-anchor="middle">↓  L = λ × W 를 서버 지표에 대입하면</text>
 <rect x="60" y="270" width="320" height="58" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
 <text x="220" y="294" font-size="12.5" fill="#333" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">CU = TPS × MRT   →   TPS = CU / MRT</text>
 <text x="220" y="315" font-size="10.5" fill="#555" text-anchor="middle">100건 = 초당 10건 × 10초</text>
@@ -142,7 +142,7 @@ CU = TPS × MRT      →      TPS = CU / MRT
 세로 점선이 **임계점**입니다. 그 전까지는 TPS가 선형으로 오르고 응답시간은 낮게 유지되지만, 임계점을 지나면 **TPS는 더 이상 오르지 않고(정체), 응답시간만 수직으로 급상승**합니다.
 
 - **초반 구간** — 동시 접속자가 늘면 TPS도 함께 오릅니다. 요청이 들어오는 대로 바로 처리되니 **응답시간은 거의 늘지 않습니다.** 서버에 여유 자원이 있는 상태입니다.
-- **임계점(saturation point)** — 어느 지점부터 TPS가 더 이상 오르지 않고 **평평해지거나 꺾입니다.** 동시 접속자는 계속 느는데 처리량이 안 따라오니, 초과 요청이 서버 내부 **큐에 쌓이기** 시작합니다. 이때 CPU, 스레드, DB 커넥션 같은 자원이 전부 꽉 찬 상태가 되고, **응답시간(MRT)은 수직으로 급상승**합니다.
+- **임계점(saturation point)** — 어느 지점부터 TPS가 더 이상 오르지 않고 **평평해지거나 꺾입니다.** 동시 접속자는 계속 느는데 처리량이 안 따라오니, 초과 요청이 서버 내부 **큐에 쌓이기** 시작합니다. 이때 CPU, 스레드, DB 커넥션 같은 자원이 전부 가득 찬 상태가 되고, **응답시간(MRT)은 수직으로 급상승**합니다.
 
 스타벅스로 치면, 바리스타와 계산대가 모두 풀가동 중인데 손님은 계속 들어와 주문이 대기열에 쌓이기 시작하는 순간입니다. <mark>TPS가 꺾이는 이 지점이 시스템의 처리 한계입니다.</mark> 여기서의 TPS가 100이라면, 이 서버가 1초에 감당할 수 있는 임계 처리량은 100건입니다. 실무에서는 안정 운영을 위해 **임계점의 70~80% 수준**을 목표 처리량으로 정하는 경우가 많습니다.
 
