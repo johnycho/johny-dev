@@ -53,7 +53,7 @@ root/
 └── etl-batch-job/          # [ETL] 배치 잡
 ```
 
-각 실행 서비스는 자기 컨텍스트의 4계층을 직접 담고, 여러 서비스가 겹쳐 사용하는 도메인, 응용만 `shared-*` 모듈로 뺍니다. <mark>레이어드는 서비스 모듈 안에서 컨텍스트별 4계층으로 구현되고, 공용 도메인, 응용은 별도 공유 모듈로 재사용합니다.</mark>
+각 실행 서비스는 자기 컨텍스트의 4계층을 직접 담고, 여러 서비스가 공통으로 사용하는 도메인, 응용만 `shared-*` 모듈로 뺍니다. <mark>레이어드는 서비스 모듈 안에서 컨텍스트별 4계층으로 구현되고, 공용 도메인, 응용은 별도 공유 모듈로 재사용합니다.</mark>
 
 ## 레이어 구성과 계층 배치
 
@@ -78,7 +78,7 @@ store-service/src/main/java/com/example/
 └── config/
 ```
 
-여러 서비스가 겹쳐 사용하는 도메인, 응용은 `shared-domain`, `shared-service-infra` 모듈로 빼서 재사용합니다. 핵심은 **리포지토리 인터페이스를 `domain` 패키지에 배치하고, 그 구현을 `infrastructure` 패키지에 배치하는 것**입니다. 그러면 `application`, `domain`은 JPA, MyBatis 같은 기술을 모른 채 인터페이스에만 의존하고, 기술 세부는 `infrastructure`에서 교체할 수 있습니다.
+여러 서비스가 공통으로 사용하는 도메인, 응용은 `shared-domain`, `shared-service-infra` 모듈로 빼서 재사용합니다. 핵심은 **리포지토리 인터페이스를 `domain` 패키지에 배치하고, 그 구현을 `infrastructure` 패키지에 배치하는 것**입니다. 그러면 `application`, `domain`은 JPA, MyBatis 같은 기술을 모른 채 인터페이스에만 의존하고, 기술 세부는 `infrastructure`에서 교체할 수 있습니다.
 
 - **presentation**: 컨트롤러(요청, 응답 처리).
 - **application**: 유스케이스 구성(트랜잭션 경계, 여러 도메인 오케스트레이션).

@@ -118,7 +118,7 @@ Order order = orderStub.getOrder(
 System.out.println(order.getStatus());
 ```
 
-응답(`StreamObserver`)으로 여러 번 `onNext`를 부르면 그대로 **서버 스트리밍**이 됩니다 — 같은 모델로 1건부터 N건까지 처리합니다.
+응답(`StreamObserver`)으로 여러 번 `onNext`를 호출하면 그대로 **서버 스트리밍**이 됩니다 — 같은 모델로 1건부터 N건까지 처리합니다.
 
 ## REST와 비교 — 언제 gRPC를 쓰나
 
@@ -130,7 +130,7 @@ System.out.println(order.getStatus());
 | 브라우저 | 네이티브 | 직접은 안 되고 **grpc-web** 필요 |
 | 가독성, 도구 | `curl`, 브라우저로 즉석 테스트 | 바이너리라 별도 도구 필요 |
 
-<mark>정리하면 **내부 서비스 간 통신, 고성능, 스트리밍, 다언어 환경**에는 gRPC가 강하고, **브라우저 공개 API, 사람이 직접 사용하는 API**에는 REST가 편합니다.</mark> 외부 공개는 REST(또는 GraphQL), 내부는 gRPC로 **섞어 구성**하는 경우가 흔합니다.
+<mark>정리하면 **내부 서비스 간 통신, 고성능, 스트리밍, 다언어 환경**에는 gRPC가 강하고, **브라우저 공개 API, 사람이 직접 사용하는 API**에는 REST가 편합니다.</mark> 외부 공개는 REST(또는 GraphQL), 내부는 gRPC로 **함께 구성**하는 경우가 흔합니다.
 
 ## 주의점
 
@@ -144,7 +144,7 @@ System.out.println(order.getStatus());
 - gRPC는 **`.proto` 계약 → 코드 생성 → HTTP/2 위 protobuf 바이너리**로 통신하는 RPC 프레임워크입니다.
 - **유너리, 서버/클라이언트/양방향 스트리밍** 네 가지 호출을 기본 지원합니다.
 - Spring에서는 **공식 Spring gRPC(`@GrpcService`)** 또는 커뮤니티 `net.devh` 스타터로, `.proto`에서 생성된 뼈대와 스텁을 사용합니다.
-- **내부, 고성능, 스트리밍**엔 gRPC, **브라우저, 공개 API**엔 REST가 맞아 보통 섞어 구성합니다. 클라이언트가 **필요한 필드만** 받아 가는 방식이 필요하면 [GraphQL](./graphql-concept-and-spring)도 함께 보세요.
+- **내부, 고성능, 스트리밍**엔 gRPC, **브라우저, 공개 API**엔 REST가 맞아 보통 함께 구성합니다. 클라이언트가 **필요한 필드만** 받아 가는 방식이 필요하면 [GraphQL](./graphql-concept-and-spring)도 함께 보세요.
 
 ## 참고
 

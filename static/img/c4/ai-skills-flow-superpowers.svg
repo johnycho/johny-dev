@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="404" viewBox="0 0 440 404" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="404" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">superpowers 흐름</text>
+<rect x="70" y="32" width="120" height="22" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="130.0" y="47" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">사람이 하는 일</text>
+<rect x="200" y="32" width="230" height="22" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="315.0" y="47" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">AI가 하는 일 (스킬)</text>
+<text x="62" y="88.0" font-size="11" fill="#333" text-anchor="end" font-weight="bold">① 질문</text>
+<rect x="200" y="68" width="230" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="210" y="85" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">brainstorming</text>
+<text x="210" y="101" font-size="10.5" fill="#333" text-anchor="start">질문 후 접근법 두세 개 제시</text>
+<rect x="70" y="68" width="120" height="42" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="130.0" y="92.7" font-size="10.5" fill="#9E3A57" text-anchor="middle">답하고 접근법 선택</text>
+<line x1="190" y1="89.0" x2="200" y2="89.0" stroke="#CCC" stroke-dasharray="2 2"/>
+<line x1="315.0" y1="110" x2="315.0" y2="120" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="62" y="140.0" font-size="11" fill="#333" text-anchor="end" font-weight="bold">② 설계</text>
+<rect x="200" y="120" width="230" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="210" y="137" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">HARD-GATE</text>
+<text x="210" y="153" font-size="10.5" fill="#333" text-anchor="start">설계 문서 작성</text>
+<rect x="70" y="120" width="120" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="130.0" y="144.7" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">설계 승인</text>
+<line x1="190" y1="141.0" x2="200" y2="141.0" stroke="#CCC" stroke-dasharray="2 2"/>
+<line x1="315.0" y1="162" x2="315.0" y2="172" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="62" y="192.0" font-size="11" fill="#333" text-anchor="end" font-weight="bold">③ 계획</text>
+<rect x="200" y="172" width="230" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="210" y="189" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">writing-plans</text>
+<text x="210" y="205" font-size="10.5" fill="#333" text-anchor="start">2~5분 단위 태스크로 나누기</text>
+<rect x="70" y="172" width="120" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="130.0" y="196.7" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">검토 후 "go"</text>
+<line x1="190" y1="193.0" x2="200" y2="193.0" stroke="#CCC" stroke-dasharray="2 2"/>
+<line x1="315.0" y1="214" x2="315.0" y2="224" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="62" y="244.0" font-size="11" fill="#333" text-anchor="end" font-weight="bold">④ 폴더</text>
+<rect x="200" y="224" width="230" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="210" y="241" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">using-git-worktrees</text>
+<text x="210" y="257" font-size="10.5" fill="#333" text-anchor="start">별도 작업 폴더 생성, 테스트 확인</text>
+<rect x="70" y="224" width="120" height="42" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="130.0" y="248.7" font-size="10.5" fill="#9E3A57" text-anchor="middle">생성 동의</text>
+<line x1="190" y1="245.0" x2="200" y2="245.0" stroke="#CCC" stroke-dasharray="2 2"/>
+<line x1="315.0" y1="266" x2="315.0" y2="276" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="62" y="296.0" font-size="11" fill="#333" text-anchor="end" font-weight="bold">⑤ 반복</text>
+<rect x="200" y="276" width="230" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="210" y="293" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">subagent-driven-development</text>
+<text x="210" y="309" font-size="10.5" fill="#333" text-anchor="start">태스크마다 테스트 먼저 구현, 리뷰</text>
+<text x="130.0" y="301.0" font-size="11" fill="#BBB" text-anchor="middle">—</text>
+<line x1="315.0" y1="318" x2="315.0" y2="328" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="62" y="348.0" font-size="11" fill="#333" text-anchor="end" font-weight="bold">⑥ 마무리</text>
+<rect x="200" y="328" width="230" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="210" y="345" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">finishing-a-development-branch</text>
+<text x="210" y="361" font-size="10.5" fill="#333" text-anchor="start">브랜치 전체 리뷰, 전체 테스트</text>
+<rect x="70" y="328" width="120" height="42" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="130.0" y="352.7" font-size="10.5" fill="#9E3A57" text-anchor="middle">merge, PR 선택</text>
+<line x1="190" y1="349.0" x2="200" y2="349.0" stroke="#CCC" stroke-dasharray="2 2"/>
+<rect x="70" y="382" width="14" height="12" rx="2" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="90" y="392" font-size="9.5" fill="#555" text-anchor="start">사람의 답, 확인</text>
+<rect x="200" y="382" width="14" height="12" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="392" font-size="9.5" fill="#555" text-anchor="start">승인해야 다음 단계로 진행</text>
+</svg>

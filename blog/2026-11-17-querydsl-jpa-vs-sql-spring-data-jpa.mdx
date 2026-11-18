@@ -9,7 +9,7 @@ description: "Spring Data JPA와 QueryDSL JPA는 경쟁 관계가 아니라 같�
 
 <!-- truncate -->
 
-JPA 프로젝트에서 조회 코드를 작성하다 보면 Spring Data JPA, QueryDSL, JPQL, 네이티브 쿼리가 한 저장소 안에 섞여 있습니다. 여기에 QueryDSL이 **JPA 모듈과 SQL 모듈** 두 가지라는 사실까지 더해지면 "무엇이 무엇 위에서 동작하는지"가 헷갈리기 쉽습니다. 이 글은 세 기술의 위치를 레이어 기준으로 정리하고, 어떤 상황에 무엇을 고르는지 살펴봅니다.
+JPA 프로젝트에서 조회 코드를 작성하다 보면 Spring Data JPA, QueryDSL, JPQL, 네이티브 쿼리가 한 저장소 안에 함께 사용되고 있습니다. 여기에 QueryDSL이 **JPA 모듈과 SQL 모듈** 두 가지라는 사실까지 더해지면 "무엇이 무엇 위에서 동작하는지"가 헷갈리기 쉽습니다. 이 글은 세 기술의 위치를 레이어 기준으로 정리하고, 어떤 상황에 무엇을 고르는지 살펴봅니다.
 
 <mark>판단 기준은 **"그 쿼리가 `EntityManager`(영속성 컨텍스트)를 거치는가"** 한 가지입니다 — Spring Data JPA와 QueryDSL JPA는 거치고, QueryDSL SQL은 거치지 않습니다.</mark>
 

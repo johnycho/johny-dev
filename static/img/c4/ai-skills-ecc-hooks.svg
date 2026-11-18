@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="210" viewBox="0 0 440 210" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="210" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">ECC 훅이 실행되는 시점</text>
+<line x1="20" y1="60" x2="420" y2="60" stroke="#999" stroke-width="1.5" marker-end="url(#ah)"/>
+<text x="20" y="50" font-size="9.5" fill="#888" text-anchor="start">AI 작업 진행</text>
+<circle cx="80" cy="60" r="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="80" y="84" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">파일 편집 후</text>
+<rect x="16" y="94" width="128" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="80" y="113.4" font-size="10.5" fill="#333" text-anchor="middle">포매터, 타입 검사</text>
+<text x="80" y="127.9" font-size="10.5" fill="#333" text-anchor="middle">console.log 경고</text>
+<circle cx="220" cy="60" r="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="84" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">커밋 전</text>
+<rect x="156" y="94" width="128" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="220" y="113.4" font-size="10.5" fill="#333" text-anchor="middle">린트, 메시지 형식</text>
+<text x="220" y="127.9" font-size="10.5" fill="#333" text-anchor="middle">디버그 코드, 비밀값</text>
+<rect x="156" y="150" width="128" height="24" rx="4" fill="#FDECEC" stroke="#D9534F"/>
+<text x="220" y="166" font-size="10" fill="#B52B27" text-anchor="middle" font-weight="bold">문제가 있으면 커밋 차단</text>
+<circle cx="360" cy="60" r="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="360" y="84" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">세션 종료</text>
+<rect x="296" y="94" width="128" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="360" y="113.4" font-size="10.5" fill="#333" text-anchor="middle">세션 상태 저장</text>
+<text x="360" y="127.9" font-size="10.5" fill="#333" text-anchor="middle">패턴 추출</text>
+<text x="220.0" y="196" font-size="9.5" fill="#888" text-anchor="middle">훅은 모델 밖에서 실행되므로 AI가 지시를 잊어도 검사가 빠지지 않습니다</text>
+</svg>

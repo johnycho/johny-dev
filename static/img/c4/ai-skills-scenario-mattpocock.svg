@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="198" viewBox="0 0 440 198" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="198" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">예시 ①: 요구사항이 모호한 신규 기능 (mattpocock)</text>
+<line x1="60.0" y1="40" x2="60.0" y2="150" stroke="#EEE"/>
+<text x="60.0" y="38" font-size="9.5" fill="#888" text-anchor="middle">10:00</text>
+<line x1="147.5" y1="40" x2="147.5" y2="150" stroke="#EEE"/>
+<text x="147.5" y="38" font-size="9.5" fill="#888" text-anchor="middle">11:00</text>
+<line x1="235.0" y1="40" x2="235.0" y2="150" stroke="#EEE"/>
+<text x="235.0" y="38" font-size="9.5" fill="#888" text-anchor="middle">12:00</text>
+<line x1="322.5" y1="40" x2="322.5" y2="150" stroke="#EEE"/>
+<text x="322.5" y="38" font-size="9.5" fill="#888" text-anchor="middle">13:00</text>
+<line x1="410.0" y1="40" x2="410.0" y2="150" stroke="#EEE"/>
+<text x="410.0" y="38" font-size="9.5" fill="#888" text-anchor="middle">14:00</text>
+<text x="54" y="74" font-size="11" fill="#9E3A57" text-anchor="end" font-weight="bold">사람</text>
+<text x="54" y="128" font-size="11" fill="#26508F" text-anchor="end" font-weight="bold">AI</text>
+<rect x="60.0" y="52" width="58.3" height="36" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="89.2" y="66.6" font-size="9.5" fill="#9E3A57" text-anchor="middle">질문 답변</text>
+<text x="89.2" y="80.1" font-size="9.5" fill="#9E3A57" text-anchor="middle">①</text>
+<rect x="118.3" y="52" width="29.2" height="36" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="132.9" y="66.6" font-size="9.5" fill="#9E3A57" text-anchor="middle">승인</text>
+<text x="132.9" y="80.1" font-size="9.5" fill="#9E3A57" text-anchor="middle">②③</text>
+<rect x="351.7" y="52" width="43.8" height="36" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="373.5" y="66.6" font-size="9.5" fill="#9E3A57" text-anchor="middle">리뷰</text>
+<text x="373.5" y="80.1" font-size="9.5" fill="#9E3A57" text-anchor="middle">⑤</text>
+<rect x="60.0" y="106" width="58.3" height="36" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="89.2" y="127.3" font-size="9.5" fill="#26508F" text-anchor="middle">질문 생성</text>
+<rect x="118.3" y="106" width="29.2" height="36" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="132.9" y="127.3" font-size="9.5" fill="#26508F" text-anchor="middle">②③</text>
+<rect x="147.5" y="106" width="204.2" height="36" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="249.6" y="127.3" font-size="9.5" fill="#26508F" text-anchor="middle">④ 티켓 4개 동시 구현</text>
+<text x="60" y="164" font-size="9.5" fill="#555" text-anchor="start">사람은 오전 1시간과 오후 30분만 사용하고, 구현 중에는 다른 업무를 합니다.</text>
+<text x="60" y="178" font-size="9.5" fill="#555" text-anchor="start">(시간은 흐름을 보여 주기 위한 예시입니다)</text>
+</svg>

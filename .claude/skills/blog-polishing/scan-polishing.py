@@ -71,6 +71,9 @@ FLANK = re.compile(
     r'|\*\*\([^)*\n]*\)\*\*[가-힣A-Za-z0-9]'          # **(…)**한글
     r'|\*\*[^*\n]*`\*\*[가-힣A-Za-z0-9]')             # **…`code`**한글 (백틱으로 끝나는 볼드)
 
+# 지양어 표면형을 우연히 포함하는 별개 단어(오탐 방지용 마스킹)
+MASK = re.compile(r"부담|분담|담당|담백|상담|면담|대담")
+
 def is_target_line(line):
     s = line.strip()
     return ("<mark>" in line) or bool(re.match(r"^\s*([-*]|\d+\.)\s", line)) or s.startswith(">")
@@ -95,8 +98,10 @@ def main():
             print(f"!! 없음: {f}"); continue
         words, bolds, pyeongs = [], [], []
         for n, line in body_lines(f):
+            # 지양어를 부분문자열로 포함하는 별개 단어(부담을→담을 등)는 가려서 오탐을 막는다.
+            masked = MASK.sub(lambda m: "□" * len(m.group()), line)
             for t in terms:
-                j = line.find(t)
+                j = masked.find(t)
                 if j >= 0:
                     words.append((n, t, line[max(0, j-16):j+16]))
             for rx, label in CONTEXT:

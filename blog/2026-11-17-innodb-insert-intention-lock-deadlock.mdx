@@ -20,13 +20,13 @@ description: "운영에서 겪은 InnoDB 데드락을 현상 → 타임라인 �
 - **알림 배치** — 밤에 실행돼, 많은 알림을 테이블에 한꺼번에 **새로 기록(`INSERT`)** 합니다.
 - **재발송(resend)** — 사람이 화면에서 상태를 변경하면, 기존 알림을 찾아 다시 보냅니다. 이때 `SELECT ... FOR UPDATE`, 즉 **찾은 행을 잠그는 조회**를 사용합니다.
 
-어느 날 이 두 작업이 동시에 겹치면서 **데드락**이 발생했고, MySQL이 재발송 쪽을 강제로 **롤백**(실행 취소)했습니다(`Deadlock found when trying to get lock`).
+어느 날 이 두 작업이 동시에 실행되면서 **데드락**이 발생했고, MySQL이 재발송 쪽을 강제로 **롤백**(실행 취소)했습니다(`Deadlock found when trying to get lock`).
 
-<mark>두 작업이 **같은 인덱스**에서 겹치면서, 서로의 잠금을 기다리는 순환 대기가 생겼습니다.</mark> 참고로 이 DB의 격리 수준은 InnoDB 기본값인 **REPEATABLE READ**입니다([트랜잭션 격리 수준](./db-isolation-levels)).
+<mark>두 작업이 **같은 인덱스**에 동시에 접근하면서, 서로의 잠금을 기다리는 순환 대기가 생겼습니다.</mark> 참고로 이 DB의 격리 수준은 InnoDB 기본값인 **REPEATABLE READ**입니다([트랜잭션 격리 수준](./db-isolation-levels)).
 
 ## 어떻게 벌어졌나 — 타임라인
 
-교착은 우연이 아니라, **사람의 상태 전환이 재발송을 자동 호출**하면서 진행 중이던 배치와 겹쳐 생겼습니다.
+교착은 우연이 아니라, **사람의 상태 전환이 재발송을 자동 호출**하면서 진행 중이던 배치와 동시에 실행되어 생겼습니다.
 
 1. 알림 배치가 시작돼, 한 트랜잭션에서 `MAIL` 행을 대량 `INSERT`하는 중이었습니다.
 2. 그 사이 작업자가 특정 건을 화면에서 **완료 상태로 전환**했습니다.
@@ -108,7 +108,7 @@ deactivate B
 </details>
 
 <figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
-  <img src="/img/c4/pu-innodb-lock-range.svg" alt="인덱스 순서상 resend의 next-key 락 범위와 배치 INSERT가 겹치는 구간" style={{width: '100%', maxWidth: '640px'}} />
+  <img src="/img/c4/pu-innodb-lock-range.svg" alt="인덱스 순서상 resend의 next-key 락 범위와 배치 INSERT가 중복되는 구간" style={{width: '100%', maxWidth: '640px'}} />
 </figure>
 
 그 결과 양쪽이 정확히 엇갈려 기다립니다.

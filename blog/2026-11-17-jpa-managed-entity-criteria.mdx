@@ -149,7 +149,7 @@ queryFactory.select(Projections.constructor(OrderSummary.class, order.id, order.
             .fetch();
 ```
 
-DTO는 엔티티가 아니므로 영속성 컨텍스트에 등록되지 않습니다. 필드를 변경해도 UPDATE가 실행되지 않고, 연관관계도 없습니다. Spring Data JPA의 인터페이스 프로젝션(`interface OrderView { Long getId(); }`)도 선택한 값만 담은 객체라 같은 결과입니다.
+DTO는 엔티티가 아니므로 영속성 컨텍스트에 등록되지 않습니다. 필드를 변경해도 UPDATE가 실행되지 않고, 연관관계도 없습니다. Spring Data JPA의 인터페이스 프로젝션(`interface OrderView { Long getId(); }`)도 선택한 값만 가진 객체라 같은 결과입니다.
 
 <mark>같은 QueryDSL JPA라도 `selectFrom(order)`는 영속 엔티티를, `select(Projections...)`는 단순 값을 돌려줍니다 — **조회 도구가 아니라 SELECT 대상이 결과의 상태를 정합니다.**</mark>
 
