@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="306" viewBox="0 0 440 306" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="306" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Server B 장애 시 로드밸런서의 트래픽 분배</text>
+<rect x="170" y="38" width="100" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="58" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">사용자</text>
+<line x1="220" y1="70" x2="220" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="130" y="94" width="180" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="110.4" font-size="10.5" fill="#26508F" text-anchor="middle">로드밸런서</text>
+<text x="220" y="124.9" font-size="10.5" fill="#26508F" text-anchor="middle">헬스체크로 장애 감지</text>
+<line x1="180" y1="134" x2="70" y2="190" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="192" width="120" height="52" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="70" y="214" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Server A</text>
+<text x="70" y="232" font-size="10" fill="#2E6B2E" text-anchor="middle">정상</text>
+<line x1="220" y1="134" x2="220" y2="190" stroke="#D9534F" stroke-width="1.2" stroke-dasharray="4 3"/>
+<circle cx="220" cy="164" r="9" fill="#FFFFFF" stroke="#D9534F"/>
+<text x="220" y="168" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">✕</text>
+<rect x="160" y="192" width="120" height="52" rx="6" fill="#FDECEC" stroke="#D9534F" stroke-dasharray="4 3"/>
+<text x="220" y="214" font-size="11.5" fill="#B52B27" text-anchor="middle" font-weight="bold">Server B</text>
+<text x="220" y="232" font-size="10" fill="#B52B27" text-anchor="middle">DOWN</text>
+<line x1="260" y1="134" x2="370" y2="190" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="310" y="192" width="120" height="52" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="370" y="214" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Server C</text>
+<text x="370" y="232" font-size="10" fill="#2E6B2E" text-anchor="middle">정상</text>
+<text x="120" y="168" font-size="9.5" fill="#2E6B2E" text-anchor="middle">트래픽 분배</text>
+<text x="320" y="168" font-size="9.5" fill="#2E6B2E" text-anchor="middle">트래픽 분배</text>
+<rect x="20" y="262" width="400" height="30" rx="4" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="220" y="281" font-size="10.5" fill="#8A6400" text-anchor="middle">Server B는 분배 대상에서 제외되고, 요청은 A와 C가 처리합니다</text>
+</svg>

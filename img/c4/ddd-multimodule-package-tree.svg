@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="350" viewBox="0 0 440 350" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="350" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">서비스 모듈의 컨텍스트별 패키지 구성</text>
+<rect x="16" y="35" width="11" height="9" rx="2" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="31" y="43" font-size="10" fill="#555" text-anchor="start">domain</text>
+<rect x="74.24000000000001" y="35" width="11" height="9" rx="2" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="89.24000000000001" y="43" font-size="10" fill="#555" text-anchor="start">application</text>
+<rect x="157.68" y="35" width="11" height="9" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="172.68" y="43" font-size="10" fill="#555" text-anchor="start">infrastructure</text>
+<rect x="256.24" y="35" width="11" height="9" rx="2" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="271.24" y="43" font-size="10" fill="#555" text-anchor="start">presentation</text>
+<rect x="344.72" y="35" width="11" height="9" rx="2" fill="#F1ECF8" stroke="#9C7FC9"/>
+<text x="359.72" y="43" font-size="10" fill="#555" text-anchor="start">dto</text>
+<path d="M21,71 V84.5 H34" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M39,91 V104.5 H52" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M57,111 V124.5 H70" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M57,111 V144.5 H70" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M57,111 V164.5 H70" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M57,111 V184.5 H70" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M39,91 V204.5 H52" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M39,91 V224.5 H52" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M39,91 V244.5 H52" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M39,91 V264.5 H52" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V284.5 H34" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V304.5 H34" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M21,71 V324.5 H34" fill="none" stroke="#C4C4C4" stroke-width="1"/>
+<path d="M18,60.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="35" y="68" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">store-service/src/main/java/com/example/</text>
+<path d="M36,80.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="53" y="88" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">order/</text>
+<text x="100.7" y="88" font-size="9.5" fill="#777" text-anchor="start">바운디드 컨텍스트: 주문</text>
+<path d="M54,100.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="71" y="108" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">domain/</text>
+<path d="M72,120.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="89" y="128" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">entity/</text>
+<text x="143.4" y="128" font-size="9.5" fill="#777" text-anchor="start">엔티티</text>
+<path d="M72,140.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="89" y="148" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">vo/</text>
+<text x="116.9" y="148" font-size="9.5" fill="#777" text-anchor="start">값 객체(Value Object)</text>
+<path d="M72,160.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="89" y="168" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">repository/</text>
+<text x="169.8" y="168" font-size="9.5" fill="#777" text-anchor="start">리포지토리 "인터페이스"(도메인이 소유)</text>
+<path d="M72,180.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FCE4EC" stroke="#D06A86" stroke-width="1"/>
+<text x="89" y="188" font-size="11" fill="#9E3A57" text-anchor="start" font-family="Menlo, Consolas, monospace">constant/</text>
+<text x="156.6" y="188" font-size="9.5" fill="#777" text-anchor="start">상수, enum</text>
+<path d="M54,200.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#EEF3FB" stroke="#4C7FE0" stroke-width="1"/>
+<text x="71" y="208" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">application/</text>
+<text x="158.5" y="208" font-size="9.5" fill="#777" text-anchor="start">유스케이스(서비스)</text>
+<path d="M54,220.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFF3E0" stroke="#E0A000" stroke-width="1"/>
+<text x="71" y="228" font-size="11" fill="#8A6400" text-anchor="start" font-family="Menlo, Consolas, monospace">infrastructure/</text>
+<text x="178.3" y="228" font-size="9.5" fill="#777" text-anchor="start">리포지토리 "구현"(JPA, MyBatis)</text>
+<path d="M54,240.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1"/>
+<text x="71" y="248" font-size="11" fill="#2E6B2E" text-anchor="start" font-family="Menlo, Consolas, monospace">presentation/</text>
+<text x="165.1" y="248" font-size="9.5" fill="#777" text-anchor="start">컨트롤러(표현 계층)</text>
+<path d="M54,260.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F1ECF8" stroke="#9C7FC9" stroke-width="1"/>
+<text x="71" y="268" font-size="11" fill="#5E4391" text-anchor="start" font-family="Menlo, Consolas, monospace">dto/</text>
+<text x="105.5" y="268" font-size="9.5" fill="#777" text-anchor="start">요청, 응답 DTO(계층 간 전송 객체)</text>
+<path d="M36,280.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="53" y="288" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">member/</text>
+<text x="107.4" y="288" font-size="9.5" fill="#777" text-anchor="start">회원 컨텍스트 (동일 구조)</text>
+<path d="M36,300.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#FFFFFF" stroke="#999999" stroke-width="1" stroke-dasharray="2 1.5"/>
+<text x="53" y="308" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">…/</text>
+<text x="74.2" y="308" font-size="9.5" fill="#777" text-anchor="start">그 외 컨텍스트 (동일 구조)</text>
+<path d="M36,320.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#F7F7F7" stroke="#999999" stroke-width="1"/>
+<text x="53" y="328" font-size="11" fill="#333" text-anchor="start" font-family="Menlo, Consolas, monospace">config/</text>
+</svg>

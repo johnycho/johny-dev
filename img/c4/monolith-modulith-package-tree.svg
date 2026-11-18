@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="222" viewBox="0 0 440 222" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="222" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Spring Modulith 패키지 구조</text>
+<line x1="22" y1="80" x2="36" y2="80" stroke="#BBBBBB"/>
+<line x1="22" y1="63" x2="22" y2="80" stroke="#BBBBBB"/>
+<line x1="22" y1="104" x2="36" y2="104" stroke="#BBBBBB"/>
+<line x1="22" y1="80" x2="22" y2="104" stroke="#BBBBBB"/>
+<line x1="44" y1="128" x2="58" y2="128" stroke="#BBBBBB"/>
+<line x1="44" y1="111" x2="44" y2="128" stroke="#BBBBBB"/>
+<line x1="44" y1="152" x2="58" y2="152" stroke="#BBBBBB"/>
+<line x1="44" y1="128" x2="44" y2="152" stroke="#BBBBBB"/>
+<line x1="22" y1="176" x2="36" y2="176" stroke="#BBBBBB"/>
+<line x1="22" y1="104" x2="22" y2="176" stroke="#BBBBBB"/>
+<line x1="22" y1="200" x2="36" y2="200" stroke="#BBBBBB"/>
+<line x1="22" y1="176" x2="22" y2="200" stroke="#BBBBBB"/>
+<path d="M16 51 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="34" y="60" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">com.shop</text>
+<path d="M39 74 h7 l3 3 v9 h-10 z" fill="#FFFFFF" stroke="#4C7FE0"/>
+<text x="56" y="84" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">ShopApplication.java</text>
+<path d="M38 99 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="56" y="108" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">order/</text>
+<text x="105.6" y="107.5" font-size="9.5" fill="#888" text-anchor="start">← 주문 모듈</text>
+<path d="M61 122 h7 l3 3 v9 h-10 z" fill="#FFFFFF" stroke="#4C7FE0"/>
+<text x="78" y="132" font-size="11" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">Order.java</text>
+<text x="154.0" y="131.5" font-size="9.5" fill="#2E6B2E" text-anchor="start">(공개 API — 다른 모듈이 참조 가능)</text>
+<path d="M60 147 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="78" y="156" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">internal/</text>
+<text x="147.4" y="155.5" font-size="9.5" fill="#9E3A57" text-anchor="start">(내부 구현 — 다른 모듈 접근 불가)</text>
+<path d="M38 171 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="56" y="180" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">payment/</text>
+<text x="118.8" y="179.5" font-size="9.5" fill="#888" text-anchor="start">← 결제 모듈</text>
+<path d="M38 195 h5 l1.5 1.5 h6.5 v8.5 h-13 z" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="56" y="204" font-size="11" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">member/</text>
+<text x="112.19999999999999" y="203.5" font-size="9.5" fill="#888" text-anchor="start">← 회원 모듈</text>
+</svg>
