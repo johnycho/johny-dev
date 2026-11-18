@@ -115,7 +115,7 @@ Cannot invoke "String.length()" because "<local1>.name" is null
   java -XX:+UseZGC -jar app.jar
   ```
 - **macOS/AArch64 포트(JEP 391, JDK 17).** Apple Silicon(M1)에서 네이티브로 동작합니다.
-- **JDK 내부 강한 캡슐화(JEP 403, JDK 17).** `sun.*` 같은 내부 API 접근이 기본 차단됩니다. 오래된 라이브러리가 내부 API에 기대고 있었다면 **11 → 17 이관에서 가장 먼저 걸리는 지점**이니, 실행 시 `InaccessibleObjectException`, 리플렉션 경고를 미리 점검해야 합니다.
+- **JDK 내부 강한 캡슐화(JEP 403, JDK 17).** `sun.*` 같은 내부 API 접근이 기본 차단됩니다. 오래된 라이브러리가 내부 API에 기대고 있었다면 **11 → 17 이관에서 가장 먼저 문제가 되는 지점**이니, 실행 시 `InaccessibleObjectException`, 리플렉션 경고를 미리 점검해야 합니다.
 - **제거, 지원 종료.** Nashorn 자바스크립트 엔진 제거(JEP 372, JDK 15), RMI Activation 제거(JEP 407, JDK 17), Applet API 제거 예고, **Security Manager 지원 종료 예고**(JEP 411, JDK 17).
 
 <mark>11 → 17 이관에서 코드 자체보다 자주 걸림돌이 되는 건 **내부 API 강한 캡슐화와 제거된 모듈**입니다 — 언어 기능은 대부분 소스 호환이라, 이관 리스크는 의존 라이브러리 쪽에서 먼저 확인하는 게 순서입니다.</mark>

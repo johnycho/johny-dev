@@ -27,3 +27,6 @@ __pycache__/
 ### ego lite (ego-browser skill — 개인 도구, 미추적)
 .agents/skills/ego-browser
 .claude/skills/ego-browser
+
+# rule-sync 완료 표시(로컬 전용, 커밋 전 hook이 사용)
+.claude/.rule-sync-stamp

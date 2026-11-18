@@ -196,7 +196,7 @@ note bottom of C1 : 첫 커밋(200행째)이 끝나는 순간\n500행 락이 한
 
 > **페이지 조회는 청크가 아니라 `read()` 소비로 발생한다**
 >
-> 페이징 리더(`AbstractPagingItemReader` 계열)는 내부에 **`pageSize`만큼의 버퍼**를 유지하며, `read()`가 불릴 때마다 한 건씩 꺼내 주다가 **버퍼가 비는 순간에만** 다음 페이지를 조회합니다. 즉 페이지 조회 횟수는 청크 경계가 아니라 **소비량에 따라** 정해져, 한 청크에서 사용되는 페이지 수는 대략 **`chunkSize ÷ pageSize`** 입니다.
+> 페이징 리더(`AbstractPagingItemReader` 계열)는 내부에 **`pageSize`만큼의 버퍼**를 유지하며, `read()`가 불릴 때마다 한 건씩 반환하다가 **버퍼가 비는 순간에만** 다음 페이지를 조회합니다. 즉 페이지 조회 횟수는 청크 경계가 아니라 **소비량에 따라** 정해져, 한 청크에서 사용되는 페이지 수는 대략 **`chunkSize ÷ pageSize`** 입니다.
 >
 > - `pageSize == chunkSize` → 청크당 약 1페이지(= 1 조회). 아래에서 일치시키려는 상태입니다.
 > - `pageSize < chunkSize` → **한 청크에서 페이지 조회가 여러 번** 발생합니다.
@@ -413,7 +413,7 @@ public class StatusTransitionItemReader implements ItemReader<Long> {
 }
 ```
 
-`read()`는 버퍼에서 하나씩 꺼내고, 버퍼가 비면 커서로 다음 청크를 채웁니다. 스텝에 등록할 때 fetch 크기와 청크 크기를 같은 상수로 넘기면, 제약 2에서 본 규칙(**한 번에 읽는 개수 = 커밋 간격**)이 코드로 강제됩니다.
+`read()`는 버퍼에서 하나씩 가져오고, 버퍼가 비면 커서로 다음 청크를 채웁니다. 스텝에 등록할 때 fetch 크기와 청크 크기를 같은 상수로 넘기면, 제약 2에서 본 규칙(**한 번에 읽는 개수 = 커밋 간격**)이 코드로 강제됩니다.
 
 ```java
 int CHUNK = 200;
@@ -478,7 +478,7 @@ Spring Batch가 청크 커밋마다 `update()`를 호출해 `afterId`를 `Execut
 
 ### `afterId`는 메모리에만 있는 게 아니라 DB에 저장된다
 
-여기서 한 가지 짚어둘 점이 있습니다. `ExecutionContext`는 **메모리의 키-값 맵**이지만, 그 값은 메모리에만 머무르지 않고 **DB의 배치 메타데이터 테이블에 영속화**됩니다. 프로세스를 껐다 다시 실행해도 재시작이 되는 이유가 바로 이것입니다.
+여기서 한 가지 확인해 둘 점이 있습니다. `ExecutionContext`는 **메모리의 키-값 맵**이지만, 그 값은 메모리에만 머무르지 않고 **DB의 배치 메타데이터 테이블에 영속화**됩니다. 프로세스를 껐다 다시 실행해도 재시작이 되는 이유가 바로 이것입니다.
 
 1. 실행 중에는 `ExecutionContext`가 메모리 맵으로 존재합니다. `update()`로 `afterId`를 여기에 넣습니다.
 2. **청크가 커밋되는 시점마다**, Spring Batch의 `JobRepository`가 그 스텝의 `ExecutionContext`를 직렬화해 **`BATCH_STEP_EXECUTION_CONTEXT` 테이블**(`SHORT_CONTEXT`, `SERIALIZED_CONTEXT` 컬럼)에 씁니다. 즉 청크 커밋(데이터 UPDATE)과 진행 위치(`afterId`) 저장이 **같은 트랜잭션**에서 함께 발생해, 둘의 정합성이 유지됩니다.

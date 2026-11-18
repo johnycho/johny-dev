@@ -55,6 +55,7 @@ description: 작성·수정한 블로그 글(blog/*.mdx)을 단어 순화 규칙
 - [ ] **MDX·볼드 렌더**: 코드펜스 밖 raw `<`·`{`·`}` / `grep -rnE '[)\]]\*\*[가-힣]' blog/*.mdx` 실행.
 - [ ] **구조·다이어그램·코드·인용·링크**: 프론트매터·`<!-- truncate -->`·다이어그램 우선순위/alt·메서드 체이닝 정렬·1차 소스 근거·상호 링크 중복을 확인.
 - [ ] **빌드**: `npm run build` 통과.
+- [ ] **규칙 동기화**: 이번 리뷰나 작업에서 받은 피드백이 규칙에 반영됐는지 [`rule-sync`](../rule-sync/SKILL.md) 절차로 확인했다(커밋 전 필수).
 
 ## 참고
 - 규칙 원본: [blog-authoring.md](../../wiki/blog-authoring.md) · [common-authoring.md](../../wiki/common-authoring.md) (단어·문장 규칙은 [`blog-polishing` 스킬](../blog-polishing/SKILL.md)이 SSOT로 관리)

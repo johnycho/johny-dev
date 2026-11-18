@@ -9,7 +9,7 @@ description: "AckMode.MANUAL로 acknowledge()를 직접 호출하는 Kafka 리�
 
 <!-- truncate -->
 
-`AckMode.MANUAL`로 두고 직접 `acknowledge()`를 호출하는 Kafka 리스너에서 이러한 질문을 받았습니다 — **리스너 첫 줄에서 예외가 발생하면 오프셋이 커밋될까?**
+`AckMode.MANUAL`로 설정하고 직접 `acknowledge()`를 호출하는 Kafka 리스너에서 이러한 질문을 받았습니다 — **리스너 첫 줄에서 예외가 발생하면 오프셋이 커밋될까?**
 
 ```java
 @KafkaListener(topics = "${spring.kafka.topics.goods-all}",
@@ -89,7 +89,7 @@ public DefaultErrorHandler defaultErrorHandler() {
 
 즉 재시도를 소진하면 **recoverer(복구기)** 를 호출하고, **실패한 레코드는 건너뛰도록 seek**한 뒤 **그 레코드의 오프셋을 커밋**합니다. <mark>복구란 "이 레코드는 더 손대지 않고 넘어간다"는 뜻이고, 넘어가려면 오프셋을 커밋해 다시 안 받게 해야 합니다.</mark> `acknowledge()`를 호출하지 않았어도, 에러 핸들러가 대신 오프셋을 전진시키는 것입니다.
 
-(`AckMode.MANUAL`/`MANUAL_IMMEDIATE`에서 복구 레코드의 오프셋을 **즉시 명시적으로** 커밋하려면 `commitRecovered`를 `true`로 둡니다. 기본값은 `false`이지만, 그 경우에도 복구된 레코드는 seek로 건너뛰어 이후 커밋 주기에 포함되므로 재전달되지 않습니다.)
+(`AckMode.MANUAL`/`MANUAL_IMMEDIATE`에서 복구 레코드의 오프셋을 **즉시 명시적으로** 커밋하려면 `commitRecovered`를 `true`로 설정합니다. 기본값은 `false`이지만, 그 경우에도 복구된 레코드는 seek로 건너뛰어 이후 커밋 주기에 포함되므로 재전달되지 않습니다.)
 
 ### 실제로 커밋하는 지점 — 프레임워크 코드
 
@@ -167,7 +167,7 @@ errorHandler.addNotRetryableExceptions(IllegalArgumentException.class, Deseriali
 
 ### ② 유실이 문제면 recoverer를 DLT로 교체한다
 
-지금 recoverer는 로그, Slack뿐이라 메시지가 사라집니다. Spring이 제공하는 **`DeadLetterPublishingRecoverer`** 는 실패 레코드를 **죽은 편지 토픽(dead-letter topic, 기본 `<원본토픽>.DLT`)으로 다시 발행**해 보존합니다(발행용 `KafkaTemplate`이 필요).
+지금 recoverer는 로그, Slack뿐이라 메시지가 사라집니다. Spring이 제공하는 **`DeadLetterPublishingRecoverer`** 는 실패 레코드를 **데드 레터 토픽(dead-letter topic, 기본 `<원본토픽>.DLT`)으로 다시 발행**해 보존합니다(발행용 `KafkaTemplate`이 필요).
 
 ```java
 // 1) DLT 발행용 KafkaTemplate (이미 있으면 재사용)

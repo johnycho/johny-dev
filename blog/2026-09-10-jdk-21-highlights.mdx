@@ -44,7 +44,7 @@ double area = switch (shape) {
 
 ## 3. 레코드 패턴 — 분해(deconstruction) (JEP 440, 정식)
 
-`record`를 매칭하면서 **필드를 바로 꺼내** 변수로 바인딩합니다. 중첩 구조도 한 번에 분해됩니다.
+`record`를 매칭하면서 **필드를 바로 추출해** 변수로 바인딩합니다. 중첩 구조도 한 번에 분해됩니다.
 
 ```java
 record Point(int x, int y) {}
@@ -56,11 +56,11 @@ if (obj instanceof Line(Point(var x1, var y1), Point(var x2, var y2))) {
 }
 ```
 
-패턴 매칭 `switch`와 합치면, "종류를 나누고 + 값을 꺼내는" 코드가 한 줄로 정리됩니다.
+패턴 매칭 `switch`와 합치면, "종류를 나누고 + 값을 추출하는" 코드가 한 줄로 정리됩니다.
 
 ## 4. 시퀀스드 컬렉션 — 첫, 끝 원소 표준 API (JEP 431, 정식)
 
-`List`는 순서가 있고 `LinkedHashSet`도 순서가 있는데, "첫 원소/마지막 원소"를 꺼내는 방법이 컬렉션마다 제각각(`list.get(0)`, `deque.getFirst()`…)이었습니다. **`SequencedCollection`** 인터페이스가 이를 통일합니다.
+`List`는 순서가 있고 `LinkedHashSet`도 순서가 있는데, "첫 원소/마지막 원소"를 가져오는 방법이 컬렉션마다 제각각(`list.get(0)`, `deque.getFirst()`…)이었습니다. **`SequencedCollection`** 인터페이스가 이를 통일합니다.
 
 ```java
 list.getFirst();          // list.get(0) 대신
@@ -74,7 +74,7 @@ list.reversed();          // 역순 뷰
 
 ## 5. 런타임 — Generational ZGC, 보안 API
 
-- **Generational ZGC(JEP 439, 정식).** [JDK 17에서 정식이 된 ZGC](/blog/jdk-17-highlights)에 **세대(generational) 모드**가 더해졌습니다. "대부분의 객체는 금방 죽는다"는 약한 세대 가설을 활용해 젊은 객체만 자주 청소하므로, 같은 저지연 목표에서 **힙 여유, 처리량**이 오릅니다. (JDK 21에선 `-XX:+ZGenerational` 플래그로 활성화해야 하고, **JDK 23부터는 세대 모드가 ZGC 기본값이라 플래그가 필요 없습니다**(JEP 474). JDK 25에서는 비세대 모드가 제거됐습니다(JEP 490).)
+- **Generational ZGC(JEP 439, 정식).** [JDK 17에서 정식이 된 ZGC](/blog/jdk-17-highlights)에 **세대(generational) 모드**가 더해졌습니다. "대부분의 객체는 생성 직후 곧 회수 대상이 된다"는 약한 세대 가설을 활용해 젊은 객체만 자주 청소하므로, 같은 저지연 목표에서 **힙 여유, 처리량**이 오릅니다. (JDK 21에선 `-XX:+ZGenerational` 플래그로 활성화해야 하고, **JDK 23부터는 세대 모드가 ZGC 기본값이라 플래그가 필요 없습니다**(JEP 474). JDK 25에서는 비세대 모드가 제거됐습니다(JEP 490).)
   ```bash
   java -XX:+UseZGC -XX:+ZGenerational -jar app.jar
   ```
@@ -85,7 +85,7 @@ list.reversed();          // 역순 뷰
 아래는 JDK 21에서 **preview**라 `--enable-preview`가 필요했고, 일부는 이후 버전에서 정식이 됩니다.
 
 - **String Templates**(JEP 430, preview) — 문자열 보간(`STR."..."`). 이후 설계가 재검토되어 제거됐으니 **운영에 넣지 말 것**.
-- **구조적 동시성**(JEP 453, preview) — 여러 하위 작업을 한 단위로 묶어 실패와 취소를 함께 다룸. 가상 스레드와 짝.
+- **구조적 동시성**(JEP 453, preview) — 여러 하위 작업을 한 단위로 모아 실패와 취소를 함께 처리함. 가상 스레드와 짝.
 - **Scoped Values**(JEP 446, preview → JDK 25에서 정식) — `ThreadLocal`의 불변, 범위 한정 대안.
 - **이름 없는 패턴, 변수**(JEP 443, preview) — 사용하지 않는 바인딩을 `_`로.
 - **Foreign Function & Memory API**(JEP 442, 3차 preview → JDK 22 정식) — 네이티브 코드, 메모리 접근.
@@ -93,7 +93,7 @@ list.reversed();          // 역순 뷰
 ## 정리 — 17에서 21로
 
 - **동시성**: **가상 스레드 정식**(JEP 444) — I/O 바운드 서버의 동시성 상한을 사실상 제거([실무 판단은 별도 글](/blog/virtual-threads-in-production)).
-- **데이터 분기**: 패턴 매칭 `switch`(441) + 레코드 패턴(440)이 정식이 되어, [17의 `record`, `sealed`](/blog/jdk-17-highlights)와 함께 "종류 나누고 값 꺼내기"가 간결해짐.
+- **데이터 분기**: 패턴 매칭 `switch`(441) + 레코드 패턴(440)이 정식이 되어, [17의 `record`, `sealed`](/blog/jdk-17-highlights)와 함께 "종류 나누고 값 추출하기"가 간결해짐.
 - **컬렉션, 런타임**: 시퀀스드 컬렉션(431), Generational ZGC(439), KEM API(452).
 - LTS라 지원이 길고, 대부분 소스 호환이라 17에서 넘어갈 명분이 큽니다. 다음 목적지는 최신 LTS인 JDK 25입니다.
 

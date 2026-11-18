@@ -11,6 +11,11 @@ johny-dev 기술 블로그 (Docusaurus). 게시글은 `blog/*.mdx`로 작성하�
 - **스프링 부트 업데이트 시리즈(3.2.0 이후)** → [`.claude/wiki/spring-boot-updates.md`](.claude/wiki/spring-boot-updates.md)
   - 절차/스킬 → [`.claude/skills/trend-post-spring/SKILL.md`](.claude/skills/trend-post-spring/SKILL.md) (또는 `/trend-post-spring`)
   - 핵심: 공식 소스(release-calendar·spring.io/blog·GitHub releases)로 사실 검증 → **주제별**로 작성 → 형식은 blog-authoring 규칙 준수
+- **커밋 전 규칙 동기화(필수)** → [`.claude/skills/rule-sync/SKILL.md`](.claude/skills/rule-sync/SKILL.md) (또는 `/rule-sync`)
+  - 커밋 요청을 받으면 커밋 전에, 마지막 커밋 이후 받은 피드백(지양어, 표현, 그림, 구조)이 규칙 파일에 반영됐는지 확인하고 빠진 것을 추가한 뒤 블로그 전체에 적용한다.
+  - hook이 강제: 블로그 전체 폴리싱 스캔에 처리되지 않은 지적이 남아 있거나, rule-sync 완료 표시(`mark-done.sh`)가 현재 상태와 다르면 커밋이 막힌다.
+  - **막히면 임의로 바꾸지 않는다.** 글 수정안, 예외 등록안(사유), 규칙 갱신안을 사용자에게 보여 주고 확인을 받은 뒤 반영하고, 커밋을 다시 시도한다.
+  - 핵심: 피드백 수집 → 반영 위치 분류 → 스캔으로 활용형까지 잡히는지 시험 → 규칙 추가 → 오탐 점검 → 전체 스윕 → 빌드 → 보고 후 커밋
 - **Git 계정 정책** → [`.claude/wiki/git-account.md`](.claude/wiki/git-account.md)
   - 이 저장소는 **johnycho** 계정으로 커밋·푸시 (머신 기본은 johny-cho). 커밋/푸시 시 hook이 자동 검증.
   - 커밋 identity는 repo-local git config에 johnycho / johnycho.dev@gmail.com로 고정됨.

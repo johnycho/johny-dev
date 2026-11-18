@@ -1,0 +1,104 @@
+# 경로	항목	줄해시	사유	문맥 — scan-polishing.py --allow 로만 추가한다(문맥 확인 결과 규칙 예외인 지적)
+blog/2026-09-03-ticketing-system-architecture.mdx	씁니다	8b25e20eda22	DB에 데이터를 기록하는 쓰기(write) 의미	B에는 감당 가능한 속도로만 씁니다.
+blog/2026-09-03-ticketing-system-architecture.mdx	구는	972d33de4f57	'요구는'의 부분 일치(굴다 의미 아님)	- 요구는 단순합니다. "지금 내가
+blog/2026-09-03-ticketing-system-architecture.mdx	묶어	fc67d5c54c6e	조회+판단+차감을 원자적으로 결합하는 기술적 의미(예외)	 조회+판단+차감을 한 번에 묶어야 하므로 Lua가 필요합
+blog/2026-09-03-ticketing-system-architecture.mdx	고른	2e0121abe506	속도를 고르게 한다(평탄화) 의미로 규칙 예외, 선택 의미 아님	k>대기열이 "입장 속도"를 고른다면, 메시지 큐는 "DB
+blog/2026-09-11-kafka-cluster-replication-consumer-group.mdx	씁니다	173d19eaf1b5	리더에 기록하는 쓰기(write) 의미	**프로듀서**는 리더에게만 씁니다.
+blog/2026-09-11-kafka-cluster-replication-consumer-group.mdx	씁니다	5d03b9f7e1f6	리더 로그를 복제해 기록하는 쓰기(write) 의미	*직접 fetch 해서 따라 씁니다** — 마치 팔로워가 
+blog/2026-09-11-kafka-cluster-replication-consumer-group.mdx	갈림	fb7359a87775	'헷갈림'은 허용 단어(갈리다 아님)	두 가지**이고, 이 둘이 헷갈림의 단골입니다.
+blog/2026-09-11-kafka-cluster-replication-consumer-group.mdx	옮겨	0bf610555e91	파티션의 논리적 이동이라 규칙 예외	Assignor)** — **옮겨야 할 파티션만** 반납하
+blog/2026-10-23-jpa-association-default-fetch-type.mdx	둬야	8ecbffc6770a	'LAZY로 두다'는 규칙 예외	 **어떤 연관을 LAZY로 둬야 하는지**도 보입니다. 
+blog/2026-10-23-jpa-association-default-fetch-type.mdx	두고	44561b49cb23	'LAZY로 두다'는 규칙 예외	. 그래서 기본을 LAZY로 두고 **실제로 접근할 때**
+blog/2026-10-23-jpa-association-default-fetch-type.mdx	두면	8f34dcd864e4	'그대로 두다'는 규칙 예외	 해서 to-one을 그대로 두면, 두 가지가 따라옵니다.
+blog/2026-10-23-jpa-association-default-fetch-type.mdx	두는	c7d1e7f6f3bd	'LAZY로 두다'는 규칙 예외	`fetch = LAZY`로 두는 것을 권장**합니다.</
+blog/2026-08-18-kafka-why-fast.mdx	옮기는	8b9faf12be75	디스크 헤드의 물리적 이동이라 규칙 예외	얘기입니다. 헤드를 이리저리 옮기는 랜덤 I/O는 느리지만
+blog/2026-08-18-kafka-why-fast.mdx	쓰는	566b80a17185	순차 쓰기(write) 의미	크의 특성에 맞춰 순차적으로 쓰는" 설계가 Kafka 속도
+blog/2026-08-18-kafka-why-fast.mdx	묶어	6c87fc16fbb1	배치로 묶어 처리하는 기술적 결합(배치 정의)이라 예외	트(배치) | 여러 메시지를 묶어 처리하는 단위 |
+blog/2026-09-06-c4-model-architecture-diagram.mdx	갑니다	f0659b4c0b0f	'선뜻 손이 안 나가다'는 막막하다 행의 권장 표현(관용구)	나?" 싶어 선뜻 손이 안 나갑니다. 개발은 곧잘 하는데 
+blog/2026-09-06-c4-model-architecture-diagram.mdx	나갑니다	f0659b4c0b0f	'선뜻 손이 안 나가다'는 막막하다 행의 권장 표현(관용구)	되나?" 싶어 선뜻 손이 안 나갑니다. 개발은 곧잘 하는데
+blog/2026-09-25-spring-webflux-vs-mvc.mdx	걸린	678cbcefbd77	'시간이 걸리다' 의미라 예외	당 외부 API가 500ms 걸린다면, 201번째 요청부터
+blog/2026-09-25-spring-webflux-vs-mvc.mdx	두고	fc9e6917b47a	코드블록 주석이며 '그대로 두다'는 예외	Error — 흐름은 그대로 두고 "로그만" 남긴다(부수 
+blog/2026-09-25-spring-webflux-vs-mvc.mdx	꺼내	ab58820b92f5	코드블록 안 주석이라 대상 아님	  // 꺼내 쓸 때 (예: 로그 직전
+blog/2026-09-25-spring-webflux-vs-mvc.mdx	의 적	33efc87dd057	'스레드의 적용'의 부분 일치(비유 '~의 적' 아님)	.</mark> (가상 스레드의 적용 기준은 [가상 스레드
+blog/2026-08-12-server-monitoring-analysis.mdx	받다	89c0362cd39b	요청을 받다(수신) 의미로 예외(예외 catch 아님)	기해 전체를 지킵니다. "다 받다 전부 멈추기"보다 "일부
+blog/2026-08-14-redis-large-scale-pitfalls.mdx	냅니다	c799ad74cdc6	오래된 항목을 잘라내다(트리밍)는 규칙 예외	을 정하고 오래된 것부터 잘라냅니다. Stream은 `MA
+blog/2026-08-14-redis-large-scale-pitfalls.mdx	묶어	4dd0c66f315d	파이프라이닝으로 묶어 보내다는 규칙 예외	령을 **파이프라이닝**으로 묶어 보내거나, `MGET`/
+blog/2026-09-25-reactive-streams-spec.mdx	쌓다	dbe1c3012fb9	데이터가 쌓이는 의미라 예외('쌓다가')	느린 소비자는 밀린 데이터를 쌓다가 **메모리가 넘치거나(
+blog/2026-08-12-graph-engineering-ai-workflow.mdx	잡을	dabfb1926975	명사 '잡'(job)+을이라 예외	 파일 저장소 활용.** 각 잡을 파일과 명령으로 고정하고
+blog/2026-09-13-diskless-kafka-object-storage.mdx	씁니다	a7004678b85e	오브젝트 스토리지에 기록하는 쓰기(write) 의미	오브젝트 스토리지에 직접** 씁니다.
+blog/2026-09-13-diskless-kafka-object-storage.mdx	줍니다	b12175614bdd	'줄다'(감소) 활용형이라 주다와 무관	라져 클라우드 TCO가 크게 줍니다(벤더 보고 48~90%
+blog/2026-10-21-alb-vs-nlb.mdx	하나 더	74148844fec2	홉 개수가 1 증가한다는 수량 의미(곁들여 의미 아님)	 더 넘깁니다**. 즉 홉이 하나 더 생기고, 그 과정에서
+blog/2026-08-18-jvm-tuning-scenarios.mdx	줍니다	23e6180f2121	'영향을 주다'는 예외	늘어나 전체 메모리에 영향을 줍니다. 방향이 케이스마다 반
+blog/2026-09-04-tps-and-performance-limit.mdx	정체	3505be36f642	정체(停滯, 멈춤) 의미로 범인 류 '정체(正體)'와 무관	PS는 더 이상 오르지 않고(정체), 응답시간만 수직으로 
+blog/2026-09-23-db-isolation-levels.mdx	쓰는	6a9ad67f9619	'덮어쓰는' 쓰기(write) 의미	 다른 트랜잭션의 쓰기를 덮어쓰는 것은 막지 않습니다. 이
+blog/2026-10-28-cdc-change-data-capture-debezium.mdx	줍니다	b72ddb0eed7e	'영향을 주다'는 예외	변경이 이벤트 구조에 영향을 줍니다. Debezium은 스
+blog/2026-08-21-hotspot-traffic-isolation.mdx	줍니다	05bb85a7c5ff	"부담을 주다"는 규칙 예외	주는 저장소에 실제로 부담을 줍니다** — 그 채팅방을 담
+blog/2026-08-21-multi-layer-caching.mdx	쓴다	05a623b075c1	"신경 쓰다" 관용구로 사용(use) 의미 아님	수록 정합성 관리는 더 신경 쓴다**입니다.
+blog/2026-09-17-kubernetes-basics-to-gitops.mdx	하나 더	c3a02c3a647d	명령형 지시를 예시로 든 인용("하나 더 띄워라")이며 "덧붙여" 의미 아님	*: "컨테이너를 켜라", "하나 더 띄워라"처럼 **단계
+blog/2026-08-21-scaling-architecture-step-by-step.mdx	두고	95faae49cbce	"자원을 두고 경쟁"은 대상(~을 놓고)을 뜻하는 관용 표현으로 배치 의미 아님	회가 실서비스 쿼리와 자원을 두고 경쟁합니다.
+blog/2026-10-22-spring-domain-events-vs-application-event-publisher.mdx	묶는	43b0b55cb157	트랜잭션 단계에 결합하는 기술적 의미(트랜잭션으로 묶다 예외)	*부터이며, 트랜잭션 단계에 묶는 `@Transaction
+blog/2026-10-22-spring-domain-events-vs-application-event-publisher.mdx	두고	97fd8dbd80bb	"기록하게 두다"는 허용(let) 의미로 배치 의미 아님	트)** 가 스스로 기록하게 두고 싶습니다. Spring 
+blog/2026-10-22-spring-domain-events-vs-application-event-publisher.mdx	로우	0eea9af69684	"자유로우냐"의 일부로 row 표기와 무관한 오탐	에 묶이느냐 호출 시점에 자유로우냐**입니다.
+blog/2026-09-23-db-shared-exclusive-locks.mdx	걸린	35861d6ec463	"락이 걸리다"는 락 획득을 뜻하는 DB 표준 용어(조건에 걸리다 의미 아님)	| 이미 걸린 락 → / 요청 ↓ | 
+blog/2026-08-18-java-gc-types.mdx	옮기는	1a068ddc0714	GC가 객체를 실제로 이동(relocation)하는 물리적 이동 의미로 예외	rier) 방식이라, 객체를 옮기는 도중에도 애플리케이션이
+blog/2026-08-18-java-gc-types.mdx	옮겨	f87163ef5682	압축으로 이동된 객체를 뜻하는 물리적 이동 의미로 예외	포인터를 따라가 항상 올바른(옮겨진) 객체로 연결합니다. 
+blog/2026-10-23-jpa-hibernate-flush-commit-rollback-timing.mdx	주면	161459feefac	"영향을 주다"는 규칙 예외	쿼리가 읽는 테이블에 영향을 주면, **오래된 결과를 보지
+blog/2026-08-05-spring-boot-structured-logging.mdx	났다	ae3bf33f089c	"끝났다"(끝나다)로 에러가 나다 의미 아님, 인용된 문구	이브러리를 붙이던 시대"가 끝났다는 것</mark> — 이
+blog/2026-09-08-web-state-cookie-session-jwt.mdx	굵은	17baf278fa31	SVG 범례의 선 굵기(물리적 의미)로 규칙 예외	굵은 테두리: 상태를 보관하는
+blog/2026-09-26-random-access-and-io.mdx	냅니다	59570e3e3f33	"찾아내다"는 권장 표현으로 결과를 내다 의미 아님	 내려가 필요한 몇 건만 찾아냅니다.
+blog/2026-08-28-flipt-polling-timeout-oss-contribution.mdx	냅니다	1f0b0091bda0	'끝내다'(종료)로, 결과·에러를 내다 의미가 아님	면 `break`로 루프를 끝냅니다. 여기까지만 보면 "에
+blog/2026-08-28-flipt-polling-timeout-oss-contribution.mdx	정체	0f825b9ccc2e	'정체된 서버'는 멈춘 상태(stall) 의미로, 지양어 '정체'(실체·범인 의미)와 다른 뜻	응답 대기에 상한이 없으면, 정체된 서버 하나에 백그라운드
+blog/2026-09-12-scm-system-explained.mdx	옮기다	c5d85665bd51	창고에서 물건을 물리적으로 옮기는 동작이라 예외	(공급사가 부담), 창고에서 옮기다 떨어뜨렸으면 **자사 
+blog/2026-09-12-scm-system-explained.mdx	고를	8cbe399aca8e	'입고를'의 일부로 선택 의미의 고르다가 아님(N고를 예외)	## 왜 논리 입고와 물리 입고를 나눴나
+blog/2026-11-17-ai-coding-skills-workflow-comparison.mdx	평서체	0df5e24be8e6	외부 스킬 본문을 번역 인용한 블록쿼트(원문 평서 유지)	> 틀린 판정은 사람이 보고 다시 고칠 수 있는 재작업이지만, 질문에 멈춘 세션은 사람의 하루를 잃게 한다.
+blog/2026-11-17-ai-coding-skills-workflow-comparison.mdx	났다	0c23f0a49c59	'끝났다'(완료) 인용 발화로, 에러가 나다 의미가 아님	etion`이 붙습니다. "끝났다, 고쳤다, 통과했다"고 
+blog/2026-11-17-ai-coding-skills-workflow-comparison.mdx	평서체	6b40ea6392fa	외부 스킬 원칙 문장을 번역 인용한 블록쿼트	> 코드 변경은 롤백할 수 있고 리뷰할 수 있으므로, 틀린 결정의 비용이 대개 멈추는 것보다 낮다.
+blog/2026-11-17-ai-coding-skills-workflow-comparison.mdx	평서체	b55c4036c98f	ECC README 표를 번역 인용한 블록쿼트	> "품질 검사가 상기시키기에 의존한다" → "훅이 프롬프트 밖에서 결정적 검사를 강제할 수 있다"
+blog/2026-08-03-spring-datajpatest-context-oom.mdx	두면	3e530bbe3f29	'그대로 두면'은 규칙 예외	 포함되지 않습니다. 그대로 두면 테스트가 "해당 빈을 찾
+blog/2026-08-03-spring-datajpatest-context-oom.mdx	둡니다	66c4c18cc628	'그대로 둡니다'는 규칙 예외	yName` 같은 건 그대로 둡니다.)
+blog/2026-09-05-mysql-index-btree-explain.mdx	묶은	9c9092a7d16a	복합 인덱스 컬럼을 묶다는 기술적 결합 예외	ule)** — 여러 컬럼을 묶은 복합 인덱스는 **가장 
+blog/2026-09-05-mysql-index-btree-explain.mdx	냅니다	e5ccd8a87998	'잘라냅니다'로, 결과·에러를 내다 의미가 아님	 정렬**한 뒤 20건을 잘라냅니다. 조건에 맞는 행이 많
+blog/2026-09-05-mysql-index-btree-explain.mdx	묶은	74a2ff0438f7	복합 인덱스 컬럼을 묶다는 기술적 결합 예외	— 조건 컬럼과 정렬 컬럼을 묶은 복합 인덱스로 정렬을 없
+blog/2026-09-05-mysql-index-btree-explain.mdx	평서체	3ce81ceb050a	PlanetScale 블로그 원문을 번역 인용한 블록쿼트	> 조인하는 두 컬럼은 타입과 크기가 같아야 인덱스가 적용된다. `VARCHAR(10)`과 `CHAR(10)`은 호환되지만, 
+blog/2026-09-15-redis-cluster-failover-failures.mdx	걸리는	bd0d24bb5dcb	'시간이 걸리다' 의미라 예외	ilover 창**(승격까지 걸리는 몇 초)을 견디게 하는
+blog/2026-11-17-innodb-insert-intention-lock-deadlock.mdx	구는	9337b24860d2	'문구는'의 일부로 굴다와 무관	지 몇 초 지났는지, 뒤의 문구는 지금 하던 일
+blog/2026-11-17-innodb-insert-intention-lock-deadlock.mdx	짜는	c990dd659ca2	'날짜는'의 일부로 예외	읽을 수 있습니다. 숫자와 날짜는 `hex` 값을 변환해야
+blog/2026-11-17-innodb-insert-intention-lock-deadlock.mdx	둡니다	0d17a84cab0f	'그대로 둡니다'는 규칙 예외	* 낮춰 다른 로직은 그대로 둡니다([트랜잭션 격리 수준]
+blog/2026-08-18-redis-single-thread-fast.mdx	냅니다	d3881abbea43	'끝냅니다'(완료)로, 결과·에러를 내다 의미가 아님	 **마이크로초** 단위로 끝냅니다. <mark>연산 하나
+blog/2026-08-18-redis-single-thread-fast.mdx	묶어	606fd357c114	파이프라인으로 묶어 보내다는 기술적 결합 예외	* 은 여러 명령을 한 번에 묶어 보내고 결과를 한 번에 
+blog/2026-08-18-redis-single-thread-fast.mdx	묶어	5488c26a5a35	파이프라인으로 묶어 보내다는 기술적 결합 예외	 파이프라인 | 여러 명령을 묶어 보내 왕복(RTT)을 없
+blog/2026-09-23-git-branch-strategies.mdx	평서체	659d2761dcaa	Driessen 원문 성찰 노트를 번역 인용한 문장	<mark>Driessen은 2020년 원문 상단에 성찰 노트를 덧붙였습니다 — "지속 배포(continuous deliver
+blog/2026-09-23-git-branch-strategies.mdx	구는	40dce434c028	'연구는'의 일부로 굴다와 무관	다.</mark> DORA 연구는 **활성 브랜치를 3개 
+blog/2025-07-01-kafka-delivery-semantics.mdx	볼드홀수	ff598899583e	두 줄에 걸친 인용구 볼드(247행에서 닫힘)라 오탐	> **“Exactly-once를 먼저 쓰지 말고,
+blog/2025-07-01-kafka-delivery-semantics.mdx	볼드홀수	46f2e3823aa2	두 줄에 걸친 인용구 볼드(246행에서 열림)라 오탐	> At-least-once로 시작해 필요한 곳에만 강화하자.”**
+blog/2026-08-18-kafka-transactions-exactly-once.mdx	묶어	81e096aa80e8	트랜잭션으로 묶다는 기술적 결합 예외	밋을 **한 트랜잭션**으로 묶어, 함께 확정하거나 함께 
+blog/2026-08-18-kafka-transactions-exactly-once.mdx	묶어	a192c302c765	DB 트랜잭션과 발행을 원자적으로 묶다는 기술적 결합 예외	으로 DB 트랜잭션과 발행을 묶어야 합니다.
+blog/2026-09-06-monolith-vs-microservices.mdx	주어	d175bfae07cd	'공짜로 주어지다'(무상 제공)로 값·조건을 주다 의미가 아님	입니다.** MSA는 공짜로 주어지지 않고, **복잡성이라
+blog/2026-09-06-monolith-vs-microservices.mdx	조립	cf2225ce74ed	조립식 PC의 물리적 조립이라 예외	손봐야 합니다. **MSA는 조립식 PC** — 그래픽카드
+blog/2026-10-06-jpa-unidirectional-association-pitfalls.mdx	하나 더	c3d7abdc1f84	테이블 개수가 하나 늘어난다는 수량 의미로, 연결어 '하나 더'가 아님	다처럼 관리합니다. 테이블이 하나 더 생기고, 조회, 저장
+blog/2026-09-02-kafka-original-design-principles.mdx	두고	ba4e6cba0ab0	"초점을 두다"는 권장 표현(겨냥하다·노리다의 대체어)	 카프카는 이 지점에 초점을 두고, 전통적 MQ와 다른 선
+blog/2026-09-02-kafka-original-design-principles.mdx	옮기는	87e68ab90236	오프셋(읽기 위치)을 앞으로 옮기는 논리적 이동이라 예외	제가 아니라 오프셋을 앞으로 옮기는 읽기입니다.</mark
+blog/2026-09-02-kafka-original-design-principles.mdx	갑니다	1a045625f0f5	"가져가다"(pull) 동사로, DB·서버로 가다 의미가 아님	*자기 처리 속도대로** 가져갑니다. 느린 컨슈머에게 브로
+blog/2026-09-02-kafka-original-design-principles.mdx	대화하는	aad4ed12184a	"극대화하는"의 일부를 오탐	 누락되는 것보다 처리량을 극대화하는 편이 더 유리하다는 
+blog/2026-10-07-mysql-column-types-storage.mdx	자리	de3260202e6d	자릿수(9자리 숫자) 의미라 예외	수점입니다. 내부적으로 **9자리를 4바이트에 넣는 패킹 
+blog/2026-10-07-mysql-column-types-storage.mdx	자리	b31916afc0b4	자릿수(9자리 숫자) 의미라 예외	 자릿수를 그대로 저장**(9자리 = 4바이트 패킹)하므로
+blog/2026-10-07-mysql-column-types-storage.mdx	줍니다	b7d399d94f94	"영향을 주다"는 예외	문자셋도 크기에 직접 영향을 줍니다. `utf8mb4`는 
+blog/2026-10-07-mysql-column-types-storage.mdx	자리	e38d6b8eea84	자릿수(정수 11자리) 의미라 예외	,2)` | 6 | 정수 11자리(5) + 소수 2자리(1
+blog/2025-07-02-kafka-outbox-exactly-once.mdx	볼드홀수	c0783f595060	두 줄 인용구에 걸친 볼드(23행에서 닫힘)라 오탐	> **중복은 허용하되,
+blog/2025-07-02-kafka-outbox-exactly-once.mdx	볼드홀수	36e226acdeaa	두 줄 인용구에 걸친 볼드(22행에서 열림)라 오탐	> 최종 비즈니스 결과(effect)는 정확히 한 번만 반영되도록 설계한다.**
+blog/2025-07-02-kafka-outbox-exactly-once.mdx	볼드홀수	e779a2033160	두 줄 인용구에 걸친 볼드(209행에서 닫힘)라 오탐	> **전달은 최소 한 번,
+blog/2025-07-02-kafka-outbox-exactly-once.mdx	볼드홀수	e4e7c8bcfebb	두 줄 인용구에 걸친 볼드(208행에서 열림)라 오탐	> 결과는 정확히 한 번**
+blog/2026-08-21-large-scale-payment-distributed-lock.mdx	주고	12d64200ef83	"부하를 주다"는 부담을 주다와 같은 예외	 방식은 Redis에 부하를 주고 비효율적입니다. Redi
+blog/2026-09-10-jdk-11-highlights.mdx	줍니다	88837f6dd5e6	"영향을 주다"는 예외	 내부 API 제한은 영향을 줍니다.
+blog/2026-08-14-commerce-cache-traffic-strategy.mdx	냅니다	969cca824c55	"막아내다"로, 결과·에러를 내다 의미가 아님	id"를 DB 가기 전에 막아냅니다(있을 수도 있음은 통과
+blog/2026-08-14-commerce-cache-traffic-strategy.mdx	받다	8ae0eafdc610	요청을 받다(전달받다) 의미라 예외	간이 옵니다. 그땐 **전부 받다 전부 멈추기**보다 일부
+blog/2026-08-18-traffic-growth-problems.mdx	갑니다	5cc162981db3	"OOM으로 가다"는 상태로 가다라 예외	돼 지연을 키우다 OOM으로 갑니다. → [JVM 힙 덤프
+blog/2026-09-23-spring-transaction-propagation.mdx	걸리는	e62ed0414dfc	"오래 걸리는"은 시간이 걸리다 예외	잭션이 오히려 방해되는 오래 걸리는 작업 등.
+blog/2026-07-09-kiss-dry-yagni.mdx	걸리는	d2f5bacf4ef0	"이해하는 데 걸리는 시간"은 시간이 걸리다 예외	 "다음 사람이 이해하는 데 걸리는 시간"입니다.</mar
+blog/2026-07-09-kiss-dry-yagni.mdx	걸리는	1f34d202cfd1	"이해에 걸리는 시간"은 시간이 걸리다 예외	준은 줄 수가 아니라 이해에 걸리는 시간.
+blog/2026-09-09-spring-boot-4-highlights.mdx	옮겨	6470ba65b5b4	클래스가 다른 패키지로 이동한 논리적 이동이라 예외	t.<module>` 형태로 옮겨졌습니다. 자동설정 클래스
+blog/2026-10-20-mysql-get-lock-distributed-lock.mdx	묶어	21f8d558f9b0	트랜잭션이 커넥션을 묶는 기술적 결합 의미라 예외	 트랜잭션이 커넥션을 하나로 묶어 **동작은 하지만**, 
+blog/2026-10-20-mysql-get-lock-distributed-lock.mdx	다루는	d684cb8612f2	커넥션(객체)을 다루다=처리하다 의미라 예외	커넥션을 직접 다루는 코드는 "획득 → 실행
+blog/2025-08-15-fault-tolerance-high-availability.mdx	사고	ba6d22fca6c1	렌터카 비유 속 실제 차량 사고 의미라 예외	- 고가용성은 사고가 발생하면 즉시 다른 차
+blog/2026-08-10-java-longadder.mdx	두고	d05518be79ab	"~을 두고 다투다"(대상) 의미로 배치 의미가 아님	어 더하므로, 같은 메모리를 두고 다툴 일이 줄어듭니다. 
+blog/2026-09-13-valkey-vs-redis-license.mdx	두고	11870f2052d7	"Redis를 두고"는 ~에 관해 의미로 배치 의미가 아님	히 사용하는 그 Redis를 두고, 최근 몇 년 사이 **

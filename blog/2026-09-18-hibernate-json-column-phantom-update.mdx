@@ -138,7 +138,7 @@ public int hashCode() {
 원인을 없앤 뒤, 재발과 파급을 줄이는 두 가지를 같이 봅니다.
 
 - **읽기 경로는 `@Transactional(readOnly = true)`로.** 읽기만 하는 메서드가 쓰기 트랜잭션에 포함돼 있으면 flush가 발생해 이 부류의 문제에 노출됩니다. readOnly면 flush 자체가 없어 유령 UPDATE가 원천 차단됩니다. (이력 INSERT 하나 때문에 클래스 전체 `@Transactional`이 적용되지 않은 상태였다면, 그 메서드만 분리하는 게 낫습니다.)
-- **낙관적 락 재시도.** 정당한 경합은 언제든 생깁니다. 쓰기 경로에 `@Retryable(OptimisticLockingFailureException.class)` 같은 재시도를 두면, 실제 경합이 예외로 그대로 올라오는 것을 막습니다.
+- **낙관적 락 재시도.** 정당한 경합은 언제든 생깁니다. 쓰기 경로에 `@Retryable(OptimisticLockingFailureException.class)` 같은 재시도를 적용하면, 실제 경합이 예외로 그대로 올라오는 것을 막습니다.
 
 ## 점검 — 내 서비스도 해당되는가
 
@@ -157,7 +157,7 @@ Hibernate가 deep-copy 방식으로 바뀐 버전(6.2 후기, 6.3, 6.4 이상, 7
 
 ## 관련 이슈 — 같은 전환에서 나온 다른 JSON 이슈
 
-원인은 다르지만 걸리는 지점이 같은(`@JdbcTypeCode(JSON)` 컬럼) 건이 하나 더 있습니다. **Spring Boot 4는 애플리케이션 JSON 라이브러리를 Jackson 3로 바꾸지만, Hibernate의 JSON 컬럼 매퍼는 여전히 Jackson 2 기반**입니다. 이 과정에서 `spring-boot-starter-web`이 `jackson-datatype-jsr310`을 더 이상 전이(transitive) 의존성으로 넘겨주지 않는 경우가 있어, JSON 컬럼 안에 `LocalDate`/`LocalDateTime`이 있으면 `Java 8 date/time type not supported`로 실패할 수 있습니다.
+원인은 다르지만 문제가 발생하는 지점이 같은(`@JdbcTypeCode(JSON)` 컬럼) 사례가 또 있습니다. **Spring Boot 4는 애플리케이션 JSON 라이브러리를 Jackson 3로 바꾸지만, Hibernate의 JSON 컬럼 매퍼는 여전히 Jackson 2 기반**입니다. 이 과정에서 `spring-boot-starter-web`이 `jackson-datatype-jsr310`을 더 이상 전이(transitive) 의존성으로 넘겨주지 않는 경우가 있어, JSON 컬럼 안에 `LocalDate`/`LocalDateTime`이 있으면 `Java 8 date/time type not supported`로 실패할 수 있습니다.
 
 ```gradle
 implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'

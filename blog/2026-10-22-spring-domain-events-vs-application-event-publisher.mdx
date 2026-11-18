@@ -110,7 +110,7 @@ public class Order {
 
 JPA `@Entity`의 영속 매핑은 Hibernate가 하므로 여기서는 **JPA 쪽을 사용해야** 합니다. JPA 엔티티에 Spring Data의 `@Transient`를 붙이면 Hibernate가 그 표시를 알지 못해 필드를 **그냥 컬럼으로 매핑하려** 합니다(의도와 반대).
 
-발행을 수행하는 건 Spring Data가 등록하는 `EventPublishingRepositoryProxyPostProcessor`입니다. repository 프록시가 **`save`, `saveAll`, `delete`, `deleteAll`, `deleteAllInBatch`, `deleteInBatch`** 호출을 가로채 `@DomainEvents` 목록을 꺼내 `ApplicationEventPublisher`로 발행하고, 그다음 `@AfterDomainEventPublication`을 호출해 목록을 비웁니다. <mark>발행은 **save가 실행되는 그 호출 안에서 동기로** 일어나므로, save가 트랜잭션 안이면 이벤트도 **커밋 전, 같은 트랜잭션에서** 발행됩니다.</mark>
+발행을 수행하는 건 Spring Data가 등록하는 `EventPublishingRepositoryProxyPostProcessor`입니다. repository 프록시가 **`save`, `saveAll`, `delete`, `deleteAll`, `deleteAllInBatch`, `deleteInBatch`** 호출을 가로채 `@DomainEvents` 목록을 가져와 `ApplicationEventPublisher`로 발행하고, 그다음 `@AfterDomainEventPublication`을 호출해 목록을 비웁니다. <mark>발행은 **save가 실행되는 그 호출 안에서 동기로** 일어나므로, save가 트랜잭션 안이면 이벤트도 **커밋 전, 같은 트랜잭션에서** 발행됩니다.</mark>
 
 <details>
 <summary>PlantUML 코드</summary>

@@ -10,18 +10,18 @@ import {AnimatedLineChart, AnimatedBars} from '@site/src/components/blog/Monitor
 
 <!-- truncate -->
 
-JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데, 실무의 출발점은 반대입니다. <mark>요즘 JVM 기본값은 대체로 충분하고, 튜닝은 "증상이 있을 때 지표를 근거로" 하는 것입니다.</mark> 감으로 플래그를 붙이면 오히려 나빠지기 쉽습니다. 그래서 이 글은 **어떤 상황에 무엇이 필요한지**를 증상별로 정리합니다. (누수 분석은 [JVM 힙 덤프 분석](./jvm-heap-dump-analysis), 지표 읽기는 [서버 지표 읽기](./server-monitoring-analysis) 참고)
+JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데, 실무의 출발점은 반대입니다. <mark>요즘 JVM 기본값은 대체로 충분하고, 튜닝은 "증상이 있을 때 지표를 근거로" 하는 것입니다.</mark> 감으로 플래그를 붙이면 오히려 나빠지기 쉽습니다. 그래서 이 글은 **어떤 케이스에 무엇이 필요한지**를 증상별로 정리합니다. (누수 분석은 [JVM 힙 덤프 분석](./jvm-heap-dump-analysis), 지표 읽기는 [서버 지표 읽기](./server-monitoring-analysis) 참고)
 
 ## 먼저 — JVM 메모리와 GC를 1분만
 
-상황을 이해하려면 "JVM이 메모리를 어디에 사용하는지"만 알면 됩니다. **집**에 비유하면 쉽습니다.
+아래 케이스를 이해하려면 "JVM이 메모리를 어디에 사용하는지"만 알면 됩니다. **집**에 비유하면 쉽습니다.
 
-- **힙(heap)** — 물건이 쌓이는 **방**. 우리가 `new`로 만든 객체가 여기 놓입니다. 방이 꽉 차면 상황 2.
-- **GC(가비지 컬렉션)** — 사용하지 않는 물건을 치워 주는 **로봇 청소기**. 돌리는 짧은 순간엔 방을 사용하지 못하는데(잠깐 문이 잠김), 이 정지가 **stop-the-world(STW)** 입니다. 이 정지가 길면 상황 1.
-- **Metaspace** — 물건이 아니라 그 물건의 **설계도**(클래스)를 보관하는 작은 책꽂이. 방과는 별개 공간이라, 설계도 종류가 계속 늘면 여기가 차서 상황 3.
-- **네이티브(힙 밖) 메모리** — 방 말고도 사용하는 **베란다, 창고**(연장, 상자 = 스레드 스택, 버퍼 등). 집 전체 평수(=컨테이너 메모리)엔 방 + 베란다가 **전부** 포함돼서, 합이 넘으면 상황 4.
+- **힙(heap)** — 물건이 쌓이는 **방**. 우리가 `new`로 만든 객체가 여기 놓입니다. 방이 가득 차면 [케이스 2](#케이스-2--힙-outofmemoryerror).
+- **GC(가비지 컬렉션)** — 사용하지 않는 물건을 치워 주는 **로봇 청소기**. 돌리는 짧은 순간엔 방을 사용하지 못하는데(잠깐 문이 잠김), 이 정지가 **stop-the-world(STW)** 입니다. 이 정지가 길면 [케이스 1](#케이스-1--gc-정지가-길다지연-스파이크).
+- **Metaspace** — 물건이 아니라 그 물건의 **설계도**(클래스)를 보관하는 작은 책꽂이. 방과는 별개 공간이라, 설계도 종류가 계속 늘면 여기가 차서 [케이스 3](#케이스-3--metaspace-outofmemoryerror).
+- **네이티브(힙 밖) 메모리** — 방 말고도 사용하는 **베란다, 창고**(연장, 상자 = 스레드 스택, 버퍼 등). 집 전체 평수(=컨테이너 메모리)엔 방 + 베란다가 **전부** 포함돼서, 합이 넘으면 [케이스 4](#케이스-4--컨테이너에서-oomkilled).
 
-<mark>즉 문제는 늘 "집의 어느 공간이 부족한가"로 나뉩니다 — 방(힙)이냐, 설계도 책꽂이(Metaspace)냐, 베란다까지 합친 전체 평수(컨테이너)냐.</mark> 이 그림만 있으면 아래 상황들이 한눈에 들어옵니다.
+<mark>즉 문제는 늘 "집의 어느 공간이 부족한가"로 나뉩니다 — 방(힙)이냐, 설계도 책꽂이(Metaspace)냐, 베란다까지 합친 전체 평수(컨테이너)냐.</mark> 이 그림만 있으면 아래 케이스들이 한눈에 들어옵니다.
 
 <details>
 <summary>SVG 코드</summary>
@@ -45,28 +45,28 @@ JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데
 <rect x="184" y="110" width="18" height="14" rx="2" fill="#D6E4FB" stroke="#B9CBE8"/>
 <rect x="34" y="136" width="176" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
 <text x="122" y="154.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle">GC (로봇 청소기)가 정리</text>
-<text x="122" y="168.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle">정지(STW)가 길면 → 상황 1</text>
+<text x="122" y="168.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle">정지(STW)가 길면 → 케이스 1</text>
 <rect x="34" y="190" width="176" height="30" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
-<text x="122" y="209" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">힙이 가득 차면 → 상황 2</text>
+<text x="122" y="209" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">힙이 가득 차면 → 케이스 2</text>
 <rect x="232" y="62" width="188" height="170" rx="6" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
 <text x="326" y="79" font-size="11" fill="#555" text-anchor="middle" font-weight="bold">힙 밖 (네이티브)</text>
 <rect x="242" y="88" width="168" height="62" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
 <text x="326" y="108.2" font-size="10.5" fill="#9E3A57" text-anchor="middle">Metaspace (설계도 책꽂이)</text>
 <text x="326" y="122.7" font-size="10.5" fill="#9E3A57" text-anchor="middle">클래스 메타데이터</text>
-<text x="326" y="137.2" font-size="10.5" fill="#9E3A57" text-anchor="middle">가득 차면 → 상황 3</text>
+<text x="326" y="137.2" font-size="10.5" fill="#9E3A57" text-anchor="middle">가득 차면 → 케이스 3</text>
 <rect x="242" y="158" width="168" height="64" rx="6" fill="#FFF3E0" stroke="#E8C98F"/>
 <text x="326" y="179.5" font-size="10" fill="#333" text-anchor="middle">베란다, 창고</text>
 <text x="326" y="193.5" font-size="10" fill="#333" text-anchor="middle">스레드 스택, 다이렉트 버퍼,</text>
-<text x="326" y="207.5" font-size="10" fill="#333" text-anchor="middle">코드 캐시 (스택 총합 → 상황 7)</text>
+<text x="326" y="207.5" font-size="10" fill="#333" text-anchor="middle">코드 캐시 (스택 총합 → 케이스 7)</text>
 <rect x="22" y="244" width="398" height="36" rx="6" fill="#FDECEC" stroke="#D9534F"/>
-<text x="221" y="266" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">힙 + 힙 밖 합계가 한도를 넘으면 → 상황 4 (OOMKilled)</text>
+<text x="221" y="266" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">힙 + 힙 밖 합계가 한도를 넘으면 → 케이스 4 (OOMKilled)</text>
 </svg>
 ```
 
 </details>
 
 <figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
-  <img src="/img/c4/jvm-tuning-memory-areas.svg" alt="컨테이너 메모리 한도 안에서 힙, Metaspace, 네이티브 메모리가 차지하는 공간과 각 공간이 부족할 때 해당하는 상황 번호" style={{width: '100%', maxWidth: '640px'}} />
+  <img src="/img/c4/jvm-tuning-memory-areas.svg" alt="컨테이너 메모리 한도 안에서 힙, Metaspace, 네이티브 메모리가 차지하는 공간과 각 공간이 부족할 때 해당하는 케이스 번호" style={{width: '100%', maxWidth: '640px'}} />
 </figure>
 
 ## 튜닝 전에 — 측정부터
@@ -86,7 +86,7 @@ JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데
 
 <mark>측정 없이 하는 튜닝은 추측입니다 — GC 로그, JFR, 힙 덤프로 원인을 먼저 특정한 뒤, 옵션은 한 번에 하나씩만 변경해 효과를 확인합니다.</mark>
 
-측정으로 확인한 증상이 아래 상황 중 어디에 해당하는지는 다음 흐름으로 찾습니다.
+측정으로 확인한 증상이 아래 케이스 중 어디에 해당하는지는 다음 흐름으로 찾습니다.
 
 <details>
 <summary>SVG 코드</summary>
@@ -95,7 +95,7 @@ JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데
 <svg xmlns="http://www.w3.org/2000/svg" width="440" height="476" viewBox="0 0 440 476" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
 <rect x="0" y="0" width="440" height="476" fill="#FFFFFF"/>
-<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">증상에서 상황 찾기</text>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">증상에서 케이스 찾기</text>
 <rect x="80" y="34" width="280" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
 <text x="220" y="54" font-size="11" fill="#333" text-anchor="middle">GC 로그, JFR, 힙 덤프로 증상 확인</text>
 <line x1="220" y1="66" x2="220" y2="78" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
@@ -105,25 +105,25 @@ JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데
 <text x="145" y="130.7" font-size="10.5" fill="#333" text-anchor="middle">OutOfMemoryError: Java heap space</text>
 <line x1="270" y1="127" x2="292" y2="127" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="294" y="108" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
-<text x="357" y="124" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 2</text>
+<text x="357" y="124" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">케이스 2</text>
 <text x="357" y="139" font-size="9.5" fill="#555" text-anchor="middle">누수인지 부족인지</text>
 <rect x="20" y="154" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
 <text x="145" y="176.7" font-size="10.5" fill="#333" text-anchor="middle">OutOfMemoryError: Metaspace</text>
 <line x1="270" y1="173" x2="292" y2="173" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="294" y="154" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
-<text x="357" y="170" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 3</text>
+<text x="357" y="170" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">케이스 3</text>
 <text x="357" y="185" font-size="9.5" fill="#555" text-anchor="middle">MaxMetaspaceSize</text>
 <rect x="20" y="200" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
 <text x="145" y="222.7" font-size="10.5" fill="#333" text-anchor="middle">예외 없이 OOMKilled (exit 137)</text>
 <line x1="270" y1="219" x2="292" y2="219" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="294" y="200" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
-<text x="357" y="216" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 4</text>
+<text x="357" y="216" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">케이스 4</text>
 <text x="357" y="231" font-size="9.5" fill="#555" text-anchor="middle">MaxRAMPercentage</text>
 <rect x="20" y="246" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
 <text x="145" y="268.7" font-size="10.5" fill="#333" text-anchor="middle">StackOverflowError, 스레드 과다</text>
 <line x1="270" y1="265" x2="292" y2="265" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="294" y="246" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
-<text x="357" y="262" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 7</text>
+<text x="357" y="262" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">케이스 7</text>
 <text x="357" y="277" font-size="9.5" fill="#555" text-anchor="middle">-Xss 조정</text>
 <text x="20" y="314" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">느리거나 목적이 따로 있는 경우</text>
 <line x1="20" y1="320" x2="420" y2="320" stroke="#4C7FE0" stroke-width="0.8"/>
@@ -131,19 +131,19 @@ JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데
 <text x="145" y="350.7" font-size="10.5" fill="#333" text-anchor="middle">가끔 응답이 크게 지연 (긴 STW 정지)</text>
 <line x1="270" y1="347" x2="292" y2="347" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="294" y="328" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
-<text x="357" y="344" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 1</text>
+<text x="357" y="344" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">케이스 1</text>
 <text x="357" y="359" font-size="9.5" fill="#555" text-anchor="middle">Xms=Xmx, GC 교체</text>
 <rect x="20" y="374" width="250" height="38" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
 <text x="145" y="396.7" font-size="10.5" fill="#333" text-anchor="middle">배치 전체 처리량이 중요</text>
 <line x1="270" y1="393" x2="292" y2="393" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="294" y="374" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
-<text x="357" y="390" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 5</text>
+<text x="357" y="390" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">케이스 5</text>
 <text x="357" y="405" font-size="9.5" fill="#555" text-anchor="middle">Parallel GC</text>
 <rect x="20" y="420" width="250" height="38" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
 <text x="145" y="442.7" font-size="10.5" fill="#333" text-anchor="middle">기동이 느려 스케일 대응이 늦음</text>
 <line x1="270" y1="439" x2="292" y2="439" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="294" y="420" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
-<text x="357" y="436" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 6</text>
+<text x="357" y="436" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">케이스 6</text>
 <text x="357" y="451" font-size="9.5" fill="#555" text-anchor="middle">AppCDS, Tiered=1</text>
 </svg>
 ```
@@ -151,10 +151,10 @@ JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데
 </details>
 
 <figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
-  <img src="/img/c4/jvm-tuning-symptom-flow.svg" alt="확인한 증상별로 해당하는 상황 번호와 조절할 옵션을 찾는 흐름도" style={{width: '100%', maxWidth: '640px'}} />
+  <img src="/img/c4/jvm-tuning-symptom-flow.svg" alt="확인한 증상별로 해당하는 케이스 번호와 조절할 옵션을 찾는 흐름도" style={{width: '100%', maxWidth: '640px'}} />
 </figure>
 
-## 상황 1 — GC 정지가 길다(지연 스파이크)
+## 케이스 1 — GC 정지가 길다(지연 스파이크)
 
 **증상**: 평상시 빠른데 가끔 응답이 크게 지연된다. GC 로그에 수백 ms~초 단위 stop-the-world 정지가 보인다.
 
@@ -182,7 +182,7 @@ GC 로그를 열면 이러한 줄이 보입니다 — 맨 끝 `830.5ms`가 그 �
 
 <mark>`Xms`와 `Xmx`를 같게 설정하는 것만으로도 힙을 늘였다 줄였다 하며 생기는 정지가 사라집니다.</mark> 정지 자체가 서비스 목표(SLO)를 못 지키면 G1 → ZGC/Shenandoah로 교체합니다.
 
-## 상황 2 — 힙 OutOfMemoryError
+## 케이스 2 — 힙 OutOfMemoryError
 
 **증상**: `java.lang.OutOfMemoryError: Java heap space`로 애플리케이션이 종료된다.
 
@@ -214,7 +214,7 @@ java.lang.OutOfMemoryError: Java heap space
 
 <mark>OOM의 절반 이상은 부족이 아니라 누수라, `-Xmx`를 키우는 건 근본 해결이 아닌 경우가 많습니다.</mark>
 
-## 상황 3 — Metaspace OutOfMemoryError
+## 케이스 3 — Metaspace OutOfMemoryError
 
 **증상**: `OutOfMemoryError: Metaspace`. 힙이 아니라 **클래스 메타데이터** 영역이 찬 것이다.
 
@@ -236,7 +236,7 @@ java.lang.OutOfMemoryError: Java heap space
 
 <mark>Metaspace는 힙과 별개 영역이라 `-Xmx`로는 해결되지 않습니다 — 상한을 두되, 계속 는다면 클래스로더 누수를 의심합니다.</mark>
 
-## 상황 4 — 컨테이너에서 OOMKilled
+## 케이스 4 — 컨테이너에서 OOMKilled
 
 **증상**: 힙 OOM은 없는데 컨테이너가 `OOMKilled`(exit 137)로 종료된다. **JVM 전체 메모리가 컨테이너 한도를 넘은 것**이다.
 
@@ -267,7 +267,7 @@ $ kubectl describe pod my-app-xxxx
 
 <mark>컨테이너에선 `-Xmx` 고정값보다 `-XX:MaxRAMPercentage`로 비율 지정이 안전하고, 힙 밖 메모리 몫을 남겨 둬야 OOMKilled를 피합니다.</mark> 스레드 수가 많은 애플리케이션은 스택 총합도 무시 못 한다([스레드 풀](./spring-boot-thread-pools)).
 
-## 상황 5 — 처리량이 최우선인 배치
+## 케이스 5 — 처리량이 최우선인 배치
 
 **증상이 아니라 목적**: 야간 배치처럼 **개별 지연은 상관없고 전체 처리량**이 중요합니다.
 
@@ -288,7 +288,7 @@ $ kubectl describe pod my-app-xxxx
 
 <mark>지연이 목표가 아니면 저지연 GC를 붙일 이유가 없습니다 — 처리량 배치엔 Parallel GC + 큰 힙이 맞습니다.</mark>
 
-## 상황 6 — 기동 시간을 줄여야 한다
+## 케이스 6 — 기동 시간을 줄여야 한다
 
 **증상**: 오토스케일, 서버리스, 롤링 배포에서 **기동에 오래 걸려** 스케일 대응이 느리다.
 
@@ -307,7 +307,7 @@ $ kubectl describe pod my-app-xxxx
   unit="기동 시간(상대)"
 /> <mark>단, `TieredStopAtLevel=1`은 오래 도는 서버의 최대 성능은 낮추므로, 기동이 실제 병목일 때만 사용합니다.</mark>
 
-## 상황 7 — 스레드, 스택 관련
+## 케이스 7 — 스레드, 스택 관련
 
 **증상**: `StackOverflowError`(깊은 재귀) 또는 스레드가 매우 많아 스택 총합이 메모리를 압박.
 
@@ -316,7 +316,7 @@ $ kubectl describe pod my-app-xxxx
 -Xss256k     # 스레드 수천 개면 하향해 총합을 줄임
 ```
 
-스택 크기는 **한 스레드용**이라, 스레드 수만큼 늘어나 전체 메모리에 영향을 줍니다. 방향이 상황마다 반대인 점만 주의합니다.
+스택 크기는 **한 스레드용**이라, 스레드 수만큼 늘어나 전체 메모리에 영향을 줍니다. 방향이 케이스마다 반대인 점만 주의합니다.
 
 ## GC 종류 고르기
 

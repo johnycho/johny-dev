@@ -65,7 +65,7 @@ M -> DB : COMMIT (확정)
 
 ## flush는 언제 실행되나 — 모드와 트리거
 
-flush가 자동으로 실행되는 시점은 **flush 모드**가 정합니다. JPA는 `AUTO`(기본)와 `COMMIT`을, Hibernate는 추가로 `ALWAYS`, `MANUAL`을 둡니다.
+flush가 자동으로 실행되는 시점은 **flush 모드**가 정합니다. JPA는 `AUTO`(기본)와 `COMMIT`을, Hibernate는 추가로 `ALWAYS`, `MANUAL`을 제공합니다.
 
 | 모드 | flush 시점 |
 |---|---|
