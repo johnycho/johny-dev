@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="90" viewBox="0 0 440 90" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="90" fill="#FFFFFF"/>
+<rect x="12" y="22" width="92" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="58.0" y="42.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">유입</text>
+<text x="58.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">100 rps</text>
+<line x1="104" y1="45" x2="119" y2="45" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="120" y="22" width="92" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="166.0" y="42.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">A단계</text>
+<text x="166.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">여유 100</text>
+<line x1="212" y1="45" x2="227" y2="45" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="22" width="92" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="274.0" y="42.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">B단계 ⚠️</text>
+<text x="274.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">한계 40</text>
+<line x1="320" y1="45" x2="335" y2="45" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="336" y="22" width="92" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="382.0" y="42.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">C단계</text>
+<text x="382.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">여유 40</text>
+</svg>

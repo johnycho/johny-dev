@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="304" viewBox="0 0 440 304" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="304" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">커서 FOR UPDATE — Reader의 락이 Writer를 막는다</text>
+<rect x="4.0" y="40" width="136" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="72" y="58.5" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Reader</text>
+<text x="72" y="73.5" font-size="10.5" fill="#555" text-anchor="middle">커넥션 A / 트랜잭션 A</text>
+<line x1="72" y1="84" x2="72" y2="294" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="152.0" y="40" width="136" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="66.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+<line x1="220" y1="84" x2="220" y2="294" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="300.0" y="40" width="136" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="368" y="58.5" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Writer</text>
+<text x="368" y="73.5" font-size="10.5" fill="#555" text-anchor="middle">커넥션 B / 트랜잭션 B</text>
+<line x1="368" y1="84" x2="368" y2="294" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="72" y1="150" x2="219" y2="150" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="146.0" y="144" font-size="10.5" fill="#333" text-anchor="middle">(A가 보유, 스텝 내내)</text>
+<text x="146.0" y="130" font-size="10.5" fill="#333" text-anchor="middle">→ 행 잠금</text>
+<text x="146.0" y="116" font-size="10.5" fill="#333" text-anchor="middle">SELECT ... FOR UPDATE</text>
+<line x1="368" y1="190" x2="221" y2="190" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="294.0" y="184" font-size="10.5" fill="#333" text-anchor="middle">UPDATE 같은 행</text>
+<line x1="220" y1="230" x2="367" y2="230" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="294.0" y="224" font-size="10.5" fill="#333" text-anchor="middle">A의 락 때문에 대기(block)</text>
+<rect x="180" y="252" width="228" height="42" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="294.0" y="270" font-size="10.5" fill="#5A4300" text-anchor="middle">A는 스텝 끝까지 커밋 안 함</text>
+<text x="294.0" y="286" font-size="10.5" fill="#5A4300" text-anchor="middle">→ lock wait timeout</text>
+</svg>

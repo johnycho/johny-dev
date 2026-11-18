@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="226" viewBox="0 0 440 226" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="226" fill="#FFFFFF"/>
+<g transform="translate(0,-24)">
+<rect x="20" y="40" width="170" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="105.0" y="60.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">정상 클라이언트</text>
+<text x="105.0" y="76.0" font-size="10.5" fill="#555" text-anchor="middle">/tracks/123</text>
+<rect x="250" y="40" width="170" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="335.0" y="60.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">구버전 애플리케이션</text>
+<text x="335.0" y="76.0" font-size="10.5" fill="#555" text-anchor="middle">/tracks/undefined</text>
+<rect x="160" y="130" width="120" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="150.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">로드밸런서</text>
+<line x1="105" y1="86" x2="190" y2="128" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="335" y1="86" x2="250" y2="128" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="300" y="116" font-size="10.5" fill="#333" text-anchor="start">스티키 라우팅</text>
+<rect x="20" y="205" width="170" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="105.0" y="225.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">인스턴스 1, 2: 정상</text>
+<rect x="250" y="205" width="170" height="32" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="335.0" y="225.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">인스턴스 3: 400</text>
+<line x1="190" y1="162" x2="105" y2="203" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="250" y1="162" x2="335" y2="203" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="300" y="186" font-size="10.5" fill="#333" text-anchor="start">BAD 요청이 이쪽으로</text>
+</g>
+</svg>

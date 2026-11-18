@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="508" viewBox="0 0 440 508" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="508" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Parallel GC — STW 중 멀티 스레드가</text>
+<text x="220" y="39" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Young, Old를 병렬로 정리</text>
+<rect x="16" y="54" width="408" height="84" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="28" y="72" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">애플리케이션</text>
+<rect x="16" y="146" width="408" height="262" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="28" y="164" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">GC, STW (멀티 스레드)</text>
+<rect x="16" y="416" width="408" height="84" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="28" y="434" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">애플리케이션</text>
+<circle cx="220" cy="78" r="8" fill="#333"/>
+<line x1="220" y1="86" x2="220" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="140" y="100" width="160" height="28" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="118.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">실행 중 객체 생성</text>
+<line x1="220" y1="128" x2="220" y2="176" stroke="#888" stroke-width="1.2"/>
+<line x1="79.0" y1="176" x2="361.0" y2="176" stroke="#333" stroke-width="3"/>
+<line x1="79.0" y1="176" x2="79.0" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="39.0" y="190" width="80" height="26" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="79.0" y="207.0" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">스레드1</text>
+<line x1="79.0" y1="216" x2="79.0" y2="230" stroke="#888" stroke-width="1.2"/>
+<line x1="173.0" y1="176" x2="173.0" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="133.0" y="190" width="80" height="26" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="173.0" y="207.0" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">스레드2</text>
+<line x1="173.0" y1="216" x2="173.0" y2="230" stroke="#888" stroke-width="1.2"/>
+<line x1="267.0" y1="176" x2="267.0" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="227.0" y="190" width="80" height="26" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="267.0" y="207.0" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">스레드3</text>
+<line x1="267.0" y1="216" x2="267.0" y2="230" stroke="#888" stroke-width="1.2"/>
+<line x1="361.0" y1="176" x2="361.0" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="321.0" y="190" width="80" height="26" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="361.0" y="207.0" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">스레드4</text>
+<line x1="361.0" y1="216" x2="361.0" y2="230" stroke="#888" stroke-width="1.2"/>
+<line x1="79.0" y1="230" x2="361.0" y2="230" stroke="#333" stroke-width="3"/>
+<line x1="220" y1="230" x2="220" y2="240" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="90" y="240" width="260" height="40" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220.0" y="256.5" font-size="10.5" fill="#5A4300" text-anchor="middle">Young, Old 모두 위 멀티 스레드가</text>
+<text x="220.0" y="271.5" font-size="10.5" fill="#5A4300" text-anchor="middle">나눠 병렬 처리 (JDK 7u4+)</text>
+<line x1="220" y1="280" x2="220" y2="290" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="290" width="360" height="58" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="308.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">Young(Eden+Survivor)</text>
+<text x="220.0" y="323.0" font-size="10.5" fill="#444" text-anchor="middle">사용 중인 객체를 복사(copy)해 Survivor/Old로 이동,</text>
+<text x="220.0" y="338.0" font-size="10.5" fill="#444" text-anchor="middle">Eden 비움</text>
+<line x1="220" y1="348" x2="220" y2="362" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="60" y="363" width="320" height="42" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="380.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">Old</text>
+<text x="220.0" y="395.5" font-size="10.5" fill="#444" text-anchor="middle">마킹(mark) → 정리(sweep) → 압축(compact)</text>
+<line x1="220" y1="405" x2="220" y2="450" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="140" y="451" width="160" height="28" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="469.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">정지 해제, 실행 재개</text>
+<line x1="220" y1="479" x2="220" y2="487" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="488" r="9" fill="#FFFFFF" stroke="#333" stroke-width="1.5"/>
+<circle cx="220" cy="488" r="5" fill="#333"/>
+</svg>

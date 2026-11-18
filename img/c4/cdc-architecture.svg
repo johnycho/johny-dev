@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="362" viewBox="0 0 440 362" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="362" fill="#FFFFFF"/>
+<rect x="125" y="16" width="190" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="34.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">MySQL</text>
+<text x="220.0" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">트랜잭션 로그(binlog)</text>
+<line x1="220" y1="60" x2="220" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="227" y="84" font-size="10.5" fill="#333" text-anchor="start">binlog 읽기</text>
+<rect x="150" y="100" width="140" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="118.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">Debezium</text>
+<text x="220.0" y="133.5" font-size="10.5" fill="#555" text-anchor="middle">커넥터</text>
+<polyline points="200,144 200,162 110,162 110,209" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="240,144 240,162 330,162 330,209" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="117" y="182" font-size="10" fill="#333" text-anchor="start">경로 A</text>
+<text x="117" y="195" font-size="10" fill="#333" text-anchor="start">(Kafka Connect)</text>
+<text x="323" y="182" font-size="10" fill="#333" text-anchor="end">경로 B</text>
+<text x="323" y="195" font-size="10" fill="#333" text-anchor="end">(Debezium Server)</text>
+<rect x="35" y="210" width="150" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="228.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Kafka</text>
+<text x="110.0" y="243.5" font-size="10.5" fill="#555" text-anchor="middle">토픽(테이블별)</text>
+<rect x="255" y="210" width="150" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="330.0" y="228.5" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">RabbitMQ</text>
+<text x="330.0" y="243.5" font-size="10.5" fill="#555" text-anchor="middle">exchange</text>
+<line x1="110" y1="254" x2="170" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="330" y1="254" x2="270" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110" y="300" width="220" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="318.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">소비자</text>
+<text x="220.0" y="333.5" font-size="10.5" fill="#555" text-anchor="middle">캐시, 검색, 타 서비스, DW</text>
+</svg>

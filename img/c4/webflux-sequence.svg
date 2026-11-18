@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="350" viewBox="0 0 440 350" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="350" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">WebFlux — 이벤트 루프가 대기 없이 다른 요청 처리</text>
+<line x1="72" y1="67" x2="72" y2="307" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="6.0" y="40" width="132" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="72.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">클라이언트</text>
+<line x1="220" y1="67" x2="220" y2="307" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="154.0" y="40" width="132" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">이벤트 루프 스레드</text>
+<line x1="368" y1="67" x2="368" y2="307" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="302.0" y="40" width="132" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="368.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">R2DBC / WebClient</text>
+<rect x="215" y="97" width="10" height="34" fill="#EEF3FB" stroke="#4C7FE0"/>
+<rect x="215" y="263" width="10" height="34" fill="#EEF3FB" stroke="#4C7FE0"/>
+<line x1="72" y1="97" x2="214" y2="97" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="127.5" y="81.5" width="31.9" height="13.5" fill="#FFFFFF"/>
+<text x="143.5" y="92.0" font-size="10.5" fill="#333" text-anchor="middle">요청A</text>
+<line x1="225" y1="131" x2="367" y2="131" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="240.5" y="115.5" width="111.9" height="13.5" fill="#FFFFFF"/>
+<text x="296.5" y="126.0" font-size="10.5" fill="#333" text-anchor="middle">논블로킹 DB 조회 등록</text>
+<rect x="228.0" y="143" width="140.0" height="39.0" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="298.0" y="159.5" font-size="10.5" fill="#5A4300" text-anchor="middle">콜백만 등록하고</text>
+<text x="298.0" y="174.0" font-size="10.5" fill="#5A4300" text-anchor="middle">즉시 반환 (점유 안 함)</text>
+<polyline points="220,203 248,203 248,219 222,219" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="252.0" y="204.5" width="108.2" height="13.5" fill="#FFFFFF"/>
+<text x="254" y="215.0" font-size="10.5" fill="#333" text-anchor="start">그 사이 요청B, C 처리</text>
+<line x1="368" y1="263" x2="226" y2="263" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="251.0" y="247.5" width="90.9" height="13.5" fill="#FFFFFF"/>
+<text x="296.5" y="258.0" font-size="10.5" fill="#333" text-anchor="middle">완료 이벤트 (콜백)</text>
+<line x1="215" y1="297" x2="73" y2="297" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="115.4" y="281.5" width="56.3" height="13.5" fill="#FFFFFF"/>
+<text x="143.5" y="292.0" font-size="10.5" fill="#333" text-anchor="middle">요청A 응답</text>
+<rect x="75.0" y="313" width="290.0" height="24.5" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220" y="329.5" font-size="10.5" fill="#5A4300" text-anchor="middle">소수 스레드가 대기 없이 여러 요청을 번갈아 처리</text>
+</svg>

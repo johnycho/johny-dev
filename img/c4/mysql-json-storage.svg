@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="146" viewBox="0 0 440 146" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="146" fill="#FFFFFF"/>
+<rect x="12" y="12" width="204" height="122" rx="8" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="30" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">TEXT에 JSON 문자열</text>
+<rect x="22" y="40" width="184" height="82" rx="6" fill="#FFFFFF" stroke="#D06A86"/>
+<text x="114" y="64" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">JSON을 평문 문자열로 저장</text>
+<text x="32" y="86" font-size="10.5" fill="#333" text-anchor="start">- 저장 시 형식 검증 없음</text>
+<text x="32" y="104" font-size="10.5" fill="#333" text-anchor="start">- 경로 접근마다 전체를 다시 파싱</text>
+<rect x="224" y="12" width="204" height="122" rx="8" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="326.0" y="30" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">JSON 타입 (바이너리)</text>
+<rect x="234" y="40" width="184" height="82" rx="6" fill="#FFFFFF" stroke="#8FBF8F"/>
+<text x="326" y="64" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">키, 오프셋 룩업 + 값을 이진으로 저장</text>
+<text x="244" y="86" font-size="10.5" fill="#333" text-anchor="start">- 저장 시 형식 검증</text>
+<text x="244" y="104" font-size="10.5" fill="#333" text-anchor="start">- 키/인덱스로 해당 값에 바로 접근</text>
+</svg>

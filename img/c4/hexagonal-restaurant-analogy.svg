@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="410" viewBox="0 0 440 410" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="410" fill="#FFFFFF"/>
+<rect x="40" y="16" width="100" height="30" rx="15" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="90" y="35" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">손님</text>
+<line x1="90" y1="46" x2="90" y2="107" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="96.0" y="52.5" width="28" height="15" rx="3" fill="#FFFFFF"/>
+<text x="110" y="63.5" font-size="10" fill="#555" text-anchor="middle">주문</text>
+<rect x="15" y="70" width="185" height="92" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="27" y="88" font-size="11" fill="#333" text-anchor="start" font-weight="bold">밖 (외부 세계)</text>
+<rect x="25" y="108" width="130" height="42" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="90.0" y="125.46" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">웨이터</text>
+<text x="90.0" y="140.45999999999998" font-size="11" fill="#333" text-anchor="middle">인바운드 어댑터</text>
+<rect x="15" y="180" width="410" height="110" rx="8" fill="#EEF6FF" stroke="#4A90D9"/>
+<text x="413" y="198" font-size="11" fill="#26508F" text-anchor="end" font-weight="bold">안 (주방 = 코어)</text>
+<line x1="90" y1="150" x2="90" y2="221" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="30" y="222" width="120" height="44" rx="6" fill="#EEF6FF" stroke="#4A90D9"/>
+<text x="90.0" y="240.46" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">주문 출입구</text>
+<text x="90.0" y="255.46" font-size="11" fill="#26508F" text-anchor="middle">인바운드 포트</text>
+<rect x="170" y="222" width="100" height="44" rx="22" fill="#FFFFFF" stroke="#4A90D9"/>
+<text x="220" y="241" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">요리사</text>
+<text x="220" y="256" font-size="11" fill="#26508F" text-anchor="middle">유즈케이스</text>
+<rect x="290" y="222" width="120" height="44" rx="6" fill="#EEF6FF" stroke="#4A90D9"/>
+<text x="350.0" y="240.46" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">재료 출입구</text>
+<text x="350.0" y="255.46" font-size="11" fill="#26508F" text-anchor="middle">아웃바운드 포트</text>
+<line x1="150" y1="244" x2="169" y2="244" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="270" y1="244" x2="289" y2="244" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="350" y1="266" x2="350" y2="349" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="366.0" y="290.5" width="48" height="15" rx="3" fill="#FFFFFF"/>
+<text x="390" y="301.5" font-size="10" fill="#555" text-anchor="middle">재료 요청</text>
+<rect x="240" y="308" width="185" height="92" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="252" y="326" font-size="11" fill="#333" text-anchor="start" font-weight="bold">밖 (외부 세계)</text>
+<rect x="285" y="350" width="130" height="42" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="350.0" y="367.46" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">납품업체</text>
+<text x="350.0" y="382.46" font-size="11" fill="#333" text-anchor="middle">아웃바운드 어댑터</text>
+</svg>

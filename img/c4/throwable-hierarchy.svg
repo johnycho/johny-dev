@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="360" viewBox="0 0 440 360" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#FFFFFF" stroke="#777"/></marker></defs>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="360" fill="#FFFFFF"/>
+<rect x="140.0" y="12" width="110" height="31" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="195.0" y="31.5" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">Object</text>
+<rect x="140.0" y="72" width="110" height="31" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="195.0" y="91.5" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">Throwable</text>
+<rect x="27.0" y="140" width="110" height="31" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="82.0" y="159.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">Error</text>
+<rect x="253.0" y="140" width="110" height="31" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="308.0" y="159.5" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Exception</text>
+<rect x="166.0" y="208" width="140" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="236.0" y="227.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">RuntimeException</text>
+<text x="236.0" y="242.5" font-size="11" fill="#444" text-anchor="middle">(unchecked)</text>
+<rect x="326.0" y="208" width="104" height="61" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="378.0" y="227.5" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">IOException</text>
+<text x="378.0" y="242.5" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">SQLException</text>
+<text x="378.0" y="257.5" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">…</text>
+<rect x="12.0" y="208" width="140" height="61" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="82.0" y="227.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">OutOfMemoryError</text>
+<text x="82.0" y="242.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">StackOverflowError</text>
+<text x="82.0" y="257.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">…</text>
+<rect x="144.0" y="292" width="184" height="61" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="236.0" y="311.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">NullPointerException</text>
+<text x="236.0" y="326.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">IllegalArgumentException</text>
+<text x="236.0" y="341.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">…</text>
+<polyline points="195,72 195,44" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="82,140 82,121.5 195,121.5 195,104" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="308,140 308,121.5 195,121.5 195,104" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="236,208 236,189.5 308,189.5 308,172" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="378,208 378,189.5 308,189.5 308,172" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="236,292 236,255" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="82,208 82,172" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+</svg>

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="422" viewBox="0 0 440 422" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="422" fill="#FFFFFF"/>
+<circle cx="220" cy="16" r="7" fill="#555"/>
+<line x1="220" y1="23" x2="220" y2="39" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110.0" y="40" width="220" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="60.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">.hprof 열기</text>
+<circle cx="96.0" cy="56.0" r="8" fill="#4C7FE0"/>
+<text x="96.0" y="59.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<line x1="220" y1="72" x2="220" y2="89" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110.0" y="90" width="220" height="47" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="110.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Leak Suspects</text>
+<text x="220" y="125.0" font-size="10.5" fill="#555" text-anchor="middle">자동 리포트</text>
+<circle cx="96.0" cy="113.5" r="8" fill="#4C7FE0"/>
+<text x="96.0" y="117.0" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<line x1="220" y1="137" x2="220" y2="154" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110.0" y="155" width="220" height="47" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="175.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Dominator Tree</text>
+<text x="220" y="190.0" font-size="10.5" fill="#555" text-anchor="middle">유지 크기 큰 순</text>
+<circle cx="96.0" cy="178.5" r="8" fill="#4C7FE0"/>
+<text x="96.0" y="182.0" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<line x1="220" y1="202" x2="220" y2="219" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110.0" y="220" width="220" height="47" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="240.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Histogram</text>
+<text x="220" y="255.0" font-size="10.5" fill="#555" text-anchor="middle">클래스별 인스턴스 수</text>
+<circle cx="96.0" cy="243.5" r="8" fill="#4C7FE0"/>
+<text x="96.0" y="247.0" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+<line x1="220" y1="267" x2="220" y2="284" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110.0" y="285" width="220" height="47" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="305.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Path to GC Roots</text>
+<text x="220" y="320.0" font-size="10.5" fill="#555" text-anchor="middle">(soft/weak 제외)</text>
+<circle cx="96.0" cy="308.5" r="8" fill="#4C7FE0"/>
+<text x="96.0" y="312.0" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+<line x1="220" y1="332" x2="220" y2="349" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110.0" y="350" width="220" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220" y="370.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">원인 코드 특정</text>
+<circle cx="96.0" cy="366.0" r="8" fill="#4C7FE0"/>
+<text x="96.0" y="369.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+<line x1="220" y1="382" x2="220" y2="399" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="408" r="8" fill="#FFFFFF" stroke="#555" stroke-width="1.5"/>
+<circle cx="220" cy="408" r="4.5" fill="#555"/>
+</svg>

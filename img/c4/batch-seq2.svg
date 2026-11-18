@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="426" viewBox="0 0 440 426" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="426" fill="#FFFFFF"/>
+<g transform="translate(0,-26)">
+<rect x="12.0" y="40" width="86" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="55" y="60.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Reader</text>
+<line x1="55" y1="72" x2="55" y2="442" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="122.0" y="40" width="86" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="165" y="60.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+<line x1="165" y1="72" x2="165" y2="442" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="242.0" y="40" width="86" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="285" y="60.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Writer</text>
+<line x1="285" y1="72" x2="285" y2="442" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="352.0" y="40" width="86" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="395" y="60.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">다른 요청</text>
+<line x1="395" y1="72" x2="395" y2="442" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="14" y="86" width="312" height="26" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="170.0" y="104" font-size="10.5" fill="#5A4300" text-anchor="middle">청크 트랜잭션 A</text>
+<line x1="55" y1="152" x2="164" y2="152" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="110.0" y="146" font-size="10.5" fill="#333" text-anchor="middle">→ 500건 잠금</text>
+<text x="110.0" y="132" font-size="10.5" fill="#333" text-anchor="middle">FOR UPDATE 조회</text>
+<line x1="55" y1="184" x2="284" y2="184" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="170.0" y="178" font-size="10.5" fill="#333" text-anchor="middle">read() ×200</text>
+<line x1="285" y1="216" x2="166" y2="216" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="225.0" y="210" font-size="10.5" fill="#333" text-anchor="middle">UPDATE 200건</text>
+<rect x="14" y="230" width="312" height="42" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="170.0" y="248" font-size="10.5" fill="#5A4300" text-anchor="middle">커밋 A → 500건 락 전부 해제</text>
+<text x="170.0" y="264" font-size="10.5" fill="#5A4300" text-anchor="middle">(미처리 300건 포함)</text>
+<line x1="395" y1="304" x2="166" y2="304" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="280.0" y="298" font-size="10.5" fill="#333" text-anchor="middle">락 해제된 201~500행 수정 (끼어듦)</text>
+<rect x="14" y="318" width="312" height="26" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="170.0" y="336" font-size="10.5" fill="#5A4300" text-anchor="middle">청크 트랜잭션 B</text>
+<line x1="55" y1="384" x2="284" y2="384" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="170.0" y="378" font-size="10.5" fill="#333" text-anchor="middle">read() ×200 (남은 201~400)</text>
+<line x1="285" y1="428" x2="166" y2="428" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="225.0" y="422" font-size="10.5" fill="#333" text-anchor="middle">이미 다른 요청이 바꾼 뒤</text>
+<text x="225.0" y="408" font-size="10.5" fill="#333" text-anchor="middle">UPDATE —</text>
+</g>
+</svg>

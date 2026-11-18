@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="236" viewBox="0 0 440 236" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="236" fill="#FFFFFF"/>
+<rect x="100" y="16" width="240" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="34.46" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">컨텍스트 설정</text>
+<text x="220.0" y="49.46" font-size="11" fill="#26508F" text-anchor="middle">(같으면 재사용, 다르면 새로 제작)</text>
+<polyline points="220,60 220,82" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="115,82 325,82" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="115,82 115,100" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="325,82 325,100" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="220,82 220,156" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="115,166 115,156 325,156 325,166" fill="none" stroke="#888" stroke-width="1.2"/>
+<rect x="15" y="100" width="200" height="44" rx="6" fill="#FFDEDE" stroke="#D06A86"/>
+<text x="115.0" y="118.46" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">① 스캔할 패키지</text>
+<text x="115.0" y="133.45999999999998" font-size="11" fill="#9E3A57" text-anchor="middle">@ComponentScan</text>
+<rect x="225" y="100" width="200" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="325.0" y="118.46" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">② 활성 프로파일</text>
+<text x="325.0" y="133.45999999999998" font-size="11" fill="#333" text-anchor="middle">@ActiveProfiles</text>
+<rect x="15" y="166" width="200" height="44" rx="6" fill="#FFDEDE" stroke="#D06A86"/>
+<text x="115.0" y="184.46" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">③ 주입한 설정값</text>
+<text x="115.0" y="199.46" font-size="11" fill="#9E3A57" text-anchor="middle">@TestPropertySource</text>
+<rect x="225" y="166" width="200" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="325.0" y="184.46" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">④ 목(mock)으로 대체한 빈</text>
+<text x="325.0" y="199.46" font-size="11" fill="#333" text-anchor="middle">@MockBean 등</text>
+</svg>

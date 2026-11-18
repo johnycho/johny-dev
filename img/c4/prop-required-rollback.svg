@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="290" viewBox="0 0 440 290" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="290" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">REQUIRED — 같은 트랜잭션, 함께 롤백</text>
+<line x1="72" y1="67" x2="72" y2="228" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="4.0" y="40" width="136" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="72.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">호출부</text>
+<line x1="220" y1="67" x2="220" y2="228" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="152.0" y="40" width="136" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">외부 @Transactional</text>
+<line x1="368" y1="67" x2="368" y2="228" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="300.0" y="40" width="136" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="368.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">내부 REQUIRED</text>
+<line x1="72" y1="101" x2="219" y2="101" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="109.9" y="85.5" width="72.2" height="13.5" fill="#FFFFFF"/>
+<text x="146.0" y="96.0" font-size="10.5" fill="#333" text-anchor="middle">시작 (Tx 열림)</text>
+<line x1="220" y1="137" x2="367" y2="137" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="233.5" y="121.5" width="121.0" height="13.5" fill="#FFFFFF"/>
+<text x="294.0" y="132.0" font-size="10.5" fill="#333" text-anchor="middle">내부 호출 (같은 Tx 참여)</text>
+<line x1="368" y1="185" x2="221" y2="185" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="263.5" y="156.0" width="60.9" height="13.5" fill="#FFFFFF"/>
+<text x="294.0" y="166.5" font-size="10.5" fill="#333" text-anchor="middle">예외 → Tx를</text>
+<rect x="240.1" y="169.5" width="107.7" height="13.5" fill="#FFFFFF"/>
+<text x="294.0" y="180.0" font-size="10.5" fill="#333" text-anchor="middle">rollback-only로 표시</text>
+<line x1="220" y1="221" x2="73" y2="221" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="121.3" y="205.5" width="49.4" height="13.5" fill="#FFFFFF"/>
+<text x="146.0" y="216.0" font-size="10.5" fill="#333" text-anchor="middle">커밋 시도</text>
+<rect x="11.0" y="237" width="270.0" height="39.0" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="146.0" y="253.5" font-size="10.5" fill="#5A4300" text-anchor="middle">rollback-only → UnexpectedRollbackException,</text>
+<text x="146.0" y="268.0" font-size="10.5" fill="#5A4300" text-anchor="middle">전체 롤백</text>
+</svg>

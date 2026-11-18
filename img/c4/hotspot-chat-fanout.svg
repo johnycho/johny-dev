@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="276" viewBox="0 0 440 276" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="276" fill="#FFFFFF"/>
+<g transform="translate(0,-24)">
+<rect x="160" y="40" width="120" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="60.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">메시지 1건</text>
+<line x1="220" y1="72" x2="220" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="130" y="100" width="180" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="120.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">참여자 전원에게 알림</text>
+<rect x="15.0" y="170" width="125" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="77.5" y="190.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">참여자 1 조회</text>
+<line x1="220" y1="132" x2="77.5" y2="168" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="77.5" y1="202" x2="191.5" y2="238" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="157.5" y="170" width="125" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="190.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">참여자 2 조회</text>
+<line x1="220" y1="132" x2="220.0" y2="168" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="220.0" y1="202" x2="220.0" y2="238" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="300.0" y="170" width="125" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="362.5" y="190.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">... 5,000명 조회</text>
+<line x1="220" y1="132" x2="362.5" y2="168" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="362.5" y1="202" x2="248.5" y2="238" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M160,246 a60.0,6 0 0 0 120,0 v34 a60.0,6 0 0 1 -120,0 z" fill="#FCE4EC" stroke="#D06A86"/>
+<ellipse cx="220.0" cy="246" rx="60.0" ry="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="270.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">그 방의 샤드</text>
+</g>
+</svg>

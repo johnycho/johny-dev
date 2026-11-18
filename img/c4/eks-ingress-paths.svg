@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="346" viewBox="0 0 440 346" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="346" fill="#FFFFFF"/>
+<rect x="160" y="16" width="120" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="38.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">클라이언트</text>
+<rect x="40" y="100" width="140" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="110.0" y="118.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">ALB</text>
+<text x="110.0" y="133.5" font-size="10.5" fill="#555" text-anchor="middle">(L7, HTTP)</text>
+<rect x="260" y="100" width="140" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="330.0" y="118.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">NLB</text>
+<text x="330.0" y="133.5" font-size="10.5" fill="#555" text-anchor="middle">(L4, TCP)</text>
+<rect x="260" y="190" width="140" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="330.0" y="208.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Envoy</text>
+<text x="330.0" y="223.5" font-size="10.5" fill="#555" text-anchor="middle">(L7, HTTP)</text>
+<rect x="160" y="290" width="120" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="312.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">서비스(파드)</text>
+<line x1="195" y1="52" x2="125" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="150" y="74" font-size="10.5" fill="#333" text-anchor="end">경로 A</text>
+<line x1="245" y1="52" x2="315" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="290" y="74" font-size="10.5" fill="#333" text-anchor="start">경로 B</text>
+<line x1="330" y1="144" x2="330" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="110,144 110,308 159,308" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="117" y="230" font-size="10.5" fill="#333" text-anchor="start">HTTP 로그 = ALB(S3)</text>
+<polyline points="330,234 330,308 281,308" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="323" y="270" font-size="10.5" fill="#333" text-anchor="end">HTTP 로그 = Envoy/애플리케이션</text>
+</svg>

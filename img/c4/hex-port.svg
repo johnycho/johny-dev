@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="200" viewBox="0 0 440 200" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#FFFFFF" stroke="#888"/></marker></defs>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="#FFFFFF"/>
+<rect x="140" y="18" width="160" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="37.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">SaveOrderPort</text>
+<text x="220.0" y="52.5" font-size="10.5" fill="#444" text-anchor="middle">(인터페이스)</text>
+<rect x="20" y="136" width="180" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="155.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">유스케이스</text>
+<text x="110.0" y="170.5" font-size="10.5" fill="#444" text-anchor="middle">PlaceOrderService</text>
+<rect x="240" y="136" width="180" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="330.0" y="155.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">영속성 어댑터</text>
+<text x="330.0" y="170.5" font-size="10.5" fill="#444" text-anchor="middle">OrderPersistenceAdapter</text>
+<line x1="110" y1="136" x2="175" y2="65" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="132" y="100" font-size="10" fill="#333" text-anchor="end">의존</text>
+<line x1="330" y1="136" x2="266" y2="65" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#tri)"/>
+<text x="308" y="100" font-size="10" fill="#333" text-anchor="start">구현</text>
+</svg>

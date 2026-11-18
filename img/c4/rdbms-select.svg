@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="382" viewBox="0 0 440 382" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="382" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">RDBMS 고르기</text>
+<rect x="16" y="44" width="210" height="50" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="65.1" font-size="11.5" fill="#333" text-anchor="middle">상용 라이선스로 엔터프라이즈 지원,</text>
+<text x="121.0" y="80.6" font-size="11.5" fill="#333" text-anchor="middle">RAC 고가용성이 꼭 필요?</text>
+<rect x="316" y="44" width="120" height="50" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="376.0" y="65.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">Oracle /</text>
+<text x="376.0" y="81.2" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">SQL Server</text>
+<line x1="226" y1="69.0" x2="315" y2="69.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="271.0" y="63.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="94" x2="121.0" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="121" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">N</text>
+<rect x="16" y="140" width="210" height="50" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="161.1" font-size="11.5" fill="#333" text-anchor="middle">복잡한 분석 쿼리, 고급 타입,</text>
+<text x="121.0" y="176.6" font-size="11.5" fill="#333" text-anchor="middle">GIS, JSONB가 중요?</text>
+<rect x="316" y="140" width="120" height="50" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="376.0" y="169.1" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">PostgreSQL</text>
+<line x1="226" y1="165.0" x2="315" y2="165.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="271.0" y="159.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="190" x2="121.0" y2="235" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="217" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">N</text>
+<rect x="16" y="236" width="210" height="50" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="264.9" font-size="11.5" fill="#333" text-anchor="middle">수평 확장, 글로벌 분산이 필요?</text>
+<rect x="316" y="236" width="120" height="50" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="376.0" y="256.9" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">분산 SQL</text>
+<text x="376.0" y="273.1" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">(CockroachDB 등)</text>
+<line x1="226" y1="261.0" x2="315" y2="261.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="271.0" y="255.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="286" x2="121.0" y2="331" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="313" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">단순, 읽기 위주 웹 서비스</text>
+<rect x="55.47999999999999" y="332" width="131.04000000000002" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="121.0" y="353.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">MySQL / MariaDB</text>
+</svg>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="372" viewBox="0 0 440 372" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="372" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">헥사고날 멀티모듈 — 모듈 의존 방향</text>
+<rect x="10" y="36" width="420" height="82" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="22" y="54" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">실행 앱(인바운드)</text>
+<rect x="22" y="62" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="82.0" y="80.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-api</text>
+<text x="82.0" y="95.5" font-size="10.5" fill="#444" text-anchor="middle">REST 실행 앱</text>
+<rect x="160" y="62" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="80.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-consumer</text>
+<text x="220.0" y="95.5" font-size="10.5" fill="#444" text-anchor="middle">컨슈머 실행 앱</text>
+<rect x="298" y="62" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="358.0" y="80.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-batch</text>
+<text x="358.0" y="95.5" font-size="10.5" fill="#444" text-anchor="middle">배치 실행 앱</text>
+<rect x="130" y="162" width="180" height="52" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="176.5" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">app-domain</text>
+<text x="220.0" y="191.5" font-size="10" fill="#444" text-anchor="middle">도메인+애플리케이션</text>
+<text x="220.0" y="206.5" font-size="10" fill="#444" text-anchor="middle">포트, 유스케이스</text>
+<rect x="10" y="254" width="420" height="82" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="22" y="272" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">어댑터(아웃바운드)</text>
+<rect x="40" y="280" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115.0" y="298.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-persistence</text>
+<text x="115.0" y="313.5" font-size="10.5" fill="#444" text-anchor="middle">DB 아웃바운드 어댑터</text>
+<rect x="250" y="280" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="325.0" y="298.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-external-api</text>
+<text x="325.0" y="313.5" font-size="10.5" fill="#444" text-anchor="middle">외부 API 어댑터</text>
+<line x1="82" y1="106" x2="175" y2="161" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="118" y="142" font-size="10" fill="#333" text-anchor="end">의존</text>
+<line x1="220" y1="106" x2="220" y2="161" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="358" y1="106" x2="265" y2="161" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="115" y1="280" x2="185" y2="215" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="164" y="247" font-size="10" fill="#333" text-anchor="start">out 포트 구현</text>
+<line x1="325" y1="280" x2="255" y2="215" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="220" y="358" font-size="10" fill="#666" text-anchor="middle">모든 모듈이 app-domain을 의존한다 — app-domain은 어댑터 모듈을 의존하지 않는다.</text>
+</svg>

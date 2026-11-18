@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="272" viewBox="0 0 440 272" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="272" fill="#FFFFFF"/>
+<rect x="130" y="16" width="180" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="34.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">.proto</text>
+<text x="220.0" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">(서비스, 메시지 정의)</text>
+<line x1="220" y1="60" x2="220" y2="89" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="150" y="90" width="140" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="108.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">protoc</text>
+<text x="220.0" y="123.5" font-size="10.5" fill="#555" text-anchor="middle">코드 생성</text>
+<line x1="195" y1="134" x2="105" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="140" y="168" font-size="10.5" fill="#333" text-anchor="end">클라이언트 스텁</text>
+<line x1="245" y1="134" x2="335" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="300" y="168" font-size="10.5" fill="#333" text-anchor="start">서버 스켈레톤</text>
+<rect x="20" y="200" width="140" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="90.0" y="218.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">클라이언트</text>
+<text x="90.0" y="233.5" font-size="10.5" fill="#555" text-anchor="middle">(스텁)</text>
+<rect x="280" y="200" width="140" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="350.0" y="218.5" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">서버</text>
+<text x="350.0" y="233.5" font-size="10.5" fill="#555" text-anchor="middle">(서비스 구현)</text>
+<line x1="160" y1="222" x2="279" y2="222" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="220" y="215" font-size="10" fill="#333" text-anchor="middle">HTTP/2,</text>
+<text x="220" y="238" font-size="10" fill="#333" text-anchor="middle">protobuf 바이너리</text>
+</svg>

@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="262" viewBox="0 0 440 262" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="262" fill="#FFFFFF"/>
+<rect x="140" y="16" width="160" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="34.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">소스 DB</text>
+<text x="220.0" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">트랜잭션 로그</text>
+<rect x="20" y="110" width="180" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="110.0" y="128.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">Debezium 커넥터</text>
+<text x="110.0" y="143.5" font-size="10.5" fill="#555" text-anchor="middle">Connect, 임베디드</text>
+<rect x="240" y="110" width="180" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="330.0" y="128.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">AWS DMS</text>
+<text x="330.0" y="143.5" font-size="10.5" fill="#555" text-anchor="middle">복제 인스턴스(관리형)</text>
+<rect x="20" y="200" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="218.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Kafka/메시징</text>
+<text x="110.0" y="233.5" font-size="10.5" fill="#555" text-anchor="middle">변경 이벤트</text>
+<rect x="240" y="200" width="180" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="330.0" y="218.5" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">타깃</text>
+<text x="330.0" y="233.5" font-size="10.5" fill="#555" text-anchor="middle">Aurora, S3, Kinesis, Kafka</text>
+<line x1="185" y1="60" x2="125" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="145" y="84" font-size="10.5" fill="#333" text-anchor="end">(A) 이벤트 스트리밍</text>
+<line x1="255" y1="60" x2="315" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="295" y="84" font-size="10.5" fill="#333" text-anchor="start">(B) 마이그레이션, 복제</text>
+<line x1="110" y1="154" x2="110" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="330" y1="154" x2="330" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>

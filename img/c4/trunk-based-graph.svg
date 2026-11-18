@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="140" viewBox="0 0 440 140" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="140" fill="#FFFFFF"/>
+<line x1="96" y1="26" x2="426" y2="26" stroke="#E6E6E6" stroke-width="1"/>
+<text x="12" y="30" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">main</text>
+<line x1="96" y1="66" x2="426" y2="66" stroke="#E6E6E6" stroke-width="1"/>
+<text x="12" y="70" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">short-lived</text>
+<line x1="96" y1="106" x2="426" y2="106" stroke="#E6E6E6" stroke-width="1"/>
+<text x="12" y="110" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">release/2.3</text>
+<path d="M110,26 C110,46.0 116.0,66 150,66 L150,66" fill="none" stroke="#D06A86" stroke-width="2.5"/>
+<line x1="110" y1="26" x2="190" y2="26" stroke="#4C7FE0" stroke-width="2.5"/>
+<path d="M150,66 L150,66 C184.0,66 190,46.0 190,26" fill="none" stroke="#D06A86" stroke-width="2.5"/>
+<line x1="190" y1="26" x2="230" y2="26" stroke="#4C7FE0" stroke-width="2.5"/>
+<line x1="230" y1="26" x2="270" y2="26" stroke="#4C7FE0" stroke-width="2.5"/>
+<path d="M270,26 C270,66.0 276.0,106 310,106 L310,106" fill="none" stroke="#7FB07F" stroke-width="2.5"/>
+<line x1="270" y1="26" x2="350" y2="26" stroke="#4C7FE0" stroke-width="2.5"/>
+<circle cx="110" cy="26" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="150" cy="66" r="7" fill="#D06A86" stroke="#FFFFFF" stroke-width="1.5"/>
+<text x="150" y="87" font-size="9.5" fill="#555" text-anchor="middle" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">1~2일</text>
+<circle cx="190" cy="26" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="190" cy="26" r="3" fill="#FFFFFF"/>
+<circle cx="230" cy="26" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="270" cy="26" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="310" cy="106" r="7" fill="#7FB07F" stroke="#FFFFFF" stroke-width="1.5"/>
+<text x="310" y="127" font-size="9.5" fill="#555" text-anchor="middle" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">cherry-pick</text>
+<circle cx="350" cy="26" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+</svg>

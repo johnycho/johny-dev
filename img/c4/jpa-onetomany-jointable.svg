@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="250" viewBox="0 0 440 250" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="250" fill="#FFFFFF"/>
+<rect x="30" y="16" width="200" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="130.0" y="34.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">member</text>
+<text x="130.0" y="49.5" font-size="10.5" fill="#444" text-anchor="middle">(id)</text>
+<rect x="30" y="96" width="200" height="60" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="130.0" y="115.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">member_orders</text>
+<text x="130.0" y="130.0" font-size="10.5" fill="#444" text-anchor="middle">(member_id, orders_id)</text>
+<text x="130.0" y="145.0" font-size="10.5" fill="#444" text-anchor="middle">← 의도치 않은 조인 테이블</text>
+<rect x="30" y="192" width="200" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="130.0" y="210.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">orders</text>
+<text x="130.0" y="225.5" font-size="10.5" fill="#444" text-anchor="middle">(id, ...)</text>
+<line x1="130" y1="60" x2="130" y2="95" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="130" y1="156" x2="130" y2="191" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="230" y1="126" x2="252" y2="126" stroke="#E0A000" stroke-dasharray="3 3"/>
+<rect x="252" y="92" width="176" height="68" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="340.0" y="110" font-size="10.5" fill="#5A4300" text-anchor="middle">@OneToMany 단방향 +</text>
+<text x="340.0" y="126" font-size="10.5" fill="#5A4300" text-anchor="middle">@JoinColumn 없음</text>
+<text x="340.0" y="142" font-size="10.5" fill="#5A4300" text-anchor="middle">→ 중간 테이블로 관리</text>
+</svg>

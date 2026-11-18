@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="352" viewBox="0 0 440 352" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="352" fill="#FFFFFF"/>
+<rect x="20" y="20" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="38.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">서비스 코드</text>
+<text x="110.0" y="53.5" font-size="10.5" fill="#555" text-anchor="middle">publisher.publishEvent(e)</text>
+<rect x="240" y="20" width="180" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="330.0" y="38.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">애그리거트</text>
+<text x="330.0" y="53.5" font-size="10.5" fill="#555" text-anchor="middle">registerEvent(e)</text>
+<rect x="230" y="110" width="200" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="330.0" y="128.5" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">repository.save()</text>
+<text x="330.0" y="143.5" font-size="10.5" fill="#555" text-anchor="middle">프록시가 @DomainEvents 수집</text>
+<rect x="90" y="200" width="260" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="218.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">ApplicationEventPublisher</text>
+<text x="220.0" y="233.5" font-size="10.5" fill="#555" text-anchor="middle">.publishEvent()</text>
+<rect x="105" y="290" width="230" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="308.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">@EventListener</text>
+<text x="220.0" y="323.5" font-size="10.5" fill="#555" text-anchor="middle">@TransactionalEventListener</text>
+<line x1="130" y1="64" x2="130" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="137" y="135" font-size="10.5" fill="#333" text-anchor="start">직접, 명시 발행</text>
+<line x1="330" y1="64" x2="330" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="337" y="91" font-size="10.5" fill="#333" text-anchor="start">이벤트 모음</text>
+<line x1="330" y1="154" x2="330" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="337" y="181" font-size="10.5" fill="#333" text-anchor="start">save 시 자동 발행</text>
+<line x1="220" y1="244" x2="220" y2="289" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="227" y="271" font-size="10.5" fill="#333" text-anchor="start">동기 호출</text>
+</svg>

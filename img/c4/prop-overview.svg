@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="330" viewBox="0 0 440 330" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="330" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">전파별 트랜잭션 경계</text>
+<rect x="16" y="40" width="408" height="88" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="28" y="58" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">REQUIRED (기본) — 참여</text>
+<rect x="36" y="70" width="140" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="106.0" y="95.9" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">외부 Tx</text>
+<rect x="244" y="70" width="160" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="324.0" y="88.1" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">내부: 같은 Tx</text>
+<text x="324.0" y="103.6" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">함께 커밋, 롤백</text>
+<line x1="176" y1="92" x2="243" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="136" width="408" height="88" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="28" y="154" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">REQUIRES_NEW — 새로</text>
+<rect x="36" y="166" width="140" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="106.0" y="191.9" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">외부 Tx (보류)</text>
+<rect x="244" y="166" width="160" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="324.0" y="184.1" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">내부: 독립 새 Tx</text>
+<text x="324.0" y="199.6" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">따로 커밋, 롤백</text>
+<line x1="176" y1="188" x2="243" y2="188" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="16" y="232" width="408" height="88" rx="8" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="28" y="250" font-size="11" fill="#7A5200" text-anchor="start" font-weight="bold">NESTED — 중첩(savepoint)</text>
+<rect x="36" y="262" width="140" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="106.0" y="287.9" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">외부 Tx</text>
+<rect x="244" y="262" width="160" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="324.0" y="280.1" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">savepoint</text>
+<text x="324.0" y="295.6" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">내부만 롤백 가능</text>
+<line x1="176" y1="284" x2="243" y2="284" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>

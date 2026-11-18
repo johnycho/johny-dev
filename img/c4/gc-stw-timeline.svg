@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="256" viewBox="0 0 440 256" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="256" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">GC 방식별 정지(STW) 타임라인 — 실행 vs 정지(GC)</text>
+<text x="114" y="65" font-size="11.5" fill="#333" text-anchor="end" font-weight="bold">Serial</text>
+<rect x="124.0" y="48" width="55.5" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="151.75" y="65" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<rect x="179.5" y="48" width="92.5" height="26" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="225.75" y="65" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">정지</text>
+<rect x="272.0" y="48" width="92.5" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="318.25" y="65" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<rect x="364.5" y="48" width="55.5" height="26" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="392.25" y="65" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">정지</text>
+<text x="114" y="107" font-size="11.5" fill="#333" text-anchor="end" font-weight="bold">Parallel</text>
+<rect x="124.0" y="90" width="55.5" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="151.75" y="107" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<rect x="179.5" y="90" width="55.5" height="26" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="207.25" y="107" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">정지</text>
+<rect x="235.0" y="90" width="74.0" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="272.0" y="107" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<rect x="309.0" y="90" width="55.5" height="26" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="336.75" y="107" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">정지</text>
+<rect x="364.5" y="90" width="55.5" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="392.25" y="107" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<text x="114" y="149" font-size="11.5" fill="#333" text-anchor="end" font-weight="bold">G1</text>
+<rect x="124.0" y="132" width="37.0" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="142.5" y="149" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<rect x="161.0" y="132" width="18.5" height="26" fill="#FCE4EC" stroke="#D06A86"/>
+<rect x="179.5" y="132" width="37.0" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="198.0" y="149" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<rect x="216.5" y="132" width="18.5" height="26" fill="#FCE4EC" stroke="#D06A86"/>
+<rect x="235.0" y="132" width="37.0" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="253.5" y="149" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<rect x="272.0" y="132" width="18.5" height="26" fill="#FCE4EC" stroke="#D06A86"/>
+<rect x="290.5" y="132" width="37.0" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="309.0" y="149" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<rect x="327.5" y="132" width="18.5" height="26" fill="#FCE4EC" stroke="#D06A86"/>
+<rect x="346.0" y="132" width="37.0" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="364.5" y="149" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<rect x="383.0" y="132" width="18.5" height="26" fill="#FCE4EC" stroke="#D06A86"/>
+<rect x="401.5" y="132" width="18.5" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="114" y="191" font-size="11.5" fill="#333" text-anchor="end" font-weight="bold">ZGC/Shenandoah</text>
+<rect x="124.0" y="174" width="296.0" height="26" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="272.0" y="191" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">실행</text>
+<line x1="124" y1="210" x2="420.0" y2="210" stroke="#999"/>
+<line x1="124.0" y1="210" x2="124.0" y2="214" stroke="#999"/>
+<text x="124.0" y="225" font-size="9.5" fill="#888" text-anchor="middle">0</text>
+<line x1="161.0" y1="210" x2="161.0" y2="214" stroke="#999"/>
+<text x="161.0" y="225" font-size="9.5" fill="#888" text-anchor="middle">2</text>
+<line x1="198.0" y1="210" x2="198.0" y2="214" stroke="#999"/>
+<text x="198.0" y="225" font-size="9.5" fill="#888" text-anchor="middle">4</text>
+<line x1="235.0" y1="210" x2="235.0" y2="214" stroke="#999"/>
+<text x="235.0" y="225" font-size="9.5" fill="#888" text-anchor="middle">6</text>
+<line x1="272.0" y1="210" x2="272.0" y2="214" stroke="#999"/>
+<text x="272.0" y="225" font-size="9.5" fill="#888" text-anchor="middle">8</text>
+<line x1="309.0" y1="210" x2="309.0" y2="214" stroke="#999"/>
+<text x="309.0" y="225" font-size="9.5" fill="#888" text-anchor="middle">10</text>
+<line x1="346.0" y1="210" x2="346.0" y2="214" stroke="#999"/>
+<text x="346.0" y="225" font-size="9.5" fill="#888" text-anchor="middle">12</text>
+<line x1="383.0" y1="210" x2="383.0" y2="214" stroke="#999"/>
+<text x="383.0" y="225" font-size="9.5" fill="#888" text-anchor="middle">14</text>
+<line x1="420.0" y1="210" x2="420.0" y2="214" stroke="#999"/>
+<text x="420.0" y="225" font-size="9.5" fill="#888" text-anchor="middle">16</text>
+<rect x="130" y="239" width="14" height="10" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="150" y="248" font-size="10.5" fill="#333" text-anchor="start">실행</text>
+<rect x="200" y="239" width="14" height="10" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220" y="248" font-size="10.5" fill="#333" text-anchor="start">정지(GC)</text>
+</svg>

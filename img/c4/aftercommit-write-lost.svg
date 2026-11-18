@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="408" viewBox="0 0 480 408" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="480" height="408" fill="#FFFFFF"/>
+<text x="240.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">AFTER_COMMIT 리스너의 DB 쓰기가 유실되는 과정</text>
+<rect x="6.0" y="38" width="108" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="60.0" y="62.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">트랜잭션 T1</text>
+<line x1="60" y1="78" x2="60" y2="396" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="126.0" y="38" width="108" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="180.0" y="55.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">AFTER_COMMIT</text>
+<text x="180.0" y="69.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">리스너</text>
+<line x1="180" y1="78" x2="180" y2="396" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="246.0" y="38" width="108" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="300.0" y="55.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">markCancelled</text>
+<text x="300.0" y="69.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">(REQUIRED)</text>
+<line x1="300" y1="78" x2="300" y2="396" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="366.0" y="38" width="108" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="420.0" y="62.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">DB 커넥션</text>
+<line x1="420" y1="78" x2="420" y2="396" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<polyline points="60,100 80,100 80,114 62,114" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="84.0" y="94.5" width="128.9" height="13.5" fill="#FFFFFF"/>
+<text x="86" y="104" font-size="10.5" fill="#333" text-anchor="start">상태 전환 + 이벤트 발행</text>
+<polyline points="60,132 80,132 80,146 62,146" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="84.0" y="126.5" width="52.1" height="13.5" fill="#FFFFFF"/>
+<text x="86" y="136" font-size="10.5" fill="#333" text-anchor="start">커밋 완료</text>
+<line x1="60" y1="190" x2="179" y2="190" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="67.9" y="161.5" width="104.2" height="13.5" fill="#FFFFFF"/>
+<text x="120.0" y="171" font-size="10.5" fill="#333" text-anchor="middle">AFTER_COMMIT 콜백</text>
+<rect x="58.6" y="174.5" width="122.9" height="13.5" fill="#FFFFFF"/>
+<text x="120.0" y="184" font-size="10.5" fill="#333" text-anchor="middle">(커넥션은 아직 바인딩)</text>
+<line x1="180" y1="222" x2="299" y2="222" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="200.4" y="206.5" width="79.2" height="13.5" fill="#FFFFFF"/>
+<text x="240.0" y="216" font-size="10.5" fill="#333" text-anchor="middle">취소 영속 호출</text>
+<line x1="300" y1="251" x2="318" y2="251" stroke="#E0A000" stroke-dasharray="3 3"/>
+<rect x="318" y="238" width="140" height="26" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="388.0" y="256" font-size="10.5" fill="#5A4300" text-anchor="middle">합류라 자체 커밋 없음</text>
+<line x1="300" y1="302" x2="419" y2="302" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="306.0" y="273.5" width="108.0" height="13.5" fill="#FFFFFF"/>
+<text x="360.0" y="283" font-size="10.5" fill="#333" text-anchor="middle">이미 끝난 T1에 합류</text>
+<rect x="313.2" y="286.5" width="93.7" height="13.5" fill="#FFFFFF"/>
+<text x="360.0" y="296" font-size="10.5" fill="#333" text-anchor="middle">→ UPDATE flush</text>
+<line x1="180" y1="344" x2="419" y2="344" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="231.0" y="315.5" width="138.0" height="13.5" fill="#FFFFFF"/>
+<text x="300.0" y="325" font-size="10.5" fill="#333" text-anchor="middle">cleanupAfterCompletion</text>
+<rect x="262.6" y="328.5" width="74.8" height="13.5" fill="#FFFFFF"/>
+<text x="300.0" y="338" font-size="10.5" fill="#333" text-anchor="middle">(커넥션 반환)</text>
+<polyline points="420,360 400,360 400,374 418,374" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="400" y1="360" x2="420" y2="360" stroke="#888" stroke-width="1.2"/>
+<rect x="252.1" y="355.5" width="143.9" height="13.5" fill="#FFFFFF"/>
+<text x="394" y="365" font-size="10.5" fill="#9E3A57" text-anchor="end">커밋되지 않은 변경 → 롤백</text>
+<rect x="316.2" y="368.5" width="79.8" height="13.5" fill="#FFFFFF"/>
+<text x="394" y="378" font-size="10.5" fill="#9E3A57" text-anchor="end">(UPDATE 유실)</text>
+</svg>

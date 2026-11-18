@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="300" viewBox="0 0 360 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="360" height="300" fill="#FFFFFF"/>
+<circle cx="116" cy="14" r="7" fill="#444"/>
+<line x1="116" y1="21" x2="116" y2="31" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="32" width="200" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="116" y="50" font-size="11" fill="#333" text-anchor="middle">요청 이벤트</text>
+<line x1="116" y1="60" x2="116" y2="73" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="74" width="200" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="116" y="92" font-size="11" fill="#333" text-anchor="middle">방 단위 초 집계</text>
+<line x1="116" y1="102" x2="116" y2="115" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="36" y="116" width="160" height="30" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="116" y="135" font-size="11" fill="#333" text-anchor="middle">임곗값 초과?</text>
+<line x1="196" y1="131" x2="247" y2="131" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="222" y="126" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="248" y="116" width="96" height="30" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="296" y="135" font-size="11" fill="#333" text-anchor="middle">일반 처리</text>
+<line x1="116" y1="146" x2="116" y2="171" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="123" y="162" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="16" y="172" width="200" height="28" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="116" y="190" font-size="11" fill="#9E3A57" text-anchor="middle">핫 챗 마킹</text>
+<line x1="116" y1="200" x2="116" y2="213" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="214" width="200" height="28" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="116" y="232" font-size="11" fill="#9E3A57" text-anchor="middle">스로틀링 대상</text>
+<polyline points="116.0,242 116.0,270 116,270" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="296,146 296,270 125.0,270" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="116" y1="242" x2="116" y2="261" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="116" cy="270" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="116" cy="270" r="4.5" fill="#444"/>
+</svg>

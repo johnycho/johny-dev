@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="520" viewBox="0 0 440 520" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="520" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">응답이 느려질 때 — 무엇부터 바꾸나</text>
+<circle cx="220" cy="42" r="7" fill="#444"/>
+<line x1="220" y1="49" x2="220" y2="59" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="60" width="360" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="78" font-size="11" fill="#333" text-anchor="middle">증상 관측 - p99 지연 상승, 요청 대기</text>
+<line x1="220" y1="88" x2="220" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="100" width="360" height="42" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="117.5" font-size="11" fill="#333" text-anchor="middle">지표 확인 - CPU, 톰캣 active 스레드,</text>
+<text x="220" y="132.5" font-size="11" fill="#333" text-anchor="middle">Hikari active, pending, 큐 길이</text>
+<polyline points="220,142 220,151 108.0,151 108.0,163" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="164" width="184" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="108" y="184" font-size="11" fill="#333" text-anchor="middle">CPU가 포화 상태인가?</text>
+<line x1="200" y1="180" x2="221" y2="180" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="211" y="175" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="222" y="158" width="202" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="323" y="176.5" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">CPU 바운드 - 스레드 늘려도 불리</text>
+<text x="323" y="191" font-size="10.5" fill="#333" text-anchor="middle">수평 확장, 연산 최적화, 캐시</text>
+<line x1="323" y1="202" x2="323" y2="211" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="323" cy="220" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="323" cy="220" r="4.5" fill="#444"/>
+<line x1="108" y1="196" x2="108" y2="239" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="115" y="222" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N, CPU 여유</text>
+<rect x="16" y="240" width="184" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="108" y="257.5" font-size="11" fill="#333" text-anchor="middle">Hikari가 가득 차고</text>
+<text x="108" y="272.5" font-size="11" fill="#333" text-anchor="middle">대기가 있나?</text>
+<line x1="200" y1="261" x2="221" y2="261" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="211" y="256" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="222" y="234" width="202" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="323" y="246.8" font-size="10" fill="#26508F" text-anchor="middle" font-weight="bold">커넥션이 병목</text>
+<text x="323" y="259.4" font-size="10" fill="#333" text-anchor="middle">1. 느린 쿼리, 긴 트랜잭션부터 단축</text>
+<text x="323" y="271.9" font-size="10" fill="#333" text-anchor="middle">2. maximum-pool-size 상향</text>
+<text x="323" y="284.4" font-size="10" fill="#333" text-anchor="middle">- DB 한도 내</text>
+<line x1="108" y1="282" x2="108" y2="321" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="115" y="306" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="322" width="184" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="108" y="339.5" font-size="11" fill="#333" text-anchor="middle">톰캣 스레드가 가득 차고</text>
+<text x="108" y="354.5" font-size="11" fill="#333" text-anchor="middle">큐가 쌓이나?</text>
+<line x1="200" y1="343" x2="221" y2="343" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="211" y="338" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="222" y="310" width="202" height="66" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="323" y="327.1" font-size="10" fill="#26508F" text-anchor="middle" font-weight="bold">요청 스레드가 병목 - IO 대기</text>
+<text x="323" y="340.1" font-size="10" fill="#333" text-anchor="middle">리틀의 법칙으로 목표 동시수 산출</text>
+<text x="323" y="353.1" font-size="10" fill="#333" text-anchor="middle">threads.max 상향 +</text>
+<text x="323" y="366.1" font-size="10" fill="#333" text-anchor="middle">Hikari, 다운스트림 동반</text>
+<line x1="108" y1="364" x2="108" y2="397" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="115" y="385" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="398" width="184" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="108" y="415.5" font-size="10.5" fill="#333" text-anchor="middle">다운스트림 외부 API</text>
+<text x="108" y="430" font-size="10.5" fill="#333" text-anchor="middle">한도, 타임아웃 확인</text>
+<line x1="108" y1="440" x2="108" y2="465" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="323" y1="376" x2="323" y2="465" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="424,262 432,262 432,480 381,480" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="60" y="466" width="320" height="28" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220" y="484" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">한 번에 하나만 바꾸고 재측정</text>
+<line x1="220" y1="494" x2="220" y2="501" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="510" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="220" cy="510" r="4.5" fill="#444"/>
+</svg>

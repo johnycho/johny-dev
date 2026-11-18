@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="302" viewBox="0 0 360 302" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="360" height="302" fill="#FFFFFF"/>
+<rect x="90" y="16" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="180.0" y="34.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">클라이언트</text>
+<text x="180.0" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">필요한 필드만 지정</text>
+<line x1="180" y1="60" x2="180" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="187" y="84" font-size="10.5" fill="#333" text-anchor="start">쿼리 1개(원하는 필드)</text>
+<rect x="90" y="100" width="180" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="180.0" y="118.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">단일 엔드포인트</text>
+<text x="180.0" y="133.5" font-size="10.5" fill="#555" text-anchor="middle">/graphql</text>
+<line x1="180" y1="144" x2="180" y2="169" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="90" y="170" width="180" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="180.0" y="188.5" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">리졸버</text>
+<text x="180.0" y="203.5" font-size="10.5" fill="#555" text-anchor="middle">Query, Mutation, 필드</text>
+<line x1="180" y1="214" x2="180" y2="239" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="90" y="240" width="180" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="180.0" y="258.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">데이터 소스</text>
+<text x="180.0" y="273.5" font-size="10.5" fill="#555" text-anchor="middle">DB, 외부 API</text>
+</svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="560" viewBox="0 0 440 560" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="560" fill="#FFFFFF"/>
+<circle cx="220" cy="20" r="8" fill="#333"/>
+<line x1="220" y1="28" x2="220" y2="43" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110" y="44" width="220" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="64.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">isEnabled(...)에서 예외 발생</text>
+<line x1="220" y1="76" x2="220" y2="91" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="90" y="92" width="260" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="112.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">리스너 밖으로 전파 → 컨테이너가 받음</text>
+<line x1="220" y1="124" x2="220" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110" y="140" width="220" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="160.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">DefaultErrorHandler로 전달</text>
+<line x1="220" y1="172" x2="220" y2="187" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polygon points="220,188 320,222 220,256 120,222" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="219" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">RuntimeException</text>
+<text x="220" y="233" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">= non-retryable?</text>
+<polyline points="120,222 100,222 100,279" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="108" y="214" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">Y</text>
+<polyline points="320,222 340,222 340,279" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="332" y="214" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">N</text>
+<rect x="30" y="280" width="140" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="100.0" y="298.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">재시도 없이</text>
+<text x="100.0" y="313.5" font-size="11" fill="#555" text-anchor="middle">바로 recoverer</text>
+<rect x="250" y="280" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="340.0" y="298.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">FixedBackOff 재시도</text>
+<text x="340.0" y="313.5" font-size="11" fill="#555" text-anchor="middle">→ 소진 후 recoverer</text>
+<polyline points="100,324 100,346 220,346" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="340,324 340,346 220,346" fill="none" stroke="#888" stroke-width="1.2"/>
+<line x1="220" y1="346" x2="220" y2="363" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110" y="364" width="220" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="384.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">recoverer 실행(log + Slack)</text>
+<line x1="220" y1="396" x2="220" y2="411" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="100" y="412" width="240" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="430.5" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">실패 레코드 건너뛰고(seek)</text>
+<text x="220.0" y="445.5" font-size="11" fill="#555" text-anchor="middle">그 오프셋 커밋</text>
+<line x1="220" y1="456" x2="220" y2="471" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="90" y="472" width="260" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="490.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">메시지 유실</text>
+<text x="220.0" y="505.5" font-size="11" fill="#555" text-anchor="middle">처리, 재시도, DLT 모두 안 됨</text>
+<line x1="220" y1="516" x2="220" y2="531" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="541" r="9" fill="#FFFFFF" stroke="#333" stroke-width="1.5"/>
+<circle cx="220" cy="541" r="5" fill="#333"/>
+</svg>

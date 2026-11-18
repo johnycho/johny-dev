@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="250" viewBox="0 0 440 250" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="250" fill="#FFFFFF"/>
+<rect x="20" y="15" width="400" height="95" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="32" y="33" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">증상 — 사용자가 겪는 것</text>
+<rect x="40" y="45" width="110" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="95.0" y="69.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">트래픽</text>
+<rect x="165" y="45" width="110" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="69.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">지연</text>
+<rect x="290" y="45" width="110" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="345.0" y="69.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">에러</text>
+<line x1="220" y1="110" x2="220" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="140" width="400" height="95" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="32" y="158" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">원인 후보 — 자원</text>
+<rect x="135" y="168" width="170" height="50" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="190.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">포화도</text>
+<text x="220.0" y="206.0" font-size="10.5" fill="#555" text-anchor="middle">CPU, 메모리, 풀</text>
+</svg>

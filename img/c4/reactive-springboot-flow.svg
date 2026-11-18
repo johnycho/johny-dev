@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="684" viewBox="0 0 520 684" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="520" height="684" fill="#FFFFFF"/>
+<text x="260.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">스프링부트에서 데이터 한 건씩 발행, 처리, 소비</text>
+<text x="260.0" y="38" font-size="11" fill="#555" text-anchor="middle">(GET /orders/paid)</text>
+<line x1="52" y1="107" x2="52" y2="633" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="4.0" y="50" width="96" height="57" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="52.0" y="82.2" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">클라이언트</text>
+<line x1="156" y1="107" x2="156" y2="633" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="108.0" y="50" width="96" height="57" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="156.0" y="74.8" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">컨트롤러</text>
+<text x="156.0" y="89.6" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">return Flux</text>
+<line x1="260" y1="107" x2="260" y2="633" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="212.0" y="50" width="96" height="57" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="260.0" y="74.8" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">WebFlux</text>
+<text x="260.0" y="89.6" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">(구독 대행)</text>
+<line x1="364" y1="107" x2="364" y2="633" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="316.0" y="50" width="96" height="57" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="364.0" y="67.4" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">R2DBC</text>
+<text x="364.0" y="82.2" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">리포지토리</text>
+<text x="364.0" y="97.1" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">(Publisher)</text>
+<line x1="468" y1="107" x2="468" y2="633" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="420.0" y="50" width="96" height="57" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="468.0" y="82.2" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+<line x1="52" y1="137" x2="155" y2="137" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="58.4" y="121.5" width="91.2" height="13.5" fill="#FFFFFF"/>
+<text x="104.0" y="132.0" font-size="10.5" fill="#333" text-anchor="middle">GET /orders/paid</text>
+<line x1="156" y1="179" x2="259" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="152.3" y="150.0" width="111.3" height="13.5" fill="#FFFFFF"/>
+<text x="208.0" y="160.5" font-size="10.5" fill="#333" text-anchor="middle">Flux&lt;OrderDto&gt; 반환</text>
+<rect x="166.1" y="163.5" width="83.8" height="13.5" fill="#FFFFFF"/>
+<text x="208.0" y="174.0" font-size="10.5" fill="#333" text-anchor="middle">(아직 실행 안 됨)</text>
+<line x1="260" y1="211" x2="363" y2="211" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="281.4" y="195.5" width="61.1" height="13.5" fill="#FFFFFF"/>
+<text x="312.0" y="206.0" font-size="10.5" fill="#333" text-anchor="middle">subscribe()</text>
+<line x1="364" y1="243" x2="261" y2="243" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="242.3" y="227.5" width="139.4" height="13.5" fill="#FFFFFF"/>
+<text x="312.0" y="238.0" font-size="10.5" fill="#333" text-anchor="middle">onSubscribe(subscription)</text>
+<line x1="260" y1="285" x2="363" y2="285" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="283.1" y="256.0" width="57.8" height="13.5" fill="#FFFFFF"/>
+<text x="312.0" y="266.5" font-size="10.5" fill="#333" text-anchor="middle">request(n)</text>
+<rect x="275.1" y="269.5" width="73.7" height="13.5" fill="#FFFFFF"/>
+<text x="312.0" y="280.0" font-size="10.5" fill="#333" text-anchor="middle">받을 개수 요청</text>
+<line x1="364" y1="317" x2="467" y2="317" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="368.6" y="301.5" width="94.7" height="13.5" fill="#FFFFFF"/>
+<text x="416.0" y="312.0" font-size="10.5" fill="#333" text-anchor="middle">논블로킹 쿼리 실행</text>
+<line x1="468" y1="349" x2="365" y2="349" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="402.2" y="333.5" width="27.5" height="13.5" fill="#FFFFFF"/>
+<text x="416.0" y="344.0" font-size="10.5" fill="#333" text-anchor="middle">row1</text>
+<line x1="364" y1="391" x2="261" y2="391" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="255.7" y="362.0" width="112.6" height="13.5" fill="#FFFFFF"/>
+<text x="312.0" y="372.5" font-size="10.5" fill="#333" text-anchor="middle">onNext(order1) → map</text>
+<rect x="273.4" y="375.5" width="77.3" height="13.5" fill="#FFFFFF"/>
+<text x="312.0" y="386.0" font-size="10.5" fill="#333" text-anchor="middle">→ onNext(dto1)</text>
+<line x1="260" y1="423" x2="53" y2="423" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="105.3" y="407.5" width="101.4" height="13.5" fill="#FFFFFF"/>
+<text x="156.0" y="418.0" font-size="10.5" fill="#333" text-anchor="middle">dto1 전송 (스트리밍)</text>
+<line x1="468" y1="455" x2="365" y2="455" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="401.0" y="439.5" width="30.0" height="13.5" fill="#FFFFFF"/>
+<text x="416.0" y="450.0" font-size="10.5" fill="#333" text-anchor="middle">row2</text>
+<line x1="364" y1="497" x2="261" y2="497" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="254.5" y="468.0" width="115.1" height="13.5" fill="#FFFFFF"/>
+<text x="312.0" y="478.5" font-size="10.5" fill="#333" text-anchor="middle">onNext(order2) → map</text>
+<rect x="272.1" y="481.5" width="79.8" height="13.5" fill="#FFFFFF"/>
+<text x="312.0" y="492.0" font-size="10.5" fill="#333" text-anchor="middle">→ onNext(dto2)</text>
+<line x1="260" y1="529" x2="53" y2="529" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="130.1" y="513.5" width="51.9" height="13.5" fill="#FFFFFF"/>
+<text x="156.0" y="524.0" font-size="10.5" fill="#333" text-anchor="middle">dto2 전송</text>
+<line x1="468" y1="561" x2="365" y2="561" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="393.2" y="545.5" width="45.6" height="13.5" fill="#FFFFFF"/>
+<text x="416.0" y="556.0" font-size="10.5" fill="#333" text-anchor="middle">(더 없음)</text>
+<line x1="364" y1="593" x2="261" y2="593" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="276.7" y="577.5" width="70.6" height="13.5" fill="#FFFFFF"/>
+<text x="312.0" y="588.0" font-size="10.5" fill="#333" text-anchor="middle">onComplete()</text>
+<line x1="260" y1="625" x2="53" y2="625" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="131.3" y="609.5" width="49.4" height="13.5" fill="#FFFFFF"/>
+<text x="156.0" y="620.0" font-size="10.5" fill="#333" text-anchor="middle">응답 종료</text>
+<rect x="40.0" y="643" width="440.0" height="24.5" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="260.0" y="659.5" font-size="10.5" fill="#5A4300" text-anchor="middle">전체를 모으지 않고 한 건씩 발행, 변환, 전송 (메모리 상수 유지)</text>
+</svg>

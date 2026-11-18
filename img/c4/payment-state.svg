@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="372" viewBox="0 0 440 372" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="372" fill="#FFFFFF"/>
+<circle cx="220" cy="22" r="8" fill="#333"/>
+<line x1="220" y1="30" x2="220" y2="55" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="46" font-size="10.5" fill="#333" text-anchor="start">고객 주문</text>
+<rect x="160" y="56" width="120" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="76.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">주문생성</text>
+<line x1="220" y1="88" x2="220" y2="133" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="108" font-size="10.5" fill="#333" text-anchor="start">결제 요청</text>
+<text x="228" y="121" font-size="10.5" fill="#333" text-anchor="start">(멱등성 키)</text>
+<rect x="160" y="134" width="120" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="154.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">결제대기</text>
+<rect x="20" y="250" width="120" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="80.0" y="270.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">결제성공</text>
+<rect x="160" y="250" width="120" height="32" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="270.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">결제실패</text>
+<rect x="300" y="250" width="120" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="360.0" y="270.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">미확정</text>
+<line x1="185" y1="166" x2="95" y2="249" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="122" y="200" font-size="10.5" fill="#333" text-anchor="end">PG 성공 응답</text>
+<line x1="220" y1="166" x2="220" y2="249" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="227" y="214" font-size="10.5" fill="#333" text-anchor="start">PG 실패 응답</text>
+<line x1="255" y1="166" x2="345" y2="249" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="322" y="196" font-size="10.5" fill="#333" text-anchor="start">타임아웃</text>
+<text x="322" y="209" font-size="10.5" fill="#333" text-anchor="start">(결과 모름)</text>
+<polyline points="345,282 345,306 240,306 240,283" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="292" y="300" font-size="10" fill="#333" text-anchor="middle">조회, 웹훅, 정합성 보정</text>
+<polyline points="385,282 385,336 110,336 110,283" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="248" y="352" font-size="10" fill="#333" text-anchor="middle">조회, 웹훅, 정합성 보정</text>
+<line x1="50" y1="282" x2="50" y2="316" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="50" cy="326" r="9" fill="#FFFFFF" stroke="#333" stroke-width="1.5"/>
+<circle cx="50" cy="326" r="5" fill="#333"/>
+</svg>

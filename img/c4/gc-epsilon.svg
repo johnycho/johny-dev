@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="300" viewBox="0 0 440 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="300" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Epsilon — 회수 없이 할당만, 힙이 차면 종료</text>
+<circle cx="220" cy="46" r="8" fill="#333"/>
+<line x1="220" y1="54" x2="220" y2="73" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110" y="74" width="220" height="30" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="93.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">객체 할당 (GC 안 함, 오버헤드 0)</text>
+<line x1="220" y1="104" x2="220" y2="125" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polygon points="220,126.0 310.0,154 220,182.0 130.0,154" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="158" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">힙에 여유 있음?</text>
+<polyline points="130,154 70,154 70,89 108,89" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="76" y="146" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">Y</text>
+<line x1="220" y1="182" x2="220" y2="215" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="202" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">N</text>
+<rect x="70" y="216" width="300" height="32" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="236.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">힙이 가득 참 → OutOfMemoryError로 종료</text>
+<line x1="220" y1="248" x2="220" y2="268" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="278" r="9" fill="#FFFFFF" stroke="#333" stroke-width="1.5"/>
+<circle cx="220" cy="278" r="5" fill="#333"/>
+</svg>

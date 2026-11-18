@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="404" viewBox="0 0 440 404" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="404" fill="#FFFFFF"/>
+<rect x="6.0" y="14" width="92" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="52" y="40.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">작업자</text>
+<rect x="112.0" y="14" width="100" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="162" y="33.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">알림 배치</text>
+<text x="162" y="47.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">(TRX A)</text>
+<rect x="224.0" y="14" width="104" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="276" y="33.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">resend</text>
+<text x="276" y="47.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">핸들러 (TRX B)</text>
+<rect x="338.0" y="14" width="96" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="386" y="33.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">알림 이력</text>
+<text x="386" y="47.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">테이블</text>
+<line x1="52" y1="58" x2="52" y2="394" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="162" y1="58" x2="162" y2="394" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="276" y1="58" x2="276" y2="394" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="386" y1="58" x2="386" y2="394" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="157" y="84" width="10" height="292" fill="#D6E4FB" stroke="#4C7FE0"/>
+<rect x="271" y="178" width="10" height="150" fill="#FBDCE4" stroke="#D06A86"/>
+<line x1="167" y1="84" x2="385" y2="84" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="276.5" y="79" font-size="10" fill="#333" text-anchor="middle">MAIL 대량 INSERT</text>
+<rect x="170" y="96" width="100" height="52" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220.0" y="113" font-size="10" fill="#5A4300" text-anchor="middle">청크 외부 발송을</text>
+<text x="220.0" y="127" font-size="10" fill="#5A4300" text-anchor="middle">트랜잭션 안에서</text>
+<text x="220.0" y="141" font-size="10" fill="#5A4300" text-anchor="middle">동기 수행 → ~35초</text>
+<line x1="52" y1="178" x2="270" y2="178" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="219" y="173" font-size="10" fill="#333" text-anchor="middle">상태 전환</text>
+<line x1="281" y1="222" x2="385" y2="222" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="333.5" y="204" font-size="10" fill="#333" text-anchor="middle">SLACK FOR UPDATE</text>
+<text x="333.5" y="217" font-size="10" fill="#333" text-anchor="middle">(갭이 MAIL까지)</text>
+<rect x="308" y="234" width="126" height="52" rx="6" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="5 4"/>
+<text x="371.0" y="251" font-size="10" fill="#9E3A57" text-anchor="middle">교착</text>
+<text x="371.0" y="265" font-size="10" fill="#9E3A57" text-anchor="middle">A: MAIL 보유→B갭 대기</text>
+<text x="371.0" y="279" font-size="10" fill="#9E3A57" text-anchor="middle">B: 갭 보유→A MAIL 대기</text>
+<polyline points="281,300 302,300 302,314 282,314" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="307" y="311" font-size="10" fill="#333" text-anchor="start">롤백</text>
+<line x1="167" y1="370" x2="385" y2="370" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="276.5" y="365" font-size="10" fill="#333" text-anchor="middle">커밋</text>
+</svg>

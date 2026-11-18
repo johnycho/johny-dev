@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="350" viewBox="0 0 440 350" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="350" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">브랜치 전략 고르기</text>
+<rect x="16" y="44" width="210" height="34" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="64.9" font-size="11.5" fill="#333" text-anchor="middle">여러 버전을 동시에 유지, 지원?</text>
+<rect x="316" y="44" width="120" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="376.0" y="65.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">Git Flow</text>
+<line x1="226" y1="61.0" x2="315" y2="61.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="271.0" y="55.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="78" x2="121.0" y2="123" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="105" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">N</text>
+<rect x="16" y="124" width="210" height="34" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="144.9" font-size="11.5" fill="#333" text-anchor="middle">병합하면 바로 운영 배포 가능?</text>
+<rect x="316" y="124" width="120" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="376.0" y="145.1" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">GitLab Flow</text>
+<line x1="226" y1="141.0" x2="315" y2="141.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="271.0" y="122.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">N - 승인,</text>
+<text x="271.0" y="135.0" font-size="10.5" fill="#26508F" text-anchor="middle">환경 승격 필요</text>
+<line x1="121.0" y1="158" x2="121.0" y2="203" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="185" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">Y</text>
+<rect x="16" y="204" width="210" height="50" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="225.1" font-size="11.5" fill="#333" text-anchor="middle">CI, 테스트가 튼튼하고</text>
+<text x="121.0" y="240.6" font-size="11.5" fill="#333" text-anchor="middle">고빈도 배포?</text>
+<rect x="316" y="204" width="120" height="50" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="376.0" y="225.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Trunk-Based</text>
+<text x="376.0" y="241.2" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Development</text>
+<line x1="226" y1="229.0" x2="315" y2="229.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="271.0" y="223.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="254" x2="121.0" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="281" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">N, 아직</text>
+<rect x="61.0" y="300" width="120" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="121.0" y="321.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">GitHub Flow</text>
+</svg>

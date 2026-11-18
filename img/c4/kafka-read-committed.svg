@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="224" viewBox="0 0 440 224" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="224" fill="#FFFFFF"/>
+<rect x="40" y="14" width="360" height="92" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="52" y="32" font-size="11" fill="#333" text-anchor="start" font-weight="bold">파티션 로그 (왼 → 오 시간순)</text>
+<rect x="70" y="40" width="88" height="50" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="114.0" y="61.5" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">M1</text>
+<text x="114.0" y="76.5" font-size="10.5" fill="#444" text-anchor="middle">커밋됨</text>
+<rect x="176" y="40" width="88" height="50" rx="6" fill="#FFF9C4" stroke="#E0A000"/>
+<text x="220.0" y="61.5" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">M2</text>
+<text x="220.0" y="76.5" font-size="10.5" fill="#444" text-anchor="middle">미커밋</text>
+<rect x="282" y="40" width="88" height="50" rx="6" fill="#FFCDD2" stroke="#D06A86"/>
+<text x="326.0" y="61.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">M3</text>
+<text x="326.0" y="76.5" font-size="10.5" fill="#444" text-anchor="middle">abort됨</text>
+<line x1="158" y1="65" x2="175" y2="65" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="264" y1="65" x2="281" y2="65" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="160" y1="106" x2="115" y2="145" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="280" y1="106" x2="325" y2="145" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="146" width="198" height="64" rx="6" fill="#FFEBEE" stroke="#D06A86"/>
+<text x="115.0" y="167.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">read_uncommitted (기본값)</text>
+<text x="115.0" y="182.0" font-size="10.5" fill="#444" text-anchor="middle">M1, M2, M3 전부 읽음</text>
+<text x="115.0" y="197.0" font-size="10.5" fill="#444" text-anchor="middle">(롤백된 M3까지 처리!)</text>
+<rect x="226" y="146" width="198" height="64" rx="6" fill="#E8F5E9" stroke="#8FBF8F"/>
+<text x="325.0" y="167.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">read_committed</text>
+<text x="325.0" y="182.0" font-size="10.5" fill="#444" text-anchor="middle">커밋된 M1만 읽음</text>
+<text x="325.0" y="197.0" font-size="10.5" fill="#444" text-anchor="middle">(미커밋, abort는 건너뜀)</text>
+</svg>

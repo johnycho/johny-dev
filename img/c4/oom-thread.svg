@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="318" viewBox="0 0 360 318" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="360" height="318" fill="#FFFFFF"/>
+<circle cx="180" cy="14" r="7" fill="#444"/>
+<line x1="180" y1="21" x2="180" y2="31" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="32" width="320" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="180" y="51" font-size="11" fill="#333" text-anchor="middle">호출마다 새 OkHttpClient 생성</text>
+<line x1="180" y1="62" x2="180" y2="75" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="76" width="320" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="180" y="95" font-size="11" fill="#333" text-anchor="middle">매번 새 Dispatcher(스레드 풀) 생성</text>
+<line x1="180" y1="106" x2="180" y2="119" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="120" width="320" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="180" y="139" font-size="11" fill="#333" text-anchor="middle">retry로 실패 호출 증폭</text>
+<line x1="180" y1="150" x2="180" y2="163" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="164" width="320" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="180" y="183" font-size="11" fill="#333" text-anchor="middle">스레드가 회수 안 되고 누적</text>
+<line x1="180" y1="194" x2="180" y2="207" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="208" width="320" height="30" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="180" y="227" font-size="11" fill="#9E3A57" text-anchor="middle">몇 시간 뒤 네이티브 스레드 한도 도달</text>
+<line x1="180" y1="238" x2="180" y2="251" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="252" width="320" height="30" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="180" y="271" font-size="11" fill="#9E3A57" text-anchor="middle">unable to create native thread → OOMKilled</text>
+<line x1="180" y1="282" x2="180" y2="291" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="180" cy="300" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="180" cy="300" r="4.5" fill="#444"/>
+</svg>
