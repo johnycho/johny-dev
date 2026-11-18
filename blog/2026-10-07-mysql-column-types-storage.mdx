@@ -22,28 +22,38 @@ InnoDB는 데이터를 **16KB 페이지** 단위로 저장하고, 한 페이지 
 - **가변 길이 컬럼** — `VARCHAR`, `TEXT`, `BLOB`, `JSON`은 길이 정보와 함께 저장되고, 값이 크면 **행 밖(오버플로 페이지)에 저장하고 포인터만** 남깁니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam shadowing false
-
-rectangle "InnoDB row (16KB 데이터 페이지 안)" as ROW #E3F2FD {
-  rectangle "레코드 헤더 + NULL 비트맵\n+ 가변 길이 목록" as H #FFF3E0
-  rectangle "고정 컬럼\nINT, DATETIME 등 (인라인)" as F #E8F5E9
-  rectangle "짧은 VARCHAR (인라인)" as V #E8F5E9
-  rectangle "큰 VARCHAR/TEXT/BLOB/JSON\n→ 20바이트 포인터" as P #FFEBEE
-}
-rectangle "오버플로 페이지\n(값 본문 저장)" as OV #FFCDD2
-
-P -down-> OV : off-page 저장
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="340" viewBox="0 0 440 340" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="340" fill="#FFFFFF"/>
+<rect x="50" y="12" width="340" height="232" rx="8" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="62" y="30" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">InnoDB row (16KB 데이터 페이지 안)</text>
+<rect x="66" y="40" width="308" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="59.5" font-size="11.5" fill="#444" text-anchor="middle">레코드 헤더 + NULL 비트맵</text>
+<text x="220.0" y="74.5" font-size="11.5" fill="#444" text-anchor="middle">+ 가변 길이 목록</text>
+<rect x="66" y="92" width="308" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="111.5" font-size="11.5" fill="#444" text-anchor="middle">고정 컬럼</text>
+<text x="220.0" y="126.5" font-size="11.5" fill="#444" text-anchor="middle">INT, DATETIME 등 (인라인)</text>
+<rect x="66" y="144" width="308" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="164.0" font-size="11.5" fill="#444" text-anchor="middle">짧은 VARCHAR (인라인)</text>
+<rect x="66" y="182" width="308" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="201.5" font-size="11.5" fill="#444" text-anchor="middle">큰 VARCHAR/TEXT/BLOB/JSON</text>
+<text x="220.0" y="216.5" font-size="11.5" fill="#444" text-anchor="middle">→ 20바이트 포인터</text>
+<line x1="220" y1="228" x2="220" y2="275" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="230" y="262" font-size="10.5" fill="#333" text-anchor="start">off-page 저장</text>
+<rect x="140" y="276" width="160" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="295.5" font-size="11.5" fill="#444" text-anchor="middle">오버플로 페이지</text>
+<text x="220.0" y="310.5" font-size="11.5" fill="#444" text-anchor="middle">(값 본문 저장)</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML InnoDB row 구조와 off-page 저장](/img/c4/pu-mysql-row-layout.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/mysql-row-layout.svg" alt="InnoDB row 안에 레코드 헤더, 고정 컬럼, 짧은 VARCHAR가 인라인으로 들어가고 큰 가변 길이 값은 20바이트 포인터만 남겨 오버플로 페이지에 저장되는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 한 row의 최대 크기는 **65,535바이트**로 제한되며, 모든 컬럼이 이 한도를 나눠 사용합니다(단, `TEXT`, `BLOB`, `JSON`은 본문이 행 밖에 있어 9~12바이트만 차지). 이 구조를 전제로 타입별로 봅니다.
 
@@ -120,25 +130,32 @@ VARCHAR(255)  CHARACTER SET utf8mb4   -- 최대 약 1,020바이트
 MySQL 5.7+의 `JSON` 타입은 입력을 **문자열 그대로가 아니라 최적화된 바이너리 형식**으로 저장합니다. 이게 `TEXT`에 JSON 문자열을 넣는 것과의 핵심 차이입니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam shadowing false
-
-rectangle "TEXT에 JSON 문자열" as T #FFEBEE {
-  rectangle "JSON을 평문 문자열로 저장\n- 저장 시 형식 검증 없음\n- 경로 접근마다 전체를 다시 파싱" as T1
-}
-rectangle "JSON 타입 (바이너리)" as J #E8F5E9 {
-  rectangle "키, 오프셋 룩업 + 값을 이진으로 저장\n- 저장 시 형식 검증\n- 키/인덱스로 해당 값에 바로 접근" as J1
-}
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="146" viewBox="0 0 440 146" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="146" fill="#FFFFFF"/>
+<rect x="12" y="12" width="204" height="122" rx="8" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="30" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">TEXT에 JSON 문자열</text>
+<rect x="22" y="40" width="184" height="82" rx="6" fill="#FFFFFF" stroke="#D06A86"/>
+<text x="114" y="64" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">JSON을 평문 문자열로 저장</text>
+<text x="32" y="86" font-size="10.5" fill="#333" text-anchor="start">- 저장 시 형식 검증 없음</text>
+<text x="32" y="104" font-size="10.5" fill="#333" text-anchor="start">- 경로 접근마다 전체를 다시 파싱</text>
+<rect x="224" y="12" width="204" height="122" rx="8" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="326.0" y="30" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">JSON 타입 (바이너리)</text>
+<rect x="234" y="40" width="184" height="82" rx="6" fill="#FFFFFF" stroke="#8FBF8F"/>
+<text x="326" y="64" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">키, 오프셋 룩업 + 값을 이진으로 저장</text>
+<text x="244" y="86" font-size="10.5" fill="#333" text-anchor="start">- 저장 시 형식 검증</text>
+<text x="244" y="104" font-size="10.5" fill="#333" text-anchor="start">- 키/인덱스로 해당 값에 바로 접근</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML TEXT JSON vs JSON 타입 바이너리 저장](/img/c4/pu-mysql-json-storage.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/mysql-json-storage.svg" alt="TEXT에 JSON 문자열을 평문으로 저장할 때와 JSON 타입이 바이너리로 저장할 때의 형식 검증, 값 접근 방식 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 - **형식 검증** — `JSON` 컬럼은 저장 시 유효한 JSON인지 검사합니다. `TEXT`는 아무 문자열이나 들어갑니다.
 - **부분 접근** — 바이너리 안에 **키와 값의 오프셋 테이블**이 있어, `JSON_EXTRACT`(`->`, `->>`)로 특정 경로를 읽을 때 전체를 파싱하지 않고 **그 값으로 바로** 접근합니다.

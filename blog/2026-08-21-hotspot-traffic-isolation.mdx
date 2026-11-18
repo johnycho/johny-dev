@@ -25,16 +25,43 @@ import {AnimatedBars, AnimatedLineChart} from '@site/src/components/blog/Monitor
 
 이벤트 폭증이 왜 그렇게 커지는지 숫자로 보면 분명합니다. 메시지 1건이 오면 그 방의 **모든 참여자**에게 "새 이벤트가 있다"는 알림이 나가고, 알림을 받은 각 참여자는 실제 내용을 가져오려고 조회 API를 호출합니다. 즉 **이벤트 1건이 참여자 수만큼의 조회로 퍼집니다(팬아웃)**. 참여자 5,000명 방에서 초당 50개 이벤트가 생기면, 채팅방 한 곳에서만 `50 × 5,000 = 250,000`건의 조회가 초당 발생하고, 이 요청이 전부 그 방을 담당하는 한 샤드로 향합니다.
 
-```mermaid
-flowchart LR
-  M[메시지 1건] --> P[참여자 전원에게 알림]
-  P --> F1[참여자 1 조회]
-  P --> F2[참여자 2 조회]
-  P --> F3[... 5,000명 조회]
-  F1 --> S[(그 방의 샤드)]
-  F2 --> S
-  F3 --> S
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="276" viewBox="0 0 440 276" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="276" fill="#FFFFFF"/>
+<g transform="translate(0,-24)">
+<rect x="160" y="40" width="120" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="60.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">메시지 1건</text>
+<line x1="220" y1="72" x2="220" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="130" y="100" width="180" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="120.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">참여자 전원에게 알림</text>
+<rect x="15.0" y="170" width="125" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="77.5" y="190.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">참여자 1 조회</text>
+<line x1="220" y1="132" x2="77.5" y2="168" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="77.5" y1="202" x2="191.5" y2="238" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="157.5" y="170" width="125" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="190.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">참여자 2 조회</text>
+<line x1="220" y1="132" x2="220.0" y2="168" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="220.0" y1="202" x2="220.0" y2="238" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="300.0" y="170" width="125" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="362.5" y="190.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">... 5,000명 조회</text>
+<line x1="220" y1="132" x2="362.5" y2="168" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="362.5" y1="202" x2="248.5" y2="238" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M160,246 a60.0,6 0 0 0 120,0 v34 a60.0,6 0 0 1 -120,0 z" fill="#FCE4EC" stroke="#D06A86"/>
+<ellipse cx="220.0" cy="246" rx="60.0" ry="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="270.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">그 방의 샤드</text>
+</g>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hotspot-chat-fanout.svg" alt="메시지 1건이 참여자 전원 알림으로 이어지고, 참여자 5,000명의 조회가 모두 그 방의 샤드 하나로 모이는 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 두 경우 모두 **특정 방 = 특정 샤드/키에 트래픽이 집중**된다는 공통점이 있습니다. <mark>부하가 고르게 오르는 게 아니라 특정 방(=특정 샤드)에 집중되는 것이 문제의 본질입니다.</mark>
 
@@ -43,26 +70,46 @@ flowchart LR
 대응의 출발점은 "지금 어느 방이 급증하는지"를 초 단위로 아는 것입니다. 요청량을 **방 단위로 집계**하다가 임곗값을 넘으면 그 방을 "핫 챗"으로 표시합니다. 앞서 본 **조회(이벤트) 폭증** 패턴은 조회 요청을 Kafka로 모아 집계하고, 임곗값을 넘긴 방을 Redis에 마킹하는 식으로 감지합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-start
-:요청 이벤트;
-:방 단위 초 집계;
-if (임곗값 초과?) then (예)
-  :핫 챗 마킹;
-  :스로틀링 대상;
-else (아니오)
-  :일반 처리;
-endif
-stop
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="300" viewBox="0 0 360 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="360" height="300" fill="#FFFFFF"/>
+<circle cx="116" cy="14" r="7" fill="#444"/>
+<line x1="116" y1="21" x2="116" y2="31" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="32" width="200" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="116" y="50" font-size="11" fill="#333" text-anchor="middle">요청 이벤트</text>
+<line x1="116" y1="60" x2="116" y2="73" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="74" width="200" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="116" y="92" font-size="11" fill="#333" text-anchor="middle">방 단위 초 집계</text>
+<line x1="116" y1="102" x2="116" y2="115" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="36" y="116" width="160" height="30" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="116" y="135" font-size="11" fill="#333" text-anchor="middle">임곗값 초과?</text>
+<line x1="196" y1="131" x2="247" y2="131" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="222" y="126" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="248" y="116" width="96" height="30" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="296" y="135" font-size="11" fill="#333" text-anchor="middle">일반 처리</text>
+<line x1="116" y1="146" x2="116" y2="171" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="123" y="162" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="16" y="172" width="200" height="28" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="116" y="190" font-size="11" fill="#9E3A57" text-anchor="middle">핫 챗 마킹</text>
+<line x1="116" y1="200" x2="116" y2="213" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="214" width="200" height="28" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="116" y="232" font-size="11" fill="#9E3A57" text-anchor="middle">스로틀링 대상</text>
+<polyline points="116.0,242 116.0,270 116,270" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="296,146 296,270 125.0,270" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="116" y1="242" x2="116" y2="261" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="116" cy="270" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="116" cy="270" r="4.5" fill="#444"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML 핫 챗 감지 파이프라인 — 임곗값 초과 시 마킹](/img/c4/pu-hotchat-detect.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hotchat-detect.svg" alt="요청 이벤트를 방 단위로 초마다 집계해 임곗값을 넘으면 핫 챗으로 표시하고 스로틀링 대상으로 삼는 감지 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 구현을 보면, API가 요청될 때마다 Kafka로 이벤트를 보내고, 퍼블리시 서버가 이를 소비해 **각 방이 최근 몇 초 동안 몇 건을 요청했는지**를 실시간으로 셉니다. 이때 초 단위 버킷을 만들어 두고, 판정할 때 **최근 N초치 버킷을 합산**하는 방식이 단순합니다 — 초 단위 카운트는 구성 요소이고, 실제 기준은 "최근 몇 초 동안의 합"입니다.
 
@@ -212,41 +259,70 @@ if (!allowJoin(roomId)) return reject();
 문제는 서버가 요청을 처리하는 **스레드가 한정**돼 있다는 점입니다. 핫 샤드의 DB 응답이 느려지면, 그 응답을 기다리는 스레드가 반환되지 못하고 계속 쌓입니다. 모든 샤드가 **하나의 공용 스레드 풀**을 함께 쓰고 있으면, 이 대기 스레드가 풀을 다 차지해 버려 — 멀쩡한 다른 샤드로 갈 요청도 실행할 스레드가 없어 **함께 멈춥니다**(한 줄에 갇힘, head-of-line blocking). 한 샤드의 지연이 서비스 전체 장애로 번지는 것입니다.
 
 <details>
-<summary>C4-PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_LEFT_RIGHT()
-
-Person(req, "요청", "채팅방 요청")
-
-System_Boundary(app, "애플리케이션") {
-  Container(router, "샤드 라우터", "방 ID로 샤드 라우팅", "hash(roomId)로 샤드 결정")
-  Container(pool0, "샤드 0 전용 풀", "벌크헤드", "격리된 스레드 풀")
-  Container(pool1, "샤드 1 전용 풀 (핫)", "벌크헤드", "가득 차면 즉시 거절")
-  Container(pool2, "샤드 2 전용 풀", "벌크헤드", "격리된 스레드 풀")
-}
-
-ContainerDb(d0, "샤드 0", "MySQL/Redis", "샤드 0 데이터스토어")
-ContainerDb(d1, "샤드 1", "MySQL/Redis", "샤드 1 데이터스토어")
-ContainerDb(d2, "샤드 2", "MySQL/Redis", "샤드 2 데이터스토어")
-
-Rel(req, router, "요청")
-Rel(router, pool0, "샤드 0")
-Rel(router, pool1, "샤드 1 (핫)")
-Rel(router, pool2, "샤드 2")
-Rel(pool0, d0, "쿼리")
-Rel(pool1, d1, "쿼리")
-Rel(pool2, d2, "쿼리")
-
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="408" viewBox="0 0 440 408" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="408" fill="#FFFFFF"/>
+<rect x="150" y="14" width="140" height="44" rx="18" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="33.3" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">요청</text>
+<text x="220" y="46.6" font-size="10" fill="#444" text-anchor="middle">채팅방 요청</text>
+<rect x="10" y="84" width="420" height="218" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="22" y="102" font-size="11" fill="#333" text-anchor="start" font-weight="bold">애플리케이션</text>
+<line x1="220" y1="58" x2="220" y2="111" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="226" y="75" font-size="10" fill="#555" text-anchor="start" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">요청</text>
+<rect x="110" y="112" width="220" height="60" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="132.3" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">샤드 라우터</text>
+<text x="220" y="145.4" font-size="9.5" fill="#777" text-anchor="middle">[방 ID로 샤드 라우팅]</text>
+<text x="220" y="159.6" font-size="10" fill="#444" text-anchor="middle">hash(roomId)로 샤드 결정</text>
+<rect x="18" y="228" width="128" height="60" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="82" y="248.3" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">샤드 0 전용 풀</text>
+<text x="82" y="261.4" font-size="9.5" fill="#777" text-anchor="middle">[벌크헤드]</text>
+<text x="82" y="275.6" font-size="10" fill="#444" text-anchor="middle">격리된 스레드 풀</text>
+<polyline points="180,172 180,196 82,196 82,227" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="88" y="217" font-size="10" fill="#555" text-anchor="start" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">샤드 0</text>
+<line x1="82" y1="288" x2="82" y2="331" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="88" y="314" font-size="10" fill="#555" text-anchor="start" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">쿼리</text>
+<path d="M18,338 a64.0,6 0 0,1 128,0 v54 a64.0,6 0 0,1 -128,0 z" fill="#E9F2E9" stroke="#8FBF8F"/>
+<path d="M18,338 a64.0,6 0 0,0 128,0" fill="none" stroke="#8FBF8F"/>
+<text x="82" y="360.3" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">샤드 0</text>
+<text x="82" y="373.4" font-size="9.5" fill="#777" text-anchor="middle">[MySQL/Redis]</text>
+<text x="82" y="387.6" font-size="10" fill="#444" text-anchor="middle">샤드 0 데이터스토어</text>
+<rect x="156" y="228" width="128" height="60" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220" y="248.3" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">샤드 1 전용 풀 (핫)</text>
+<text x="220" y="261.4" font-size="9.5" fill="#777" text-anchor="middle">[벌크헤드]</text>
+<text x="220" y="275.6" font-size="10" fill="#444" text-anchor="middle">가득 차면 즉시 거절</text>
+<polyline points="220,172 220,227" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="226" y="217" font-size="10" fill="#9E3A57" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">샤드 1 (핫)</text>
+<line x1="220" y1="288" x2="220" y2="331" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="226" y="314" font-size="10" fill="#555" text-anchor="start" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">쿼리</text>
+<path d="M156,338 a64.0,6 0 0,1 128,0 v54 a64.0,6 0 0,1 -128,0 z" fill="#E9F2E9" stroke="#8FBF8F"/>
+<path d="M156,338 a64.0,6 0 0,0 128,0" fill="none" stroke="#8FBF8F"/>
+<text x="220" y="360.3" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">샤드 1</text>
+<text x="220" y="373.4" font-size="9.5" fill="#777" text-anchor="middle">[MySQL/Redis]</text>
+<text x="220" y="387.6" font-size="10" fill="#444" text-anchor="middle">샤드 1 데이터스토어</text>
+<rect x="294" y="228" width="128" height="60" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="358" y="248.3" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">샤드 2 전용 풀</text>
+<text x="358" y="261.4" font-size="9.5" fill="#777" text-anchor="middle">[벌크헤드]</text>
+<text x="358" y="275.6" font-size="10" fill="#444" text-anchor="middle">격리된 스레드 풀</text>
+<polyline points="260,172 260,196 358,196 358,227" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="364" y="217" font-size="10" fill="#555" text-anchor="start" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">샤드 2</text>
+<line x1="358" y1="288" x2="358" y2="331" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="364" y="314" font-size="10" fill="#555" text-anchor="start" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">쿼리</text>
+<path d="M294,338 a64.0,6 0 0,1 128,0 v54 a64.0,6 0 0,1 -128,0 z" fill="#E9F2E9" stroke="#8FBF8F"/>
+<path d="M294,338 a64.0,6 0 0,0 128,0" fill="none" stroke="#8FBF8F"/>
+<text x="358" y="360.3" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">샤드 2</text>
+<text x="358" y="373.4" font-size="9.5" fill="#777" text-anchor="middle">[MySQL/Redis]</text>
+<text x="358" y="387.6" font-size="10" fill="#444" text-anchor="middle">샤드 2 데이터스토어</text>
+</svg>
 ```
 
 </details>
 
-![C4 샤드별 전용 풀로 격리한 벌크헤드 구성](/img/c4/hotspot-bulkhead.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hotspot-bulkhead.svg" alt="샤드 라우터가 방 ID 해시로 요청을 샤드별 전용 스레드 풀로 보내고, 핫 샤드 풀은 가득 차면 즉시 거절해 다른 샤드와 격리하는 벌크헤드 구성" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 핵심 원리는 **샤드마다 자원을 미리 몫으로 나눠 주는 것**입니다. 그러면 핫 샤드가 자기 몫을 다 써도 그 영향이 자기 몫 안에 갇혀, 다른 샤드 몫은 손대지 못합니다. 이 "몫 나누기"를 자원별로 구현한 두 장치가 벌크헤드와 서킷 브레이커입니다.
 

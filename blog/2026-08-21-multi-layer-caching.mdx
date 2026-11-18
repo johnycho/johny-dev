@@ -25,32 +25,65 @@ Redis의 핫키, 왕복 비용 자체는 [대용량 트래픽에서 Redis, 무�
 해법은 애플리케이션 **프로세스 안(메모리)** 에 캐시 계층을 하나 추가하는 것입니다. 조회 순서는 로컬(L1) → Redis(L2) → DB로 내려가고, 위 계층에서 맞으면 아래로 가지 않습니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-start
-:요청;
-if (L1 로컬 캐시\n프로세스 내 히트?) then (hit)
-  :응답;
-else (miss)
-  if (L2 Redis 히트?) then (hit)
-    :L1에 채움;
-    :응답;
-  else (miss)
-    :DB 조회;
-    :L2에 채움;
-    :L1에 채움;
-    :응답;
-  endif
-endif
-stop
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="398" viewBox="0 0 440 398" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="398" fill="#FFFFFF"/>
+<circle cx="116" cy="14" r="7" fill="#444"/>
+<line x1="116" y1="21" x2="116" y2="31" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="32" width="200" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="116" y="50" font-size="11" fill="#333" text-anchor="middle">요청</text>
+<line x1="116" y1="60" x2="116" y2="73" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="74" width="200" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="116" y="91.5" font-size="11" fill="#333" text-anchor="middle">L1 로컬 캐시</text>
+<text x="116" y="106.5" font-size="11" fill="#333" text-anchor="middle">프로세스 내 히트?</text>
+<line x1="216" y1="95" x2="261" y2="95" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="239" y="90" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">hit</text>
+<rect x="262" y="81" width="162" height="28" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="343" y="99" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">응답</text>
+<line x1="343" y1="109" x2="343" y2="118" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="343" cy="127" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="343" cy="127" r="4.5" fill="#444"/>
+<line x1="116" y1="116" x2="116" y2="145" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="123" y="135" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">miss</text>
+<rect x="16" y="146" width="200" height="30" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="116" y="165" font-size="11" fill="#333" text-anchor="middle">L2 Redis 히트?</text>
+<line x1="216" y1="161" x2="261" y2="161" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="239" y="156" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">hit</text>
+<rect x="262" y="147" width="162" height="28" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="343" y="165" font-size="11" fill="#333" text-anchor="middle">L1에 채움</text>
+<line x1="343" y1="175" x2="343" y2="188" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="262" y="189" width="162" height="28" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="343" y="207" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">응답</text>
+<line x1="343" y1="217" x2="343" y2="226" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="343" cy="235" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="343" cy="235" r="4.5" fill="#444"/>
+<line x1="116" y1="176" x2="116" y2="205" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="123" y="195" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">miss</text>
+<rect x="16" y="206" width="200" height="28" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="116" y="224" font-size="11" fill="#333" text-anchor="middle">DB 조회</text>
+<line x1="116" y1="234" x2="116" y2="247" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="248" width="200" height="28" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="116" y="266" font-size="11" fill="#333" text-anchor="middle">L2에 채움</text>
+<line x1="116" y1="276" x2="116" y2="289" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="290" width="200" height="28" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="116" y="308" font-size="11" fill="#333" text-anchor="middle">L1에 채움</text>
+<line x1="116" y1="318" x2="116" y2="331" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="332" width="200" height="28" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="116" y="350" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">응답</text>
+<line x1="116" y1="360" x2="116" y2="369" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="116" cy="378" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="116" cy="378" r="4.5" fill="#444"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML L1, L2 다층 캐시 조회 흐름](/img/c4/pu-multilayer-cache.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/multilayer-cache.svg" alt="L1 로컬 캐시, L2 Redis, DB 순으로 조회하고 miss면 아래 계층에서 읽은 값을 위 계층에 채우는 다층 캐시 조회 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 로컬 캐시가 맞으면 네트워크 왕복이 **0회**입니다 — 마이크로초 단위로 끝납니다. 그리고 인기 상품은 각 인스턴스가 자기 메모리에 한 벌씩 들고 있으므로, 핫키 트래픽을 인스턴스별로 나눠 흡수해 Redis로 가는 요청이 급감합니다.
 

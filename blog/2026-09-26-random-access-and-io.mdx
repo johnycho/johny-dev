@@ -11,18 +11,18 @@ import {AnimatedLineChart} from '@site/src/components/blog/MonitorCharts';
 
 <!-- truncate -->
 
-"인덱스를 걸었는데 왜 안 빨라지죠?" 성능을 볼 때 자주 나오는 질문입니다. 그 원인의 상당수는 **랜덤 액세스(random access)** 로 설명됩니다. 데이터를 어디에 저장하든 결국 디스크에서 읽어 와야 하는데, **어떻게 읽느냐**에 따라 속도가 수십~수백 배 차이 납니다. 이 글은 랜덤 액세스가 무엇이고 왜 느린지 HDD, SSD 구조로 설명하고, 인덱스가 이걸 줄여 주는 경우와 오히려 늘리는 경우를 정리합니다.
+"인덱스를 걸었는데 왜 안 빨라지죠?" 성능을 볼 때 자주 나오는 질문입니다. 그 원인의 상당수는 **랜덤 액세스(random access)** 로 설명됩니다. 데이터를 어디에 저장하든 결국 디스크에서 읽어 와야 하는데, **어떻게 읽는지**에 따라 속도가 수십~수백 배 차이 납니다. 이 글은 랜덤 액세스가 무엇이고 왜 느린지 HDD, SSD 구조로 설명하고, 인덱스가 이걸 줄여 주는 경우와 오히려 늘리는 경우를 정리합니다.
 
 ## 랜덤 액세스 vs 순차 액세스
 
 - **순차 액세스(sequential access)** — 저장 장치에서 **붙어 있는 위치를 순서대로** 읽습니다. 1번 블록 다음 2번, 3번… 물리적으로 이어진 데이터를 읽습니다.
 - **랜덤 액세스(random access)** — 서로 **떨어진 위치를 그때그때** 읽습니다. 100번 블록을 읽고, 다음엔 5,000번, 그다음 37번처럼 위치가 매번 달라집니다.
 
-<mark>같은 양을 읽어도 **순차는 한 번 위치를 정한 뒤 이어서 읽는 반면, 랜덤은 읽을 때마다 새 위치를 찾아가야** 합니다.</mark> 이 "위치를 찾아가는 비용" 때문에 랜덤 액세스로 발생하는 디스크 입출력, 즉 **랜덤 I/O**가 느려집니다. 얼마나 느린지는 저장 장치가 무엇이냐에 달려 있습니다.
+<mark>같은 양을 읽어도 **순차는 한 번 위치를 정한 뒤 이어서 읽는 반면, 랜덤은 읽을 때마다 새 위치를 찾아가야** 합니다.</mark> 이 "위치를 찾아가는 비용" 때문에 랜덤 액세스로 발생하는 디스크 입출력, 즉 **랜덤 I/O**가 느려집니다. 얼마나 느린지는 저장 장치가 무엇인지에 달려 있습니다.
 
 ### I/O란?
 
-I/O(Input/Output, 입출력)는 CPU, 메모리 외부의 장치(디스크, 네트워크 등)와 데이터를 주고받는 작업입니다. 이 글에서 살펴보는 **디스크 I/O**는 저장 장치에서 데이터를 읽고 쓰는 것을 가리킵니다. CPU 연산이 나노초 단위인 반면 디스크 I/O는 그보다 수천~수백만 배 느려서, 데이터를 처리하는 시스템의 성능은 대개 **연산량보다 I/O를 얼마나 잘 처리하느냐**로 결정됩니다. "랜덤 I/O를 줄인다"가 성능 이야기의 핵심인 이유입니다.
+I/O(Input/Output, 입출력)는 CPU, 메모리 외부의 장치(디스크, 네트워크 등)와 데이터를 주고받는 작업입니다. 이 글에서 살펴보는 **디스크 I/O**는 저장 장치에서 데이터를 읽고 쓰는 것을 가리킵니다. CPU 연산이 나노초 단위인 반면 디스크 I/O는 그보다 수천~수백만 배 느려서, 데이터를 처리하는 시스템의 성능은 대개 **연산량보다 I/O를 얼마나 잘 처리하는지**로 결정됩니다. "랜덤 I/O를 줄인다"가 성능 이야기의 핵심인 이유입니다.
 
 ### 여기서 "랜덤"은 "무작위"가 아니다
 
@@ -38,42 +38,53 @@ HDD(하드디스크)는 **회전하는 원판(platter)** 위를 **헤드(head)**
 순차 읽기는 이 대기가 **맨 처음 한 번만** 발생하고, 이어진 블록은 그대로 읽습니다. 반면 랜덤 읽기는 **블록을 읽을 때마다** 탐색+회전 대기가 다시 발생합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam shadowing false
-
-rectangle "순차 접근 — 위치를 한 번만 정한다" as SEQ #F1F8E9 {
-  rectangle "탐색+회전\n(1회)" as s0 #FFE0B2
-  rectangle "블록1" as b1 #C8E6C9
-  rectangle "블록2" as b2 #C8E6C9
-  rectangle "블록3" as b3 #C8E6C9
-  s0 -right-> b1
-  b1 -right-> b2
-  b2 -right-> b3
-}
-
-rectangle "랜덤 접근 — 블록마다 위치를 다시 정한다" as RND #FFEBEE {
-  rectangle "탐색+회전" as r1 #FFE0B2
-  rectangle "블록A" as a1 #C8E6C9
-  rectangle "탐색+회전" as r2 #FFE0B2
-  rectangle "블록B" as a2 #C8E6C9
-  rectangle "탐색+회전" as r3 #FFE0B2
-  rectangle "블록C" as a3 #C8E6C9
-  r1 -right-> a1
-  a1 -right-> r2
-  r2 -right-> a2
-  a2 -right-> r3
-  r3 -right-> a3
-}
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="232" viewBox="0 0 460 232" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="460" height="232" fill="#FFFFFF"/>
+<rect x="12" y="16" width="436" height="92" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="24" y="34" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">순차 접근 — 위치를 한 번만 정한다</text>
+<rect x="21" y="48" width="60" height="46" rx="6" fill="#FFE0B2" stroke="#E0A000"/>
+<text x="51.0" y="67.3" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">탐색+회전</text>
+<text x="51.0" y="82.1" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">(1회)</text>
+<rect x="93" y="48" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="123.0" y="74.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록1</text>
+<line x1="81" y1="71" x2="92" y2="71" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="165" y="48" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="195.0" y="74.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록2</text>
+<line x1="153" y1="71" x2="164" y2="71" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="237" y="48" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="267.0" y="74.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록3</text>
+<line x1="225" y1="71" x2="236" y2="71" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="12" y="124" width="436" height="92" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="24" y="142" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">랜덤 접근 — 블록마다 위치를 다시 정한다</text>
+<rect x="21" y="156" width="60" height="46" rx="6" fill="#FFE0B2" stroke="#E0A000"/>
+<text x="51.0" y="182.7" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">탐색+회전</text>
+<rect x="93" y="156" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="123.0" y="182.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록A</text>
+<line x1="81" y1="179" x2="92" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="165" y="156" width="60" height="46" rx="6" fill="#FFE0B2" stroke="#E0A000"/>
+<text x="195.0" y="182.7" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">탐색+회전</text>
+<line x1="153" y1="179" x2="164" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="237" y="156" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="267.0" y="182.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록B</text>
+<line x1="225" y1="179" x2="236" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="309" y="156" width="60" height="46" rx="6" fill="#FFE0B2" stroke="#E0A000"/>
+<text x="339.0" y="182.7" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">탐색+회전</text>
+<line x1="297" y1="179" x2="308" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="381" y="156" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="411.0" y="182.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록C</text>
+<line x1="369" y1="179" x2="380" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML HDD 순차 접근 vs 랜덤 접근](/img/c4/pu-io-random-vs-seq.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/io-random-vs-seq.svg" alt="순차 접근은 처음 한 번만 탐색과 회전을 한 뒤 블록을 이어 읽고, 랜덤 접근은 블록마다 탐색과 회전을 반복하는 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>그림의 주황색(탐색+회전)이 랜덤에서는 블록마다 반복됩니다 — 실제 데이터를 읽는 시간보다 **위치를 찾는 시간이 더 큰** 상황이 벌어집니다.</mark> HDD가 순차로는 초당 수백 MB를 읽으면서도 랜덤 4KB 읽기는 초당 수백 건(IOPS)에 그치는 이유입니다.
 
@@ -118,28 +129,33 @@ SSD는 움직이는 부품이 없습니다. 탐색, 회전 대기가 없으니 �
 그래서 `WHERE email = ?` 를 보조 인덱스로 찾으면, 인덱스에서 PK를 얻은 뒤 **그 PK로 클러스터드 인덱스를 다시 조회**해 행 본문을 가져와야 합니다. 이 두 번째 조회가 **행마다 떨어진 위치를 찾아가는 랜덤 I/O**입니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam shadowing false
-
-rectangle "보조 인덱스 (email)\n정렬된 리프: [email 값 → PK]" as SEC #E3F2FD
-rectangle "클러스터드 인덱스 (PK 순서)\n실제 행 데이터" as CLU #FFF3E0
-
-SEC -down-> CLU : 얻은 PK로 행 본문 조회\n(행마다 랜덤 I/O)
-
-note right of CLU
-  매칭 행이 많을수록
-  이 랜덤 조회가 그만큼 늘어난다
-end note
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="196" viewBox="0 0 440 196" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="196" fill="#FFFFFF"/>
+<rect x="20" y="16" width="230" height="50" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="135.0" y="37.8" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">보조 인덱스 (email)</text>
+<text x="135.0" y="52.3" font-size="10.5" fill="#555" text-anchor="middle">정렬된 리프: [email 값 → PK]</text>
+<rect x="20" y="136" width="230" height="50" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="135.0" y="157.8" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">클러스터드 인덱스 (PK 순서)</text>
+<text x="135.0" y="172.3" font-size="10.5" fill="#555" text-anchor="middle">실제 행 데이터</text>
+<line x1="135" y1="66" x2="135" y2="135" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="143" y="85.5" font-size="10.5" fill="#333" text-anchor="start">얻은 PK로 행 본문 조회</text>
+<text x="143" y="99.0" font-size="10.5" fill="#333" text-anchor="start">(행마다 랜덤 I/O)</text>
+<rect x="270.0" y="134" width="150.0" height="53.5" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="345" y="150.5" font-size="10.5" fill="#5A4300" text-anchor="middle">매칭 행이 많을수록</text>
+<text x="345" y="165.0" font-size="10.5" fill="#5A4300" text-anchor="middle">이 랜덤 조회가</text>
+<text x="345" y="179.5" font-size="10.5" fill="#5A4300" text-anchor="middle">그만큼 늘어난다</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 보조 인덱스에서 클러스터드 인덱스 조회](/img/c4/pu-io-secondary-lookup.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/io-secondary-lookup.svg" alt="보조 인덱스에서 얻은 PK로 클러스터드 인덱스의 행 본문을 행마다 다시 조회하는 랜덤 I/O 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>매칭 행이 몇 건이면 이 랜덤 조회 몇 번은 비용이 작습니다. 하지만 매칭 행이 많아지면, **랜덤 조회 횟수도 그만큼 늘어** 순식간에 비용이 커집니다.</mark>
 

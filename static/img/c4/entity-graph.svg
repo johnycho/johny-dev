@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="296" viewBox="0 0 360 296" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="360" height="296" fill="#FFFFFF"/>
+<rect x="110" y="14" width="140" height="30" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="180" y="33" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">User 직렬화 시작</text>
+<line x1="134.9" y1="36" x2="225.1" y2="36" stroke="#26508F" stroke-width="0.8"/>
+<rect x="30" y="82" width="120" height="30" fill="#F7F7F7" stroke="#999999"/>
+<text x="90" y="101" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">orders</text>
+<line x1="70.7" y1="104" x2="109.3" y2="104" stroke="#333" stroke-width="0.8"/>
+<rect x="30" y="134" width="120" height="30" fill="#F7F7F7" stroke="#999999"/>
+<text x="90" y="153" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">orderItems</text>
+<line x1="57.2" y1="156" x2="122.8" y2="156" stroke="#333" stroke-width="0.8"/>
+<rect x="30" y="186" width="120" height="30" fill="#F7F7F7" stroke="#999999"/>
+<text x="90" y="205" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">product</text>
+<line x1="67.5" y1="208" x2="112.5" y2="208" stroke="#333" stroke-width="0.8"/>
+<rect x="20" y="238" width="140" height="30" fill="#F7F7F7" stroke="#999999"/>
+<text x="90" y="257" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">category → ...</text>
+<line x1="49.5" y1="260" x2="130.5" y2="260" stroke="#333" stroke-width="0.8"/>
+<rect x="190" y="82" width="160" height="30" fill="#F7F7F7" stroke="#999999"/>
+<text x="270" y="101" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">team → members → ...</text>
+<line x1="210.7" y1="104" x2="329.3" y2="104" stroke="#333" stroke-width="0.8"/>
+<polyline points="150,44 150,62 90,62 90,81" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="210,44 210,62 270,62 270,81" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="90" y1="112" x2="90" y2="133" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="90" y1="164" x2="90" y2="185" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="90" y1="216" x2="90" y2="237" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>

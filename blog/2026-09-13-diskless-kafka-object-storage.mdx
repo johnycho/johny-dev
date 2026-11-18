@@ -28,41 +28,50 @@ import {AnimatedBars} from '@site/src/components/blog/MonitorCharts';
 Diskless는 브로커에서 **디스크와 복제 책임을 제거합니다.** 브로커(또는 상태 없는 에이전트)는 들어온 데이터를 곧바로 오브젝트 스토리지에 쓰고, 오브젝트 스토리지가 알아서 여러 AZ에 내구성 있게 보관합니다. 브로커는 상태가 없으니 아무 노드나 어떤 파티션도 처리할 수 있습니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-skinparam database {
-  BackgroundColor #E9F2E9
-  BorderColor #556080
-}
-
-package "기존 Kafka — 브로커가 디스크 소유" {
-  rectangle "프로듀서" as p1
-  rectangle "브로커 A (AZ-a)\n로컬 디스크" as b1
-  rectangle "브로커 B (AZ-c)\n복제본" as b2
-  p1 --> b1 : 쓰기
-  b1 --> b2 : 복제 = 크로스 AZ 트래픽 (비용↑)
-}
-
-package "Diskless Kafka — 오브젝트 스토리지에 직접" {
-  rectangle "프로듀서 " as p2
-  rectangle "브로커/에이전트\n(상태 없음)" as b3
-  database "오브젝트 스토리지 (S3)\n멀티 AZ 내구성 기본 제공" as s3
-  p2 --> b3 : 쓰기
-  b3 --> s3 : 직접 저장 (브로커 간 복제 불필요)
-}
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="404" viewBox="0 0 440 404" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="404" fill="#FFFFFF"/>
+<rect x="10" y="10" width="420" height="178" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="22" y="28" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">기존 Kafka — 브로커가 디스크 소유</text>
+<rect x="30" y="46" width="90" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="75.0" y="67.75" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">프로듀서</text>
+<rect x="200" y="40" width="160" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="280.0" y="59.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">브로커 A (AZ-a)</text>
+<text x="280.0" y="74.5" font-size="10.5" fill="#444" text-anchor="middle">로컬 디스크</text>
+<line x1="120" y1="64" x2="199" y2="64" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="160" y="58" font-size="10" fill="#333" text-anchor="middle">쓰기</text>
+<line x1="280" y1="86" x2="280" y2="129" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="268" y="99" font-size="10" fill="#333" text-anchor="end">복제 = 크로스 AZ 트래픽</text>
+<text x="268" y="112" font-size="10" fill="#333" text-anchor="end">(비용↑)</text>
+<rect x="200" y="130" width="160" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="280.0" y="149.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">브로커 B (AZ-c)</text>
+<text x="280.0" y="164.5" font-size="10.5" fill="#444" text-anchor="middle">복제본</text>
+<rect x="10" y="208" width="420" height="184" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="22" y="226" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">Diskless Kafka — 오브젝트 스토리지에 직접</text>
+<rect x="30" y="244" width="90" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="75.0" y="265.75" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">프로듀서</text>
+<rect x="200" y="238" width="160" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="280.0" y="257.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">브로커/에이전트</text>
+<text x="280.0" y="272.5" font-size="10.5" fill="#444" text-anchor="middle">(상태 없음)</text>
+<line x1="120" y1="262" x2="199" y2="262" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="160" y="256" font-size="10" fill="#333" text-anchor="middle">쓰기</text>
+<line x1="280" y1="284" x2="280" y2="327" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="268" y="297" font-size="10" fill="#333" text-anchor="end">직접 저장</text>
+<text x="268" y="310" font-size="10" fill="#333" text-anchor="end">(브로커 간 복제 불필요)</text>
+<rect x="180" y="328" width="200" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="280.0" y="347.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">오브젝트 스토리지 (S3)</text>
+<text x="280.0" y="362.5" font-size="10.5" fill="#444" text-anchor="middle">멀티 AZ 내구성 기본 제공</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 기존 Kafka vs Diskless Kafka 구조](/img/c4/diskless-kafka-arch.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/diskless-kafka-arch.svg" alt="기존 Kafka는 브로커 간 크로스 AZ 복제가 필요하고, Diskless Kafka는 상태 없는 브로커가 오브젝트 스토리지에 직접 저장하는 구조 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 바뀌는 것을 한 줄씩 정리하면 이렇습니다.
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+// [보관, 미사용] diagram-archify 스킬과 함께 보관 중. 블로그 그림은 손수 SVG만 쓴다.
 // archify가 렌더한 자체완결 HTML에 "블로그 임베드용 CSS"를 주입한다.
 // archify로 재렌더하면 이 CSS가 사라지므로, 렌더 직후 반드시 이 스크립트를 한 번 돌린다.
 //

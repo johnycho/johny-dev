@@ -15,35 +15,50 @@ date: 2026-08-18T14:00:00
 전통적인 MVC(블로킹) 애플리케이션에서 요청 하나가 거치는 경로를 보면 풀이 어디에 있는지 보입니다.
 
 <details>
-<summary>C4-PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-
-LAYOUT_LEFT_RIGHT()
-
-Person(client, "클라이언트", "웹 요청을 보내는 사용자")
-
-System_Boundary(app, "스프링부트 애플리케이션") {
-  Container(tomcat, "Tomcat 요청 스레드 풀", "server.tomcat.threads", "웹 요청을 받아 처리하는 워커 스레드")
-  Container(async, "@Async 작업 풀", "ThreadPoolTaskExecutor", "비동기 작업 실행")
-  Container(scheduler, "스케줄러 풀", "ThreadPoolTaskScheduler", "@Scheduled 정기 작업 실행")
-}
-
-ContainerDb(db, "데이터베이스", "MySQL", "HikariCP 커넥션 풀로 접근")
-
-Rel(client, tomcat, "요청 전송")
-Rel(tomcat, db, "HikariCP 커넥션으로 DB 접근")
-Rel(tomcat, async, "@Async 작업 위임")
-Rel(scheduler, db, "정기 작업 실행")
-
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="400" viewBox="0 0 440 400" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="400" fill="#FFFFFF"/>
+<rect x="140" y="14" width="160" height="44" rx="18" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="33.3" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">클라이언트</text>
+<text x="220" y="46.6" font-size="10" fill="#444" text-anchor="middle">웹 요청을 보내는 사용자</text>
+<rect x="16" y="84" width="408" height="214" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="28" y="102" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">스프링부트 애플리케이션</text>
+<line x1="220" y1="58" x2="220" y2="117" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="226" y="75" font-size="10" fill="#555" text-anchor="start" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">요청 전송</text>
+<rect x="110" y="118" width="220" height="60" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="138.3" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Tomcat 요청 스레드 풀</text>
+<text x="220" y="151.4" font-size="9.5" fill="#777" text-anchor="middle">[server.tomcat.threads]</text>
+<text x="220" y="165.6" font-size="10" fill="#444" text-anchor="middle">웹 요청을 받아 처리하는 워커 스레드</text>
+<rect x="30" y="222" width="166" height="60" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="113" y="242.3" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">@Async 작업 풀</text>
+<text x="113" y="255.4" font-size="9.5" fill="#777" text-anchor="middle">[ThreadPoolTaskExecutor]</text>
+<text x="113" y="269.6" font-size="10" fill="#444" text-anchor="middle">비동기 작업 실행</text>
+<rect x="244" y="222" width="166" height="60" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="327" y="242.3" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">스케줄러 풀</text>
+<text x="327" y="255.4" font-size="9.5" fill="#777" text-anchor="middle">[ThreadPoolTaskScheduler]</text>
+<text x="327" y="269.6" font-size="10" fill="#444" text-anchor="middle">@Scheduled 정기 작업 실행</text>
+<line x1="150" y1="178" x2="150" y2="221" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="144" y="204" font-size="10" fill="#555" text-anchor="end" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">@Async 작업 위임</text>
+<line x1="220" y1="178" x2="220" y2="333" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="212" y="321" font-size="10" fill="#555" text-anchor="end" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">HikariCP 커넥션으로 DB 접근</text>
+<line x1="330" y1="282" x2="330" y2="333" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="336" y="312" font-size="10" fill="#555" text-anchor="start" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">정기 작업 실행</text>
+<path d="M110,340 a120.0,6 0 0,1 240,0 v46 a120.0,6 0 0,1 -240,0 z" fill="#E9F2E9" stroke="#8FBF8F"/>
+<path d="M110,340 a120.0,6 0 0,0 240,0" fill="none" stroke="#8FBF8F"/>
+<text x="230" y="358.3" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">데이터베이스</text>
+<text x="230" y="371.4" font-size="9.5" fill="#777" text-anchor="middle">[MySQL]</text>
+<text x="230" y="385.6" font-size="10" fill="#444" text-anchor="middle">HikariCP 커넥션 풀로 접근</text>
+</svg>
 ```
 
 </details>
 
-![C4 스프링부트 런타임 스레드 풀과 DB 구성](/img/c4/thread-pools.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/thread-pools.svg" alt="클라이언트 요청을 받는 Tomcat 요청 스레드 풀이 @Async 작업 풀로 작업을 넘기고, Tomcat과 스케줄러 풀이 HikariCP 커넥션으로 데이터베이스에 접근하는 구성" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>이 풀들의 크기가 서로 맞지 않으면, 한 곳이 병목이 돼 나머지가 그 앞에서 대기합니다.</mark> 그래서 개별 튜닝이 아니라 "함께" 맞춰야 합니다.
 
@@ -181,36 +196,77 @@ L = λ × W
 - **큐를 늘리기보다 처리 능력을 늘립니다.** 큐는 지연만 쌓습니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-title 응답이 느려질 때 — 무엇부터 바꾸나
-start
-:증상 관측 - p99 지연 상승, 요청 대기;
-:지표 확인 - CPU, 톰캣 active 스레드, Hikari active, pending, 큐 길이;
-if (CPU가 포화 상태인가?) then (Y)
-  :CPU 바운드 - 스레드 늘려도 불리\n수평 확장, 연산 최적화, 캐시;
-  stop
-else (N, CPU 여유)
-  if (Hikari가 가득 차고 대기가 있나?) then (Y)
-    :커넥션이 병목\n1. 느린 쿼리, 긴 트랜잭션부터 단축\n2. maximum-pool-size 상향 - DB 한도 내;
-  else (N)
-    if (톰캣 스레드가 가득 차고 큐가 쌓이나?) then (Y)
-      :요청 스레드가 병목 - IO 대기\n리틀의 법칙으로 목표 동시수 산출\nthreads.max 상향 + Hikari, 다운스트림 동반;
-    else (N)
-      :다운스트림 외부 API 한도, 타임아웃 확인;
-    endif
-  endif
-  :한 번에 하나만 바꾸고 재측정;
-  stop
-endif
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="520" viewBox="0 0 440 520" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="520" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">응답이 느려질 때 — 무엇부터 바꾸나</text>
+<circle cx="220" cy="42" r="7" fill="#444"/>
+<line x1="220" y1="49" x2="220" y2="59" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="60" width="360" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="78" font-size="11" fill="#333" text-anchor="middle">증상 관측 - p99 지연 상승, 요청 대기</text>
+<line x1="220" y1="88" x2="220" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="100" width="360" height="42" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="117.5" font-size="11" fill="#333" text-anchor="middle">지표 확인 - CPU, 톰캣 active 스레드,</text>
+<text x="220" y="132.5" font-size="11" fill="#333" text-anchor="middle">Hikari active, pending, 큐 길이</text>
+<polyline points="220,142 220,151 108.0,151 108.0,163" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="164" width="184" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="108" y="184" font-size="11" fill="#333" text-anchor="middle">CPU가 포화 상태인가?</text>
+<line x1="200" y1="180" x2="221" y2="180" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="211" y="175" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="222" y="158" width="202" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="323" y="176.5" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">CPU 바운드 - 스레드 늘려도 불리</text>
+<text x="323" y="191" font-size="10.5" fill="#333" text-anchor="middle">수평 확장, 연산 최적화, 캐시</text>
+<line x1="323" y1="202" x2="323" y2="211" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="323" cy="220" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="323" cy="220" r="4.5" fill="#444"/>
+<line x1="108" y1="196" x2="108" y2="239" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="115" y="222" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N, CPU 여유</text>
+<rect x="16" y="240" width="184" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="108" y="257.5" font-size="11" fill="#333" text-anchor="middle">Hikari가 가득 차고</text>
+<text x="108" y="272.5" font-size="11" fill="#333" text-anchor="middle">대기가 있나?</text>
+<line x1="200" y1="261" x2="221" y2="261" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="211" y="256" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="222" y="234" width="202" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="323" y="246.8" font-size="10" fill="#26508F" text-anchor="middle" font-weight="bold">커넥션이 병목</text>
+<text x="323" y="259.4" font-size="10" fill="#333" text-anchor="middle">1. 느린 쿼리, 긴 트랜잭션부터 단축</text>
+<text x="323" y="271.9" font-size="10" fill="#333" text-anchor="middle">2. maximum-pool-size 상향</text>
+<text x="323" y="284.4" font-size="10" fill="#333" text-anchor="middle">- DB 한도 내</text>
+<line x1="108" y1="282" x2="108" y2="321" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="115" y="306" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="322" width="184" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="108" y="339.5" font-size="11" fill="#333" text-anchor="middle">톰캣 스레드가 가득 차고</text>
+<text x="108" y="354.5" font-size="11" fill="#333" text-anchor="middle">큐가 쌓이나?</text>
+<line x1="200" y1="343" x2="221" y2="343" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="211" y="338" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="222" y="310" width="202" height="66" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="323" y="327.1" font-size="10" fill="#26508F" text-anchor="middle" font-weight="bold">요청 스레드가 병목 - IO 대기</text>
+<text x="323" y="340.1" font-size="10" fill="#333" text-anchor="middle">리틀의 법칙으로 목표 동시수 산출</text>
+<text x="323" y="353.1" font-size="10" fill="#333" text-anchor="middle">threads.max 상향 +</text>
+<text x="323" y="366.1" font-size="10" fill="#333" text-anchor="middle">Hikari, 다운스트림 동반</text>
+<line x1="108" y1="364" x2="108" y2="397" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="115" y="385" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="398" width="184" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="108" y="415.5" font-size="10.5" fill="#333" text-anchor="middle">다운스트림 외부 API</text>
+<text x="108" y="430" font-size="10.5" fill="#333" text-anchor="middle">한도, 타임아웃 확인</text>
+<line x1="108" y1="440" x2="108" y2="465" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="323" y1="376" x2="323" y2="465" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="424,262 432,262 432,480 381,480" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="60" y="466" width="320" height="28" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220" y="484" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">한 번에 하나만 바꾸고 재측정</text>
+<line x1="220" y1="494" x2="220" y2="501" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="510" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="220" cy="510" r="4.5" fill="#444"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML 스레드 풀 점검, 대응 순서](/img/c4/pu-threadpool-triage.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/threadpool-triage.svg" alt="응답이 느려질 때 CPU 포화, Hikari 대기, 톰캣 스레드 포화 순으로 확인하고 병목에 맞는 조치를 선택한 뒤 한 번에 하나만 바꿔 재측정하는 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ### 시나리오 ① 응답이 느려지고 요청이 쌓인다
 

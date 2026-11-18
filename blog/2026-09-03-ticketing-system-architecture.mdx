@@ -31,36 +31,57 @@ date: 2026-09-03T12:00:00
 <mark>수백만 요청을 좌석 DB로 직접 보내지 말고, 대기열로 "입장 가능한 만큼만" 통과시켜 DB가 감당할 속도로 유입을 고릅니다.</mark>
 
 <details>
-<summary>C4-PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-LAYOUT_LEFT_RIGHT()
-
-Person(users, "사용자", "수십만~수백만")
-System_Boundary(sys, "예매 시스템") {
-  ContainerDb(queue, "대기열", "Redis Sorted Set", "도착 순서로 정렬")
-  Container(sched, "입장 허가 스케줄러", "Active + TTL", "N명씩 통과")
-  Container(seat, "좌석 원자 처리", "Redis Lua", "잔여 확인, 차감")
-  ContainerQueue(mq, "메시지 큐", "", "DB 쓰기 완충")
-  ContainerDb(db, "좌석/주문 DB", "RDB", "최종 정합성")
-}
-Rel(users, queue, "대기열 진입", "ZADD")
-Rel(queue, sched, "앞에서 N명 꺼냄")
-Rel(sched, seat, "입장자만")
-Rel(seat, mq, "성공분만")
-Rel(mq, db, "순차 기록")
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="560" viewBox="0 0 440 560" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="560" fill="#FFFFFF"/>
+<rect x="150" y="12" width="140" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="30.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">사용자</text>
+<text x="220.0" y="45.5" font-size="10.5" fill="#444" text-anchor="middle">수십만~수백만</text>
+<rect x="30" y="92" width="380" height="456" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="42" y="110" font-size="11" fill="#333" text-anchor="start" font-weight="bold">예매 시스템</text>
+<rect x="110" y="120" width="220" height="62" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="139.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">대기열</text>
+<text x="220.0" y="154.5" font-size="10" fill="#777" text-anchor="middle">[Redis Sorted Set]</text>
+<text x="220.0" y="169.5" font-size="10.5" fill="#444" text-anchor="middle">도착 순서로 정렬</text>
+<rect x="110" y="206" width="220" height="62" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="225.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">입장 허가 스케줄러</text>
+<text x="220.0" y="240.5" font-size="10" fill="#777" text-anchor="middle">[Active + TTL]</text>
+<text x="220.0" y="255.5" font-size="10.5" fill="#444" text-anchor="middle">N명씩 통과</text>
+<rect x="110" y="292" width="220" height="62" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="311.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">좌석 원자 처리</text>
+<text x="220.0" y="326.5" font-size="10" fill="#777" text-anchor="middle">[Redis Lua]</text>
+<text x="220.0" y="341.5" font-size="10.5" fill="#444" text-anchor="middle">잔여 확인, 차감</text>
+<rect x="110" y="378" width="220" height="62" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="405.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">메시지 큐</text>
+<text x="220.0" y="420.0" font-size="10.5" fill="#444" text-anchor="middle">DB 쓰기 완충</text>
+<rect x="110" y="464" width="220" height="62" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="483.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">좌석/주문 DB</text>
+<text x="220.0" y="498.5" font-size="10" fill="#777" text-anchor="middle">[RDB]</text>
+<text x="220.0" y="513.5" font-size="10.5" fill="#444" text-anchor="middle">최종 정합성</text>
+<line x1="220" y1="56" x2="220" y2="119" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="227.0" y="57.0" width="59.2" height="13" fill="#FFFFFF"/>
+<text x="230" y="67" font-size="10" fill="#333" text-anchor="start">대기열 진입</text>
+<rect x="227.0" y="70.0" width="40.8" height="13" fill="#FFFFFF"/>
+<text x="230" y="80" font-size="10" fill="#333" text-anchor="start">[ZADD]</text>
+<line x1="220" y1="182" x2="220" y2="205" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="230" y="197" font-size="10" fill="#333" text-anchor="start">앞에서 N명 꺼냄</text>
+<line x1="220" y1="268" x2="220" y2="291" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="230" y="283" font-size="10" fill="#333" text-anchor="start">입장자만</text>
+<line x1="220" y1="354" x2="220" y2="377" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="230" y="369" font-size="10" fill="#333" text-anchor="start">성공분만</text>
+<line x1="220" y1="440" x2="220" y2="463" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="230" y="455" font-size="10" fill="#333" text-anchor="start">순차 기록</text>
+</svg>
 ```
 
 </details>
 
-![C4 예매 시스템 컨테이너 — 대기열, 입장, 좌석처리, MQ, DB](/img/c4/ticketing-flow.svg)
-
-import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
-
-<ArchifyEmbed src="/diagrams/ticketing-architecture.html" title="예매 시스템 구성 (인터랙티브)" height="560px" />
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/ticketing-flow.svg" alt="사용자가 대기열에 진입한 뒤 입장 허가 스케줄러, 좌석 원자 처리, 메시지 큐를 거쳐 좌석/주문 DB에 순차 기록되는 예매 시스템 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 1. 대기열 — 왜 MQ가 아니라 Redis Sorted Set인가
 
@@ -185,7 +206,7 @@ UPDATE seat
 
 예매처럼 **순위가 몇 등 달라져도 무방한** 도메인이라면, 오차를 감수하고 성능과 단순함을 얻는 **C**가 합리적일 때가 많습니다. 자체 구현 대신 검증된 대기열 솔루션(예: NetFUNNEL)을 사용하는 것도 선택지입니다.
 
-<mark>클러스터는 부하를 분산하지만 "전역 순서"와 충돌합니다 — 정확한 순위(A, B)냐, 성능과 가용성을 위한 근사(C)냐를 도메인의 오차 허용도로 정합니다.</mark>
+<mark>클러스터는 부하를 분산하지만 "전역 순서"와 충돌합니다 — 정확한 순위(A, B)와 성능과 가용성을 위한 근사(C) 중 무엇을 택할지는 도메인의 오차 허용도로 정합니다.</mark>
 
 ## 정리
 

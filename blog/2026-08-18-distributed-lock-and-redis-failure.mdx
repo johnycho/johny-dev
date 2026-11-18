@@ -15,27 +15,43 @@ date: 2026-08-18T12:00:00
 인스턴스 3대가 같은 자원(예: 재고, 포인트, "이번 배치를 한 번만 실행")을 동시에 건드린다고 해봅시다. 각 서버의 `ReentrantLock`은 **자기 프로세스 안 스레드끼리만** 막을 뿐, 서버 사이 경쟁은 못 막습니다. 결국 세 서버가 동시에 "재고 1개"를 팔아버리는 식의 문제가 납니다.
 
 <details>
-<summary>C4-PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-LAYOUT_LEFT_RIGHT()
-
-Container(s1, "인스턴스 1", "애플리케이션 서버")
-Container(s2, "인스턴스 2", "애플리케이션 서버")
-Container(s3, "인스턴스 3", "애플리케이션 서버")
-ContainerDb(redis, "공유 락", "Redis 등 외부 저장소", "한 번에 하나만 임계 구역 진입")
-
-Rel(s1, redis, "락 획득 시도")
-Rel(s2, redis, "락 획득 시도")
-Rel(s3, redis, "락 획득 시도")
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="244" viewBox="0 0 440 244" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="244" fill="#FFFFFF"/>
+<rect x="12.0" y="16" width="130" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="77" y="34.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">인스턴스 1</text>
+<text x="77" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">애플리케이션 서버</text>
+<rect x="155.0" y="16" width="130" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="34.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">인스턴스 2</text>
+<text x="220" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">애플리케이션 서버</text>
+<rect x="298.0" y="16" width="130" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="363" y="34.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">인스턴스 3</text>
+<text x="363" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">애플리케이션 서버</text>
+<line x1="77" y1="60" x2="160" y2="149" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="92.62921348314607" y="99" width="62" height="16" fill="#FFFFFF"/>
+<text x="123.62921348314607" y="111" font-size="10" fill="#555" text-anchor="middle">락 획득 시도</text>
+<line x1="220" y1="60" x2="220" y2="149" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="189.0" y="99" width="62" height="16" fill="#FFFFFF"/>
+<text x="220.0" y="111" font-size="10" fill="#555" text-anchor="middle">락 획득 시도</text>
+<line x1="363" y1="60" x2="280" y2="149" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="285.3707865168539" y="99" width="62" height="16" fill="#FFFFFF"/>
+<text x="316.3707865168539" y="111" font-size="10" fill="#555" text-anchor="middle">락 획득 시도</text>
+<path d="M100.0,158 A120.0,8 0 0 1 340.0,158 L340.0,220 A120.0,8 0 0 1 100.0,220 Z" fill="#FCE4EC" stroke="#D06A86"/>
+<path d="M100.0,158 A120.0,8 0 0 0 340.0,158" fill="none" stroke="#D06A86"/>
+<text x="220" y="186.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">공유 락</text>
+<text x="220" y="201.0" font-size="10.5" fill="#555" text-anchor="middle">Redis 등 외부 저장소</text>
+<text x="220" y="216.0" font-size="10.5" fill="#555" text-anchor="middle">한 번에 하나만 임계 구역 진입</text>
+</svg>
 ```
 
 </details>
 
-![C4 여러 인스턴스가 공유하는 Redis 락](/img/c4/redis-lock-1.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/redis-lock-1.svg" alt="인스턴스 3대가 Redis 등 외부 저장소에 있는 공유 락 하나를 각각 획득하려고 시도하는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>분산락은 "여러 노드가 함께 보는 하나의 락"을 외부 저장소(Redis 등)에 보관해, 전체에서 한 번에 하나만 임계 구역에 들어가게 하는 것</mark>입니다.
 
@@ -72,33 +88,51 @@ UPDATE product SET stock = stock - 1 WHERE id = ? AND stock > 0;
 2. **안전성(상호배제)** — HA로 살려도, <mark>복제가 비동기라 페일오버 순간 방금 잡은 락이 사라질 수 있습니다.</mark>
 
 <details>
-<summary>C4-PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
-LAYOUT_LEFT_RIGHT()
-
-Container(ca, "클라이언트 A", "애플리케이션")
-Container(cb, "클라이언트 B", "애플리케이션")
-ContainerDb(master, "마스터", "Redis", "복제 전 다운 → 마스터 장애")
-ContainerDb(replica, "복제본 → 새 마스터", "Redis", "락 기록 없음")
-
-Rel(ca, master, "락 획득")
-Rel(master, replica, "복제 (비동기)")
-Rel_Up(replica, master, "페일오버로 승격")
-Rel(cb, replica, "같은 락 획득 성공")
-Rel(cb, ca, "A, B 동시 진입 → 상호배제 위반", "충돌")
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="310" viewBox="0 0 440 310" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="310" fill="#FFFFFF"/>
+<rect x="14.0" y="40" width="140" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="84" y="58.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">클라이언트 A</text>
+<text x="84" y="73.5" font-size="10.5" fill="#555" text-anchor="middle">애플리케이션</text>
+<rect x="14.0" y="240" width="140" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="84" y="258.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">클라이언트 B</text>
+<text x="84" y="273.5" font-size="10.5" fill="#555" text-anchor="middle">애플리케이션</text>
+<path d="M272.0,34 A80.0,8 0 0 1 432.0,34 L432.0,94 A80.0,8 0 0 1 272.0,94 Z" fill="#F7F7F7" stroke="#999999"/>
+<path d="M272.0,34 A80.0,8 0 0 0 432.0,34" fill="none" stroke="#999999"/>
+<text x="352" y="61.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">마스터</text>
+<text x="352" y="76.0" font-size="10.5" fill="#555" text-anchor="middle">Redis</text>
+<text x="352" y="91.0" font-size="10.5" fill="#555" text-anchor="middle">복제 전 다운 → 마스터 장애</text>
+<path d="M272.0,234 A80.0,8 0 0 1 432.0,234 L432.0,294 A80.0,8 0 0 1 272.0,294 Z" fill="#F7F7F7" stroke="#999999"/>
+<path d="M272.0,234 A80.0,8 0 0 0 432.0,234" fill="none" stroke="#999999"/>
+<text x="352" y="261.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">복제본 → 새 마스터</text>
+<text x="352" y="276.0" font-size="10.5" fill="#555" text-anchor="middle">Redis</text>
+<text x="352" y="291.0" font-size="10.5" fill="#555" text-anchor="middle">락 기록 없음</text>
+<line x1="154" y1="62" x2="271" y2="62" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="213" y="56" font-size="10.5" fill="#333" text-anchor="middle">락 획득</text>
+<line x1="154" y1="262" x2="271" y2="262" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="213" y="256" font-size="10.5" fill="#333" text-anchor="middle">같은 락 획득 성공</text>
+<line x1="312" y1="102" x2="312" y2="225" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="306" y="158" font-size="10" fill="#555" text-anchor="end">복제</text>
+<text x="306" y="172" font-size="10" fill="#555" text-anchor="end">(비동기)</text>
+<line x1="398" y1="226" x2="398" y2="103" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="392" y="158" font-size="10" fill="#555" text-anchor="end">페일오버로</text>
+<text x="392" y="172" font-size="10" fill="#555" text-anchor="end">승격</text>
+<line x1="84" y1="240" x2="84" y2="85" stroke="#D06A86" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="20" y="138" width="128" height="50" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="84" y="156" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">A, B 동시 진입 →</text>
+<text x="84" y="170" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">상호배제 위반</text>
+<text x="84" y="183" font-size="10" fill="#9E3A57" text-anchor="middle">[충돌]</text>
+</svg>
 ```
 
 </details>
 
-![C4 Redis 마스터, 복제 페일오버 시 락 이중 획득](/img/c4/redis-lock-2.svg)
-
-import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
-
-<ArchifyEmbed src="/diagrams/distributed-lock-failover.html" title="Redis 페일오버 시 락 이중 획득 (인터랙티브)" height="520px" />
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/redis-lock-2.svg" alt="클라이언트 A가 마스터에서 락을 얻은 뒤 복제 전에 마스터가 다운되고, 락 기록이 없는 새 마스터에서 클라이언트 B도 같은 락을 얻어 상호배제를 위반하는 과정" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 즉 Sentinel, Cluster로 가용성은 올려도, **락의 상호배제까지 100% 보장되진 않습니다.** 여러 독립 마스터의 과반 획득을 요구하는 **Redlock**은 이 위험을 줄이려는 시도지만, GC 정지, 시계 문제 등으로 완벽하진 않다는 논쟁이 있고 구성도 무겁습니다.
 

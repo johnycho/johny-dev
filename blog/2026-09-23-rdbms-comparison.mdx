@@ -9,7 +9,7 @@ description: "MySQL, PostgreSQL, Oracle을 라이선스, 기능, 성능, 확장,
 
 <!-- truncate -->
 
-관계형 DB(RDBMS)는 다 비슷해 보여도, 라이선스, 기능, 운영 성격이 꽤 다릅니다. <mark>"무엇이 제일 좋냐"에는 정답이 없고, **워크로드, 비용, 팀 경험, 필요한 기능**에 따라 답이 달라집니다.</mark> 가장 많이 쓰이는 **MySQL, PostgreSQL, Oracle**을 기준별로 비교하고, 선택하는 순서를 정리합니다.
+관계형 DB(RDBMS)는 다 비슷해 보여도, 라이선스, 기능, 운영 성격이 꽤 다릅니다. <mark>"무엇이 가장 좋은지"에는 정답이 없고, **워크로드, 비용, 팀 경험, 필요한 기능**에 따라 답이 달라집니다.</mark> 가장 많이 쓰이는 **MySQL, PostgreSQL, Oracle**을 기준별로 비교하고, 선택하는 순서를 정리합니다.
 
 ## 무엇을 기준으로 비교하나
 
@@ -76,35 +76,51 @@ description: "MySQL, PostgreSQL, Oracle을 라이선스, 기능, 성능, 확장,
 한 번에 정하기보다 아래 질문에 **순서대로** 답하면 빠르게 정해집니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-title RDBMS 고르기
-start
-if (상용 라이선스로 엔터프라이즈 지원, RAC 고가용성이 꼭 필요?) then (Y)
-  :Oracle / SQL Server;
-  stop
-else (N)
-  if (복잡한 분석 쿼리, 고급 타입, GIS, JSONB가 중요?) then (Y)
-    :PostgreSQL;
-    stop
-  else (N)
-    if (수평 확장, 글로벌 분산이 필요?) then (Y)
-      :분산 SQL (CockroachDB 등);
-      stop
-    else (단순, 읽기 위주 웹 서비스)
-      :MySQL / MariaDB;
-      stop
-    endif
-  endif
-endif
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="382" viewBox="0 0 440 382" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="382" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">RDBMS 고르기</text>
+<rect x="16" y="44" width="210" height="50" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="65.1" font-size="11.5" fill="#333" text-anchor="middle">상용 라이선스로 엔터프라이즈 지원,</text>
+<text x="121.0" y="80.6" font-size="11.5" fill="#333" text-anchor="middle">RAC 고가용성이 꼭 필요?</text>
+<rect x="316" y="44" width="120" height="50" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="376.0" y="65.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">Oracle /</text>
+<text x="376.0" y="81.2" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">SQL Server</text>
+<line x1="226" y1="69.0" x2="315" y2="69.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="271.0" y="63.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="94" x2="121.0" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="121" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">N</text>
+<rect x="16" y="140" width="210" height="50" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="161.1" font-size="11.5" fill="#333" text-anchor="middle">복잡한 분석 쿼리, 고급 타입,</text>
+<text x="121.0" y="176.6" font-size="11.5" fill="#333" text-anchor="middle">GIS, JSONB가 중요?</text>
+<rect x="316" y="140" width="120" height="50" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="376.0" y="169.1" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">PostgreSQL</text>
+<line x1="226" y1="165.0" x2="315" y2="165.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="271.0" y="159.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="190" x2="121.0" y2="235" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="217" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">N</text>
+<rect x="16" y="236" width="210" height="50" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="264.9" font-size="11.5" fill="#333" text-anchor="middle">수평 확장, 글로벌 분산이 필요?</text>
+<rect x="316" y="236" width="120" height="50" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="376.0" y="256.9" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">분산 SQL</text>
+<text x="376.0" y="273.1" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">(CockroachDB 등)</text>
+<line x1="226" y1="261.0" x2="315" y2="261.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="271.0" y="255.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="286" x2="121.0" y2="331" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="313" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">단순, 읽기 위주 웹 서비스</text>
+<rect x="55.47999999999999" y="332" width="131.04000000000002" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="121.0" y="353.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">MySQL / MariaDB</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML RDBMS 선택 결정 트리](/img/c4/pu-rdbms-select.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/rdbms-select.svg" alt="엔터프라이즈 지원, 고급 기능, 수평 확장 필요 여부를 차례로 물어 Oracle/SQL Server, PostgreSQL, 분산 SQL, MySQL/MariaDB 중 하나를 고르는 판단 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 - 유료라도 **최고 수준 고가용성, 벤더 지원**이 필요하다 → **Oracle**(또는 SQL Server).
 - **복잡한 분석, 고급 타입, 지리정보, JSON**이 중요하다 → **PostgreSQL**.

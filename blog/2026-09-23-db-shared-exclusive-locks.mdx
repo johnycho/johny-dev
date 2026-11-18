@@ -9,7 +9,7 @@ description: "공유락(S), 배타락(X)의 개념과 호환성, 그리고 READ 
 
 <!-- truncate -->
 
-DB는 여러 트랜잭션이 같은 데이터를 동시에 건드릴 때 **락(lock)** 으로 순서를 정리합니다. 락에는 읽기용 **공유락(S)** 과 쓰기용 **배타락(X)** 이 있고, <mark>어떤 락을 언제 획득하느냐는 **격리 수준에 따라 달라져** 대기, 데드락 양상도 바뀝니다.</mark> 개념부터 격리 수준별 동작, SERIALIZABLE의 구체적 상황까지 MySQL InnoDB 기준으로 정리합니다. (격리 수준 자체는 [DB 트랜잭션 격리 수준](./db-isolation-levels) 참고.)
+DB는 여러 트랜잭션이 같은 데이터를 동시에 건드릴 때 **락(lock)** 으로 순서를 정리합니다. 락에는 읽기용 **공유락(S)** 과 쓰기용 **배타락(X)** 이 있고, <mark>어떤 락을 언제 획득하는지는 **격리 수준에 따라 달라져** 대기, 데드락 양상도 바뀝니다.</mark> 개념부터 격리 수준별 동작, SERIALIZABLE의 구체적 상황까지 MySQL InnoDB 기준으로 정리합니다. (격리 수준 자체는 [DB 트랜잭션 격리 수준](./db-isolation-levels) 참고.)
 
 ## 공유락(S)과 배타락(X)
 
@@ -41,48 +41,109 @@ DB는 여러 트랜잭션이 같은 데이터를 동시에 건드릴 때 **락(l
 가장 단순한 대기 — 같은 행을 두 트랜잭션이 UPDATE(둘 다 X락):
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-title 배타락(X) 대기 — 같은 행을 두 트랜잭션이 UPDATE
-participant "트랜잭션 A" as A
-participant "행 id=1" as R
-participant "트랜잭션 B" as B
-A -> R : UPDATE id=1 → X락 획득
-B -> R : UPDATE id=1 → X락 요청
-note over B : A의 X락과 충돌 → 대기 (lock wait)
-A -> R : COMMIT → X락 해제
-B -> R : 대기 풀림 → X락 획득 후 진행
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="263" viewBox="0 0 480 263" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="480" height="263" fill="#FFFFFF"/>
+<text x="240.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">배타락(X) 대기 — 같은 행을 두 트랜잭션이 UPDATE</text>
+<line x1="72" y1="72" x2="72" y2="251" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="8.0" y="38" width="128" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="72.0" y="59.14" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">트랜잭션 A</text>
+<line x1="240" y1="72" x2="240" y2="251" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="176.0" y="38" width="128" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="240.0" y="59.14" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">행 id=1</text>
+<line x1="408" y1="72" x2="408" y2="251" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="344.0" y="38" width="128" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="408.0" y="59.14" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">트랜잭션 B</text>
+<line x1="72" y1="98" x2="239" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="105.8" y="83.0" width="118.3" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="92" font-size="10" fill="#333" text-anchor="middle">UPDATE id=1 → X락 획득</text>
+<line x1="408" y1="128" x2="241" y2="128" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="255.9" y="113.0" width="118.3" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="122" font-size="10" fill="#333" text-anchor="middle">UPDATE id=1 → X락 요청</text>
+<rect x="286.92999999999995" y="144" width="185.07000000000005" height="28" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="379.465" y="162" font-size="10.5" fill="#5A4300" text-anchor="middle">A의 X락과 충돌 → 대기 (lock wait)</text>
+<line x1="72" y1="200" x2="239" y2="200" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="117.5" y="185.0" width="94.9" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="194" font-size="10" fill="#333" text-anchor="middle">COMMIT → X락 해제</text>
+<line x1="408" y1="243" x2="241" y2="243" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="292.5" y="215.0" width="45.0" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="224" font-size="10" fill="#333" text-anchor="middle">대기 해제</text>
+<rect x="270.4" y="228.0" width="89.2" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="237" font-size="10" fill="#333" text-anchor="middle">→ X락 획득 후 진행</text>
+<circle cx="84" cy="98" r="8" fill="#4C7FE0"/>
+<text x="84" y="101.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<circle cx="396" cy="128" r="8" fill="#4C7FE0"/>
+<text x="396" y="131.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<circle cx="84" cy="200" r="8" fill="#4C7FE0"/>
+<text x="84" y="203.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="396" cy="243" r="8" fill="#4C7FE0"/>
+<text x="396" y="246.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 배타락 대기](/img/c4/pu-lock-xx-wait.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/lock-xx-wait.svg" alt="트랜잭션 B가 A의 X락 때문에 대기하다가 A가 커밋한 뒤 X락을 얻어 진행하는 순서" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 순환이 생기면 대기가 데드락이 됩니다 — 두 트랜잭션이 **락을 서로 반대 순서로** 획득할 때가 대표적입니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-title 데드락 — 락 획득 순서가 엇갈림
-participant "트랜잭션 A" as A
-participant "행 1 / 행 2" as R
-participant "트랜잭션 B" as B
-A -> R : 행1 X락 획득
-B -> R : 행2 X락 획득
-A -> R : 행2 X락 요청 → B가 보유 → 대기
-B -> R : 행1 X락 요청 → A가 보유 → 대기
-note over A, B : 서로 상대의 락을 기다림 → 데드락 (InnoDB가 한쪽 롤백)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="292" viewBox="0 0 480 292" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="480" height="292" fill="#FFFFFF"/>
+<text x="240.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">데드락 — 락 획득 순서가 엇갈림</text>
+<line x1="72" y1="72" x2="72" y2="280" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="8.0" y="38" width="128" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="72.0" y="59.14" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">트랜잭션 A</text>
+<line x1="240" y1="72" x2="240" y2="280" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="176.0" y="38" width="128" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="240.0" y="59.14" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">행 1 / 행 2</text>
+<line x1="408" y1="72" x2="408" y2="280" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="344.0" y="38" width="128" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="408.0" y="59.14" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">트랜잭션 B</text>
+<line x1="72" y1="98" x2="239" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="135.2" y="83.0" width="59.7" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="92" font-size="10" fill="#333" text-anchor="middle">행1 X락 획득</text>
+<line x1="408" y1="128" x2="241" y2="128" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="285.1" y="113.0" width="59.7" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="122" font-size="10" fill="#333" text-anchor="middle">행2 X락 획득</text>
+<line x1="72" y1="171" x2="239" y2="171" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="108.3" y="143.0" width="113.4" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="152" font-size="10" fill="#333" text-anchor="middle">행2 X락 요청 → B가 보유</text>
+<rect x="147.0" y="156.0" width="36.0" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="165" font-size="10" fill="#333" text-anchor="middle">→ 대기</text>
+<line x1="408" y1="214" x2="241" y2="214" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="258.3" y="186.0" width="113.4" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="195" font-size="10" fill="#333" text-anchor="middle">행1 X락 요청 → A가 보유</text>
+<rect x="297.0" y="199.0" width="36.0" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="208" font-size="10" fill="#333" text-anchor="middle">→ 대기</text>
+<rect x="52.0" y="230" width="376" height="44" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="240.0" y="248" font-size="10.5" fill="#5A4300" text-anchor="middle">서로 상대의 락을 기다림 → 데드락</text>
+<text x="240.0" y="264" font-size="10.5" fill="#5A4300" text-anchor="middle">(InnoDB가 한쪽 롤백)</text>
+<circle cx="84" cy="98" r="8" fill="#4C7FE0"/>
+<text x="84" y="101.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<circle cx="396" cy="128" r="8" fill="#4C7FE0"/>
+<text x="396" y="131.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<circle cx="84" cy="171" r="8" fill="#4C7FE0"/>
+<text x="84" y="174.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="396" cy="214" r="8" fill="#4C7FE0"/>
+<text x="396" y="217.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 순서 역전 데드락](/img/c4/pu-lock-cycle-deadlock.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/lock-cycle-deadlock.svg" alt="두 트랜잭션이 행 1과 행 2의 X락을 엇갈린 순서로 요청해 서로 기다리는 데드락 순서" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 격리 수준에 따라 락이 달라진다
 
@@ -105,25 +166,55 @@ SERIALIZABLE에서는 (autocommit이 꺼진 트랜잭션이면) InnoDB가 **모�
 ### 케이스 A — 읽기가 쓰기를 막는다(대기)
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-title SERIALIZABLE — 읽기(S락)가 쓰기를 막는다
-participant "트랜잭션 A" as A
-participant "행 id=1" as R
-participant "트랜잭션 B" as B
-A -> R : SELECT id=1 → (자동) FOR SHARE, S락 획득
-B -> R : UPDATE id=1 → X락 요청
-note over B : A의 S락과 충돌 → 대기\n(RC, RR이면 A의 SELECT는 락이 없어 안 기다림)
-A -> R : COMMIT → S락 해제
-B -> R : 대기 풀림 → 진행
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="279" viewBox="0 0 480 279" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="480" height="279" fill="#FFFFFF"/>
+<text x="240.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">SERIALIZABLE — 읽기(S락)가 쓰기를 막는다</text>
+<line x1="72" y1="72" x2="72" y2="267" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="8.0" y="38" width="128" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="72.0" y="59.14" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">트랜잭션 A</text>
+<line x1="240" y1="72" x2="240" y2="267" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="176.0" y="38" width="128" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="240.0" y="59.14" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">행 id=1</text>
+<line x1="408" y1="72" x2="408" y2="267" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="344.0" y="38" width="128" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="408.0" y="59.14" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">트랜잭션 B</text>
+<line x1="72" y1="111" x2="239" y2="111" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="112.0" y="83.0" width="106.0" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="92" font-size="10" fill="#333" text-anchor="middle">SELECT id=1 → (자동)</text>
+<rect x="114.8" y="96.0" width="100.5" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="105" font-size="10" fill="#333" text-anchor="middle">FOR SHARE, S락 획득</text>
+<line x1="408" y1="141" x2="241" y2="141" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="255.9" y="126.0" width="118.3" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="135" font-size="10" fill="#333" text-anchor="middle">UPDATE id=1 → X락 요청</text>
+<rect x="224.56" y="157" width="247.44" height="44" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="348.28" y="175" font-size="10.5" fill="#5A4300" text-anchor="middle">A의 S락과 충돌 → 대기</text>
+<text x="348.28" y="191" font-size="10.5" fill="#5A4300" text-anchor="middle">(RC, RR이면 A의 SELECT는 락이 없어 안 기다림)</text>
+<line x1="72" y1="229" x2="239" y2="229" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="117.5" y="214.0" width="94.9" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="223" font-size="10" fill="#333" text-anchor="middle">COMMIT → S락 해제</text>
+<line x1="408" y1="259" x2="241" y2="259" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="275.0" y="244.0" width="80.0" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="253" font-size="10" fill="#333" text-anchor="middle">대기 해제 → 진행</text>
+<circle cx="84" cy="111" r="8" fill="#4C7FE0"/>
+<text x="84" y="114.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<circle cx="396" cy="141" r="8" fill="#4C7FE0"/>
+<text x="396" y="144.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<circle cx="84" cy="229" r="8" fill="#4C7FE0"/>
+<text x="84" y="232.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="396" cy="259" r="8" fill="#4C7FE0"/>
+<text x="396" y="262.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML SERIALIZABLE 읽기가 쓰기를 막음](/img/c4/pu-lock-serializable-wait.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/lock-serializable-wait.svg" alt="SERIALIZABLE에서 A의 SELECT가 잡은 S락 때문에 B의 UPDATE가 대기하는 순서" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 A가 그냥 조회만 했는데도 S락이 걸려, B의 `UPDATE`가 대기합니다. <mark>RC, RR이면 A의 일반 `SELECT`는 락이 없어 B가 기다리지 않지만, SERIALIZABLE에서는 읽기가 쓰기를 막습니다.</mark>
 
@@ -139,25 +230,58 @@ COMMIT;  -- S락 해제                           -- 그제서야 진행
 ### 케이스 B — 읽고 나서 각자 쓰면 데드락(승격)
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-title SERIALIZABLE — S락 공유 후 각자 UPDATE, 승격 데드락
-participant "트랜잭션 A" as A
-participant "행 id=1" as R
-participant "트랜잭션 B" as B
-A -> R : SELECT id=1 → S락
-B -> R : SELECT id=1 → S락 (A와 공존)
-A -> R : UPDATE id=1 → X락 요청 → B의 S락 대기
-B -> R : UPDATE id=1 → X락 요청 → A의 S락 대기
-note over A, B : 서로의 S락을 기다림 → 데드락 (한쪽 롤백)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="289" viewBox="0 0 480 289" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="480" height="289" fill="#FFFFFF"/>
+<text x="240.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">SERIALIZABLE — S락 공유 후 각자 UPDATE, 승격 데드락</text>
+<line x1="72" y1="72" x2="72" y2="277" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="8.0" y="38" width="128" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="72.0" y="59.14" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">트랜잭션 A</text>
+<line x1="240" y1="72" x2="240" y2="277" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="176.0" y="38" width="128" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="240.0" y="59.14" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">행 id=1</text>
+<line x1="408" y1="72" x2="408" y2="277" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="344.0" y="38" width="128" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="408.0" y="59.14" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">트랜잭션 B</text>
+<line x1="72" y1="98" x2="239" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="116.8" y="83.0" width="96.3" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="92" font-size="10" fill="#333" text-anchor="middle">SELECT id=1 → S락</text>
+<line x1="408" y1="141" x2="241" y2="141" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="282.7" y="113.0" width="64.6" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="122" font-size="10" fill="#333" text-anchor="middle">SELECT id=1</text>
+<rect x="275.1" y="126.0" width="79.8" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="135" font-size="10" fill="#333" text-anchor="middle">→ S락 (A와 공존)</text>
+<line x1="72" y1="184" x2="239" y2="184" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="105.8" y="156.0" width="118.3" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="165" font-size="10" fill="#333" text-anchor="middle">UPDATE id=1 → X락 요청</text>
+<rect x="128.3" y="169.0" width="73.4" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="178" font-size="10" fill="#333" text-anchor="middle">→ B의 S락 대기</text>
+<line x1="408" y1="227" x2="241" y2="227" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="255.9" y="199.0" width="118.3" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="208" font-size="10" fill="#333" text-anchor="middle">UPDATE id=1 → X락 요청</text>
+<rect x="278.3" y="212.0" width="73.4" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="221" font-size="10" fill="#333" text-anchor="middle">→ A의 S락 대기</text>
+<rect x="52.0" y="243" width="376" height="28" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="240.0" y="261" font-size="10.5" fill="#5A4300" text-anchor="middle">서로의 S락을 기다림 → 데드락 (한쪽 롤백)</text>
+<circle cx="84" cy="98" r="8" fill="#4C7FE0"/>
+<text x="84" y="101.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<circle cx="396" cy="141" r="8" fill="#4C7FE0"/>
+<text x="396" y="144.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<circle cx="84" cy="184" r="8" fill="#4C7FE0"/>
+<text x="84" y="187.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="396" cy="227" r="8" fill="#4C7FE0"/>
+<text x="396" y="230.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML SERIALIZABLE 승격 데드락](/img/c4/pu-lock-serializable-deadlock.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/lock-serializable-deadlock.svg" alt="두 트랜잭션이 S락을 공유한 뒤 각자 X락을 요청해 서로의 S락을 기다리는 데드락 순서" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 두 트랜잭션이 같은 행을 **먼저 읽어 S락을 공유**한 뒤, 둘 다 그 행을 **UPDATE(X락)** 하려 하면, 서로 상대의 S락이 해제되길 기다려 **데드락**이 됩니다(S→X 승격 데드락).
 

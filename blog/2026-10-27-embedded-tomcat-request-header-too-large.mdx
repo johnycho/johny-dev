@@ -80,27 +80,42 @@ log.file.path: /var/log/pods/prod-inbound-service_..._rollout-xxxxx/application/
 <mark>이 지점은 **DispatcherServlet, 필터, 컨트롤러, `@Valid`, `@RequestBody`보다 앞**입니다.</mark> 그래서 애플리케이션 비즈니스 로직이 **한 줄도 실행되지 않고**(→ 비즈니스 로그 없음), 톰캣 커넥터가 바로 **400**을 반환합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-skinparam sequenceMessageAlign center
-participant "클라이언트" as C
-participant "톰캣 커넥터\n(Coyote)" as T
-participant "DispatcherServlet\n필터, 컨트롤러" as A
-
-C -> T : 요청(요청라인+헤더)
-note right of T : 헤더 파싱 중\n8KB 한도 초과
-T --> C : 400\nRequest header is too large
-note over A : 여기까지 도달 못 함\n→ 애플리케이션 로그 없음
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="252" viewBox="0 0 440 252" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="252" fill="#FFFFFF"/>
+<rect x="15.0" y="14" width="110" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="70" y="40.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">클라이언트</text>
+<rect x="160.0" y="14" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="33.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">톰캣 커넥터</text>
+<text x="220" y="47.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">(Coyote)</text>
+<rect x="298.0" y="14" width="134" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="365" y="33.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">DispatcherServlet</text>
+<text x="365" y="47.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">필터, 컨트롤러</text>
+<line x1="70" y1="58" x2="70" y2="242" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="220" y1="58" x2="220" y2="242" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="365" y1="58" x2="365" y2="242" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="70" y1="92" x2="219" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="145.0" y="87" font-size="10" fill="#333" text-anchor="middle">요청(요청라인+헤더)</text>
+<rect x="228" y="102" width="94" height="38" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="275.0" y="119" font-size="10.5" fill="#5A4300" text-anchor="middle">헤더 파싱 중</text>
+<text x="275.0" y="133" font-size="10.5" fill="#5A4300" text-anchor="middle">8KB 한도 초과</text>
+<line x1="220" y1="170" x2="71" y2="170" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="145.0" y="152" font-size="10" fill="#333" text-anchor="middle">400</text>
+<text x="145.0" y="165" font-size="10" fill="#333" text-anchor="middle">Request header is too large</text>
+<rect x="298" y="186" width="134" height="38" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="365.0" y="203" font-size="10.5" fill="#5A4300" text-anchor="middle">여기까지 도달 못 함</text>
+<text x="365.0" y="217" font-size="10.5" fill="#5A4300" text-anchor="middle">→ 애플리케이션 로그 없음</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 톰캣 커넥터가 컨트롤러 앞에서 400을 반환하는 흐름](/img/c4/pu-tomcat-header-400.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/tomcat-header-400.svg" alt="톰캣 커넥터가 헤더 파싱 중 8KB 한도 초과를 감지해 DispatcherServlet에 닿기 전에 클라이언트에 400을 돌려주는 순서" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ### 무엇이 한도인가
 

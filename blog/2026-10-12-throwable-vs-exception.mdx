@@ -16,38 +16,51 @@ description: "Java 예외 계층에서 Throwable, Error, Exception, RuntimeExcep
 Java에서 `throw`로 던지고 `catch`로 처리할 수 있는 모든 것은 `Throwable`을 상속합니다. 그 아래로 크게 두 가지로 나뉩니다 — `Error`와 `Exception`.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-skinparam classFontSize 13
-hide empty members
-hide circle
-
-class Object
-class Throwable #FFF3E0
-class Error #FCE4EC
-class Exception #E9F2E9
-class "RuntimeException\n(unchecked)" as RE #EEF3FB
-class "IOException\nSQLException\n…" as CHK #E9F2E9
-class "NullPointerException\nIllegalArgumentException\n…" as UNC #EEF3FB
-class "OutOfMemoryError\nStackOverflowError\n…" as ERR #FCE4EC
-
-Object <|-- Throwable
-Throwable <|-- Error
-Throwable <|-- Exception
-Exception <|-- RE
-Exception <|-- CHK
-RE <|-- UNC
-Error <|-- ERR
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="360" viewBox="0 0 440 360" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#FFFFFF" stroke="#777"/></marker></defs>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="360" fill="#FFFFFF"/>
+<rect x="140.0" y="12" width="110" height="31" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="195.0" y="31.5" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">Object</text>
+<rect x="140.0" y="72" width="110" height="31" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="195.0" y="91.5" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">Throwable</text>
+<rect x="27.0" y="140" width="110" height="31" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="82.0" y="159.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">Error</text>
+<rect x="253.0" y="140" width="110" height="31" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="308.0" y="159.5" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Exception</text>
+<rect x="166.0" y="208" width="140" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="236.0" y="227.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">RuntimeException</text>
+<text x="236.0" y="242.5" font-size="11" fill="#444" text-anchor="middle">(unchecked)</text>
+<rect x="326.0" y="208" width="104" height="61" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="378.0" y="227.5" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">IOException</text>
+<text x="378.0" y="242.5" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">SQLException</text>
+<text x="378.0" y="257.5" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">…</text>
+<rect x="12.0" y="208" width="140" height="61" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="82.0" y="227.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">OutOfMemoryError</text>
+<text x="82.0" y="242.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">StackOverflowError</text>
+<text x="82.0" y="257.5" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">…</text>
+<rect x="144.0" y="292" width="184" height="61" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="236.0" y="311.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">NullPointerException</text>
+<text x="236.0" y="326.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">IllegalArgumentException</text>
+<text x="236.0" y="341.5" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">…</text>
+<polyline points="195,72 195,44" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="82,140 82,121.5 195,121.5 195,104" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="308,140 308,121.5 195,121.5 195,104" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="236,208 236,189.5 308,189.5 308,172" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="378,208 378,189.5 308,189.5 308,172" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="236,292 236,255" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+<polyline points="82,208 82,172" fill="none" stroke="#777" stroke-width="1.2" marker-end="url(#tri)"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML Java 예외 계층 구조](/img/c4/pu-throwable-hierarchy.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/throwable-hierarchy.svg" alt="Object 아래 Throwable이 Error와 Exception으로 나뉘고, Exception 아래 RuntimeException(unchecked)과 IOException 같은 checked 예외가 있는 계층 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 정리하면 이렇습니다.
 
@@ -113,7 +126,7 @@ void read2() {
 
 `RuntimeException`과 그 하위 타입(`NullPointerException`, `IllegalArgumentException`, `IndexOutOfBoundsException` 등)입니다. 컴파일러가 처리를 강제하지 않습니다. 주로 **프로그래밍 실수**로 발생하므로, 일일이 처리하기보다 **코드를 고쳐 애초에 발생하지 않게** 하는 쪽이 맞습니다.
 
-> checked와 unchecked를 가르는 기준은 상속 관계 하나입니다 — `RuntimeException`을 상속하면 unchecked, `Exception`만 상속하면 checked. `Error`도 unchecked로 분류됩니다(컴파일러가 처리를 강제하지 않는다는 의미에서).
+> checked와 unchecked를 나누는 기준은 상속 관계 하나입니다 — `RuntimeException`을 상속하면 unchecked, `Exception`만 상속하면 checked. `Error`도 unchecked로 분류됩니다(컴파일러가 처리를 강제하지 않는다는 의미에서).
 
 ## catch (Throwable) vs catch (Exception)
 

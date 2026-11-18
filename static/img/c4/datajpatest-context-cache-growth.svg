@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="300" viewBox="0 0 460 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="460" height="300" fill="#FFFFFF"/>
+<text x="230" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">전체 테스트를 돌릴 때 누적되는 컨텍스트 수</text>
+<text x="230" y="40" font-size="11" fill="#555" text-anchor="middle">(실측, 전체 스위트)</text>
+<line x1="70" y1="250.0" x2="440" y2="250.0" stroke="#E5E5E5"/>
+<text x="64" y="253.5" font-size="10" fill="#555" text-anchor="end">0</text>
+<line x1="70" y1="203.5" x2="440" y2="203.5" stroke="#E5E5E5"/>
+<text x="64" y="207.0" font-size="10" fill="#555" text-anchor="end">5</text>
+<line x1="70" y1="157.0" x2="440" y2="157.0" stroke="#E5E5E5"/>
+<text x="64" y="160.5" font-size="10" fill="#555" text-anchor="end">10</text>
+<line x1="70" y1="110.5" x2="440" y2="110.5" stroke="#E5E5E5"/>
+<text x="64" y="114.0" font-size="10" fill="#555" text-anchor="end">15</text>
+<line x1="70" y1="64.0" x2="440" y2="64.0" stroke="#E5E5E5"/>
+<text x="64" y="67.5" font-size="10" fill="#555" text-anchor="end">20</text>
+<line x1="70" y1="250" x2="440" y2="250" stroke="#999"/>
+<line x1="70" y1="250" x2="70" y2="64" stroke="#999"/>
+<line x1="80.27777777777777" y1="250" x2="80.27777777777777" y2="254" stroke="#999"/>
+<text x="80.27777777777777" y="265" font-size="9.5" fill="#555" text-anchor="middle">1</text>
+<line x1="100.83333333333334" y1="250" x2="100.83333333333334" y2="254" stroke="#999"/>
+<text x="100.83333333333334" y="265" font-size="9.5" fill="#555" text-anchor="middle">2</text>
+<line x1="121.38888888888889" y1="250" x2="121.38888888888889" y2="254" stroke="#999"/>
+<text x="121.38888888888889" y="265" font-size="9.5" fill="#555" text-anchor="middle">3</text>
+<line x1="141.94444444444446" y1="250" x2="141.94444444444446" y2="254" stroke="#999"/>
+<text x="141.94444444444446" y="265" font-size="9.5" fill="#555" text-anchor="middle">4</text>
+<line x1="162.5" y1="250" x2="162.5" y2="254" stroke="#999"/>
+<text x="162.5" y="265" font-size="9.5" fill="#555" text-anchor="middle">5</text>
+<line x1="183.05555555555557" y1="250" x2="183.05555555555557" y2="254" stroke="#999"/>
+<text x="183.05555555555557" y="265" font-size="9.5" fill="#555" text-anchor="middle">6</text>
+<line x1="203.61111111111111" y1="250" x2="203.61111111111111" y2="254" stroke="#999"/>
+<text x="203.61111111111111" y="265" font-size="9.5" fill="#555" text-anchor="middle">7</text>
+<line x1="224.16666666666669" y1="250" x2="224.16666666666669" y2="254" stroke="#999"/>
+<text x="224.16666666666669" y="265" font-size="9.5" fill="#555" text-anchor="middle">8</text>
+<line x1="244.72222222222223" y1="250" x2="244.72222222222223" y2="254" stroke="#999"/>
+<text x="244.72222222222223" y="265" font-size="9.5" fill="#555" text-anchor="middle">9</text>
+<line x1="265.2777777777778" y1="250" x2="265.2777777777778" y2="254" stroke="#999"/>
+<text x="265.2777777777778" y="265" font-size="9.5" fill="#555" text-anchor="middle">10</text>
+<line x1="285.83333333333337" y1="250" x2="285.83333333333337" y2="254" stroke="#999"/>
+<text x="285.83333333333337" y="265" font-size="9.5" fill="#555" text-anchor="middle">11</text>
+<line x1="306.3888888888889" y1="250" x2="306.3888888888889" y2="254" stroke="#999"/>
+<text x="306.3888888888889" y="265" font-size="9.5" fill="#555" text-anchor="middle">12</text>
+<line x1="326.94444444444446" y1="250" x2="326.94444444444446" y2="254" stroke="#999"/>
+<text x="326.94444444444446" y="265" font-size="9.5" fill="#555" text-anchor="middle">13</text>
+<line x1="347.5" y1="250" x2="347.5" y2="254" stroke="#999"/>
+<text x="347.5" y="265" font-size="9.5" fill="#555" text-anchor="middle">14</text>
+<line x1="368.0555555555556" y1="250" x2="368.0555555555556" y2="254" stroke="#999"/>
+<text x="368.0555555555556" y="265" font-size="9.5" fill="#555" text-anchor="middle">15</text>
+<line x1="388.61111111111114" y1="250" x2="388.61111111111114" y2="254" stroke="#999"/>
+<text x="388.61111111111114" y="265" font-size="9.5" fill="#555" text-anchor="middle">16</text>
+<line x1="409.1666666666667" y1="250" x2="409.1666666666667" y2="254" stroke="#999"/>
+<text x="409.1666666666667" y="265" font-size="9.5" fill="#555" text-anchor="middle">17</text>
+<line x1="429.72222222222223" y1="250" x2="429.72222222222223" y2="254" stroke="#999"/>
+<text x="429.72222222222223" y="265" font-size="9.5" fill="#555" text-anchor="middle">18</text>
+<polyline points="80.3,240.7 100.8,231.4 121.4,222.1 141.9,212.8 162.5,203.5 183.1,194.2 203.6,184.9 224.2,175.6 244.7,166.3 265.3,157.0 285.8,147.7 306.4,138.4 326.9,129.1 347.5,119.8 368.1,110.5 388.6,101.2 409.2,91.9 429.7,82.6" fill="none" stroke="#4C7FE0" stroke-width="2"/>
+<circle cx="80.3" cy="240.7" r="2.8" fill="#4C7FE0"/>
+<text x="80.3" y="233.7" font-size="9" fill="#26508F" text-anchor="middle">1</text>
+<circle cx="100.8" cy="231.4" r="2.8" fill="#4C7FE0"/>
+<text x="100.8" y="224.4" font-size="9" fill="#26508F" text-anchor="middle">2</text>
+<circle cx="121.4" cy="222.1" r="2.8" fill="#4C7FE0"/>
+<text x="121.4" y="215.1" font-size="9" fill="#26508F" text-anchor="middle">3</text>
+<circle cx="141.9" cy="212.8" r="2.8" fill="#4C7FE0"/>
+<text x="141.9" y="205.8" font-size="9" fill="#26508F" text-anchor="middle">4</text>
+<circle cx="162.5" cy="203.5" r="2.8" fill="#4C7FE0"/>
+<text x="162.5" y="196.5" font-size="9" fill="#26508F" text-anchor="middle">5</text>
+<circle cx="183.1" cy="194.2" r="2.8" fill="#4C7FE0"/>
+<text x="183.1" y="187.2" font-size="9" fill="#26508F" text-anchor="middle">6</text>
+<circle cx="203.6" cy="184.9" r="2.8" fill="#4C7FE0"/>
+<text x="203.6" y="177.9" font-size="9" fill="#26508F" text-anchor="middle">7</text>
+<circle cx="224.2" cy="175.6" r="2.8" fill="#4C7FE0"/>
+<text x="224.2" y="168.6" font-size="9" fill="#26508F" text-anchor="middle">8</text>
+<circle cx="244.7" cy="166.3" r="2.8" fill="#4C7FE0"/>
+<text x="244.7" y="159.3" font-size="9" fill="#26508F" text-anchor="middle">9</text>
+<circle cx="265.3" cy="157.0" r="2.8" fill="#4C7FE0"/>
+<text x="265.3" y="150.0" font-size="9" fill="#26508F" text-anchor="middle">10</text>
+<circle cx="285.8" cy="147.7" r="2.8" fill="#4C7FE0"/>
+<text x="285.8" y="140.7" font-size="9" fill="#26508F" text-anchor="middle">11</text>
+<circle cx="306.4" cy="138.4" r="2.8" fill="#4C7FE0"/>
+<text x="306.4" y="131.4" font-size="9" fill="#26508F" text-anchor="middle">12</text>
+<circle cx="326.9" cy="129.1" r="2.8" fill="#4C7FE0"/>
+<text x="326.9" y="122.1" font-size="9" fill="#26508F" text-anchor="middle">13</text>
+<circle cx="347.5" cy="119.8" r="2.8" fill="#4C7FE0"/>
+<text x="347.5" y="112.8" font-size="9" fill="#26508F" text-anchor="middle">14</text>
+<circle cx="368.1" cy="110.5" r="2.8" fill="#4C7FE0"/>
+<text x="368.1" y="103.5" font-size="9" fill="#26508F" text-anchor="middle">15</text>
+<circle cx="388.6" cy="101.2" r="2.8" fill="#4C7FE0"/>
+<text x="388.6" y="94.2" font-size="9" fill="#26508F" text-anchor="middle">16</text>
+<circle cx="409.2" cy="91.9" r="2.8" fill="#4C7FE0"/>
+<text x="409.2" y="84.9" font-size="9" fill="#26508F" text-anchor="middle">17</text>
+<circle cx="429.7" cy="82.6" r="2.8" fill="#4C7FE0"/>
+<text x="429.7" y="75.6" font-size="9" fill="#26508F" text-anchor="middle">18</text>
+<text x="255.0" y="284" font-size="10.5" fill="#333" text-anchor="middle">새 컨텍스트가 생긴 순서 →</text>
+<text x="0" y="0" font-size="10.5" fill="#333" text-anchor="middle" transform="translate(24 157.0) rotate(-90)">캐시에 남은 컨텍스트 수 (size)</text>
+</svg>

@@ -26,22 +26,68 @@ counter.incrementAndGet();   // 내부적으로 CAS 재시도 루프 — 경합 
 
 내부적으로는 기본 값 `base` 하나와, 경합이 감지되면 동적으로 늘어나는 칸 배열(`Cell[]`)을 유지합니다. 각 스레드는 자기 해시에 따라 특정 칸으로 나뉘어 더하므로, 같은 메모리를 두고 다툴 일이 줄어듭니다. (이 구조는 내부 베이스 클래스 `Striped64` 가 담당합니다.)
 
-```mermaid
-flowchart TB
-    subgraph A["AtomicLong — 값 1개에 전원 몰림"]
-        T1["스레드1"] --> V(("단일 값<br/>CAS 경합"))
-        T2["스레드2"] --> V
-        T3["스레드3"] --> V
-        T4["스레드4"] --> V
-    end
-    subgraph L["LongAdder — 칸을 나눠 분산"]
-        U1["스레드1"] --> C1(("cell A"))
-        U2["스레드2"] --> C2(("cell B"))
-        U3["스레드3"] --> C3(("cell C"))
-        U4["스레드4"] --> C4(("cell D"))
-        C1 & C2 & C3 & C4 -.합산 시.-> S["sum()"]
-    end
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="360" viewBox="0 0 440 360" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="360" fill="#FFFFFF"/>
+<rect x="10" y="10" width="420" height="138" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="22" y="28" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">AtomicLong — 값 1개에 전원 몰림</text>
+<rect x="32" y="38" width="76" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="70.0" y="55.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">스레드1</text>
+<line x1="70" y1="66" x2="167.5" y2="101" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="132" y="38" width="76" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="170.0" y="55.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">스레드2</text>
+<line x1="170" y1="66" x2="202.5" y2="101" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="232" y="38" width="76" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="270.0" y="55.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">스레드3</text>
+<line x1="270" y1="66" x2="237.5" y2="101" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="332" y="38" width="76" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="370.0" y="55.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">스레드4</text>
+<line x1="370" y1="66" x2="272.5" y2="101" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<ellipse cx="220" cy="118" rx="62" ry="22" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220" y="114.53" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">단일 값</text>
+<text x="220" y="129.03" font-size="10.5" fill="#9E3A57" text-anchor="middle">CAS 경합</text>
+<rect x="10" y="160" width="420" height="190" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="22" y="178" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">LongAdder — 칸을 나눠 분산</text>
+<rect x="32" y="188" width="76" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="70.0" y="205.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">스레드1</text>
+<line x1="70" y1="216" x2="70" y2="233" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<ellipse cx="70" cy="250" rx="38" ry="16" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="70" y="253.96" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">cell A</text>
+<line x1="70" y1="266" x2="190.0" y2="303" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="132" y="188" width="76" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="170.0" y="205.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">스레드2</text>
+<line x1="170" y1="216" x2="170" y2="233" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<ellipse cx="170" cy="250" rx="38" ry="16" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="170" y="253.96" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">cell B</text>
+<line x1="170" y1="266" x2="210.0" y2="303" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="232" y="188" width="76" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="270.0" y="205.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">스레드3</text>
+<line x1="270" y1="216" x2="270" y2="233" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<ellipse cx="270" cy="250" rx="38" ry="16" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="270" y="253.96" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">cell C</text>
+<line x1="270" y1="266" x2="230.0" y2="303" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="332" y="188" width="76" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="370.0" y="205.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">스레드4</text>
+<line x1="370" y1="216" x2="370" y2="233" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<ellipse cx="370" cy="250" rx="38" ry="16" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="370" y="253.96" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">cell D</text>
+<line x1="370" y1="266" x2="250.0" y2="303" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="296.0" y="278.5" width="40" height="15" rx="3" fill="#FFFFFF"/>
+<text x="316" y="289.5" font-size="10" fill="#555" text-anchor="middle">합산 시</text>
+<rect x="180" y="304" width="80" height="30" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="322.96" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">sum()</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/longadder-cell-distribution.svg" alt="AtomicLong은 모든 스레드가 단일 값에 몰려 CAS 경합이 생기고, LongAdder는 스레드마다 다른 cell에 나눠 더한 뒤 sum()에서 합산하는 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ```java
 LongAdder counter = new LongAdder();

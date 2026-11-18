@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="86" viewBox="0 0 440 86" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="86" fill="#FFFFFF"/>
+<g transform="translate(0,-24)">
+<rect x="10" y="44" width="130" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="75.0" y="65.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">모놀리스</text>
+<text x="75.0" y="81.0" font-size="10.5" fill="#555" text-anchor="middle">빠른 시작</text>
+<line x1="140" y1="68" x2="155" y2="68" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="155" y="44" width="130" height="48" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="65.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">모듈러 모놀리스</text>
+<text x="220.0" y="81.0" font-size="10.5" fill="#555" text-anchor="middle">경계를 코드로 강제</text>
+<line x1="285" y1="68" x2="300" y2="68" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="300" y="44" width="130" height="48" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="365.0" y="65.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">MSA</text>
+<text x="365.0" y="81.0" font-size="10.5" fill="#555" text-anchor="middle">필요할 때 분리</text>
+</g>
+</svg>

@@ -23,6 +23,6 @@
 <text x="398.3" y="80.1" font-size="9.5" fill="#9E3A57" text-anchor="middle">점검</text>
 <rect x="71.7" y="106" width="315.0" height="36" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
 <text x="229.2" y="127.3" font-size="9.5" fill="#26508F" text-anchor="middle">④⑤ 재현, 수정, 검증을 반복하며 결정 기록</text>
-<text x="60" y="164" font-size="9.5" fill="#555" text-anchor="start">퇴근 전 30분에 완료 조건을 주고, 다음 날 아침 1시간 동안 기록과 결과를 점검합니다.</text>
+<text x="60" y="164" font-size="9.5" fill="#555" text-anchor="start">퇴근 전 30분에 완료 조건을 제시하고, 다음 날 아침 1시간 동안 기록과 결과를 점검합니다.</text>
 <text x="60" y="178" font-size="9.5" fill="#555" text-anchor="start">(신뢰 조건 네 가지를 갖춘 뒤의 예시입니다)</text>
 </svg>

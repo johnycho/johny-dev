@@ -28,49 +28,61 @@ Redis Cluster는 데이터를 여러 마스터(샤드)에 나눠 저장하는데
 그림으로 보면 이렇습니다. 전체 16384개 슬롯을 **샤드들이 범위로 나눠** 맡고, 한 샤드는 **마스터 1대 + 레플리카(복사본)** 로 구성됩니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title Redis Cluster — 16384 슬롯을 샤드들이 나눠 담당
-
-rectangle "전체 해시 슬롯: 0 ~ 16383 (16384칸)\n키 -> CRC16 -> 슬롯 번호" as slots #EEF3FB
-
-rectangle "샤드1 = 슬롯 0-5460 담당" as sh1 #E9F2E9 {
-  rectangle "마스터 M1\n(슬롯 원본)" as m1
-  rectangle "레플리카 R1\n(같은 슬롯 복사본)" as r1
-  m1 --> r1 : 실시간 복제
-}
-rectangle "샤드2 = 슬롯 5461-10922 담당" as sh2 #E9F2E9 {
-  rectangle "마스터 M2\n(슬롯 원본)" as m2
-  rectangle "레플리카 R2\n(같은 슬롯 복사본)" as r2
-  m2 --> r2 : 실시간 복제
-}
-rectangle "샤드3 = 슬롯 10923-16383 담당" as sh3 #E9F2E9 {
-  rectangle "마스터 M3\n(슬롯 원본)" as m3
-  rectangle "레플리카 R3\n(같은 슬롯 복사본)" as r3
-  m3 --> r3 : 실시간 복제
-}
-
-slots --> m1
-slots --> m2
-slots --> m3
-
-legend bottom
-  샤드 = 마스터 1 + 레플리카(들), 한 슬롯 범위를 담당
-  마스터가 죽으면 레플리카가 승격해 그 슬롯 범위를 이어받음
-endlegend
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="420" viewBox="0 0 440 420" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="420" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Redis Cluster — 16384 슬롯을 샤드들이 나눠 담당</text>
+<rect x="60" y="36" width="320" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="55.39" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">전체 해시 슬롯: 0 ~ 16383 (16384칸)</text>
+<text x="220.0" y="70.89" font-size="10.5" fill="#444" text-anchor="middle">키 -&gt; CRC16 -&gt; 슬롯 번호</text>
+<line x1="24" y1="59" x2="60" y2="59" stroke="#888" stroke-width="1.2"/>
+<line x1="24" y1="59" x2="24" y2="335" stroke="#888" stroke-width="1.2"/>
+<rect x="40" y="104" width="390" height="78" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="52" y="122" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">샤드1 = 슬롯 0-5460 담당</text>
+<rect x="54" y="132" width="140" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="124.0" y="148.39" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">마스터 M1</text>
+<text x="124.0" y="163.89" font-size="10" fill="#444" text-anchor="middle">(슬롯 원본)</text>
+<rect x="276" y="132" width="140" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="346.0" y="148.39" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">레플리카 R1</text>
+<text x="346.0" y="163.89" font-size="10" fill="#444" text-anchor="middle">(같은 슬롯 복사본)</text>
+<line x1="194" y1="152" x2="275" y2="152" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="235" y="147" font-size="10" fill="#555" text-anchor="middle">실시간 복제</text>
+<line x1="24" y1="155" x2="53" y2="155" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="194" width="390" height="78" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="52" y="212" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">샤드2 = 슬롯 5461-10922 담당</text>
+<rect x="54" y="222" width="140" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="124.0" y="238.39" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">마스터 M2</text>
+<text x="124.0" y="253.89" font-size="10" fill="#444" text-anchor="middle">(슬롯 원본)</text>
+<rect x="276" y="222" width="140" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="346.0" y="238.39" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">레플리카 R2</text>
+<text x="346.0" y="253.89" font-size="10" fill="#444" text-anchor="middle">(같은 슬롯 복사본)</text>
+<line x1="194" y1="242" x2="275" y2="242" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="235" y="237" font-size="10" fill="#555" text-anchor="middle">실시간 복제</text>
+<line x1="24" y1="245" x2="53" y2="245" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="284" width="390" height="78" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="52" y="302" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">샤드3 = 슬롯 10923-16383 담당</text>
+<rect x="54" y="312" width="140" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="124.0" y="328.39" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">마스터 M3</text>
+<text x="124.0" y="343.89" font-size="10" fill="#444" text-anchor="middle">(슬롯 원본)</text>
+<rect x="276" y="312" width="140" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="346.0" y="328.39" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">레플리카 R3</text>
+<text x="346.0" y="343.89" font-size="10" fill="#444" text-anchor="middle">(같은 슬롯 복사본)</text>
+<line x1="194" y1="332" x2="275" y2="332" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="235" y="327" font-size="10" fill="#555" text-anchor="middle">실시간 복제</text>
+<line x1="24" y1="335" x2="53" y2="335" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="220" y="388.0" font-size="10.5" fill="#555" text-anchor="middle">샤드 = 마스터 1 + 레플리카(들), 한 슬롯 범위를 담당</text>
+<text x="220" y="402.5" font-size="10.5" fill="#555" text-anchor="middle">마스터가 죽으면 레플리카가 승격해 그 슬롯 범위를 이어받음</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML Redis Cluster 슬롯, 샤드, 노드 관계](/img/c4/redis-cluster-slots.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/redis-cluster-slots.svg" alt="16384개 해시 슬롯을 세 샤드가 나눠 담당하고, 각 샤드는 마스터와 레플리카로 구성되어 실시간 복제하는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 그 밖의 규칙은 이렇습니다.
 
@@ -89,39 +101,56 @@ endlegend
 3. 장애가 난 마스터의 레플리카가 **승격 자격**을 갖추고, **과반 마스터의 투표**를 받아야 승격됩니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-title Redis Cluster failover 판단 흐름
-
-start
-:마스터가 NODE_TIMEOUT 동안 응답 없음;
-:과반 마스터가 FAIL로 합의;
-if (승격 가능한 레플리카가 있나?) then (없음)
-  :마스터리스 슬롯 발생;
-  stop
-else (있음)
-  if (레플리카 데이터가 너무 오래됐나?\n(validity-factor 초과)) then (예)
-    :승격 불가 → 슬롯 미서비스;
-    stop
-  else (아니오)
-    if (과반 마스터가 투표해 주나?) then (아니오, 과반 미달)
-      :승격 실패 → 슬롯 미서비스;
-      stop
-    else (예)
-      :레플리카 승격 → 서비스 지속;
-      stop
-    endif
-  endif
-endif
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="470" viewBox="0 0 440 470" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="470" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Redis Cluster failover 판단 흐름</text>
+<circle cx="118" cy="44" r="7" fill="#555"/>
+<line x1="118" y1="51" x2="118" y2="63" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16.0" y="64" width="204" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="118.0" y="83.96" font-size="11" fill="#333" text-anchor="middle">마스터가 NODE_TIMEOUT 동안 응답 없음</text>
+<line x1="118" y1="96" x2="118" y2="111" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16.0" y="112" width="204" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="118.0" y="131.96" font-size="11" fill="#333" text-anchor="middle">과반 마스터가 FAIL로 합의</text>
+<line x1="118" y1="144" x2="118" y2="163" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16.0" y="164" width="204" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="118.0" y="184.96" font-size="11" fill="#7A5200" text-anchor="middle">승격 가능한 레플리카가 있나?</text>
+<rect x="16.0" y="244" width="204" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="118.0" y="262.46" font-size="11" fill="#7A5200" text-anchor="middle">레플리카 데이터가 너무 오래됐나?</text>
+<text x="118.0" y="277.46" font-size="11" fill="#7A5200" text-anchor="middle">(validity-factor 초과)</text>
+<rect x="16.0" y="334" width="204" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="118.0" y="354.96" font-size="11" fill="#7A5200" text-anchor="middle">과반 마스터가 투표해 주나?</text>
+<rect x="16.0" y="414" width="204" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="118.0" y="436.14" font-size="11.5" fill="#2E6B2E" text-anchor="middle">레플리카 승격 → 서비스 지속</text>
+<line x1="118" y1="198" x2="118" y2="243" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="126" y="224" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">Y</text>
+<line x1="118" y1="288" x2="118" y2="333" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="126" y="314" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">N</text>
+<line x1="118" y1="368" x2="118" y2="413" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="126" y="394" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">Y</text>
+<rect x="288" y="164" width="140" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="358.0" y="184.96" font-size="11" fill="#9E3A57" text-anchor="middle">마스터리스 슬롯 발생</text>
+<line x1="220.0" y1="181.0" x2="287" y2="181.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="254.0" y="176.0" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">N</text>
+<rect x="288" y="249" width="140" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="358.0" y="269.96" font-size="11" fill="#9E3A57" text-anchor="middle">승격 불가 → 슬롯 미서비스</text>
+<line x1="220.0" y1="266.0" x2="287" y2="266.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="254.0" y="261.0" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">Y</text>
+<rect x="288" y="334" width="140" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="358.0" y="354.96" font-size="11" fill="#9E3A57" text-anchor="middle">승격 실패 → 슬롯 미서비스</text>
+<line x1="220.0" y1="351.0" x2="287" y2="351.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="254.0" y="346.0" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">N, 과반 미달</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML Redis Cluster failover 판단 흐름](/img/c4/redis-failover-flow.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/redis-failover-flow.svg" alt="마스터 응답 없음, FAIL 합의, 레플리카 유무, 데이터 오래됨 여부, 과반 투표를 거쳐 레플리카 승격 또는 슬롯 미서비스로 갈리는 failover 판단 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 이 흐름의 어느 단계에서든 막히면 "마스터에 장애가 발생했는데 승격이 안 되는" 상황이 됩니다. 단계별로 흔한 원인을 봅니다.
 
@@ -132,7 +161,7 @@ failover는 **과반 마스터의 투표**로 승인됩니다. 여기서 핵심�
 - 마스터 3대(각 1 레플리카)인 클러스터에서 **한 AZ 전체가 내려가** 마스터 2대가 동시에 사라지면, 남은 마스터는 1대뿐 — 과반(2/3)이 안 됩니다. 그 AZ의 레플리카들이 다른 AZ에 살아 있어도 **마스터 과반 미달로 승격 실패**합니다.
 - 스펙상 **소수 파티션에 갇힌 마스터는 쓰기를 멈춥니다**. 과반을 확보한 쪽만 쓰기를 계속합니다.
 
-<mark>failover는 "장애가 난 마스터의 레플리카가 있느냐"가 아니라 "살아남은 마스터가 과반이냐"에 달려 있습니다 — 그래서 마스터를 홀수(최소 3, 권장 5)로, 그리고 AZ에 고르게 분산해야 한 AZ 장애에도 과반이 유지됩니다.</mark>
+<mark>failover는 "장애가 발생한 마스터의 레플리카가 있는지"가 아니라 "정상 마스터가 과반인지"에 달려 있습니다 — 그래서 마스터를 홀수(최소 3, 권장 5)로, 그리고 AZ에 고르게 분산해야 한 AZ 장애에도 과반이 유지됩니다.</mark>
 
 ### 대응 방법
 
@@ -143,32 +172,39 @@ failover는 **과반 마스터의 투표**로 승인됩니다. 여기서 핵심�
 가장 넓게 번지는 장애입니다. Redis Cluster는 16384개 해시 슬롯이 **모두** 서비스돼야 명령을 받습니다. `cluster-require-full-coverage`가 **기본값 `yes`** 이면, 슬롯 하나라도 담당 노드가 모두 사라지는 순간 **클러스터 전체가 `cluster_state:fail`**(CLUSTERDOWN)이 되어, **정상인 다른 샤드의 요청까지 거부**합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title cluster-require-full-coverage — 한 슬롯이 비면?
-
-rectangle "샤드1 (슬롯 0-5460) 정상" as s1
-rectangle "샤드2 (슬롯 5461-10922) 정상" as s2
-rectangle "샤드3 (슬롯 10923-16383)\n마스터, 레플리카 모두 다운" as s3 #FBECEC
-
-rectangle "yes (기본): 클러스터 전체 CLUSTERDOWN\n→ 정상 샤드 요청까지 거부" as r1 #FBECEC
-rectangle "no: 죽은 슬롯만 오류\n→ 샤드1, 2는 계속 서비스" as r2 #E9F2E9
-
-s3 --> r1 : require-full-coverage=yes
-s3 --> r2 : require-full-coverage=no
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="300" viewBox="0 0 440 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="300" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">cluster-require-full-coverage — 한 슬롯이 비면?</text>
+<rect x="70" y="38" width="300" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="55.96" font-size="11" fill="#333" text-anchor="middle">샤드1 (슬롯 0-5460) 정상</text>
+<rect x="70" y="74" width="300" height="28" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="91.96" font-size="11" fill="#333" text-anchor="middle">샤드2 (슬롯 5461-10922) 정상</text>
+<rect x="20" y="110" width="400" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="128.39" font-size="11.5" fill="#9E3A57" text-anchor="middle">샤드3 (슬롯 10923-16383)</text>
+<text x="220.0" y="143.89" font-size="11.5" fill="#9E3A57" text-anchor="middle">마스터, 레플리카 모두 다운</text>
+<line x1="60" y1="154" x2="60" y2="213" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="380" y1="154" x2="380" y2="213" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="68" y="182" font-size="10" fill="#555" text-anchor="start">require-full-coverage=yes</text>
+<text x="372" y="198" font-size="10" fill="#555" text-anchor="end">require-full-coverage=no</text>
+<rect x="16" y="214" width="200" height="62" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="116.0" y="234.28" font-size="10.5" fill="#9E3A57" text-anchor="middle">yes (기본):</text>
+<text x="116.0" y="248.78" font-size="10.5" fill="#9E3A57" text-anchor="middle">클러스터 전체 CLUSTERDOWN</text>
+<text x="116.0" y="263.28" font-size="10.5" fill="#9E3A57" text-anchor="middle">→ 정상 샤드 요청까지 거부</text>
+<rect x="224" y="214" width="200" height="62" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="324.0" y="241.53" font-size="10.5" fill="#2E6B2E" text-anchor="middle">no: 장애 슬롯만 오류</text>
+<text x="324.0" y="256.03" font-size="10.5" fill="#2E6B2E" text-anchor="middle">→ 샤드1, 2는 계속 서비스</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML require-full-coverage 동작](/img/c4/redis-full-coverage.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/redis-full-coverage.svg" alt="샤드3의 마스터와 레플리카가 모두 다운됐을 때 require-full-coverage가 yes면 클러스터 전체가 CLUSTERDOWN, no면 장애 슬롯만 오류를 내는 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 - 그래서 앞의 원인 ①(마스터 과반 미달로 한 샤드 승격 실패)이 벌어지면, 기본 설정에서는 그 한 샤드 때문에 **전 클러스터가 CLUSTERDOWN**으로 번집니다.
 - `cluster-require-full-coverage no`로 설정하면, 중단된 슬롯의 키만 오류를 내고 **나머지 샤드는 계속 서비스**합니다. 부분 가용성을 택하는 것입니다.

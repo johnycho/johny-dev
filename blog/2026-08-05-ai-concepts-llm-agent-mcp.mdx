@@ -38,13 +38,38 @@ LLM은 어디까지나 **말을 만들어내는 두뇌**일 뿐, 계산기, 검�
 
 동작을 오해하기 쉬운데, 순서를 보면 명확합니다. <mark>LLM이 도구를 직접 실행하는 게 아니라, "이 도구를 이러한 입력으로 사용해 달라"는 요청만 내놓고, 실제 실행은 우리 프로그램이 합니다.</mark>
 
-```mermaid
-flowchart LR
-    A["사용자: 서울 날씨 어때?"] --> B["LLM: get_weather('서울')<br/>써 달라고 요청"]
-    B --> C["우리 프로그램이<br/>날씨 API 실행"]
-    C --> D["결과(맑음, 27도)를<br/>LLM에게 돌려줌"]
-    D --> E["LLM: 서울은 맑고 27도예요"]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="300" viewBox="0 0 440 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="300" fill="#FFFFFF"/>
+<rect x="100" y="14" width="240" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="33.96" font-size="11" fill="#333" text-anchor="middle">사용자: 서울 날씨 어때?</text>
+<line x1="220" y1="46" x2="220" y2="65" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="100" y="66" width="240" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="83.46" font-size="11" fill="#26508F" text-anchor="middle">LLM: get_weather('서울')</text>
+<text x="220.0" y="98.46" font-size="11" fill="#26508F" text-anchor="middle">써 달라고 요청</text>
+<line x1="220" y1="108" x2="220" y2="127" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="100" y="128" width="240" height="42" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="145.46" font-size="11" fill="#2E6B2E" text-anchor="middle">우리 프로그램이</text>
+<text x="220.0" y="160.46" font-size="11" fill="#2E6B2E" text-anchor="middle">날씨 API 실행</text>
+<line x1="220" y1="170" x2="220" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="100" y="190" width="240" height="42" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="207.46" font-size="11" fill="#2E6B2E" text-anchor="middle">결과(맑음, 27도)를</text>
+<text x="220.0" y="222.46" font-size="11" fill="#2E6B2E" text-anchor="middle">LLM에게 돌려줌</text>
+<line x1="220" y1="232" x2="220" y2="251" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="100" y="252" width="240" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="271.96" font-size="11" fill="#26508F" text-anchor="middle">LLM: 서울은 맑고 27도예요</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/ai-concepts-tool-call-flow.svg" alt="사용자 질문에 LLM이 도구 호출을 요청하고, 프로그램이 날씨 API를 실행해 결과를 돌려주면 LLM이 답하는 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 우리가 할 일은 "이러한 도구가 있고, 이러한 입력을 받는다"를 LLM에게 알려주는 것뿐입니다. 예를 들어 날씨 도구는 이렇게 정의합니다.
 
@@ -93,24 +118,43 @@ flowchart LR
 **에이전트(agent)** 는 <mark>LLM이 도구를 반복해서 쓰며 스스로 다음 할 일을 정해 목표까지 가는 것</mark>입니다. "도구 호출 → 결과 확인 → 다음 도구 호출"을 목표를 이룰 때까지 루프로 돕니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-start
-:목표 - 버그 고치기;
-repeat
-  :LLM이 다음 행동 결정;
-  :도구 실행 (파일 읽기, 수정, 테스트);
-repeat while (목표 도달?) is (N) not (Y)
-:완료;
-stop
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="336" viewBox="0 0 440 336" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="336" fill="#FFFFFF"/>
+<circle cx="220" cy="16" r="7" fill="#555"/>
+<line x1="220" y1="23" x2="220" y2="39" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110.0" y="40" width="220" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="60.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">목표 - 버그 고치기</text>
+<line x1="220" y1="72" x2="220" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110.0" y="100" width="220" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="120.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">LLM이 다음 행동 결정</text>
+<line x1="220" y1="132" x2="220" y2="151" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="90.0" y="152" width="260" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="172.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">도구 실행 (파일 읽기, 수정, 테스트)</text>
+<line x1="220" y1="184" x2="220" y2="203" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="140.0" y="204" width="160" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="224.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">목표 도달?</text>
+<polyline points="140,220 60,220 60,86 220,86" fill="none" stroke="#888" stroke-width="1.2"/>
+<line x1="200" y1="86" x2="219" y2="86" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="100" y="214" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">N</text>
+<line x1="220" y1="236" x2="220" y2="263" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="254" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">Y</text>
+<rect x="140.0" y="264" width="160" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220" y="284.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">완료</text>
+<line x1="220" y1="296" x2="220" y2="311" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="320" r="8" fill="#FFFFFF" stroke="#555" stroke-width="1.5"/>
+<circle cx="220" cy="320" r="4.5" fill="#555"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML 에이전트 루프 — 판단, 도구 실행, 목표 도달 반복](/img/c4/pu-agent-loop.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/agent-loop.svg" alt="LLM이 다음 행동을 정하고 도구를 실행하는 과정을 목표에 도달할 때까지 반복하는 에이전트 루프" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 다만 "무조건 에이전트로 만들면 좋다"는 아닙니다. 단계가 단순하면 한 번의 호출로 충분하고, 정해진 순서가 있으면 우리가 흐름을 직접 구성하는 편이 안전합니다. <mark>에이전트는 "미리 다 정해두기 어렵고, 여러 단계를 거쳐야 하는" 열린 문제에 어울립니다.</mark> AI 코딩 어시스턴트가 대표적인 에이전트인데, 이걸 실무 절차에 맞게 길들이는 이야기는 [AI 엔지니어링 하네스](./ai-engineering-harness) 글에서 설명했습니다.
 
@@ -121,30 +165,44 @@ stop
 **MCP(Model Context Protocol, 모델 컨텍스트 프로토콜)** 는 이 문제를 푸는 **표준 규격**입니다. <mark>AI와 외부 도구와 데이터를 연결하는 방식을 하나로 통일한 "AI용 USB-C" 같은 것</mark>입니다. USB-C 케이블 하나로 여러 기기를 연결하듯, MCP를 따르면 어떤 AI든 어떤 도구든 같은 방식으로 연결됩니다.
 
 <details>
-<summary>C4-PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
-
-LAYOUT_LEFT_RIGHT()
-
-System(app, "AI 애플리케이션", "MCP 클라이언트 — 표준 규격으로 외부 도구 연결")
-
-System_Ext(github, "GitHub", "MCP 서버 — 이슈 조회, PR 생성")
-System_Ext(db, "사내 DB", "MCP 서버 — 사내 데이터 조회")
-System_Ext(slack, "슬랙", "MCP 서버 — 메시지 전송")
-
-Rel(app, github, "표준 규격(MCP)")
-Rel(app, db, "표준 규격(MCP)")
-Rel(app, slack, "표준 규격(MCP)")
-
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="220" viewBox="0 0 440 220" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="220" fill="#FFFFFF"/>
+<rect x="20.0" y="16" width="400" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220" y="36.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">AI 애플리케이션</text>
+<text x="220" y="51.5" font-size="10.5" fill="#555" text-anchor="middle">MCP 클라이언트 — 표준 규격으로 외부 도구 연결</text>
+<line x1="78" y1="64" x2="78" y2="143" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="36.0" y="95" width="84" height="16" fill="#FFFFFF"/>
+<text x="78" y="107" font-size="10" fill="#555" text-anchor="middle">표준 규격(MCP)</text>
+<rect x="11.0" y="144" width="134" height="60" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="78" y="163.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">GitHub</text>
+<text x="78" y="178.0" font-size="10.5" fill="#555" text-anchor="middle">MCP 서버 —</text>
+<text x="78" y="193.0" font-size="10.5" fill="#555" text-anchor="middle">이슈 조회, PR 생성</text>
+<line x1="220" y1="64" x2="220" y2="143" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="178.0" y="95" width="84" height="16" fill="#FFFFFF"/>
+<text x="220" y="107" font-size="10" fill="#555" text-anchor="middle">표준 규격(MCP)</text>
+<rect x="153.0" y="144" width="134" height="60" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="163.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">사내 DB</text>
+<text x="220" y="178.0" font-size="10.5" fill="#555" text-anchor="middle">MCP 서버 —</text>
+<text x="220" y="193.0" font-size="10.5" fill="#555" text-anchor="middle">사내 데이터 조회</text>
+<line x1="362" y1="64" x2="362" y2="143" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="320.0" y="95" width="84" height="16" fill="#FFFFFF"/>
+<text x="362" y="107" font-size="10" fill="#555" text-anchor="middle">표준 규격(MCP)</text>
+<rect x="295.0" y="144" width="134" height="60" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="362" y="163.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">슬랙</text>
+<text x="362" y="178.0" font-size="10.5" fill="#555" text-anchor="middle">MCP 서버 —</text>
+<text x="362" y="193.0" font-size="10.5" fill="#555" text-anchor="middle">메시지 전송</text>
+</svg>
 ```
 
 </details>
 
-![C4 AI 애플리케이션과 MCP 서버 연동 구성](/img/c4/ai-mcp.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/ai-mcp.svg" alt="AI 애플리케이션(MCP 클라이언트)이 GitHub, 사내 DB, 슬랙 MCP 서버와 같은 표준 규격(MCP)으로 연결되는 구성" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 용어를 정리하면 이렇습니다.
 

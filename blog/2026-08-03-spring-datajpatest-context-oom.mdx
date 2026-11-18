@@ -35,15 +35,46 @@ Spring 테스트는 테스트가 사용할 빈(bean)들을 포함한 **애플리
 
 > **"설정이 같은 컨텍스트면 새로 만들지 말고, 만들어둔 걸 재사용하자."**
 
-```mermaid
-flowchart LR
-    A[테스트 시작] --> B{같은 설정의<br/>컨텍스트가 캐시에 있나?}
-    B -- 있음 --> C["재사용 ✅<br/>(메모리 안 늘어남)"]
-    B -- 없음 --> D["새 컨텍스트 제작 ⚠️<br/>(캐시에 그대로 누적)"]
-    D --> E[캐시에 보관]
-    C --> F[테스트 진행]
-    E --> F
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="352" viewBox="0 0 440 352" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="352" fill="#FFFFFF"/>
+<rect x="160" y="16" width="120" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="35.96" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">테스트 시작</text>
+<line x1="220" y1="48" x2="220" y2="63" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polygon points="220,64 330,106 220,148 110,106" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="102" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">같은 설정의</text>
+<text x="220" y="118" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">컨텍스트가 캐시에 있나?</text>
+<polyline points="110,106 105,106 105,179" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="85.0" y="129.5" width="14" height="16" rx="3" fill="#FFFFFF"/>
+<text x="92" y="141.5" font-size="11" fill="#555" text-anchor="middle">Y</text>
+<polyline points="330,106 335,106 335,179" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="341.0" y="129.5" width="14" height="16" rx="3" fill="#FFFFFF"/>
+<text x="348" y="141.5" font-size="11" fill="#555" text-anchor="middle">N</text>
+<rect x="25" y="180" width="160" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="105.0" y="198.46" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">재사용 ✅</text>
+<text x="105.0" y="213.46" font-size="11" fill="#2E6B2E" text-anchor="middle">(메모리 안 늘어남)</text>
+<rect x="245" y="180" width="180" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="335.0" y="198.46" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">새 컨텍스트 제작 ⚠️</text>
+<text x="335.0" y="213.46" font-size="11" fill="#9E3A57" text-anchor="middle">(캐시에 그대로 누적)</text>
+<line x1="335" y1="224" x2="335" y2="245" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="260" y="246" width="150" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="335.0" y="265.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">캐시에 보관</text>
+<polyline points="105,224 105,318 149,318" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="335,278 335,318 291,318" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="150" y="302" width="140" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="321.96" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">테스트 진행</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/datajpatest-context-cache-flow.svg" alt="테스트 시작 시 같은 설정의 컨텍스트가 캐시에 있으면 재사용하고, 없으면 새로 만들어 캐시에 보관한 뒤 테스트를 진행하는 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 이 캐시는 **힙(메모리)** 을 점유합니다. 컨텍스트 하나가 크기가 커서(DB 관련 빈을 전부 포함합니다) 여러 개 누적되면 **힙이 곧 한계를 넘어 OOM**이 발생합니다.
 
@@ -57,17 +88,42 @@ flowchart LR
 
 <mark>Spring은 **설정이 조금이라도 다르면** 완전히 다른 컨텍스트로 취급해서 새로 만듭니다.</mark> 설정을 이루는 건 대략 이러한 것들입니다:
 
-```mermaid
-flowchart TD
-    K["컨텍스트 설정<br/>(같으면 재사용, 다르면 새로 제작)"]
-    K --- C1["① 스캔할 패키지<br/>@ComponentScan"]
-    K --- C2["② 활성 프로파일<br/>@ActiveProfiles"]
-    K --- C3["③ 주입한 설정값<br/>@TestPropertySource"]
-    K --- C4["④ 목(mock)으로 대체한 빈<br/>@MockBean 등"]
+<details>
+<summary>SVG 코드</summary>
 
-    style C1 fill:#ffdede
-    style C3 fill:#ffdede
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="236" viewBox="0 0 440 236" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="236" fill="#FFFFFF"/>
+<rect x="100" y="16" width="240" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="34.46" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">컨텍스트 설정</text>
+<text x="220.0" y="49.46" font-size="11" fill="#26508F" text-anchor="middle">(같으면 재사용, 다르면 새로 제작)</text>
+<polyline points="220,60 220,82" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="115,82 325,82" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="115,82 115,100" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="325,82 325,100" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="220,82 220,156" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="115,166 115,156 325,156 325,166" fill="none" stroke="#888" stroke-width="1.2"/>
+<rect x="15" y="100" width="200" height="44" rx="6" fill="#FFDEDE" stroke="#D06A86"/>
+<text x="115.0" y="118.46" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">① 스캔할 패키지</text>
+<text x="115.0" y="133.45999999999998" font-size="11" fill="#9E3A57" text-anchor="middle">@ComponentScan</text>
+<rect x="225" y="100" width="200" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="325.0" y="118.46" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">② 활성 프로파일</text>
+<text x="325.0" y="133.45999999999998" font-size="11" fill="#333" text-anchor="middle">@ActiveProfiles</text>
+<rect x="15" y="166" width="200" height="44" rx="6" fill="#FFDEDE" stroke="#D06A86"/>
+<text x="115.0" y="184.46" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">③ 주입한 설정값</text>
+<text x="115.0" y="199.46" font-size="11" fill="#9E3A57" text-anchor="middle">@TestPropertySource</text>
+<rect x="225" y="166" width="200" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="325.0" y="184.46" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">④ 목(mock)으로 대체한 빈</text>
+<text x="325.0" y="199.46" font-size="11" fill="#333" text-anchor="middle">@MockBean 등</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/datajpatest-context-key-parts.svg" alt="컨텍스트 설정을 이루는 네 요소: 스캔할 패키지, 활성 프로파일, 주입한 설정값, 목으로 대체한 빈" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 > **공식 문서 근거.** Spring은 컨텍스트마다 "설정 식별값"을 붙여 두고([`MergedContextConfiguration`](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/context/MergedContextConfiguration.html)), 이 식별값을 [컨텍스트 캐시](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/ctx-management/caching.html)의 키로 사용합니다. 두 테스트의 식별값이 아래 항목까지 **전부 같아야** 같은 컨텍스트로 보고 재사용하고, 하나라도 다르면 새로 만듭니다(왼쪽이 애노테이션/설정, 오른쪽이 그 값을 이루는 항목):
 >
@@ -165,13 +221,110 @@ cache statistics: [ size = 17, maxSize = 32, hitCount = ..., missCount = 25 ]
 
 전체 테스트를 돌리는 동안 `size`가 **1에서 18까지 한 번도 안 줄고 계속 늘어났고**, 그 지점에서 메모리가 한계를 넘었습니다.
 
-```mermaid
-xychart-beta
-    title "전체 테스트를 돌릴 때 누적되는 컨텍스트 수 (실측, 전체 스위트)"
-    x-axis "새 컨텍스트가 생긴 순서 →" [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
-    y-axis "캐시에 남은 컨텍스트 수 (size)" 0 --> 20
-    line [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="300" viewBox="0 0 460 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="460" height="300" fill="#FFFFFF"/>
+<text x="230" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">전체 테스트를 돌릴 때 누적되는 컨텍스트 수</text>
+<text x="230" y="40" font-size="11" fill="#555" text-anchor="middle">(실측, 전체 스위트)</text>
+<line x1="70" y1="250.0" x2="440" y2="250.0" stroke="#E5E5E5"/>
+<text x="64" y="253.5" font-size="10" fill="#555" text-anchor="end">0</text>
+<line x1="70" y1="203.5" x2="440" y2="203.5" stroke="#E5E5E5"/>
+<text x="64" y="207.0" font-size="10" fill="#555" text-anchor="end">5</text>
+<line x1="70" y1="157.0" x2="440" y2="157.0" stroke="#E5E5E5"/>
+<text x="64" y="160.5" font-size="10" fill="#555" text-anchor="end">10</text>
+<line x1="70" y1="110.5" x2="440" y2="110.5" stroke="#E5E5E5"/>
+<text x="64" y="114.0" font-size="10" fill="#555" text-anchor="end">15</text>
+<line x1="70" y1="64.0" x2="440" y2="64.0" stroke="#E5E5E5"/>
+<text x="64" y="67.5" font-size="10" fill="#555" text-anchor="end">20</text>
+<line x1="70" y1="250" x2="440" y2="250" stroke="#999"/>
+<line x1="70" y1="250" x2="70" y2="64" stroke="#999"/>
+<line x1="80.27777777777777" y1="250" x2="80.27777777777777" y2="254" stroke="#999"/>
+<text x="80.27777777777777" y="265" font-size="9.5" fill="#555" text-anchor="middle">1</text>
+<line x1="100.83333333333334" y1="250" x2="100.83333333333334" y2="254" stroke="#999"/>
+<text x="100.83333333333334" y="265" font-size="9.5" fill="#555" text-anchor="middle">2</text>
+<line x1="121.38888888888889" y1="250" x2="121.38888888888889" y2="254" stroke="#999"/>
+<text x="121.38888888888889" y="265" font-size="9.5" fill="#555" text-anchor="middle">3</text>
+<line x1="141.94444444444446" y1="250" x2="141.94444444444446" y2="254" stroke="#999"/>
+<text x="141.94444444444446" y="265" font-size="9.5" fill="#555" text-anchor="middle">4</text>
+<line x1="162.5" y1="250" x2="162.5" y2="254" stroke="#999"/>
+<text x="162.5" y="265" font-size="9.5" fill="#555" text-anchor="middle">5</text>
+<line x1="183.05555555555557" y1="250" x2="183.05555555555557" y2="254" stroke="#999"/>
+<text x="183.05555555555557" y="265" font-size="9.5" fill="#555" text-anchor="middle">6</text>
+<line x1="203.61111111111111" y1="250" x2="203.61111111111111" y2="254" stroke="#999"/>
+<text x="203.61111111111111" y="265" font-size="9.5" fill="#555" text-anchor="middle">7</text>
+<line x1="224.16666666666669" y1="250" x2="224.16666666666669" y2="254" stroke="#999"/>
+<text x="224.16666666666669" y="265" font-size="9.5" fill="#555" text-anchor="middle">8</text>
+<line x1="244.72222222222223" y1="250" x2="244.72222222222223" y2="254" stroke="#999"/>
+<text x="244.72222222222223" y="265" font-size="9.5" fill="#555" text-anchor="middle">9</text>
+<line x1="265.2777777777778" y1="250" x2="265.2777777777778" y2="254" stroke="#999"/>
+<text x="265.2777777777778" y="265" font-size="9.5" fill="#555" text-anchor="middle">10</text>
+<line x1="285.83333333333337" y1="250" x2="285.83333333333337" y2="254" stroke="#999"/>
+<text x="285.83333333333337" y="265" font-size="9.5" fill="#555" text-anchor="middle">11</text>
+<line x1="306.3888888888889" y1="250" x2="306.3888888888889" y2="254" stroke="#999"/>
+<text x="306.3888888888889" y="265" font-size="9.5" fill="#555" text-anchor="middle">12</text>
+<line x1="326.94444444444446" y1="250" x2="326.94444444444446" y2="254" stroke="#999"/>
+<text x="326.94444444444446" y="265" font-size="9.5" fill="#555" text-anchor="middle">13</text>
+<line x1="347.5" y1="250" x2="347.5" y2="254" stroke="#999"/>
+<text x="347.5" y="265" font-size="9.5" fill="#555" text-anchor="middle">14</text>
+<line x1="368.0555555555556" y1="250" x2="368.0555555555556" y2="254" stroke="#999"/>
+<text x="368.0555555555556" y="265" font-size="9.5" fill="#555" text-anchor="middle">15</text>
+<line x1="388.61111111111114" y1="250" x2="388.61111111111114" y2="254" stroke="#999"/>
+<text x="388.61111111111114" y="265" font-size="9.5" fill="#555" text-anchor="middle">16</text>
+<line x1="409.1666666666667" y1="250" x2="409.1666666666667" y2="254" stroke="#999"/>
+<text x="409.1666666666667" y="265" font-size="9.5" fill="#555" text-anchor="middle">17</text>
+<line x1="429.72222222222223" y1="250" x2="429.72222222222223" y2="254" stroke="#999"/>
+<text x="429.72222222222223" y="265" font-size="9.5" fill="#555" text-anchor="middle">18</text>
+<polyline points="80.3,240.7 100.8,231.4 121.4,222.1 141.9,212.8 162.5,203.5 183.1,194.2 203.6,184.9 224.2,175.6 244.7,166.3 265.3,157.0 285.8,147.7 306.4,138.4 326.9,129.1 347.5,119.8 368.1,110.5 388.6,101.2 409.2,91.9 429.7,82.6" fill="none" stroke="#4C7FE0" stroke-width="2"/>
+<circle cx="80.3" cy="240.7" r="2.8" fill="#4C7FE0"/>
+<text x="80.3" y="233.7" font-size="9" fill="#26508F" text-anchor="middle">1</text>
+<circle cx="100.8" cy="231.4" r="2.8" fill="#4C7FE0"/>
+<text x="100.8" y="224.4" font-size="9" fill="#26508F" text-anchor="middle">2</text>
+<circle cx="121.4" cy="222.1" r="2.8" fill="#4C7FE0"/>
+<text x="121.4" y="215.1" font-size="9" fill="#26508F" text-anchor="middle">3</text>
+<circle cx="141.9" cy="212.8" r="2.8" fill="#4C7FE0"/>
+<text x="141.9" y="205.8" font-size="9" fill="#26508F" text-anchor="middle">4</text>
+<circle cx="162.5" cy="203.5" r="2.8" fill="#4C7FE0"/>
+<text x="162.5" y="196.5" font-size="9" fill="#26508F" text-anchor="middle">5</text>
+<circle cx="183.1" cy="194.2" r="2.8" fill="#4C7FE0"/>
+<text x="183.1" y="187.2" font-size="9" fill="#26508F" text-anchor="middle">6</text>
+<circle cx="203.6" cy="184.9" r="2.8" fill="#4C7FE0"/>
+<text x="203.6" y="177.9" font-size="9" fill="#26508F" text-anchor="middle">7</text>
+<circle cx="224.2" cy="175.6" r="2.8" fill="#4C7FE0"/>
+<text x="224.2" y="168.6" font-size="9" fill="#26508F" text-anchor="middle">8</text>
+<circle cx="244.7" cy="166.3" r="2.8" fill="#4C7FE0"/>
+<text x="244.7" y="159.3" font-size="9" fill="#26508F" text-anchor="middle">9</text>
+<circle cx="265.3" cy="157.0" r="2.8" fill="#4C7FE0"/>
+<text x="265.3" y="150.0" font-size="9" fill="#26508F" text-anchor="middle">10</text>
+<circle cx="285.8" cy="147.7" r="2.8" fill="#4C7FE0"/>
+<text x="285.8" y="140.7" font-size="9" fill="#26508F" text-anchor="middle">11</text>
+<circle cx="306.4" cy="138.4" r="2.8" fill="#4C7FE0"/>
+<text x="306.4" y="131.4" font-size="9" fill="#26508F" text-anchor="middle">12</text>
+<circle cx="326.9" cy="129.1" r="2.8" fill="#4C7FE0"/>
+<text x="326.9" y="122.1" font-size="9" fill="#26508F" text-anchor="middle">13</text>
+<circle cx="347.5" cy="119.8" r="2.8" fill="#4C7FE0"/>
+<text x="347.5" y="112.8" font-size="9" fill="#26508F" text-anchor="middle">14</text>
+<circle cx="368.1" cy="110.5" r="2.8" fill="#4C7FE0"/>
+<text x="368.1" y="103.5" font-size="9" fill="#26508F" text-anchor="middle">15</text>
+<circle cx="388.6" cy="101.2" r="2.8" fill="#4C7FE0"/>
+<text x="388.6" y="94.2" font-size="9" fill="#26508F" text-anchor="middle">16</text>
+<circle cx="409.2" cy="91.9" r="2.8" fill="#4C7FE0"/>
+<text x="409.2" y="84.9" font-size="9" fill="#26508F" text-anchor="middle">17</text>
+<circle cx="429.7" cy="82.6" r="2.8" fill="#4C7FE0"/>
+<text x="429.7" y="75.6" font-size="9" fill="#26508F" text-anchor="middle">18</text>
+<text x="255.0" y="284" font-size="10.5" fill="#333" text-anchor="middle">새 컨텍스트가 생긴 순서 →</text>
+<text x="0" y="0" font-size="10.5" fill="#333" text-anchor="middle" transform="translate(24 157.0) rotate(-90)">캐시에 남은 컨텍스트 수 (size)</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/datajpatest-context-cache-growth.svg" alt="새 컨텍스트가 생길 때마다 캐시에 남은 컨텍스트 수가 1에서 18까지 늘어나는 선 그래프" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 | 지표 | 값 |
 |---|---|
@@ -226,30 +379,97 @@ abstract class RepositoryTestBase {
 
 개선 전에는 그룹마다 설정이 제각각이라 컨텍스트가 18개까지 분리돼 있었습니다.
 
-```mermaid
-flowchart TB
-    subgraph BEFORE["개선 전 — 컨텍스트 18개"]
-        G1["그룹 A<br/>@ComponentScan …a"] -.제각각 설정.-> B1((컨텍스트 1))
-        G2["그룹 B<br/>@ComponentScan …b"] -.제각각 설정.-> B2((컨텍스트 2))
-        G3["그룹 C: 설정값 유무 …"] -.제각각 설정.-> B3((컨텍스트 3 … 18))
-    end
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="236" viewBox="0 0 440 236" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="236" fill="#FFFFFF"/>
+<rect x="10" y="10" width="420" height="216" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="22" y="28" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">개선 전 — 컨텍스트 18개</text>
+<rect x="26" y="44" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="101.0" y="62.46" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">그룹 A</text>
+<text x="101.0" y="77.46000000000001" font-size="11" fill="#333" text-anchor="middle">@ComponentScan …a</text>
+<ellipse cx="345" cy="66" rx="66" ry="20" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="345" y="69.96" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨텍스트 1</text>
+<line x1="176" y1="66" x2="278" y2="66" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="194.5" y="52.5" width="65.0" height="15" rx="3" fill="#FFFFFF"/>
+<text x="227" y="63.5" font-size="10" fill="#555" text-anchor="middle">제각각 설정</text>
+<rect x="26" y="104" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="101.0" y="122.46" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">그룹 B</text>
+<text x="101.0" y="137.45999999999998" font-size="11" fill="#333" text-anchor="middle">@ComponentScan …b</text>
+<ellipse cx="345" cy="126" rx="66" ry="20" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="345" y="129.96" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨텍스트 2</text>
+<line x1="176" y1="126" x2="278" y2="126" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="194.5" y="112.5" width="65.0" height="15" rx="3" fill="#FFFFFF"/>
+<text x="227" y="123.5" font-size="10" fill="#555" text-anchor="middle">제각각 설정</text>
+<rect x="26" y="164" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="101.0" y="189.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">그룹 C: 설정값 유무 …</text>
+<ellipse cx="345" cy="186" rx="66" ry="20" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="345" y="189.96" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨텍스트 3 … 18</text>
+<line x1="176" y1="186" x2="278" y2="186" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="194.5" y="172.5" width="65.0" height="15" rx="3" fill="#FFFFFF"/>
+<text x="227" y="183.5" font-size="10" fill="#555" text-anchor="middle">제각각 설정</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/datajpatest-context-before.svg" alt="개선 전에는 그룹마다 설정이 제각각이라 컨텍스트가 18개 생기는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>이제 대부분의 테스트가 **똑같은 설정**을 공유하므로, 18개로 나뉘어 있던 컨텍스트가 **몇 개로 크게 줄어듭니다**.</mark> (스캔 대상이나 프로퍼티가 꼭 달라야 하는 소수만 자기 컨텍스트를 유지합니다.)
 
-```mermaid
-flowchart TB
-    subgraph AFTER["개선 후 — 컨텍스트 5개"]
-        BASE["RepositoryTestBase<br/>(설정 한 곳에 통합)"]
-        BASE --> TA[테스트 A]
-        BASE --> TB[테스트 B]
-        BASE --> TC[테스트 C …]
-        TA -.같은 설정.-> CTX((공용 컨텍스트))
-        TB -.같은 설정.-> CTX
-        TC -.같은 설정.-> CTX
-        SP["설정이 꼭 달라야 하는<br/>소수 테스트"] -.다른 설정.-> CTX2((별도 컨텍스트 몇 개))
-    end
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="330" viewBox="0 0 440 330" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="330" fill="#FFFFFF"/>
+<rect x="10" y="10" width="420" height="310" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="22" y="28" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">개선 후 — 컨텍스트 5개</text>
+<rect x="130" y="38" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="56.46" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">RepositoryTestBase</text>
+<text x="220.0" y="71.46000000000001" font-size="11" fill="#26508F" text-anchor="middle">(설정 한 곳에 통합)</text>
+<line x1="220" y1="82" x2="80" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="25" y="110" width="110" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="80.0" y="129.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">테스트 A</text>
+<line x1="220" y1="82" x2="220" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="165" y="110" width="110" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="129.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">테스트 B</text>
+<line x1="220" y1="82" x2="360" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="305" y="110" width="110" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="360.0" y="129.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">테스트 C …</text>
+<line x1="80" y1="142" x2="168" y2="192" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<line x1="220" y1="142" x2="220" y2="187" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<line x1="360" y1="142" x2="272" y2="192" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="88.25" y="158.5" width="55.5" height="15" rx="3" fill="#FFFFFF"/>
+<text x="116" y="169.5" font-size="10" fill="#555" text-anchor="middle">같은 설정</text>
+<rect x="192.25" y="156.5" width="55.5" height="15" rx="3" fill="#FFFFFF"/>
+<text x="220" y="167.5" font-size="10" fill="#555" text-anchor="middle">같은 설정</text>
+<rect x="296.25" y="158.5" width="55.5" height="15" rx="3" fill="#FFFFFF"/>
+<text x="324" y="169.5" font-size="10" fill="#555" text-anchor="middle">같은 설정</text>
+<ellipse cx="220" cy="207" rx="60" ry="20" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220" y="210.96" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">공용 컨텍스트</text>
+<rect x="26" y="252" width="150" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="101.0" y="270.46" font-size="11" fill="#7A5200" text-anchor="middle">설정이 꼭 달라야 하는</text>
+<text x="101.0" y="285.46" font-size="11" fill="#7A5200" text-anchor="middle">소수 테스트</text>
+<line x1="176" y1="274" x2="238" y2="274" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="184.0" y="258.5" width="46" height="15" rx="3" fill="#FFFFFF"/>
+<text x="207" y="269.5" font-size="10" fill="#555" text-anchor="middle">다른 설정</text>
+<ellipse cx="328" cy="274" rx="88" ry="20" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="328" y="277.96" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">별도 컨텍스트 몇 개</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/datajpatest-context-after.svg" alt="개선 후 RepositoryTestBase로 설정을 통합해 테스트들이 공용 컨텍스트를 쓰고, 설정이 다른 소수 테스트만 별도 컨텍스트로 나뉘는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ---
 
@@ -259,13 +479,41 @@ flowchart TB
 
 같은 로그로 확인하면 캐시의 컨텍스트 수가 두 자리(18)에서 한 자리로 떨어집니다.
 
-```mermaid
-xychart-beta
-    title "개선 전후 컨텍스트 수 (전체 테스트)"
-    x-axis ["개선 전","개선 후"]
-    y-axis "컨텍스트 수" 0 --> 20
-    bar [18, 5]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="280" viewBox="0 0 440 280" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="280" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">개선 전후 컨텍스트 수 (전체 테스트)</text>
+<line x1="70" y1="236.0" x2="420" y2="236.0" stroke="#E5E5E5"/>
+<text x="64" y="239.5" font-size="10" fill="#555" text-anchor="end">0</text>
+<line x1="70" y1="189.5" x2="420" y2="189.5" stroke="#E5E5E5"/>
+<text x="64" y="193.0" font-size="10" fill="#555" text-anchor="end">5</text>
+<line x1="70" y1="143.0" x2="420" y2="143.0" stroke="#E5E5E5"/>
+<text x="64" y="146.5" font-size="10" fill="#555" text-anchor="end">10</text>
+<line x1="70" y1="96.5" x2="420" y2="96.5" stroke="#E5E5E5"/>
+<text x="64" y="100.0" font-size="10" fill="#555" text-anchor="end">15</text>
+<line x1="70" y1="50.0" x2="420" y2="50.0" stroke="#E5E5E5"/>
+<text x="64" y="53.5" font-size="10" fill="#555" text-anchor="end">20</text>
+<line x1="70" y1="236" x2="420" y2="236" stroke="#999"/>
+<line x1="70" y1="236" x2="70" y2="50" stroke="#999"/>
+<rect x="112" y="68.6" width="90" height="167.4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="157" y="62.599999999999994" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">18</text>
+<text x="157" y="252" font-size="11" fill="#333" text-anchor="middle">개선 전</text>
+<rect x="287" y="189.5" width="90" height="46.5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="332" y="183.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">5</text>
+<text x="332" y="252" font-size="11" fill="#333" text-anchor="middle">개선 후</text>
+<text x="0" y="0" font-size="10.5" fill="#333" text-anchor="middle" transform="translate(26 143.0) rotate(-90)">컨텍스트 수</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/datajpatest-context-count-bars.svg" alt="컨텍스트 수가 개선 전 18개에서 개선 후 5개로 줄어든 막대 그래프" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 - 용량이 큰 컨텍스트가 몇 개만 남으니 메모리 여유가 크게 늘고, **OOM이 사라집니다**.
 - 컨텍스트를 18번이 아니라 몇 번만 지으니 전체 테스트도 **더 빨라집니다**.
@@ -277,7 +525,7 @@ xychart-beta
 
 1. **"하나씩은 되는데 전부는 안 된다"** 는 대개 **뭔가가 누적된다**는 뜻입니다. 테스트 하나의 크기가 아니라, 계속 남아 있는 자원(여기선 애플리케이션 컨텍스트)을 의심하세요.
 2. **안 보이는 걸 보이게 만드세요.** 로그 한 줄(`org.springframework.test.context.cache` DEBUG)로 컨텍스트가 몇 개 누적되는지(`size`) 숫자로 볼 수 있습니다.
-3. **컨텍스트를 가르는 건 아주 사소한 설정 차이**입니다 — 스캔 패키지, 주입한 설정값 하나. 특히 **내용이 같은 설정은 반드시 공유**하세요.
+3. **컨텍스트가 따로 만들어지는 원인은 아주 사소한 설정 차이**입니다 — 스캔 패키지, 주입한 설정값 하나. 특히 **내용이 같은 설정은 반드시 공유**하세요.
 4. **메모리를 키우는 건 회피지 해결이 아닙니다.** "용량이 큰 컨텍스트가 여러 개"가 원인이면, 컨텍스트 **개수**를 줄이는 게 정답입니다.
 
 ---

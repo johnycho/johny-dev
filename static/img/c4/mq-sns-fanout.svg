@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="200" viewBox="0 0 440 200" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="#FFFFFF"/>
+<rect x="160" y="15" width="120" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="37.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">이벤트</text>
+<line x1="220" y1="51" x2="220" y2="79" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="150" y="80" width="140" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="102.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">SNS (fan-out)</text>
+<path d="M220,116 L220,133 L75,133 L75,149" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="150" width="130" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="75.0" y="172.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">SQS → 결제 워커</text>
+<path d="M220,116 L220,133 L220,133 L220,149" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="155" y="150" width="130" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="172.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">SQS → 알림 워커</text>
+<path d="M220,116 L220,133 L365,133 L365,149" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="300" y="150" width="130" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="365.0" y="172.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Lambda</text>
+</svg>

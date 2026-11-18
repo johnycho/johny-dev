@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="158" viewBox="0 0 440 158" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="158" fill="#FFFFFF"/>
+<line x1="106" y1="44" x2="426" y2="44" stroke="#E6E6E6" stroke-width="1"/>
+<text x="12" y="48" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">main</text>
+<line x1="106" y1="84" x2="426" y2="84" stroke="#E6E6E6" stroke-width="1"/>
+<text x="12" y="88" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">feature/search</text>
+<line x1="106" y1="124" x2="426" y2="124" stroke="#E6E6E6" stroke-width="1"/>
+<text x="12" y="128" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">fix/typo</text>
+<line x1="120" y1="44" x2="156" y2="44" stroke="#4C7FE0" stroke-width="2.5"/>
+<path d="M156,44 C156,64.0 161.4,84 192,84 L192,84" fill="none" stroke="#D06A86" stroke-width="2.5"/>
+<line x1="192" y1="84" x2="228" y2="84" stroke="#D06A86" stroke-width="2.5"/>
+<line x1="156" y1="44" x2="264" y2="44" stroke="#4C7FE0" stroke-width="2.5"/>
+<path d="M228,84 L228,84 C258.6,84 264,64.0 264,44" fill="none" stroke="#D06A86" stroke-width="2.5"/>
+<line x1="264" y1="44" x2="300" y2="44" stroke="#4C7FE0" stroke-width="2.5"/>
+<path d="M300,44 C300,84.0 305.4,124 336,124 L336,124" fill="none" stroke="#7FB07F" stroke-width="2.5"/>
+<line x1="300" y1="44" x2="372" y2="44" stroke="#4C7FE0" stroke-width="2.5"/>
+<path d="M336,124 L336,124 C366.6,124 372,84.0 372,44" fill="none" stroke="#7FB07F" stroke-width="2.5"/>
+<circle cx="120" cy="44" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="156" cy="44" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="192" cy="84" r="7" fill="#D06A86" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="228" cy="84" r="7" fill="#D06A86" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="264" cy="44" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="264" cy="44" r="3" fill="#FFFFFF"/>
+<rect x="239.4" y="14" width="49.2" height="16" rx="3" fill="#FFFBEA" stroke="#E0A000"/>
+<text x="264" y="25.5" font-size="9.5" fill="#5A4300" text-anchor="middle">deploy</text>
+<circle cx="300" cy="44" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="336" cy="124" r="7" fill="#7FB07F" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="372" cy="44" r="7" fill="#4C7FE0" stroke="#FFFFFF" stroke-width="1.5"/>
+<circle cx="372" cy="44" r="3" fill="#FFFFFF"/>
+<rect x="347.4" y="14" width="49.2" height="16" rx="3" fill="#FFFBEA" stroke="#E0A000"/>
+<text x="372" y="25.5" font-size="9.5" fill="#5A4300" text-anchor="middle">deploy</text>
+</svg>

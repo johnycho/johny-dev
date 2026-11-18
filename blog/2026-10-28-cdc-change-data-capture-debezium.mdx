@@ -34,30 +34,45 @@ Debezium은 MySQL의 **binlog(바이너리 로그)** 를 읽어 변경 이벤트
 - **경로 B — Debezium Server** — Kafka 없이 **독립 실행(standalone)** 되는 런타임으로, **RabbitMQ**, Kinesis, Pub/Sub 등 다른 메시징으로 바로 보냅니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-hide empty members
-rectangle "MySQL\n트랜잭션 로그(binlog)" as DB #E9F2E9
-rectangle "Debezium\n커넥터" as DBZ #FCE4EC
-rectangle "Kafka\n토픽(테이블별)" as K #EEF3FB
-rectangle "RabbitMQ\nexchange" as R #FFF3E0
-rectangle "소비자\n캐시, 검색, 타 서비스, DW" as C #E9F2E9
-
-DB --> DBZ : binlog 읽기
-DBZ --> K : 경로 A (Kafka Connect)
-DBZ --> R : 경로 B (Debezium Server)
-K --> C
-R --> C
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="362" viewBox="0 0 440 362" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="362" fill="#FFFFFF"/>
+<rect x="125" y="16" width="190" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="34.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">MySQL</text>
+<text x="220.0" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">트랜잭션 로그(binlog)</text>
+<line x1="220" y1="60" x2="220" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="227" y="84" font-size="10.5" fill="#333" text-anchor="start">binlog 읽기</text>
+<rect x="150" y="100" width="140" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="118.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">Debezium</text>
+<text x="220.0" y="133.5" font-size="10.5" fill="#555" text-anchor="middle">커넥터</text>
+<polyline points="200,144 200,162 110,162 110,209" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="240,144 240,162 330,162 330,209" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="117" y="182" font-size="10" fill="#333" text-anchor="start">경로 A</text>
+<text x="117" y="195" font-size="10" fill="#333" text-anchor="start">(Kafka Connect)</text>
+<text x="323" y="182" font-size="10" fill="#333" text-anchor="end">경로 B</text>
+<text x="323" y="195" font-size="10" fill="#333" text-anchor="end">(Debezium Server)</text>
+<rect x="35" y="210" width="150" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="228.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Kafka</text>
+<text x="110.0" y="243.5" font-size="10.5" fill="#555" text-anchor="middle">토픽(테이블별)</text>
+<rect x="255" y="210" width="150" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="330.0" y="228.5" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">RabbitMQ</text>
+<text x="330.0" y="243.5" font-size="10.5" fill="#555" text-anchor="middle">exchange</text>
+<line x1="110" y1="254" x2="170" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="330" y1="254" x2="270" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110" y="300" width="220" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="318.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">소비자</text>
+<text x="220.0" y="333.5" font-size="10.5" fill="#555" text-anchor="middle">캐시, 검색, 타 서비스, DW</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML CDC 아키텍처 — MySQL binlog를 Debezium이 읽어 Kafka, RabbitMQ로](/img/c4/pu-cdc-architecture.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/cdc-architecture.svg" alt="Debezium 커넥터가 MySQL binlog를 읽어 Kafka Connect 경로로 Kafka에, Debezium Server 경로로 RabbitMQ에 보내고 소비자가 받는 CDC 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## MySQL 준비 — binlog 설정과 권한
 

@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="448" viewBox="0 0 440 448" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="448" fill="#FFFFFF"/>
+<rect x="10" y="16" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="100.0" y="34.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Spring Data JPA</text>
+<text x="100.0" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">Repository, 쿼리 메서드</text>
+<rect x="205" y="16" width="150" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="280.0" y="34.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">QueryDSL JPA</text>
+<text x="280.0" y="49.5" font-size="10.5" fill="#555" text-anchor="middle">JPAQueryFactory</text>
+<rect x="85" y="110" width="200" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="185.0" y="128.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">JPA (표준 명세)</text>
+<text x="185.0" y="143.5" font-size="10.5" fill="#555" text-anchor="middle">EntityManager, JPQL</text>
+<rect x="95" y="200" width="180" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="185.0" y="218.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">Hibernate</text>
+<text x="185.0" y="233.5" font-size="10.5" fill="#555" text-anchor="middle">영속성 컨텍스트</text>
+<rect x="295" y="200" width="135" height="44" rx="6" fill="#FFF8E1" stroke="#E0A000"/>
+<text x="362.5" y="218.5" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">QueryDSL SQL</text>
+<text x="362.5" y="233.5" font-size="10.5" fill="#555" text-anchor="middle">SQLQueryFactory</text>
+<rect x="125" y="300" width="120" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="185.0" y="321.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">JDBC</text>
+<path d="M135.0,386 A50.0,6 0 0 1 235.0,386 L235.0,422 A50.0,6 0 0 1 135.0,422 Z" fill="#F7F7F7" stroke="#999999"/>
+<path d="M135.0,386 A50.0,6 0 0 0 235.0,386" fill="none" stroke="#999999"/>
+<text x="185" y="411.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+<line x1="100" y1="60" x2="145" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="112" y="88" font-size="10.5" fill="#333" text-anchor="end">JPQL, Criteria</text>
+<line x1="280" y1="60" x2="230" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="265" y="88" font-size="10.5" fill="#333" text-anchor="start">JPQL 문자열</text>
+<line x1="185" y1="154" x2="185" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="185" y1="244" x2="185" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="192" y="276" font-size="10.5" fill="#333" text-anchor="start">SQL</text>
+<polyline points="362,244 362,317 246,317" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="368" y="285" font-size="10.5" fill="#333" text-anchor="start">SQL 직접</text>
+<line x1="185" y1="334" x2="185" y2="379" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>

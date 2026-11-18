@@ -2,7 +2,7 @@
 
 **시간에 따른 값·패턴** 처럼 "움직임이 의미 있는" 시각화를 직접 만든 **Canvas 애니메이션 컴포넌트**로 넣는다. 지표 추이(메모리 톱니/계단, 트래픽 곡선), 분포(응답시간 꼬리), 두 지표의 상관(캐시 히트율↓+DB 부하↑), 큐 발산 등. 정적 그림보다 이해를 돕는다. 형식은 [../../wiki/blog-authoring.md](../../wiki/blog-authoring.md) 4절 참고.
 
-> 방식 선택: 구조/시퀀스/상태 등 정적 다이어그램은 [diagram-static](../diagram-static/SKILL.md), 인터랙티브 구조 탐색은 [diagram-archify](../diagram-archify/SKILL.md). "지표·추이·분포·상관·발산"만 이 스킬.
+> 방식 선택: 구조, 시퀀스, 상태, 정적 차트 등 그림은 손수 SVG([diagram-svg](../diagram-svg/SKILL.md)). "지표·추이·분포·상관·발산"을 애니메이션으로 보여 줄 때만 이 스킬.
 
 ## 컴포넌트 — `src/components/blog/MonitorCharts.tsx`
 
@@ -22,7 +22,7 @@ import {AnimatedLineChart, AnimatedBars} from '@site/src/components/blog/Monitor
 
 ## 원칙
 - **애니메이션은 부드럽게** — 정점 사이 보간 + easing.
-- **과용 금물** — 정적 표·[diagram-static](../diagram-static/SKILL.md)으로 충분한 곳엔 쓰지 않는다.
+- **과용 금물** — 정적 표나 손수 SVG([diagram-svg](../diagram-svg/SKILL.md))로 충분한 곳엔 쓰지 않는다.
 - 다크/라이트 모두에서 대비가 유지되는지 확인(`tone` 팔레트 사용 시 자동).
 
 ## 검증

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="304" viewBox="0 0 440 304" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="304" fill="#FFFFFF"/>
+<rect x="140.0" y="16" width="160" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="36.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">요청 급증</text>
+<line x1="220" y1="48" x2="220" y2="67" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="140.0" y="68" width="160" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="89.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">캐시에 있나?</text>
+<polyline points="140,85 100,85 100,135" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="108" y="79" font-size="10.5" fill="#2E6B2E" text-anchor="end" font-weight="bold">있음</text>
+<rect x="16.0" y="136" width="168" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="100" y="157.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">캐시로 응답 (DB 무사)</text>
+<polyline points="300,85 330,85 330,135" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="322" y="79" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold">없음(miss)</text>
+<rect x="240.0" y="136" width="180" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="330" y="156.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">DB 조회</text>
+<line x1="330" y1="168" x2="330" y2="187" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="240.0" y="188" width="180" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="330" y="208.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">같은 상품에 동시 다발 miss</text>
+<line x1="330" y1="220" x2="330" y2="239" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="240" y="240" width="180" height="48" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="330" y="260" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">DB에 같은 쿼리</text>
+<text x="330" y="276" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">수천 번 → 과부하</text>
+</svg>

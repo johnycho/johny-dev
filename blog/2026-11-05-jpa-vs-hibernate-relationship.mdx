@@ -41,28 +41,39 @@ Hibernate는 그 JPA 명세를 **실제로 구현한 ORM 프레임워크**입니
 | `List` 인터페이스 | `ArrayList`, `LinkedList` |
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-hide empty members
-rectangle "내 코드, Spring Data JPA" as A #EEF3FB
-rectangle "JPA (표준 명세)\nEntityManager, @Entity, JPQL" as J #E9F2E9
-rectangle "Hibernate (구현체)\nSession, HQL" as H #FCE4EC
-rectangle "JDBC" as D #FFF3E0
-database "DB" as DB
-A --> J : 표준 API 호출
-J --> H : 실제 실행(provider)
-H --> D
-D --> DB
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="368" viewBox="0 0 360 368" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="360" height="368" fill="#FFFFFF"/>
+<rect x="70" y="16" width="200" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="170.0" y="38.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">내 코드, Spring Data JPA</text>
+<line x1="170" y1="52" x2="170" y2="89" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="177" y="75" font-size="10.5" fill="#333" text-anchor="start">표준 API 호출</text>
+<rect x="60" y="90" width="220" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="170.0" y="108.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">JPA (표준 명세)</text>
+<text x="170.0" y="123.5" font-size="10.5" fill="#555" text-anchor="middle">EntityManager, @Entity, JPQL</text>
+<line x1="170" y1="134" x2="170" y2="171" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="177" y="157" font-size="10.5" fill="#333" text-anchor="start">실제 실행(provider)</text>
+<rect x="70" y="172" width="200" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="170.0" y="190.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">Hibernate (구현체)</text>
+<text x="170.0" y="205.5" font-size="10.5" fill="#555" text-anchor="middle">Session, HQL</text>
+<line x1="170" y1="216" x2="170" y2="241" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="110" y="242" width="120" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="170.0" y="263.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">JDBC</text>
+<line x1="170" y1="276" x2="170" y2="301" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M120.0,308 A50.0,6 0 0 1 220.0,308 L220.0,344 A50.0,6 0 0 1 120.0,344 Z" fill="#F7F7F7" stroke="#999999"/>
+<path d="M120.0,308 A50.0,6 0 0 0 220.0,308" fill="none" stroke="#999999"/>
+<text x="170" y="333.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML JPA와 Hibernate 레이어 — 표준 명세와 구현체](/img/c4/pu-jpa-hibernate-layers.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-hibernate-layers.svg" alt="내 코드가 표준 명세인 JPA를 호출하면 구현체인 Hibernate가 실제로 실행하고 JDBC를 거쳐 DB에 닿는 레이어 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>내 코드는 **JPA 인터페이스에 의존**하고, 런타임에는 그 뒤의 **Hibernate가 실제 SQL을 만들어 JDBC로 실행**합니다.</mark> 실제로 JPA의 `EntityManager` 안에는 Hibernate의 `Session`이 들어 있어, 필요하면 직접 가져와 사용할 수도 있습니다.
 

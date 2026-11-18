@@ -4,7 +4,7 @@ title: "JPA 연관관계의 기본 페치 전략 — to-one은 EAGER, to-many는
 authors: [ johnycho ]
 tags: [ jpa, spring ]
 date: 2026-10-23T15:00:00+09:00
-description: "@ManyToOne, @OneToOne은 EAGER, @OneToMany, @ManyToMany는 LAZY — JPA 연관관계 어노테이션별 기본 페치 전략이 왜 그렇게 정해졌는지(대상이 1건이냐 N건이냐), EAGER는 요구이고 LAZY는 힌트라는 스펙 규정, 그리고 to-one의 EAGER 기본이 실무에서 문제가 되는 이유와 권장 설정을 정리합니다."
+description: "@ManyToOne, @OneToOne은 EAGER, @OneToMany, @ManyToMany는 LAZY — JPA 연관관계 어노테이션별 기본 페치 전략이 왜 그렇게 정해졌는지(대상이 1건인지 N건인지), EAGER는 요구이고 LAZY는 힌트라는 스펙 규정, 그리고 to-one의 EAGER 기본이 실무에서 문제가 되는 이유와 권장 설정을 정리합니다."
 ---
 
 <!-- truncate -->
@@ -41,27 +41,39 @@ public class Order {
 ```
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-hide empty members
-hide circle
-
-class Member #E9F2E9
-class Order #EEF3FB
-class OrderLine #FFF3E0
-
-Order "N" --> "1" Member : @ManyToOne\n기본 EAGER (대상 1건)
-Order "1" --> "N" OrderLine : @OneToMany\n기본 LAZY (대상 N건)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="262" viewBox="0 0 360 262" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="360" height="262" fill="#FFFFFF"/>
+<rect x="70" y="16" width="120" height="44" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="130" y="35" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Member</text>
+<line x1="70" y1="44" x2="190" y2="44" stroke="#8FBF8F"/>
+<rect x="70" y="108" width="120" height="44" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="130" y="127" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Order</text>
+<line x1="70" y1="136" x2="190" y2="136" stroke="#4C7FE0"/>
+<rect x="70" y="200" width="120" height="44" rx="4" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="130" y="219" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">OrderLine</text>
+<line x1="70" y1="228" x2="190" y2="228" stroke="#E0A000"/>
+<line x1="130" y1="108" x2="130" y2="61" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="122" y="102" font-size="10.5" fill="#333" text-anchor="end">N</text>
+<text x="122" y="74" font-size="10.5" fill="#333" text-anchor="end">1</text>
+<text x="140" y="80" font-size="10.5" fill="#333" text-anchor="start">@ManyToOne</text>
+<text x="140" y="93" font-size="10.5" fill="#333" text-anchor="start">기본 EAGER (대상 1건)</text>
+<line x1="130" y1="152" x2="130" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="122" y="165" font-size="10.5" fill="#333" text-anchor="end">1</text>
+<text x="122" y="194" font-size="10.5" fill="#333" text-anchor="end">N</text>
+<text x="140" y="172" font-size="10.5" fill="#333" text-anchor="start">@OneToMany</text>
+<text x="140" y="185" font-size="10.5" fill="#333" text-anchor="start">기본 LAZY (대상 N건)</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML to-one은 EAGER, to-many는 LAZY라는 기본 페치 전략](/img/c4/pu-jpa-default-fetch.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-default-fetch.svg" alt="Order에서 Member로 가는 @ManyToOne은 기본 EAGER, Order에서 OrderLine으로 가는 @OneToMany는 기본 LAZY인 기본 페치 전략" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 왜 대상 수로 나뉠까
 

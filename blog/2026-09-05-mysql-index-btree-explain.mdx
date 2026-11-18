@@ -29,31 +29,43 @@ SQL이 느릴 때 가장 먼저 보는 건 인덱스입니다. 그런데 인덱�
 - **B+트리** — 노드 하나에 키를 여러 개 넣어 **팬아웃(fan-out)** 이 큽니다. 그래서 수천만 건이어도 보통 **3~5단계**에 끝납니다. 시간 복잡도는 `O(log_m N)`(m = 팬아웃)이라, m이 클수록 트리가 낮아집니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-object "루트 노드\n(메모리 캐싱)" as R
-object "브랜치\n(메모리 캐싱)" as B1
-object "브랜치" as B2
-object "리프(정렬)" as L1
-object "리프" as L2
-object "리프" as L3
-
-R --> B1
-R --> B2
-B1 --> L1
-B1 --> L2
-B2 --> L3
-
-L1 ..> L2 : 정렬된 연결 리스트
-L2 ..> L3
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="262" viewBox="0 0 440 262" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="262" fill="#FFFFFF"/>
+<rect x="160" y="14" width="120" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="32.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">루트 노드</text>
+<text x="220.0" y="47.5" font-size="10.5" fill="#444" text-anchor="middle">(메모리 캐싱)</text>
+<rect x="60" y="104" width="120" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="120.0" y="122.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">브랜치</text>
+<text x="120.0" y="137.5" font-size="10.5" fill="#444" text-anchor="middle">(메모리 캐싱)</text>
+<rect x="260" y="104" width="120" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="320.0" y="125.75" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">브랜치</text>
+<rect x="20" y="194" width="110" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="75.0" y="215.75" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">리프(정렬)</text>
+<rect x="165" y="194" width="110" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="215.75" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">리프</text>
+<rect x="310" y="194" width="110" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="365.0" y="215.75" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">리프</text>
+<line x1="200" y1="58" x2="128" y2="103" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="240" y1="58" x2="312" y2="103" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="105" y1="148" x2="80" y2="193" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="135" y1="148" x2="210" y2="193" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="320" y1="140" x2="360" y2="193" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="130" y1="212" x2="164" y2="212" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<line x1="275" y1="212" x2="309" y2="212" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="147" y="250" font-size="10" fill="#333" text-anchor="middle">정렬된 연결 리스트</text>
+<line x1="147" y1="216" x2="147" y2="238" stroke="#CCCCCC" stroke-dasharray="2 2"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML B+트리 루트, 브랜치, 리프 노드와 리프 연결 리스트](/img/c4/pu-btree.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/btree.svg" alt="루트 노드에서 브랜치를 거쳐 리프로 내려가고, 리프끼리 정렬된 연결 리스트로 이어진 B+트리 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 루트, 브랜치 노드는 대개 메모리에 캐싱돼 있어, 실제 **디스크 I/O는 마지막 리프 단계에 집중**됩니다. 디스크 기반으로 대량 데이터를 처리하는 RDB에서 B+트리가 가장 효과적인 이유입니다.
 

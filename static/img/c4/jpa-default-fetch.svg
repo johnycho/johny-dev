@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="262" viewBox="0 0 360 262" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="360" height="262" fill="#FFFFFF"/>
+<rect x="70" y="16" width="120" height="44" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="130" y="35" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Member</text>
+<line x1="70" y1="44" x2="190" y2="44" stroke="#8FBF8F"/>
+<rect x="70" y="108" width="120" height="44" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="130" y="127" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Order</text>
+<line x1="70" y1="136" x2="190" y2="136" stroke="#4C7FE0"/>
+<rect x="70" y="200" width="120" height="44" rx="4" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="130" y="219" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">OrderLine</text>
+<line x1="70" y1="228" x2="190" y2="228" stroke="#E0A000"/>
+<line x1="130" y1="108" x2="130" y2="61" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="122" y="102" font-size="10.5" fill="#333" text-anchor="end">N</text>
+<text x="122" y="74" font-size="10.5" fill="#333" text-anchor="end">1</text>
+<text x="140" y="80" font-size="10.5" fill="#333" text-anchor="start">@ManyToOne</text>
+<text x="140" y="93" font-size="10.5" fill="#333" text-anchor="start">기본 EAGER (대상 1건)</text>
+<line x1="130" y1="152" x2="130" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="122" y="165" font-size="10.5" fill="#333" text-anchor="end">1</text>
+<text x="122" y="194" font-size="10.5" fill="#333" text-anchor="end">N</text>
+<text x="140" y="172" font-size="10.5" fill="#333" text-anchor="start">@OneToMany</text>
+<text x="140" y="185" font-size="10.5" fill="#333" text-anchor="start">기본 LAZY (대상 N건)</text>
+</svg>

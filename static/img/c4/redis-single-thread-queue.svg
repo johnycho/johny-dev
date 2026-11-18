@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="250" viewBox="0 0 440 250" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="250" fill="#FFFFFF"/>
+<rect x="15" y="20" width="100" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="65.0" y="47.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">빠른 명령</text>
+<rect x="130" y="20" width="180" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="40.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">느린 O(N) 명령</text>
+<text x="220.0" y="56.0" font-size="10.5" fill="#555" text-anchor="middle">(예: 큰 키 통째 조회)</text>
+<rect x="325" y="20" width="100" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="375.0" y="47.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">빠른 명령</text>
+<path d="M65,66 L65,90 L200,90 L200,109" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="220" y1="66" x2="220" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M375,66 L375,90 L240,90 L240,109" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="120" y="110" width="200" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="134.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">단일 스레드 처리 큐</text>
+<line x1="220" y1="150" x2="220" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="95" y="180" width="250" height="52" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220" y="202" font-size="12" fill="#5A4300" text-anchor="middle" font-weight="bold">앞의 무거운 명령이 끝나야</text>
+<text x="220" y="220" font-size="12" fill="#5A4300" text-anchor="middle" font-weight="bold">뒤 요청들이 처리됨</text>
+</svg>

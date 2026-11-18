@@ -102,3 +102,9 @@ blog/2026-10-20-mysql-get-lock-distributed-lock.mdx	다루는	d684cb8612f2	커�
 blog/2025-08-15-fault-tolerance-high-availability.mdx	사고	ba6d22fca6c1	렌터카 비유 속 실제 차량 사고 의미라 예외	- 고가용성은 사고가 발생하면 즉시 다른 차
 blog/2026-08-10-java-longadder.mdx	두고	d05518be79ab	"~을 두고 다투다"(대상) 의미로 배치 의미가 아님	어 더하므로, 같은 메모리를 두고 다툴 일이 줄어듭니다. 
 blog/2026-09-13-valkey-vs-redis-license.mdx	두고	11870f2052d7	"Redis를 두고"는 ~에 관해 의미로 배치 의미가 아님	히 사용하는 그 Redis를 두고, 최근 몇 년 사이 **
+blog/2026-08-28-flipt-polling-timeout-oss-contribution.mdx	냅니다	338946b929b1	'끝내다'(종료)로, 결과·에러를 내다 의미가 아님	면 `break`로 루프를 끝냅니다. 여기까지만 보면 "에
+blog/2026-09-12-scm-system-explained.mdx	옮기다	7e1f81300150	창고에서 물건을 물리적으로 옮기는 동작이라 예외	(공급사가 부담), 창고에서 옮기다 떨어뜨렸으면 **자사 
+blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml
+blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml
+blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml
+blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml

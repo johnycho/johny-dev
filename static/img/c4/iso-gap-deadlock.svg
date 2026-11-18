@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="302" viewBox="0 0 480 302" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="480" height="302" fill="#FFFFFF"/>
+<text x="240.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">MySQL gap 락 데드락</text>
+<line x1="72" y1="72" x2="72" y2="290" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="8.0" y="38" width="128" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="72.0" y="59.14" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">세션 A</text>
+<line x1="240" y1="72" x2="240" y2="290" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="176.0" y="38" width="128" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="240.0" y="59.14" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">id 10~20 구간 (빈 gap)</text>
+<line x1="408" y1="72" x2="408" y2="290" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="344.0" y="38" width="128" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="408.0" y="59.14" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">세션 B</text>
+<line x1="72" y1="111" x2="239" y2="111" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="84.8" y="83.0" width="160.3" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="92" font-size="10" fill="#333" text-anchor="middle">SELECT id=15 FOR UPDATE (없음)</text>
+<rect x="142.0" y="96.0" width="46.0" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="105" font-size="10" fill="#333" text-anchor="middle">→ gap 락</text>
+<line x1="408" y1="154" x2="241" y2="154" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="234.8" y="126.0" width="160.3" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="135" font-size="10" fill="#333" text-anchor="middle">SELECT id=17 FOR UPDATE (없음)</text>
+<rect x="277.8" y="139.0" width="74.4" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="148" font-size="10" fill="#333" text-anchor="middle">→ gap 락 (공존)</text>
+<line x1="72" y1="197" x2="239" y2="197" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="129.9" y="169.0" width="70.1" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="178" font-size="10" fill="#333" text-anchor="middle">INSERT id=15</text>
+<rect x="121.7" y="182.0" width="86.7" height="12.0" fill="#FFFFFF"/>
+<text x="165.0" y="191" font-size="10" fill="#333" text-anchor="middle">→ B의 gap 락 대기</text>
+<line x1="408" y1="240" x2="241" y2="240" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="279.9" y="212.0" width="70.1" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="221" font-size="10" fill="#333" text-anchor="middle">INSERT id=17</text>
+<rect x="271.6" y="225.0" width="86.7" height="12.0" fill="#FFFFFF"/>
+<text x="315.0" y="234" font-size="10" fill="#333" text-anchor="middle">→ A의 gap 락 대기</text>
+<rect x="52.0" y="256" width="376" height="28" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="240.0" y="274" font-size="10.5" fill="#5A4300" text-anchor="middle">서로의 gap 락을 기다림 → 데드락 (한쪽 롤백)</text>
+<circle cx="84" cy="111" r="8" fill="#4C7FE0"/>
+<text x="84" y="114.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<circle cx="396" cy="154" r="8" fill="#4C7FE0"/>
+<text x="396" y="157.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<circle cx="84" cy="197" r="8" fill="#4C7FE0"/>
+<text x="84" y="200.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="396" cy="240" r="8" fill="#4C7FE0"/>
+<text x="396" y="243.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+</svg>

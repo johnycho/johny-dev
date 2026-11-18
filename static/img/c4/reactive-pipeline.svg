@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="420" viewBox="0 0 440 420" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="420" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">발행 → 연산자 → 구독 — 파이프라인 구조</text>
+<rect x="80.0" y="40" width="280.0" height="53.5" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220" y="56.5" font-size="10.5" fill="#5A4300" text-anchor="middle">구독하면 request(n)이</text>
+<text x="220" y="71.0" font-size="10.5" fill="#5A4300" text-anchor="middle">구독자 → 소스로 "위로" 전파되고</text>
+<text x="220" y="85.5" font-size="10.5" fill="#5A4300" text-anchor="middle">데이터는 소스 → 구독자로 "아래로" 전달된다</text>
+<rect x="120" y="115.5" width="200" height="50" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="137.3" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">Publisher (소스)</text>
+<text x="220.0" y="151.8" font-size="10.5" fill="#555" text-anchor="middle">DB, HTTP, 이벤트</text>
+<rect x="120" y="235.5" width="200" height="50" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="257.3" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">연산자 단계</text>
+<text x="220.0" y="271.8" font-size="10.5" fill="#555" text-anchor="middle">map, filter, flatMap</text>
+<rect x="120" y="355.5" width="200" height="50" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="377.3" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Subscriber (최종 소비)</text>
+<text x="220.0" y="391.8" font-size="10.5" fill="#555" text-anchor="middle">onNext, onComplete, onError</text>
+<line x1="180" y1="165.5" x2="180" y2="234.5" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="53.9" y="194.0" width="120.1" height="13.5" fill="#FFFFFF"/>
+<text x="172" y="204.5" font-size="10.5" fill="#333" text-anchor="end">onNext (데이터, 아래로)</text>
+<line x1="260" y1="235.5" x2="260" y2="166.5" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="266.0" y="194.0" width="113.2" height="13.5" fill="#FFFFFF"/>
+<text x="268" y="204.5" font-size="10.5" fill="#333" text-anchor="start">request(n) (위로 전파)</text>
+<line x1="180" y1="285.5" x2="180" y2="354.5" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="57.2" y="314.0" width="116.8" height="13.5" fill="#FFFFFF"/>
+<text x="172" y="324.5" font-size="10.5" fill="#333" text-anchor="end">onNext (변환된 데이터)</text>
+<line x1="260" y1="355.5" x2="260" y2="286.5" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="266.0" y="314.0" width="116.6" height="13.5" fill="#FFFFFF"/>
+<text x="268" y="324.5" font-size="10.5" fill="#333" text-anchor="start">request(n) (수요, 위로)</text>
+</svg>

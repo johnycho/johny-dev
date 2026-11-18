@@ -68,12 +68,38 @@ date: 2026-09-02T09:00:00
 - 한 번에 **여러 메시지를 배치로** 당겨올 수 있어, 네트워크 왕복과 시스템 콜이 줄어 처리량이 오릅니다.
 - 브로커는 "누가 얼마나 빨리 받는지" 신경 쓸 필요가 없어 **단순해집니다.**
 
-```mermaid
-flowchart LR
-  P["프로듀서"] -->|append| L["파티션 로그<br/>(브로커)"]
-  C1["컨슈머 A"] -.->|pull offset=100| L
-  C2["컨슈머 B"] -.->|pull offset=40| L
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="226" viewBox="0 0 440 226" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="226" fill="#FFFFFF"/>
+<g transform="translate(0,-24)">
+<rect x="160" y="40" width="120" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="60.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">프로듀서</text>
+<line x1="220" y1="72" x2="220" y2="108" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="94" font-size="10.5" fill="#333" text-anchor="start">append</text>
+<rect x="140" y="110" width="160" height="48" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="131.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">파티션 로그</text>
+<text x="220.0" y="147.0" font-size="10.5" fill="#555" text-anchor="middle">(브로커)</text>
+<rect x="30" y="205" width="130" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="95.0" y="225.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">컨슈머 A</text>
+<rect x="280" y="205" width="130" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="345.0" y="225.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">컨슈머 B</text>
+<line x1="95" y1="205" x2="175" y2="160" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<line x1="345" y1="205" x2="265" y2="160" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="30" y="186" font-size="10.5" fill="#333" text-anchor="start">pull offset=100</text>
+<text x="410" y="186" font-size="10.5" fill="#333" text-anchor="end">pull offset=40</text>
+</g>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kafka-log-pull-offset.svg" alt="프로듀서는 파티션 로그에 append하고, 컨슈머 A와 B는 각자 offset 100, 40에서 pull하는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>pull 모델에서는 컨슈머가 소비 속도의 주인입니다 — 브로커는 "요청받은 만큼만" 내주면 되므로 느린 컨슈머에도 안전하고 구현이 단순합니다.</mark>
 

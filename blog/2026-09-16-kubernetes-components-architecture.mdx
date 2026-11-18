@@ -38,52 +38,57 @@ description: "쿠버네티스 지식이 거의 없어도 이해하도록, 클러
 - **워커 노드(worker node)** — 실제 **실행 담당**. 컨트롤 플레인의 결정을 받아 **컨테이너(파드)를 실제로 실행**합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-skinparam database {
-  BackgroundColor #E9F2E9
-  BorderColor #556080
-}
-title 쿠버네티스 클러스터 구성 — 컨트롤 플레인 + 워커 노드
-
-package "컨트롤 플레인 (결정, 관리)" {
-  rectangle "API 서버\n모든 요청의 진입점" as api
-  database "etcd\n모든 상태 저장" as etcd
-  rectangle "스케줄러\n파드를 어느 노드에" as sched
-  rectangle "컨트롤러 매니저\n원하는 상태 유지 루프" as cm
-}
-
-package "워커 노드 (여러 대)" {
-  rectangle "kubelet\n파드 실행 감독" as k1
-  rectangle "컨테이너 런타임\ncontainerd 등" as r1
-  rectangle "kube-proxy\n서비스 네트워킹" as p1
-  rectangle "Pod" as pod1
-}
-
-api --> etcd
-sched --> api
-cm --> api
-api --> k1 : 지시 / 상태 보고
-api --> p1 : Service 감시
-k1 --> r1
-r1 --> pod1
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="392" viewBox="0 0 440 392" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="392" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">쿠버네티스 클러스터 구성: 컨트롤 플레인과 워커 노드</text>
+<rect x="10" y="34" width="420" height="152" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="22" y="52" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">컨트롤 플레인 (결정, 관리)</text>
+<rect x="24" y="62" width="180" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="114.0" y="81.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">스케줄러</text>
+<text x="114.0" y="97.0" font-size="10.5" fill="#555" text-anchor="middle">파드를 어느 노드에</text>
+<rect x="236" y="62" width="180" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="326.0" y="81.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">컨트롤러 매니저</text>
+<text x="326.0" y="97.0" font-size="10.5" fill="#555" text-anchor="middle">원하는 상태 유지 루프</text>
+<rect x="24" y="128" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="114.0" y="147.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">API 서버</text>
+<text x="114.0" y="163.0" font-size="10.5" fill="#555" text-anchor="middle">모든 요청의 진입점</text>
+<rect x="236" y="128" width="180" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="326.0" y="147.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">etcd</text>
+<text x="326.0" y="163.0" font-size="10.5" fill="#555" text-anchor="middle">모든 상태 저장</text>
+<line x1="114" y1="106" x2="114" y2="127" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="300" y1="106" x2="192" y2="127" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="204" y1="150" x2="235" y2="150" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="222" width="420" height="160" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="22" y="240" font-size="11" fill="#333" text-anchor="start" font-weight="bold">워커 노드 (여러 대)</text>
+<rect x="24" y="250" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="114.0" y="269.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">kubelet</text>
+<text x="114.0" y="285.0" font-size="10.5" fill="#555" text-anchor="middle">파드 실행 감독</text>
+<rect x="236" y="250" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="326.0" y="269.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">kube-proxy</text>
+<text x="326.0" y="285.0" font-size="10.5" fill="#555" text-anchor="middle">서비스 네트워킹</text>
+<rect x="24" y="324" width="180" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="114.0" y="343.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">컨테이너 런타임</text>
+<text x="114.0" y="359.0" font-size="10.5" fill="#555" text-anchor="middle">containerd 등</text>
+<rect x="236" y="324" width="180" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="326.0" y="350.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Pod</text>
+<line x1="150" y1="172" x2="150" y2="249" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="144" y="208" font-size="10" fill="#555" text-anchor="end">지시, 상태 보고</text>
+<line x1="170" y1="172" x2="300" y2="249" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="262" y="208" font-size="10" fill="#555" text-anchor="start">Service 감시</text>
+<line x1="114" y1="294" x2="114" y2="323" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="204" y1="346" x2="235" y2="346" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML 쿠버네티스 클러스터 구성 요소](/img/c4/k8s-components.svg)
-
-import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
-
-<ArchifyEmbed src="/diagrams/k8s-architecture.html" title="쿠버네티스 클러스터 구성 요소 (인터랙티브)" height="620px" />
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/k8s-components.svg" alt="쿠버네티스 클러스터 구성 요소: 컨트롤 플레인(API 서버, etcd, 스케줄러, 컨트롤러 매니저)과 워커 노드(kubelet, kube-proxy, 컨테이너 런타임, Pod)" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 컨트롤 플레인 — 결정, 관리 부품들
 
@@ -133,34 +138,47 @@ API 서버를 [watch](#api-watch)하다가 새로 만들어졌지만 **아직 �
 요청은 어느 노드의 파드에서든 출발할 수 있으므로, 대상 파드가 없는 노드에도 Service 규칙이 전부 있어야 합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-rectangle "API 서버" as api
-package "워커 노드" {
-  rectangle "kube-proxy" as kp
-  rectangle "노드 커널의\n네트워크 규칙\n(iptables, IPVS)" as rule #FFF3E0
-  rectangle "요청 보내는 파드" as c
-}
-rectangle "대상 파드 A" as pa
-rectangle "대상 파드 B" as pb
-api --> kp : ① Service와\n파드 목록 감시
-kp --> rule : ② 규칙 작성
-c --> rule : ③ Service IP로 요청
-rule --> pa : ④ 파드 한 곳으로 전달
-rule ..> pb
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="360" viewBox="0 0 440 360" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="360" fill="#FFFFFF"/>
+<rect x="36" y="14" width="150" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="111.0" y="35.32" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">API 서버</text>
+<rect x="16" y="86" width="200" height="260" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="28" y="104" font-size="11" fill="#333" text-anchor="start" font-weight="bold">워커 노드</text>
+<rect x="36" y="116" width="150" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="111.0" y="137.32" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">kube-proxy</text>
+<rect x="36" y="196" width="150" height="58" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="111.0" y="213.96" font-size="11" fill="#7A5200" text-anchor="middle">노드 커널의</text>
+<text x="111.0" y="228.96" font-size="11" fill="#7A5200" text-anchor="middle">네트워크 규칙</text>
+<text x="111.0" y="243.96" font-size="11" fill="#7A5200" text-anchor="middle">(iptables, IPVS)</text>
+<rect x="36" y="298" width="150" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="111.0" y="319.14" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">요청 보내는 파드</text>
+<rect x="330" y="165" width="98" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="379.0" y="186.14" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">대상 파드 A</text>
+<rect x="330" y="250" width="98" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="379.0" y="271.14" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">대상 파드 B</text>
+<line x1="111" y1="48" x2="111" y2="115" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="119" y="66" font-size="10" fill="#333" text-anchor="start">① Service와</text>
+<text x="119" y="80" font-size="10" fill="#333" text-anchor="start">파드 목록 감시</text>
+<line x1="111" y1="150" x2="111" y2="195" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="119" y="177" font-size="10" fill="#333" text-anchor="start">② 규칙 작성</text>
+<line x1="111" y1="298" x2="111" y2="255" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="119" y="280" font-size="10" fill="#333" text-anchor="start">③ Service IP로 요청</text>
+<path d="M186,214 L240,214 L240,182 L329,182" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="285" y="160" font-size="10" fill="#333" text-anchor="middle">④ 파드 한 곳으로</text>
+<text x="285" y="173" font-size="10" fill="#333" text-anchor="middle">전달</text>
+<path d="M186,236 L240,236 L240,267 L329,267" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML kube-proxy가 노드에 규칙을 만들고 트래픽은 그 규칙을 따라 파드로 전달되는 흐름](/img/c4/pu-k8s-kube-proxy-rules.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/k8s-kube-proxy-rules.svg" alt="kube-proxy가 API 서버를 감시해 노드 커널에 네트워크 규칙을 작성하고, 파드가 Service IP로 보낸 요청이 그 규칙에 따라 대상 파드 한 곳으로 전달되는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 1. kube-proxy는 API 서버를 감시([watch](#api-watch))하다가 Service가 생기거나 그 뒤의 파드 목록이 바뀌면 알게 됩니다.
 2. 각 노드의 커널에 **"이 Service IP와 포트로 온 패킷은 이 파드들 중 한 곳으로 보낸다"** 는 규칙(iptables, IPVS 등)을 작성합니다.
@@ -251,7 +269,56 @@ spec:
 
 <mark>Service는 L4(포트 단위 파드 부하 분산), Ingress는 L7(도메인, 경로 라우팅 + TLS 종료)입니다 — Ingress는 규칙일 뿐이라, 이를 실행하는 Ingress Controller(파드)가 있어야 실제로 동작합니다.</mark>
 
-<ArchifyEmbed src="/diagrams/k8s-ingress-path.html" title="외부 트래픽 경로 Ingress→Service→파드 (인터랙티브)" height="440px" />
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="400" viewBox="0 0 440 400" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="400" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">외부 트래픽 경로 — Ingress → Service → 파드</text>
+<rect x="26" y="38" width="160" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="106.0" y="54.32" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">외부 사용자</text>
+<text x="106.0" y="70.32" font-size="10.5" fill="#444" text-anchor="middle">브라우저</text>
+<line x1="106" y1="78" x2="106" y2="117" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="114" y="102" font-size="10" fill="#555" text-anchor="start">HTTP(S)</text>
+<rect x="26" y="118" width="160" height="58" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="106.0" y="135.32" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Ingress Controller</text>
+<text x="106.0" y="151.32" font-size="10" fill="#444" text-anchor="middle">워커 노드의 파드, L7</text>
+<text x="106.0" y="167.32" font-size="10" fill="#444" text-anchor="middle">nginx, ALB 등</text>
+<line x1="106" y1="176" x2="106" y2="215" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="114" y="200" font-size="10" fill="#555" text-anchor="start">L7 라우팅</text>
+<rect x="26" y="216" width="160" height="58" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="106.0" y="233.32" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Service</text>
+<text x="106.0" y="249.32" font-size="10" fill="#444" text-anchor="middle">고정 진입점, L4</text>
+<text x="106.0" y="265.32" font-size="10" fill="#444" text-anchor="middle">kube-proxy</text>
+<line x1="106" y1="274" x2="106" y2="300" stroke="#888" stroke-width="1.2"/>
+<path d="M106,300 L58,300 L58,327" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M106,300 L154,300 L154,327" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="114" y="292" font-size="10" fill="#555" text-anchor="start">L4 부하분산</text>
+<rect x="14" y="328" width="88" height="40" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="58.0" y="344.39" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">파드 A</text>
+<text x="58.0" y="359.89" font-size="10" fill="#444" text-anchor="middle">컨테이너</text>
+<rect x="110" y="328" width="88" height="40" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="154.0" y="344.39" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">파드 B</text>
+<text x="154.0" y="359.89" font-size="10" fill="#444" text-anchor="middle">컨테이너</text>
+<rect x="212" y="112" width="216" height="82" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="224" y="131" font-size="11" fill="#5A4300" text-anchor="start" font-weight="bold">L7 — Ingress</text>
+<text x="224" y="150" font-size="10" fill="#5A4300" text-anchor="start">• Ingress Controller = 워커 노드의 파드</text>
+<text x="224" y="166" font-size="10" fill="#5A4300" text-anchor="start">• 도메인, 경로 라우팅 + TLS 종료</text>
+<text x="224" y="182" font-size="10" fill="#5A4300" text-anchor="start">• Ingress는 규칙일 뿐, 컨트롤러가 실행</text>
+<rect x="212" y="212" width="216" height="66" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="224" y="231" font-size="11" fill="#5A4300" text-anchor="start" font-weight="bold">L4 — Service</text>
+<text x="224" y="250" font-size="10" fill="#5A4300" text-anchor="start">• Service = 파드 앞 고정 진입점</text>
+<text x="224" y="266" font-size="10" fill="#5A4300" text-anchor="start">• kube-proxy가 파드로 부하 분산</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/k8s-ingress-path.svg" alt="외부 사용자 요청이 Ingress Controller(L7 라우팅)와 Service(L4 부하분산)를 거쳐 파드 A, B로 전달되는 경로" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 오브젝트는 무엇인가 — 부품이 관리하는 대상
 
@@ -272,32 +339,77 @@ spec:
 부품들이 어떻게 협업하는지, `kubectl apply`로 파드 하나를 기동시키는 과정으로 따라가 봅니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-autonumber
-actor "사용자 (kubectl)" as u
-participant "API 서버" as api
-database "etcd" as etcd
-participant "스케줄러" as sched
-participant "kubelet (워커 노드)" as kubelet
-participant "컨테이너 런타임" as rt
-
-u -> api : 배포 요청 (kubectl apply)
-api -> etcd : 원하는 상태 저장
-sched -> api : 노드 미배정 파드 감지 → 노드 선택
-api -> etcd : "파드를 노드 N에" 기록
-kubelet -> api : 내 노드에 배정된 파드 확인
-kubelet -> rt : 컨테이너 실행
-kubelet -> api : 상태 보고 (Running)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="456" viewBox="0 0 440 456" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="456" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">배포 요청 한 번이 처리되는 과정</text>
+<rect x="150" y="38" width="140" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="62.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">사용자 (kubectl)</text>
+<rect x="16" y="140" width="104" height="48" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="68.0" y="168.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">스케줄러</text>
+<rect x="160" y="140" width="120" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="168.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">API 서버</text>
+<rect x="320" y="140" width="104" height="48" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="372.0" y="168.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">etcd</text>
+<rect x="160" y="250" width="120" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="271.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">kubelet</text>
+<text x="220.0" y="287.0" font-size="10.5" fill="#555" text-anchor="middle">워커 노드</text>
+<rect x="320" y="250" width="104" height="48" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="372.0" y="271.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">컨테이너</text>
+<text x="372.0" y="287.0" font-size="10.5" fill="#555" text-anchor="middle">런타임</text>
+<line x1="220" y1="78" x2="220" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="232" cy="108" r="8" fill="#4C7FE0"/>
+<text x="232" y="111.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<line x1="280" y1="154" x2="319" y2="154" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="300" cy="144" r="8" fill="#4C7FE0"/>
+<text x="300" y="147.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<line x1="120" y1="164" x2="159" y2="164" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="140" cy="154" r="8" fill="#4C7FE0"/>
+<text x="140" y="157.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<line x1="280" y1="176" x2="319" y2="176" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="300" cy="186" r="8" fill="#4C7FE0"/>
+<text x="300" y="189.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+<line x1="196" y1="250" x2="196" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="184" cy="220" r="8" fill="#4C7FE0"/>
+<text x="184" y="223.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+<line x1="280" y1="274" x2="319" y2="274" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="300" cy="264" r="8" fill="#4C7FE0"/>
+<text x="300" y="267.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+<line x1="244" y1="250" x2="244" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="256" cy="220" r="8" fill="#4C7FE0"/>
+<text x="256" y="223.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">7</text>
+<circle cx="24" cy="322" r="8" fill="#4C7FE0"/>
+<text x="24" y="325.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<text x="38" y="326" font-size="10.5" fill="#333" text-anchor="start">사용자가 kubectl apply로 배포를 요청</text>
+<circle cx="24" cy="340" r="8" fill="#4C7FE0"/>
+<text x="24" y="343.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<text x="38" y="344" font-size="10.5" fill="#333" text-anchor="start">API 서버가 원하는 상태를 etcd에 저장</text>
+<circle cx="24" cy="358" r="8" fill="#4C7FE0"/>
+<text x="24" y="361.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<text x="38" y="362" font-size="10.5" fill="#333" text-anchor="start">스케줄러가 노드 미배정 파드를 발견해 노드를 선택</text>
+<circle cx="24" cy="376" r="8" fill="#4C7FE0"/>
+<text x="24" y="379.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+<text x="38" y="380" font-size="10.5" fill="#333" text-anchor="start">API 서버가 "파드를 노드 N에"를 etcd에 기록</text>
+<circle cx="24" cy="394" r="8" fill="#4C7FE0"/>
+<text x="24" y="397.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+<text x="38" y="398" font-size="10.5" fill="#333" text-anchor="start">kubelet이 내 노드에 배정된 파드를 확인</text>
+<circle cx="24" cy="412" r="8" fill="#4C7FE0"/>
+<text x="24" y="415.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+<text x="38" y="416" font-size="10.5" fill="#333" text-anchor="start">kubelet이 컨테이너 런타임에 실행을 지시</text>
+<circle cx="24" cy="430" r="8" fill="#4C7FE0"/>
+<text x="24" y="433.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">7</text>
+<text x="38" y="434" font-size="10.5" fill="#333" text-anchor="start">kubelet이 상태(Running)를 API 서버에 보고</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 쿠버네티스 배포 요청 흐름](/img/c4/k8s-request-flow.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/k8s-request-flow.svg" alt="배포 요청 한 번이 API 서버를 중심으로 etcd, 스케줄러, kubelet, 컨테이너 런타임을 거쳐 처리되는 7단계" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 1. **사용자**가 `kubectl apply`로 "이러한 파드를 원한다"를 **API 서버**에 보냅니다.
 2. API 서버가 그 원하는 상태를 **etcd**에 저장합니다. (이 시점엔 아직 어느 노드에 뜰지 미정)

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="290" viewBox="0 0 440 290" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="290" fill="#FFFFFF"/>
+<circle cx="220" cy="18" r="8" fill="#333"/>
+<line x1="220" y1="26" x2="220" y2="37" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polygon points="220,38.0 330.0,66 220,94.0 110.0,66" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="70" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">정지 시간이 가장 중요?</text>
+<polyline points="110,66 80,66 80,105" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="88" y="60" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">Y</text>
+<rect x="18" y="106" width="124" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="80.0" y="126.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">ZGC / Shenandoah</text>
+<polyline points="330,66 296,66 296,101" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="334" y="60" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">N</text>
+<polygon points="296,102.0 422.0,132 296,162.0 170.0,132" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="296" y="136" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">지연은 무관, 처리량이 최우선?</text>
+<polyline points="296,162 296,172 240,172 240,191" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="232" y="186" font-size="11" fill="#2E6B2E" text-anchor="end" font-weight="bold">Y</text>
+<rect x="190" y="192" width="100" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="240.0" y="212.0" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">Parallel GC</text>
+<polyline points="422,132 428,132 428,176 370,176 370,191" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="418" y="124" font-size="11" fill="#9E3A57" text-anchor="end" font-weight="bold">N</text>
+<rect x="320" y="192" width="100" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="370.0" y="212.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">G1 (기본)</text>
+<polyline points="80,138 80,250 210,250" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="240,224 240,236 220,236 220,244" fill="none" stroke="#888" stroke-width="1.2"/>
+<polyline points="370,224 370,250 230,250" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="220" y1="244" x2="220" y2="262" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="272" r="9" fill="#FFFFFF" stroke="#333" stroke-width="1.5"/>
+<circle cx="220" cy="272" r="5" fill="#333"/>
+</svg>

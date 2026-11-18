@@ -21,15 +21,42 @@ tags: [ spring, operations ]
 
 문제는 그 분리를 수집기 쪽에서 **정규식(grok)** 으로 한다는 점입니다. grok은 "이 위치엔 시각, 저 위치엔 레벨"처럼 로그 모양을 정규식으로 파싱하는 규칙인데, <mark>로그 포맷이 조금만 바뀌어도 이 파싱 전체가 실패합니다.</mark> 그래서 많은 팀이 아예 로그를 처음부터 JSON으로 출력하는 방법을 택해 왔습니다. JSON은 `{"userId":"123"}`처럼 **항목 이름과 값이 짝지어진** 형태라, 수집기가 파싱 없이 그대로 항목으로 인식합니다.
 
-```mermaid
-flowchart LR
-    subgraph BEFORE["기존 — 평문 + 파싱"]
-        A1["평문 로그 한 줄"] --> A2["수집기에서<br/>정규식(grok)으로 쪼갬"] --> A3["항목으로 분리<br/>(포맷 바뀌면 깨짐)"]
-    end
-    subgraph AFTER["3.4 — 처음부터 구조화"]
-        B1["애플리케이션이 JSON으로 직접 출력"] --> B2["수집기는 그대로 저장<br/>(쪼갤 필요 없음)"]
-    end
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="226" viewBox="0 0 440 226" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="226" fill="#FFFFFF"/>
+<rect x="10" y="10" width="420" height="96" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="22" y="28" font-size="11" fill="#333" text-anchor="start" font-weight="bold">기존 — 평문 + 파싱</text>
+<rect x="20" y="40" width="124" height="48" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="82.0" y="67.96" font-size="11" fill="#333" text-anchor="middle">평문 로그 한 줄</text>
+<rect x="158" y="40" width="124" height="48" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="220.0" y="60.53" font-size="10.5" fill="#333" text-anchor="middle">수집기에서</text>
+<text x="220.0" y="75.03" font-size="10.5" fill="#333" text-anchor="middle">정규식(grok)으로 나눔</text>
+<rect x="296" y="40" width="124" height="48" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="358.0" y="60.53" font-size="10.5" fill="#9E3A57" text-anchor="middle">항목으로 분리</text>
+<text x="358.0" y="75.03" font-size="10.5" fill="#9E3A57" text-anchor="middle">(포맷 바뀌면 깨짐)</text>
+<line x1="144" y1="64" x2="157" y2="64" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="282" y1="64" x2="295" y2="64" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="120" width="420" height="96" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="22" y="138" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">3.4 — 처음부터 구조화</text>
+<rect x="24" y="150" width="180" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="114.0" y="170.46" font-size="11" fill="#26508F" text-anchor="middle">애플리케이션이</text>
+<text x="114.0" y="185.46" font-size="11" fill="#26508F" text-anchor="middle">JSON으로 직접 출력</text>
+<rect x="236" y="150" width="180" height="48" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="326.0" y="170.46" font-size="11" fill="#2E6B2E" text-anchor="middle">수집기는 그대로 저장</text>
+<text x="326.0" y="185.46" font-size="11" fill="#2E6B2E" text-anchor="middle">(나눌 필요 없음)</text>
+<line x1="204" y1="174" x2="235" y2="174" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/structured-logging-before-after.svg" alt="기존에는 평문 로그를 수집기가 정규식으로 분리하고, 3.4부터는 애플리케이션이 JSON으로 직접 출력해 수집기가 그대로 저장하는 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 전에는 이 "JSON으로 찍기"를 하려고 `logstash-logback-encoder` 같은 **라이브러리를 따로 붙이고 XML 설정**을 해야 했습니다. <mark>3.4부터는 그 기능이 Spring Boot 안에 기본으로 들어와, 설정 몇 줄이면 끝납니다.</mark>
 

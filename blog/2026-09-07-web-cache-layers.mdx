@@ -16,13 +16,40 @@ date: 2026-09-07T12:00:00
 
 사용자 → 서버 방향으로, 캐시는 이렇게 쌓여 있습니다.
 
-```mermaid
-flowchart LR
-  B["① 브라우저 캐시"] --> C["② CDN, 엣지"]
-  C --> L["③ 로컬 캐시<br/>(인스턴스 메모리)"]
-  L --> S["④ 공유 캐시<br/>(Redis)"]
-  S --> DB[("원본 DB")]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="306" viewBox="0 0 440 306" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="306" fill="#FFFFFF"/>
+<g transform="translate(0,-24)">
+<rect x="140" y="40" width="160" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="60.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">① 브라우저 캐시</text>
+<line x1="220" y1="72" x2="220" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="140" y="94" width="160" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="114.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">② CDN, 엣지</text>
+<line x1="220" y1="126" x2="220" y2="146" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="140" y="148" width="160" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="167.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">③ 로컬 캐시</text>
+<text x="220.0" y="183.0" font-size="10.5" fill="#555" text-anchor="middle">(인스턴스 메모리)</text>
+<line x1="220" y1="192" x2="220" y2="212" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="140" y="214" width="160" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="233.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">④ 공유 캐시</text>
+<text x="220.0" y="249.0" font-size="10.5" fill="#555" text-anchor="middle">(Redis)</text>
+<line x1="220" y1="258" x2="220" y2="278" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M150,286 a70.0,6 0 0 0 140,0 v34 a70.0,6 0 0 1 -140,0 z" fill="#F7F7F7" stroke="#999999"/>
+<ellipse cx="220.0" cy="286" rx="70.0" ry="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="310.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">원본 DB</text>
+</g>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/web-cache-layers-flow.svg" alt="요청이 브라우저 캐시, CDN과 엣지, 로컬 캐시, 공유 캐시(Redis)를 차례로 거쳐 원본 DB에 닿는 캐시 계층" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 요청은 왼쪽(사용자 단)에서 miss가 발생하면 오른쪽으로 한 칸씩 내려가고, 원본(DB)에서 읽은 값은 역순으로 각 계층에 채워집니다. 관례상 프론트엔드는 브라우저와 CDN을, 백엔드는 로컬, 공유 캐시를 주로 담당하지만, **전 계층을 아는 개발자**가 좋은 캐싱 전략을 설계합니다.
 
@@ -30,10 +57,10 @@ flowchart LR
 
 계층을 선택하는 기준은 네 가지입니다.
 
-1. **변경 빈도** — 정적 리소스(거의 안 변함)냐, 장바구니(자주 변함)냐.
-2. **공유 범위** — 국가 코드(모든 사용자 공유)냐, 세션(개인 전용)이냐.
+1. **변경 빈도** — 정적 리소스(거의 안 변함)인지, 장바구니(자주 변함)인지 구분합니다.
+2. **공유 범위** — 국가 코드(모든 사용자 공유)인지, 세션(개인 전용)인지 구분합니다.
 3. **용량, 네트워크 비용** — 이미지와 영상은 크고, 동적 데이터는 작습니다.
-4. **최신성 요구** — 주식 시세(실시간)냐, 공지사항(수 분 지연 허용)이냐.
+4. **최신성 요구** — 주식 시세(실시간)인지, 공지사항(수 분 지연 허용)인지 구분합니다.
 
 <mark>같은 웹 서비스 안에서도 데이터마다 적합한 계층이 다릅니다 — "무엇을 어느 계층에 둘지"가 캐싱 설계의 본질입니다.</mark>
 

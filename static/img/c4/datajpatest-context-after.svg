@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="330" viewBox="0 0 440 330" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="330" fill="#FFFFFF"/>
+<rect x="10" y="10" width="420" height="310" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="22" y="28" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">개선 후 — 컨텍스트 5개</text>
+<rect x="130" y="38" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="56.46" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">RepositoryTestBase</text>
+<text x="220.0" y="71.46000000000001" font-size="11" fill="#26508F" text-anchor="middle">(설정 한 곳에 통합)</text>
+<line x1="220" y1="82" x2="80" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="25" y="110" width="110" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="80.0" y="129.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">테스트 A</text>
+<line x1="220" y1="82" x2="220" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="165" y="110" width="110" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="129.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">테스트 B</text>
+<line x1="220" y1="82" x2="360" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="305" y="110" width="110" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="360.0" y="129.96" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">테스트 C …</text>
+<line x1="80" y1="142" x2="168" y2="192" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<line x1="220" y1="142" x2="220" y2="187" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<line x1="360" y1="142" x2="272" y2="192" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="88.25" y="158.5" width="55.5" height="15" rx="3" fill="#FFFFFF"/>
+<text x="116" y="169.5" font-size="10" fill="#555" text-anchor="middle">같은 설정</text>
+<rect x="192.25" y="156.5" width="55.5" height="15" rx="3" fill="#FFFFFF"/>
+<text x="220" y="167.5" font-size="10" fill="#555" text-anchor="middle">같은 설정</text>
+<rect x="296.25" y="158.5" width="55.5" height="15" rx="3" fill="#FFFFFF"/>
+<text x="324" y="169.5" font-size="10" fill="#555" text-anchor="middle">같은 설정</text>
+<ellipse cx="220" cy="207" rx="60" ry="20" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220" y="210.96" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">공용 컨텍스트</text>
+<rect x="26" y="252" width="150" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="101.0" y="270.46" font-size="11" fill="#7A5200" text-anchor="middle">설정이 꼭 달라야 하는</text>
+<text x="101.0" y="285.46" font-size="11" fill="#7A5200" text-anchor="middle">소수 테스트</text>
+<line x1="176" y1="274" x2="238" y2="274" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="184.0" y="258.5" width="46" height="15" rx="3" fill="#FFFFFF"/>
+<text x="207" y="269.5" font-size="10" fill="#555" text-anchor="middle">다른 설정</text>
+<ellipse cx="328" cy="274" rx="88" ry="20" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="328" y="277.96" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">별도 컨텍스트 몇 개</text>
+</svg>

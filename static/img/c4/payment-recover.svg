@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="376" viewBox="0 0 440 376" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="376" fill="#FFFFFF"/>
+<rect x="14.0" y="14" width="96" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="62" y="33.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">주문, 결제</text>
+<text x="62" y="47.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">서비스</text>
+<rect x="119.0" y="14" width="96" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="167" y="40.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+<rect x="224.0" y="14" width="96" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="272" y="33.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">정합성 보정</text>
+<text x="272" y="47.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">스케줄러</text>
+<rect x="329.0" y="14" width="96" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="377" y="40.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">외부 PG</text>
+<line x1="62" y1="58" x2="62" y2="366" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="167" y1="58" x2="167" y2="366" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="272" y1="58" x2="272" y2="366" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="377" y1="58" x2="377" y2="366" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="62" y1="100" x2="166" y2="100" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="114.5" y="82" font-size="10" fill="#333" text-anchor="middle">주문 먼저 생성</text>
+<text x="114.5" y="95" font-size="10" fill="#333" text-anchor="middle">(멱등성 키)</text>
+<line x1="62" y1="132" x2="376" y2="132" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="219.5" y="127" font-size="10" fill="#333" text-anchor="middle">결제 요청</text>
+<line x1="377" y1="164" x2="63" y2="164" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="219.5" y="159" font-size="10" fill="#333" text-anchor="middle">응답 유실 / 서버 다운</text>
+<rect x="10" y="178" width="106" height="24" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="63.0" y="195" font-size="10.5" fill="#5A4300" text-anchor="middle">DB엔 "미확정" 상태</text>
+<line x1="8" y1="232" x2="432" y2="232" stroke="#999" stroke-dasharray="2 3"/>
+<rect x="170" y="222" width="100" height="20" rx="4" fill="#F7F7F7" stroke="#999"/>
+<text x="220" y="236" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">정책 시간 내</text>
+<line x1="272" y1="288" x2="376" y2="288" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="324.5" y="270" font-size="10" fill="#333" text-anchor="middle">결제 상태 조회</text>
+<text x="324.5" y="283" font-size="10" fill="#333" text-anchor="middle">(정합성 보정)</text>
+<line x1="377" y1="320" x2="273" y2="320" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="324.5" y="315" font-size="10" fill="#333" text-anchor="middle">결제 성공</text>
+<line x1="272" y1="352" x2="168" y2="352" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="219.5" y="347" font-size="10" fill="#333" text-anchor="middle">결제완료로 복구</text>
+</svg>

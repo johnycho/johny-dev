@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="318" viewBox="0 0 440 318" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="318" fill="#FFFFFF"/>
+<circle cx="126" cy="16" r="7" fill="#444"/>
+<line x1="126" y1="23" x2="126" y2="35" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="36" width="220" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="126" y="56" font-size="11" fill="#333" text-anchor="middle">메시지를 다시 재생?</text>
+<line x1="236" y1="52" x2="261" y2="52" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="249" y="47" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="262" y="30" width="162" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="343" y="48.5" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">로그 기반</text>
+<text x="343" y="63.5" font-size="11" fill="#333" text-anchor="middle">Kafka, Kinesis, MSK</text>
+<line x1="343" y1="74" x2="343" y2="83" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="343" cy="92" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="343" cy="92" r="4.5" fill="#444"/>
+<line x1="126" y1="68" x2="126" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="133" y="88" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="100" width="220" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="126" y="118.5" font-size="11" fill="#333" text-anchor="middle">정교한 라우팅, 작업 큐가 필요?</text>
+<text x="126" y="133.5" font-size="11" fill="#333" text-anchor="middle">(우선순위, 조건 분기, 건별 ack)</text>
+<line x1="236" y1="122" x2="261" y2="122" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="249" y="117" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="262" y="106" width="162" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="343" y="126" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">RabbitMQ</text>
+<line x1="343" y1="138" x2="343" y2="147" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="343" cy="156" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="343" cy="156" r="4.5" fill="#444"/>
+<line x1="126" y1="144" x2="126" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="133" y="166" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="180" width="220" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="126" y="200" font-size="11" fill="#333" text-anchor="middle">운영은 맡기고 싶다?</text>
+<line x1="236" y1="196" x2="261" y2="196" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="249" y="191" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="262" y="174" width="162" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="343" y="192.5" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">SQS (+SNS)</text>
+<text x="343" y="207.5" font-size="11" fill="#333" text-anchor="middle">(관리형 단순 큐)</text>
+<line x1="343" y1="218" x2="343" y2="227" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="343" cy="236" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="343" cy="236" r="4.5" fill="#444"/>
+<line x1="126" y1="212" x2="126" y2="245" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="133" y="233" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="246" width="220" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="126" y="264.5" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">자체 호스팅 단순 큐</text>
+<text x="126" y="279.5" font-size="11" fill="#333" text-anchor="middle">(Redis, NATS 등)</text>
+<line x1="126" y1="290" x2="126" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="126" cy="308" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="126" cy="308" r="4.5" fill="#444"/>
+</svg>

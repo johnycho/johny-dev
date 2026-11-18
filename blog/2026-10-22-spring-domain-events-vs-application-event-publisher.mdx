@@ -113,32 +113,43 @@ JPA `@Entity`의 영속 매핑은 Hibernate가 하므로 여기서는 **JPA 쪽�
 발행을 수행하는 건 Spring Data가 등록하는 `EventPublishingRepositoryProxyPostProcessor`입니다. repository 프록시가 **`save`, `saveAll`, `delete`, `deleteAll`, `deleteAllInBatch`, `deleteInBatch`** 호출을 가로채 `@DomainEvents` 목록을 가져와 `ApplicationEventPublisher`로 발행하고, 그다음 `@AfterDomainEventPublication`을 호출해 목록을 비웁니다. <mark>발행은 **save가 실행되는 그 호출 안에서 동기로** 일어나므로, save가 트랜잭션 안이면 이벤트도 **커밋 전, 같은 트랜잭션에서** 발행됩니다.</mark>
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-skinparam ranksep 20
-skinparam nodesep 16
-hide empty members
-
-rectangle "서비스 코드\npublisher.publishEvent(e)" as SVC #EEF3FB
-rectangle "애그리거트\nregisterEvent(e)" as AGG #E9F2E9
-rectangle "repository.save()\n프록시가 @DomainEvents 수집" as REPO #FFF3E0
-rectangle "ApplicationEventPublisher\n.publishEvent()" as PUB #FCE4EC
-rectangle "@EventListener\n@TransactionalEventListener" as LIS #EEF3FB
-
-SVC --> PUB : 직접, 명시 발행
-AGG --> REPO : 이벤트 모음
-REPO --> PUB : save 시 자동 발행
-PUB --> LIS : 동기 호출
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="352" viewBox="0 0 440 352" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="352" fill="#FFFFFF"/>
+<rect x="20" y="20" width="180" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="38.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">서비스 코드</text>
+<text x="110.0" y="53.5" font-size="10.5" fill="#555" text-anchor="middle">publisher.publishEvent(e)</text>
+<rect x="240" y="20" width="180" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="330.0" y="38.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">애그리거트</text>
+<text x="330.0" y="53.5" font-size="10.5" fill="#555" text-anchor="middle">registerEvent(e)</text>
+<rect x="230" y="110" width="200" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="330.0" y="128.5" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">repository.save()</text>
+<text x="330.0" y="143.5" font-size="10.5" fill="#555" text-anchor="middle">프록시가 @DomainEvents 수집</text>
+<rect x="90" y="200" width="260" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="218.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">ApplicationEventPublisher</text>
+<text x="220.0" y="233.5" font-size="10.5" fill="#555" text-anchor="middle">.publishEvent()</text>
+<rect x="105" y="290" width="230" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="308.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">@EventListener</text>
+<text x="220.0" y="323.5" font-size="10.5" fill="#555" text-anchor="middle">@TransactionalEventListener</text>
+<line x1="130" y1="64" x2="130" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="137" y="135" font-size="10.5" fill="#333" text-anchor="start">직접, 명시 발행</text>
+<line x1="330" y1="64" x2="330" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="337" y="91" font-size="10.5" fill="#333" text-anchor="start">이벤트 모음</text>
+<line x1="330" y1="154" x2="330" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="337" y="181" font-size="10.5" fill="#333" text-anchor="start">save 시 자동 발행</text>
+<line x1="220" y1="244" x2="220" y2="289" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="227" y="271" font-size="10.5" fill="#333" text-anchor="start">동기 호출</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML @DomainEvents와 ApplicationEventPublisher가 같은 발행 엔진으로 모이는 흐름](/img/c4/pu-domain-events-publish.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/domain-events-publish.svg" alt="서비스 코드의 직접 발행과 애그리거트 registerEvent가 repository.save() 시 자동 발행되는 경로가 모두 ApplicationEventPublisher로 모여 리스너를 동기 호출하는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 핵심 차이 한눈에
 
@@ -150,7 +161,7 @@ PUB --> LIS : 동기 호출
 | 도메인 결합 | 도메인, 서비스가 발행자에 의존 | 도메인은 발행자를 모름(인프라와 분리) |
 | 바탕 엔진 | (그 자체) | 내부적으로 `ApplicationEventPublisher` 사용 |
 
-정리하면, **무엇을 쓰든 최종 발행 엔진과 리스너 처리 방식은 동일**합니다. 차이는 이벤트가 **도메인에서 나오느냐 서비스에서 나오느냐**, 그리고 **save에 묶이느냐 호출 시점에 자유로우냐**입니다.
+정리하면, **무엇을 쓰든 최종 발행 엔진과 리스너 처리 방식은 동일**합니다. 차이는 **이벤트를 도메인과 서비스 중 어디에서 발행하는지**, 그리고 **save에 묶이는지, 호출 시점을 자유롭게 정할 수 있는지**입니다.
 
 ## 장단점
 

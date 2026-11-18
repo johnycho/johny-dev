@@ -149,24 +149,34 @@ public class OrderPersistenceAdapter implements SaveOrderPort {
 화살표 방향이 핵심입니다. 유스케이스(`app-domain`의 `application/service`)도 `app-persistence`도 **둘 다 `app-domain`의 포트(인터페이스)를 향합니다.** 그래서 유스케이스가 `app-persistence`를 import하는 일이 없고, 실제 구현체를 주입하는 것은 실행 애플리케이션(구성 지점)이 DI로 합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultFontName sans-serif
-
-interface "SaveOrderPort\n(인터페이스)" as PORT
-class "유스케이스\nPlaceOrderService" as UC
-class "영속성 어댑터\nOrderPersistenceAdapter" as ADP
-
-UC ..> PORT : 의존
-ADP ..|> PORT : 구현
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="200" viewBox="0 0 440 200" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="11" markerHeight="11" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#FFFFFF" stroke="#888"/></marker></defs>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="#FFFFFF"/>
+<rect x="140" y="18" width="160" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="37.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">SaveOrderPort</text>
+<text x="220.0" y="52.5" font-size="10.5" fill="#444" text-anchor="middle">(인터페이스)</text>
+<rect x="20" y="136" width="180" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="155.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">유스케이스</text>
+<text x="110.0" y="170.5" font-size="10.5" fill="#444" text-anchor="middle">PlaceOrderService</text>
+<rect x="240" y="136" width="180" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="330.0" y="155.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">영속성 어댑터</text>
+<text x="330.0" y="170.5" font-size="10.5" fill="#444" text-anchor="middle">OrderPersistenceAdapter</text>
+<line x1="110" y1="136" x2="175" y2="65" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="132" y="100" font-size="10" fill="#333" text-anchor="end">의존</text>
+<line x1="330" y1="136" x2="266" y2="65" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#tri)"/>
+<text x="308" y="100" font-size="10" fill="#333" text-anchor="start">구현</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 유스케이스가 포트에 의존하고 어댑터가 포트를 구현](/img/c4/pu-hex-port.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hex-port.svg" alt="유스케이스 PlaceOrderService는 SaveOrderPort 인터페이스에 의존하고, 영속성 어댑터 OrderPersistenceAdapter가 그 포트를 구현하는 관계" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 유스케이스와 어댑터가 **둘 다 인터페이스(포트)를 향합니다.** 유스케이스는 `app-persistence`를 import하지 않고, 실제 구현체는 실행 애플리케이션이 DI로 주입합니다. 그래서 저장소를 JPA에서 다른 것으로 바꿔도 유스케이스, 도메인 코드는 그대로입니다.
 
@@ -428,29 +438,82 @@ ADP ..|> PORT : 구현
 모든 화살표가 안쪽(도메인)을 향합니다. 어댑터는 포트를 구현할 뿐, 도메인이 어댑터를 의존하지 않습니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam componentStyle rectangle
-skinparam defaultFontName sans-serif
-
-component "인바운드 어댑터\n(컨트롤러 등)" as IN
-component "도메인 + 유스케이스\n(포트 정의)" as CORE
-component "아웃바운드 어댑터\n(DB, 외부 API)" as OUT
-
-IN ==> CORE : 호출
-OUT ==> CORE : 포트 구현
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="262" viewBox="0 0 440 262" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#666"/></marker></defs>
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="262" fill="#FFFFFF"/>
+<rect x="120" y="16" width="200" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="35.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">인바운드 어댑터</text>
+<text x="220.0" y="50.5" font-size="10.5" fill="#444" text-anchor="middle">(컨트롤러 등)</text>
+<rect x="120" y="108" width="200" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="127.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">도메인 + 유스케이스</text>
+<text x="220.0" y="142.5" font-size="10.5" fill="#444" text-anchor="middle">(포트 정의)</text>
+<rect x="120" y="200" width="200" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="219.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">아웃바운드 어댑터</text>
+<text x="220.0" y="234.5" font-size="10.5" fill="#444" text-anchor="middle">(DB, 외부 API)</text>
+<line x1="220" y1="62" x2="220" y2="106" stroke="#666" stroke-width="2.4" marker-end="url(#ahb)"/>
+<text x="232" y="89" font-size="10" fill="#333" text-anchor="start">호출</text>
+<line x1="220" y1="200" x2="220" y2="156" stroke="#666" stroke-width="2.4" marker-end="url(#ahb)"/>
+<text x="232" y="182" font-size="10" fill="#333" text-anchor="start">포트 구현</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 인바운드, 아웃바운드 어댑터가 코어를 향하는 의존 방향](/img/c4/pu-hex-adapters.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hex-adapters.svg" alt="인바운드 어댑터는 도메인과 유스케이스를 호출하고 아웃바운드 어댑터는 포트를 구현해, 두 화살표가 모두 코어를 향하는 의존 방향" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
-import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
+<details>
+<summary>SVG 코드</summary>
 
-<ArchifyEmbed src="/diagrams/hexagonal-multimodule.html" title="헥사고날 멀티모듈 의존 방향 (인터랙티브)" height="460px" />
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="372" viewBox="0 0 440 372" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="372" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">헥사고날 멀티모듈 — 모듈 의존 방향</text>
+<rect x="10" y="36" width="420" height="82" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="22" y="54" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">실행 앱(인바운드)</text>
+<rect x="22" y="62" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="82.0" y="80.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-api</text>
+<text x="82.0" y="95.5" font-size="10.5" fill="#444" text-anchor="middle">REST 실행 앱</text>
+<rect x="160" y="62" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="80.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-consumer</text>
+<text x="220.0" y="95.5" font-size="10.5" fill="#444" text-anchor="middle">컨슈머 실행 앱</text>
+<rect x="298" y="62" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="358.0" y="80.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-batch</text>
+<text x="358.0" y="95.5" font-size="10.5" fill="#444" text-anchor="middle">배치 실행 앱</text>
+<rect x="130" y="162" width="180" height="52" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="176.5" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">app-domain</text>
+<text x="220.0" y="191.5" font-size="10" fill="#444" text-anchor="middle">도메인+애플리케이션</text>
+<text x="220.0" y="206.5" font-size="10" fill="#444" text-anchor="middle">포트, 유스케이스</text>
+<rect x="10" y="254" width="420" height="82" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="22" y="272" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">어댑터(아웃바운드)</text>
+<rect x="40" y="280" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115.0" y="298.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-persistence</text>
+<text x="115.0" y="313.5" font-size="10.5" fill="#444" text-anchor="middle">DB 아웃바운드 어댑터</text>
+<rect x="250" y="280" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="325.0" y="298.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">app-external-api</text>
+<text x="325.0" y="313.5" font-size="10.5" fill="#444" text-anchor="middle">외부 API 어댑터</text>
+<line x1="82" y1="106" x2="175" y2="161" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="118" y="142" font-size="10" fill="#333" text-anchor="end">의존</text>
+<line x1="220" y1="106" x2="220" y2="161" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="358" y1="106" x2="265" y2="161" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="115" y1="280" x2="185" y2="215" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="164" y="247" font-size="10" fill="#333" text-anchor="start">out 포트 구현</text>
+<line x1="325" y1="280" x2="255" y2="215" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="220" y="358" font-size="10" fill="#666" text-anchor="middle">모든 모듈이 app-domain을 의존한다 — app-domain은 어댑터 모듈을 의존하지 않는다.</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hexagonal-multimodule.svg" alt="app-api, app-consumer, app-batch 실행 앱과 app-persistence, app-external-api 어댑터가 모두 app-domain을 의존하는 모듈 의존 방향" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 화살표가 **둘 다 안쪽(도메인)을 향한다**는 게 핵심입니다. 인바운드 어댑터는 도메인의 유스케이스를 호출하고, 아웃바운드 어댑터는 도메인의 포트를 구현합니다. 어느 쪽도 도메인이 외부를 의존하지 않으므로, DB를 바꾸거나 외부 API를 교체해도 도메인, 유스케이스 코드는 그대로입니다.
 
@@ -459,29 +522,56 @@ import ArchifyEmbed from '@site/src/components/ArchifyEmbed';
 "주문 생성" 요청의 큰 흐름입니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultFontName sans-serif
-
-participant "인바운드 어댑터(web)" as IN
-participant "application core" as C
-participant "아웃바운드 어댑터(app-persistence)" as OUT
-participant "DB" as DB
-
-IN ->> C : 1. in 포트 호출 place(order)
-C ->> OUT : 2. out 포트 호출 save(order)
-OUT ->> DB : 3. INSERT
-DB -->> OUT : 4. 결과
-OUT -->> C : 5. 반환
-C -->> IN : 6. 응답
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="300" viewBox="0 0 440 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="300" fill="#FFFFFF"/>
+<rect x="5.0" y="14" width="100" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="55.0" y="30.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">인바운드 어댑터</text>
+<text x="55.0" y="45.5" font-size="10.5" fill="#444" text-anchor="middle">(web)</text>
+<line x1="55" y1="54" x2="55" y2="286" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="118.0" y="14" width="104" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="170.0" y="37.75" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">application core</text>
+<line x1="170" y1="54" x2="170" y2="286" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="235.0" y="14" width="120" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="295.0" y="30.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">아웃바운드 어댑터</text>
+<text x="295.0" y="45.5" font-size="10.5" fill="#444" text-anchor="middle">(app-persistence)</text>
+<line x1="295" y1="54" x2="295" y2="286" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="370.0" y="14" width="60" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="400.0" y="37.75" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+<line x1="400" y1="54" x2="400" y2="286" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="55" y1="88" x2="169" y2="88" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="74.4" y="60.0" width="76.2" height="13" fill="#FFFFFF"/>
+<text x="112.5" y="70" font-size="10" fill="#333" text-anchor="middle">1. in 포트 호출</text>
+<rect x="77.3" y="73.0" width="70.4" height="13" fill="#FFFFFF"/>
+<text x="112.5" y="83" font-size="10" fill="#333" text-anchor="middle">place(order)</text>
+<line x1="170" y1="132" x2="294" y2="132" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="191.5" y="104.0" width="82.0" height="13" fill="#FFFFFF"/>
+<text x="232.5" y="114" font-size="10" fill="#333" text-anchor="middle">2. out 포트 호출</text>
+<rect x="200.2" y="117.0" width="64.6" height="13" fill="#FFFFFF"/>
+<text x="232.5" y="127" font-size="10" fill="#333" text-anchor="middle">save(order)</text>
+<line x1="295" y1="164" x2="399" y2="164" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="321.0" y="149.0" width="53.0" height="13" fill="#FFFFFF"/>
+<text x="347.5" y="159" font-size="10" fill="#333" text-anchor="middle">3. INSERT</text>
+<line x1="400" y1="196" x2="296" y2="196" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="328.4" y="181.0" width="38.2" height="13" fill="#FFFFFF"/>
+<text x="347.5" y="191" font-size="10" fill="#333" text-anchor="middle">4. 결과</text>
+<line x1="295" y1="228" x2="171" y2="228" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="213.4" y="213.0" width="38.2" height="13" fill="#FFFFFF"/>
+<text x="232.5" y="223" font-size="10" fill="#333" text-anchor="middle">5. 반환</text>
+<line x1="170" y1="260" x2="56" y2="260" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="93.4" y="245.0" width="38.2" height="13" fill="#FFFFFF"/>
+<text x="112.5" y="255" font-size="10" fill="#333" text-anchor="middle">6. 응답</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML place(order) 요청이 in, out 포트를 거쳐 DB까지 이동하는 순서](/img/c4/pu-hex-seq.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/hex-seq.svg" alt="place(order) 요청이 in 포트, out 포트를 거쳐 아웃바운드 어댑터가 DB에 INSERT하고 결과가 반대 순서로 돌아오는 순서" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 1. **인바운드 어댑터**(웹 컨트롤러)가 요청을 받아 **in 포트**(유스케이스)를 호출합니다.
 2. `app-domain` 모듈의 유스케이스(`application/service`)가 도메인 규칙을 처리하고, 저장이 필요하면 **out 포트**(인터페이스)를 호출합니다.

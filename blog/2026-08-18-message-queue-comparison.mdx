@@ -8,7 +8,7 @@ date: 2026-08-18T11:00:00
 
 <!-- truncate -->
 
-"비동기로 처리하자"는 결론까지는 쉬운데, 막상 **어떤 메시지 큐를 사용할지**에서 막힙니다. Kafka? RabbitMQ? SQS? 겉보기엔 다 "메시지를 보내고 받는" 도구라 비슷해 보이지만, <mark>먼저 "로그 기반이냐, 브로커 큐냐"라는 두 부류 모델을 이해하면 선택의 절반이 끝납니다.</mark> 모델, 성능, 순서, 전달보장, 운영 같은 기준으로 비교하고, 용도별 선택 기준을 정리합니다.
+"비동기로 처리하자"는 결론까지는 쉬운데, 막상 **어떤 메시지 큐를 사용할지**에서 막힙니다. Kafka? RabbitMQ? SQS? 겉보기엔 다 "메시지를 보내고 받는" 도구라 비슷해 보이지만, <mark>먼저 로그 기반과 브로커 큐라는 두 부류 모델을 이해하면 선택의 절반이 끝납니다.</mark> 모델, 성능, 순서, 전달보장, 운영 같은 기준으로 비교하고, 용도별 선택 기준을 정리합니다.
 
 ## 큰 두 부류 — 로그 기반 vs 브로커 큐
 
@@ -17,20 +17,49 @@ date: 2026-08-18T11:00:00
 - **로그 기반(log-based)** — Kafka, Pulsar, Redis Streams. 메시지를 **지우지 않고 로그에 차곡차곡 쌓고**, 컨슈머는 "어디까지 읽었는지(오프셋)"로 읽습니다. 읽어도 남아 있어 **여러 소비자, 재처리(재생)** 가 됩니다.
 - **브로커 큐(message broker)** — RabbitMQ, ActiveMQ. **브로커가 라우팅**해서 큐에 넣고, 컨슈머가 처리 후 확인(ack)하면 **큐에서 사라집니다(consume-and-delete)**. 유연한 라우팅과 저지연이 강점.
 
-```mermaid
-flowchart TB
-    subgraph LOG["로그 기반 (Kafka 등)"]
-        P1["프로듀서"] --> L["append-only 로그<br/>(읽어도 남음)"]
-        L --> G1["컨슈머 그룹 A"]
-        L --> G2["컨슈머 그룹 B"]
-    end
-    subgraph BRK["브로커 큐 (RabbitMQ 등)"]
-        P2["프로듀서"] --> X["exchange 라우팅"]
-        X --> Q["큐"]
-        Q -->|ack 하면 삭제| W["워커가 나눠 처리"]
-    end
-    LOG ~~~ BRK
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="330" viewBox="0 0 460 330" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="460" height="330" fill="#FFFFFF"/>
+<rect x="10" y="10" width="215" height="310" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="22" y="28" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">로그 기반 (Kafka 등)</text>
+<rect x="57" y="40" width="120" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="117.0" y="62.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">프로듀서</text>
+<line x1="117" y1="76" x2="117" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="37" y="100" width="160" height="48" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="117.0" y="121.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">append-only 로그</text>
+<text x="117.0" y="137.0" font-size="10.5" fill="#555" text-anchor="middle">(읽어도 남음)</text>
+<path d="M117,148 L117,166 L68,166 L68,184" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<path d="M117,148 L117,166 L166,166 L166,184" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="185" width="96" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="68.0" y="207.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">컨슈머 그룹 A</text>
+<rect x="119" y="185" width="96" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="167.0" y="207.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">컨슈머 그룹 B</text>
+<rect x="235" y="10" width="215" height="310" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="247" y="28" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">브로커 큐 (RabbitMQ 등)</text>
+<rect x="282" y="40" width="120" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="342.0" y="62.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">프로듀서</text>
+<line x1="342" y1="76" x2="342" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="272" y="100" width="140" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="342.0" y="122.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">exchange 라우팅</text>
+<line x1="342" y1="136" x2="342" y2="159" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="282" y="160" width="120" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="342.0" y="182.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">큐</text>
+<line x1="342" y1="196" x2="342" y2="254" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="350" y="229" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold">ack 하면 삭제</text>
+<rect x="267" y="255" width="150" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="342.0" y="277.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">워커가 나눠 처리</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/mq-log-vs-broker.svg" alt="로그 기반은 append-only 로그를 여러 컨슈머 그룹이 읽고, 브로커 큐는 exchange 라우팅과 큐를 거쳐 ack 후 삭제되며 워커가 나눠 처리하는 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>"읽어도 남아 재생되는" 로그 기반과, "처리하면 사라지는" 브로커 큐 — 이 차이가 재처리, 순서, 라우팅 성격을 전부 좌우합니다.</mark>
 
@@ -80,31 +109,64 @@ flowchart TB
 각 큐가 "무엇을 잘하도록 설계됐는지"를 보면 선택이 분명해집니다. 핵심 분기를 먼저 그림으로 보면 이렇습니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-start
-if (메시지를 다시 재생?) then (Y)
-  :로그 기반\nKafka, Kinesis, MSK;
-else (N)
-  if (정교한 라우팅, 작업 큐가 필요?\n(우선순위, 조건 분기, 건별 ack)) then (Y)
-    :RabbitMQ;
-  else (N)
-    if (운영은 맡기고 싶다?) then (Y)
-      :SQS (+SNS)\n(관리형 단순 큐);
-    else (N)
-      :자체 호스팅 단순 큐\n(Redis, NATS 등);
-    endif
-  endif
-endif
-stop
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="318" viewBox="0 0 440 318" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="318" fill="#FFFFFF"/>
+<circle cx="126" cy="16" r="7" fill="#444"/>
+<line x1="126" y1="23" x2="126" y2="35" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="36" width="220" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="126" y="56" font-size="11" fill="#333" text-anchor="middle">메시지를 다시 재생?</text>
+<line x1="236" y1="52" x2="261" y2="52" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="249" y="47" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="262" y="30" width="162" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="343" y="48.5" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">로그 기반</text>
+<text x="343" y="63.5" font-size="11" fill="#333" text-anchor="middle">Kafka, Kinesis, MSK</text>
+<line x1="343" y1="74" x2="343" y2="83" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="343" cy="92" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="343" cy="92" r="4.5" fill="#444"/>
+<line x1="126" y1="68" x2="126" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="133" y="88" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="100" width="220" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="126" y="118.5" font-size="11" fill="#333" text-anchor="middle">정교한 라우팅, 작업 큐가 필요?</text>
+<text x="126" y="133.5" font-size="11" fill="#333" text-anchor="middle">(우선순위, 조건 분기, 건별 ack)</text>
+<line x1="236" y1="122" x2="261" y2="122" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="249" y="117" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="262" y="106" width="162" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="343" y="126" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">RabbitMQ</text>
+<line x1="343" y1="138" x2="343" y2="147" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="343" cy="156" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="343" cy="156" r="4.5" fill="#444"/>
+<line x1="126" y1="144" x2="126" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="133" y="166" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="180" width="220" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="126" y="200" font-size="11" fill="#333" text-anchor="middle">운영은 맡기고 싶다?</text>
+<line x1="236" y1="196" x2="261" y2="196" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="249" y="191" font-size="10.5" fill="#7A5200" text-anchor="middle" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">Y</text>
+<rect x="262" y="174" width="162" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="343" y="192.5" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">SQS (+SNS)</text>
+<text x="343" y="207.5" font-size="11" fill="#333" text-anchor="middle">(관리형 단순 큐)</text>
+<line x1="343" y1="218" x2="343" y2="227" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="343" cy="236" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="343" cy="236" r="4.5" fill="#444"/>
+<line x1="126" y1="212" x2="126" y2="245" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="133" y="233" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold" stroke="#FFFFFF" stroke-width="3" paint-order="stroke">N</text>
+<rect x="16" y="246" width="220" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="126" y="264.5" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">자체 호스팅 단순 큐</text>
+<text x="126" y="279.5" font-size="11" fill="#333" text-anchor="middle">(Redis, NATS 등)</text>
+<line x1="126" y1="290" x2="126" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="126" cy="308" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="126" cy="308" r="4.5" fill="#444"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML 메시지 큐 선택 결정 트리](/img/c4/pu-mq-select.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/mq-select.svg" alt="메시지 재생, 라우팅 필요, 운영 위임 여부에 따라 로그 기반, RabbitMQ, SQS, 자체 호스팅 큐 중 하나를 고르는 결정 트리" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 **RabbitMQ는 라우팅, 작업 큐 제어가 필요할 때만** 택하는 선택지입니다. 맨 아래(재생, 라우팅 요구가 없고 관리형도 싫을 때)는 Redis, NATS 같은 가벼운 자체 호스팅 큐로 충분합니다. 특히 많이 비교하는 셋을 시나리오로 봅니다.
 
@@ -148,13 +210,35 @@ stop
 - **EventBridge** — 이벤트 버스. **규칙(rule) 기반 라우팅**, SaaS 이벤트 통합, 스케줄(cron)에 강합니다(고처리량 스트리밍용은 아님).
 - **Lambda 연동** — SQS, Kinesis, SNS를 이벤트 소스로 걸어 **서버리스 소비자**를 자동 스케일합니다.
 
-```mermaid
-flowchart LR
-    E["이벤트"] --> SNS["SNS (fan-out)"]
-    SNS --> Q1["SQS → 결제 워커"]
-    SNS --> Q2["SQS → 알림 워커"]
-    SNS --> LB["Lambda"]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="200" viewBox="0 0 440 200" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="#FFFFFF"/>
+<rect x="160" y="15" width="120" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="37.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">이벤트</text>
+<line x1="220" y1="51" x2="220" y2="79" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="150" y="80" width="140" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="102.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">SNS (fan-out)</text>
+<path d="M220,116 L220,133 L75,133 L75,149" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="150" width="130" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="75.0" y="172.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">SQS → 결제 워커</text>
+<path d="M220,116 L220,133 L220,133 L220,149" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="155" y="150" width="130" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="172.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">SQS → 알림 워커</text>
+<path d="M220,116 L220,133 L365,133 L365,149" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="300" y="150" width="130" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="365.0" y="172.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Lambda</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/mq-sns-fanout.svg" alt="이벤트가 SNS에서 fan-out되어 결제 워커용 SQS, 알림 워커용 SQS, Lambda로 전달되는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>"AWS 관리형으로 운영 부담 없이 붙인다"</mark> 면 SQS/SNS를 기본으로, 스트리밍은 Kinesis, MSK, 이벤트 라우팅은 EventBridge를 더합니다.
 

@@ -30,7 +30,7 @@ description: 커밋 전에 이번 작업에서 받은 피드백(지양어, 표�
    | 개별 단어, 활용형 | [word-choice.md](../../wiki/word-choice.md) |
    | 문장 구조, 톤, 연결, 표 셀 표현 | [phrasing-style.md](../../wiki/phrasing-style.md) |
    | 글 구성, 시각 자료, 실무 예시, ASCII 금지 | [blog-authoring.md](../../wiki/blog-authoring.md) |
-   | 그림 형식(라벨, 폭, 색, 분기 표기) | [diagram-svg](../diagram-svg/SKILL.md), [diagram-static](../diagram-static/SKILL.md) |
+   | 그림 형식(라벨, 폭, 색, 분기 표기) | [diagram-svg](../diagram-svg/SKILL.md) |
    | 기계로 잡을 수 있는 검사 | [scan-polishing.py](../blog-polishing/scan-polishing.py) |
    | 리뷰 점검 항목 | [blog-review](../blog-review/SKILL.md) 체크리스트 |
    | 작업 절차, 커밋 방식 | 이 스킬, [CLAUDE.md](../../../CLAUDE.md), [.claude/README.md](../../README.md) |
@@ -41,7 +41,7 @@ description: 커밋 전에 이번 작업에서 받은 피드백(지양어, 표�
    python3 .claude/skills/blog-polishing/scan-polishing.py <scratchpad>/t.mdx
    ```
    - 잡히지 않으면 좌열에 활용형(예: 풀립니다, 풀려, 안 풀려)을 추가한다.
-   - 그림 라벨에서 받은 지적이면 ```svg 블록 안의 `<text>`로 넣어 시험한다.
+   - 그림 라벨에서 받은 지적이면 ```svg 블록 안의 `<text>`나 ```plantuml 블록의 따옴표 라벨로 넣어 시험한다.
 
 4. **갱신안 확인 받기**: 추가, 수정할 규칙과 블로그 전체 적용 범위(바꿀 곳 수, 대표 예시, 그대로 둘 문맥)를 사용자에게 보여 주고 **확인을 받는다.** 확인 없이 규칙이나 글을 바꾸지 않는다. 갱신할 것이 없으면 그 사실을 알리고 확인받는다.
 

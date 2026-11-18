@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="280" viewBox="0 0 440 280" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="280" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">개선 전후 컨텍스트 수 (전체 테스트)</text>
+<line x1="70" y1="236.0" x2="420" y2="236.0" stroke="#E5E5E5"/>
+<text x="64" y="239.5" font-size="10" fill="#555" text-anchor="end">0</text>
+<line x1="70" y1="189.5" x2="420" y2="189.5" stroke="#E5E5E5"/>
+<text x="64" y="193.0" font-size="10" fill="#555" text-anchor="end">5</text>
+<line x1="70" y1="143.0" x2="420" y2="143.0" stroke="#E5E5E5"/>
+<text x="64" y="146.5" font-size="10" fill="#555" text-anchor="end">10</text>
+<line x1="70" y1="96.5" x2="420" y2="96.5" stroke="#E5E5E5"/>
+<text x="64" y="100.0" font-size="10" fill="#555" text-anchor="end">15</text>
+<line x1="70" y1="50.0" x2="420" y2="50.0" stroke="#E5E5E5"/>
+<text x="64" y="53.5" font-size="10" fill="#555" text-anchor="end">20</text>
+<line x1="70" y1="236" x2="420" y2="236" stroke="#999"/>
+<line x1="70" y1="236" x2="70" y2="50" stroke="#999"/>
+<rect x="112" y="68.6" width="90" height="167.4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="157" y="62.599999999999994" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">18</text>
+<text x="157" y="252" font-size="11" fill="#333" text-anchor="middle">개선 전</text>
+<rect x="287" y="189.5" width="90" height="46.5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="332" y="183.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">5</text>
+<text x="332" y="252" font-size="11" fill="#333" text-anchor="middle">개선 후</text>
+<text x="0" y="0" font-size="10.5" fill="#333" text-anchor="middle" transform="translate(26 143.0) rotate(-90)">컨텍스트 수</text>
+</svg>

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="574" viewBox="0 0 440 574" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="574" fill="#FFFFFF"/>
+<line x1="60" y1="60" x2="60" y2="562" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="2.0" y="14" width="116" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="60.0" y="34.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">토픽 A</text>
+<text x="60.0" y="48.0" font-size="10.5" fill="#444" text-anchor="middle">(입력)</text>
+<line x1="190" y1="60" x2="190" y2="562" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="132.0" y="14" width="116" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="190.0" y="34.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">처리기</text>
+<text x="190.0" y="48.0" font-size="10.5" fill="#444" text-anchor="middle">consumer + producer</text>
+<line x1="380" y1="60" x2="380" y2="562" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="322.0" y="14" width="116" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="380.0" y="34.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">토픽 B</text>
+<text x="380.0" y="48.0" font-size="10.5" fill="#444" text-anchor="middle">(출력)</text>
+<line x1="190" y1="90" x2="61" y2="90" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="125.0" y="84" font-size="10.5" fill="#333" text-anchor="middle">poll()</text>
+<line x1="60" y1="124" x2="189" y2="124" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="125.0" y="118" font-size="10.5" fill="#333" text-anchor="middle">레코드</text>
+<polyline points="190,144 216,144 216,162 192,162" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="222" y="157.0" font-size="10.5" fill="#333" text-anchor="start">process (가공)</text>
+<polyline points="190,208 216,208 216,226 192,226" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="222" y="221.0" font-size="10.5" fill="#333" text-anchor="start">beginTransaction()</text>
+<line x1="190" y1="258" x2="379" y2="258" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="285.0" y="252" font-size="10.5" fill="#333" text-anchor="middle">send(결과)</text>
+<polyline points="190,276 216,276 216,302 192,302" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="222" y="286.5" font-size="10.5" fill="#333" text-anchor="start">sendOffsetsToTransaction</text>
+<text x="222" y="299.5" font-size="10.5" fill="#333" text-anchor="start">(읽은 오프셋을 이 트랜잭션에)</text>
+<rect x="205" y="348" width="205" height="36" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="307.5" y="363.0" font-size="10.5" fill="#5A4300" text-anchor="middle">결과 + 오프셋을 <tspan font-weight="bold">함께 확정</tspan></text>
+<text x="307.5" y="377.0" font-size="10.5" fill="#5A4300" text-anchor="middle">→ 효과가 정확히 한 번</text>
+<polyline points="190,396 216,396 216,414 192,414" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="222" y="409.0" font-size="10.5" fill="#333" text-anchor="start">commitTransaction()</text>
+<rect x="205" y="458" width="205" height="36" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="307.5" y="473.0" font-size="10.5" fill="#5A4300" text-anchor="middle">결과, 오프셋 <tspan font-weight="bold">둘 다 취소</tspan></text>
+<text x="307.5" y="487.0" font-size="10.5" fill="#5A4300" text-anchor="middle">→ 다음 poll에서 재처리</text>
+<polyline points="190,506 216,506 216,524 192,524" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="222" y="519.0" font-size="10.5" fill="#333" text-anchor="start">abortTransaction()</text>
+<rect x="120" y="318" width="304" height="220" rx="6" fill="none" stroke="#4C7FE0" stroke-dasharray="5 4"/>
+<text x="128" y="333" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">[성공]</text>
+<line x1="120" y1="428" x2="424" y2="428" stroke="#4C7FE0" stroke-dasharray="5 4"/>
+<text x="128" y="443" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">[처리, 전송 실패]</text>
+<rect x="110" y="178" width="322" height="370" rx="6" fill="none" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="118" y="193" font-size="10.5" fill="#7A5200" text-anchor="start" font-weight="bold">하나의 트랜잭션</text>
+</svg>

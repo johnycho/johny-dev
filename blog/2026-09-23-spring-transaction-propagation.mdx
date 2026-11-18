@@ -19,32 +19,45 @@ description: "Spring @Transactional의 전파(propagation) 7가지를 케이스�
 - **진행 중인 트랜잭션이 없을 때** — **새로** 열까, **트랜잭션 없이** 실행할까, **예외**를 낼까.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-title 전파별 트랜잭션 경계
-rectangle "REQUIRED (기본) — 참여" #E9F2E9 {
-  rectangle "외부 Tx" as r1
-  rectangle "내부: 같은 Tx\n함께 커밋, 롤백" as r2
-  r1 --> r2
-}
-rectangle "REQUIRES_NEW — 새로" #EEF3FB {
-  rectangle "외부 Tx (보류)" as n1
-  rectangle "내부: 독립 새 Tx\n따로 커밋, 롤백" as n2
-  n1 ..> n2
-}
-rectangle "NESTED — 중첩(savepoint)" #FFF3E0 {
-  rectangle "외부 Tx " as s1
-  rectangle "savepoint\n내부만 롤백 가능" as s2
-  s1 --> s2
-}
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="330" viewBox="0 0 440 330" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="330" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">전파별 트랜잭션 경계</text>
+<rect x="16" y="40" width="408" height="88" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="28" y="58" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">REQUIRED (기본) — 참여</text>
+<rect x="36" y="70" width="140" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="106.0" y="95.9" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">외부 Tx</text>
+<rect x="244" y="70" width="160" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="324.0" y="88.1" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">내부: 같은 Tx</text>
+<text x="324.0" y="103.6" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">함께 커밋, 롤백</text>
+<line x1="176" y1="92" x2="243" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="136" width="408" height="88" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="28" y="154" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">REQUIRES_NEW — 새로</text>
+<rect x="36" y="166" width="140" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="106.0" y="191.9" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">외부 Tx (보류)</text>
+<rect x="244" y="166" width="160" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="324.0" y="184.1" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">내부: 독립 새 Tx</text>
+<text x="324.0" y="199.6" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">따로 커밋, 롤백</text>
+<line x1="176" y1="188" x2="243" y2="188" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="16" y="232" width="408" height="88" rx="8" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="28" y="250" font-size="11" fill="#7A5200" text-anchor="start" font-weight="bold">NESTED — 중첩(savepoint)</text>
+<rect x="36" y="262" width="140" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="106.0" y="287.9" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">외부 Tx</text>
+<rect x="244" y="262" width="160" height="44" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="324.0" y="280.1" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">savepoint</text>
+<text x="324.0" y="295.6" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">내부만 롤백 가능</text>
+<line x1="176" y1="284" x2="243" y2="284" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML 전파별 트랜잭션 경계](/img/c4/pu-prop-overview.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/prop-overview.svg" alt="REQUIRED는 같은 트랜잭션에 참여, REQUIRES_NEW는 외부를 보류하고 독립 트랜잭션, NESTED는 savepoint로 내부만 롤백하는 경계 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 7가지 전파 옵션 한눈에
 
@@ -87,25 +100,47 @@ public class PaymentService {
 <mark>같은 트랜잭션이므로 **내부에서 예외로 롤백되면 외부까지 전부 롤백**됩니다.</mark> 특히 참여 중인 내부가 예외로 트랜잭션을 "rollback-only"로 표시하면, 외부가 정상 종료해 커밋하려는 순간 `UnexpectedRollbackException`이 납니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-title REQUIRED — 같은 트랜잭션, 함께 롤백
-participant "호출부" as C
-participant "외부 @Transactional" as O
-participant "내부 REQUIRED" as I
-C -> O : 시작 (Tx 열림)
-O -> I : 내부 호출 (같은 Tx 참여)
-I --> O : 예외 → Tx를 rollback-only로 표시
-O -> C : 커밋 시도
-note over C, O : rollback-only → UnexpectedRollbackException, 전체 롤백
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="290" viewBox="0 0 440 290" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="290" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">REQUIRED — 같은 트랜잭션, 함께 롤백</text>
+<line x1="72" y1="67" x2="72" y2="228" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="4.0" y="40" width="136" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="72.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">호출부</text>
+<line x1="220" y1="67" x2="220" y2="228" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="152.0" y="40" width="136" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">외부 @Transactional</text>
+<line x1="368" y1="67" x2="368" y2="228" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="300.0" y="40" width="136" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="368.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">내부 REQUIRED</text>
+<line x1="72" y1="101" x2="219" y2="101" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="109.9" y="85.5" width="72.2" height="13.5" fill="#FFFFFF"/>
+<text x="146.0" y="96.0" font-size="10.5" fill="#333" text-anchor="middle">시작 (Tx 열림)</text>
+<line x1="220" y1="137" x2="367" y2="137" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="233.5" y="121.5" width="121.0" height="13.5" fill="#FFFFFF"/>
+<text x="294.0" y="132.0" font-size="10.5" fill="#333" text-anchor="middle">내부 호출 (같은 Tx 참여)</text>
+<line x1="368" y1="185" x2="221" y2="185" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="263.5" y="156.0" width="60.9" height="13.5" fill="#FFFFFF"/>
+<text x="294.0" y="166.5" font-size="10.5" fill="#333" text-anchor="middle">예외 → Tx를</text>
+<rect x="240.1" y="169.5" width="107.7" height="13.5" fill="#FFFFFF"/>
+<text x="294.0" y="180.0" font-size="10.5" fill="#333" text-anchor="middle">rollback-only로 표시</text>
+<line x1="220" y1="221" x2="73" y2="221" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="121.3" y="205.5" width="49.4" height="13.5" fill="#FFFFFF"/>
+<text x="146.0" y="216.0" font-size="10.5" fill="#333" text-anchor="middle">커밋 시도</text>
+<rect x="11.0" y="237" width="270.0" height="39.0" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="146.0" y="253.5" font-size="10.5" fill="#5A4300" text-anchor="middle">rollback-only → UnexpectedRollbackException,</text>
+<text x="146.0" y="268.0" font-size="10.5" fill="#5A4300" text-anchor="middle">전체 롤백</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML REQUIRED 롤백 전파](/img/c4/pu-prop-required-rollback.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/prop-required-rollback.svg" alt="내부 REQUIRED 메서드의 예외로 트랜잭션이 rollback-only로 표시되어 외부의 커밋 시도가 UnexpectedRollbackException과 전체 롤백으로 이어지는 시퀀스" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 이 "부분 실패가 전체 롤백으로 이어지는" 문제와 대응은 [트랜잭션 rollback-only 이야기](./spring-transaction-rollback-only)에서 자세히 설명합니다.
 
@@ -136,25 +171,47 @@ public class AuditService {
 <mark>내부(REQUIRES_NEW)는 독립이라, **외부가 롤백해도 이미 커밋한 내부는 남고**, 내부가 롤백해도 외부에는 영향이 없습니다.</mark> 그래서 "본작업이 실패해도 반드시 남겨야 하는" **감사 로그, 이력, 알림 기록**에 적합합니다. 다만 외부를 보류한 채 새 트랜잭션을 열므로 **DB 커넥션을 잠시 2개** 점유한다는 점은 유의합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-title REQUIRES_NEW — 독립 트랜잭션
-participant "외부 @Transactional" as O
-participant "내부 REQUIRES_NEW" as I
-O -> O : Tx1 시작
-O -> I : 내부 호출
-note over O : Tx1 잠시 보류(suspend)
-I -> I : Tx2 시작 → 커밋 (독립)
-note over O : Tx1 재개(resume)
-O -> O : 이후 Tx1을 롤백해도 Tx2는 이미 커밋되어 유지
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="330" viewBox="0 0 440 330" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="330" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">REQUIRES_NEW — 독립 트랜잭션</text>
+<line x1="120" y1="67" x2="120" y2="316" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="45.0" y="40" width="150" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="120.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">외부 @Transactional</text>
+<line x1="300" y1="67" x2="300" y2="316" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="225.0" y="40" width="150" height="27" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="300.0" y="57.4" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">내부 REQUIRES_NEW</text>
+<polyline points="120,87 148,87 148,103 122,103" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="152.0" y="88.5" width="44.5" height="13.5" fill="#FFFFFF"/>
+<text x="154" y="99.0" font-size="10.5" fill="#333" text-anchor="start">Tx1 시작</text>
+<line x1="120" y1="137" x2="299" y2="137" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="185.3" y="121.5" width="49.4" height="13.5" fill="#FFFFFF"/>
+<text x="210.0" y="132.0" font-size="10.5" fill="#333" text-anchor="middle">내부 호출</text>
+<rect x="45.0" y="151" width="150.0" height="24.5" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="120" y="167.5" font-size="10.5" fill="#5A4300" text-anchor="middle">Tx1 잠시 보류(suspend)</text>
+<polyline points="300,189.5 328,189.5 328,205.5 302,205.5" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="332.0" y="184.2" width="80.7" height="13.5" fill="#FFFFFF"/>
+<text x="334" y="194.75" font-size="10.5" fill="#333" text-anchor="start">Tx2 시작 → 커밋</text>
+<rect x="332.0" y="197.8" width="31.7" height="13.5" fill="#FFFFFF"/>
+<text x="334" y="208.25" font-size="10.5" fill="#333" text-anchor="start">(독립)</text>
+<rect x="45.0" y="225.5" width="150.0" height="24.5" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="120" y="242.0" font-size="10.5" fill="#5A4300" text-anchor="middle">Tx1 재개(resume)</text>
+<polyline points="120,266.0 148,266.0 148,282.0 122,282.0" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="152.0" y="260.8" width="100.4" height="13.5" fill="#FFFFFF"/>
+<text x="154" y="271.25" font-size="10.5" fill="#333" text-anchor="start">이후 Tx1을 롤백해도</text>
+<rect x="152.0" y="274.2" width="127.3" height="13.5" fill="#FFFFFF"/>
+<text x="154" y="284.75" font-size="10.5" fill="#333" text-anchor="start">Tx2는 이미 커밋되어 유지</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML REQUIRES_NEW 독립 트랜잭션](/img/c4/pu-prop-requires-new.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/prop-requires-new.svg" alt="외부 Tx1을 보류한 사이 내부 REQUIRES_NEW가 Tx2를 따로 커밋하고, Tx1이 재개된 뒤 롤백해도 Tx2는 유지되는 시퀀스" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## ③ NESTED — savepoint로 부분 롤백
 

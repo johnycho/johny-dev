@@ -1,10 +1,12 @@
-# 인터랙티브 다이어그램 스킬 (archify)
+# [보관, 미사용] 인터랙티브 다이어그램 스킬 (archify)
+
+> **보관용 스킬이다. 블로그 그림은 손수 SVG([diagram-svg](../diagram-svg/SKILL.md))만 쓴다.** 언젠가 필요할 수 있어 삭제하지 않고 남겨 둔다. 이 방식을 쓰려면 먼저 사용자에게 확인받고, `scan-polishing.py`가 지적하므로 사유와 함께 `--allow`로 예외 등록한다.
 
 구조·아키텍처 다이어그램을 **인터랙티브**로 넣는다 — 노드 포커스, hover 시 관계(화살표) 흐름, 여러 뷰 전환. [archify](https://github.com/tt-a1i/archify)(MIT, zero-dependency Node CLI)가 typed JSON IR을 결정적으로 HTML/SVG로 컴파일한다. 형식은 [../../wiki/blog-authoring.md](../../wiki/blog-authoring.md) 4절 참고.
 
-## 언제 쓰나 (적극 적용)
-- **아키텍처·구성요소·시스템 연동·데이터 흐름·상태/수명주기** 다이어그램에서 **인터랙티브 탐색이 이해를 도우면 archify를 적극 적용한다.** 블로그 작성 시 구조 다이어그램이 나오면 우선 archify 적용을 검토한다.
-- 단, **단순한 그림**(화살표 몇 개, 표로 충분)은 [diagram-static](../diagram-static/SKILL.md)이 가볍고 낫다. 지표·추이·분포는 [chart-canvas](../chart-canvas/SKILL.md).
+## 언제 쓰나 (예외로만)
+- **인터랙티브 탐색이 꼭 필요할 때만** 쓴다(사용자가 요청한 경우 등). 표현 의도를 정적 그림으로 나타낼 수 있으면 손수 SVG([diagram-svg](../diagram-svg/SKILL.md))로 그린다. iframe은 본문으로 색인되지 않는다.
+- 쓰는 경우에도 HTML 안의 글자는 단어, 문장 규칙 대상이다. `scan-polishing.py`가 `static/diagrams/*.html`도 검사한다.
 - **SEO·프린트 고려**: iframe 속 인터랙티브 HTML은 본문으로 색인되지 않는다. 검색 노출이 중요한 핵심 다이어그램이면 **정적 SVG(diagram-static)를 위에 함께 두고** 그 아래 인터랙티브를 붙이는 이중 제공을 고려한다.
 
 ## 절차

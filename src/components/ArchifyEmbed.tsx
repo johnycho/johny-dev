@@ -1,3 +1,4 @@
+// [보관, 미사용] 블로그 그림은 손수 SVG만 쓴다(.claude/wiki/blog-authoring.md 4절). 언젠가 필요할 수 있어 남겨 둔다.
 import React, {useEffect, useRef, useState} from 'react';
 import {useColorMode} from '@docusaurus/theme-common';
 import BrowserOnly from '@docusaurus/BrowserOnly';

@@ -2,19 +2,18 @@
 
 `<rect>`·`<text>`·`<line>` 좌표를 **직접 배치**해 만든 **정적 SVG 개념도/설명도**를 넣는다. 라이브러리·렌더 도구 없이 손으로 그리므로 **레이아웃을 완전히 통제**할 수 있다. PlantUML/C4/Mermaid의 자동 레이아웃으로는 의도대로 안 나오는 그림을 깔끔하게 그릴 때 쓴다. 형식·MDX·모바일 폭 규칙은 [../../wiki/blog-authoring.md](../../wiki/blog-authoring.md) 4절을 함께 본다.
 
-> 방식 선택: 표준 **구조·시퀀스·클래스/ER·상태**는 [diagram-static](../diagram-static/SKILL.md)(C4-PlantUML→PlantUML, 더 빠르고 유지보수 쉬움)이 기본. 인터랙티브 탐색은 [diagram-archify](../diagram-archify/SKILL.md). 지표·추이·분포는 [chart-canvas](../chart-canvas/SKILL.md). **자동 레이아웃으로 안 되는 공간 배치형 개념도만** 이 스킬.
+> 방식 선택: **블로그 그림은 이 스킬이 유일한 방식이다**(PlantUML, Mermaid, archify는 보관, 미사용). 구조, 시퀀스, 판단 흐름, 상태, 인프라, 공간 배치형 개념도 모두 손수 SVG로 그린다. 요소가 아주 많아 440~520px 안에 의도를 담을 수 없을 때만 [diagram-static](../diagram-static/SKILL.md)(PlantUML). 지표·추이·분포는 [chart-canvas](../chart-canvas/SKILL.md). 인터랙티브는 꼭 필요할 때만 [diagram-archify](../diagram-archify/SKILL.md).
 
-## 언제 쓰나 (적극·우선 검토)
+## 언제 쓰나 (기본)
 
-블로그에 **설명형 개념도**가 필요하면, PlantUML로 억지로 그리기 전에 **손수 SVG로 더 명확하게 그릴 수 있는지 먼저 검토한다.** 레이아웃을 완전히 통제할 수 있어 가독성이 가장 높고, 본문 SVG라 선명·색인된다. 특히 아래는 PlantUML이 약하다:
+블로그의 **정적 그림은 모두 이 스킬이 기본**이다. PlantUML 자동 레이아웃은 가로로 길게 펼쳐져 본문 폭에서 줄어들면 글자가 작아지고, 소스를 고친 뒤 다시 렌더하지 않으면 그림이 소스와 달라진다.
 
-- **겹치는 범위 막대** — 인덱스/축 위에서 두 주체의 잠금·소유·커버 범위가 겹치는 그림(예: next-key 락 ↔ INSERT 삽입 의도 겹침).
-- **축·타임라인 위 구간** — 수평 축에 레코드·시간·오프셋을 늘어놓고 구간을 막대로 표시.
-- **공간적 배치** — 인덱스 행 나열, 메모리/버퍼 레이아웃, 페이지·슬롯 구조처럼 "위치"가 의미인 그림.
-- **주석이 많은 개념도** — 칸마다 "누가 보유/누가 대기"처럼 라벨을 촘촘히 붙이는 설명도.
-- **2×2 비교·사분면**, 커스텀 상태 전이 등 자동 배치가 어긋나는 레이아웃.
+- **시퀀스**: 참여자를 위쪽 상자와 세로 점선(lifeline)으로 두고, 메시지 화살표를 번호(원 배지)와 함께 위에서 아래로 쌓는다. 참여자가 5개를 넘어 폭이 모자라면 중심 참여자를 가운데 두는 허브 배치 + 번호 화살표 + 아래쪽 단계 범례로 그린다.
+- **판단 흐름(액티비티)**: 질문 상자와 `Y`/`N` 분기를 위에서 아래로, 결론 상자는 색으로 구분한다.
+- **구조, 인프라**: 그룹(점선 박스)과 구성 요소 상자, 라벨 붙은 화살표.
+- **공간 배치형**: 겹치는 범위 막대, 축/타임라인 위 구간, 인덱스 행, 메모리 레이아웃, 2×2 비교.
 
-단, **표준 구조/시퀀스/클래스/ER/상태**는 diagram-static이 더 빠르고 유지보수 쉽다(그쪽을 쓴다). 손수 SVG는 "자동 레이아웃이 의도를 못 살리는" 그림에 쓴다.
+큰 그림은 세로 배치나 두 그림으로 나누기로 440~520px 안에 담는다.
 
 ## 장점
 - **레이아웃 완전 통제** — 좌표·색·정렬·겹침을 원하는 대로.
@@ -51,7 +50,7 @@
 5. **검증(필수)** — 두 가지를 반드시 한다:
    - **XML 유효성**: `python3 -c "import xml.dom.minidom; xml.dom.minidom.parse('static/img/c4/<name>.svg'); print('OK')"`
    - **눈으로 확인**: PNG로 변환해 **반드시 렌더 결과를 본다**(글자 넘침·겹침·정렬·잘림). macOS: `qlmanage -t -s 880 -o /tmp static/img/c4/<name>.svg` → 생성된 `/tmp/<name>.svg.png`를 Read로 연다. 어긋나면 좌표·폭·폰트를 고쳐 재확인.
-6. **블로그 삽입** — `<details>`에 **SVG 소스 전문**(렌더 이미지와 일치), 그 아래 **`<figure>`로 감싼 이미지**(가운데 정렬 + PC 확대 + 모바일 반응형):
+6. **블로그 삽입** — `<details>`에 **SVG 소스 전문**(파일과 글자 하나까지 같게. 문구를 고칠 때도 둘을 함께 고친다. 다르면 스캐너가 `그림불일치`로 지적), 그 아래 **`<figure>`로 감싼 이미지**(가운데 정렬 + PC 확대 + 모바일 반응형):
    ```mdx
    <details>
    <summary>SVG 코드</summary>
@@ -76,4 +75,4 @@
 
 ## 참고
 - 방식 선택·모바일 폭·저작권: [blog-authoring.md](../../wiki/blog-authoring.md) 4절
-- 다른 시각화: [diagram-static](../diagram-static/SKILL.md)(기본) · [diagram-archify](../diagram-archify/SKILL.md)(인터랙티브) · [chart-canvas](../chart-canvas/SKILL.md)(지표·추이)
+- 다른 시각화: [chart-canvas](../chart-canvas/SKILL.md)(지표 애니메이션). 보관, 미사용: [diagram-static](../diagram-static/SKILL.md), [diagram-archify](../diagram-archify/SKILL.md)

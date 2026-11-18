@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="328" viewBox="0 0 440 328" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="328" fill="#FFFFFF"/>
+<rect x="70" y="14" width="300" height="46" rx="6" fill="#FFF3C4" stroke="#E0A000"/>
+<text x="220.0" y="33.5" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">설정 한 줄</text>
+<text x="220.0" y="48.5" font-size="11" fill="#444" text-anchor="middle">processing.guarantee = exactly_once_v2</text>
+<line x1="220" y1="60" x2="220" y2="81" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="82" width="360" height="232" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="52" y="100" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">Kafka Streams 런타임이 자동 수행</text>
+<rect x="70" y="110" width="300" height="32" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="220.0" y="130.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">① 멱등 프로듀서</text>
+<rect x="70" y="152" width="300" height="46" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="220.0" y="171.5" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">② 트랜잭션 + 오프셋 커밋</text>
+<text x="220.0" y="186.5" font-size="10.5" fill="#444" text-anchor="middle">(sendOffsetsToTransaction)</text>
+<rect x="70" y="208" width="300" height="32" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="220.0" y="228.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">③ 내부 컨슈머 read_committed</text>
+<rect x="70" y="250" width="300" height="46" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="220.0" y="269.5" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">④ transactional.id 자동 배정</text>
+<text x="220.0" y="284.5" font-size="10.5" fill="#444" text-anchor="middle">(좀비 펜싱)</text>
+</svg>

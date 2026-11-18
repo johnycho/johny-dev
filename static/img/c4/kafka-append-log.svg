@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="250" viewBox="0 0 440 250" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="250" fill="#FFFFFF"/>
+<rect x="150" y="15" width="140" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="37.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">프로듀서</text>
+<line x1="220" y1="51" x2="220" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="80" font-size="10.5" fill="#333" text-anchor="start">맨 뒤에 append</text>
+<rect x="90" y="100" width="260" height="50" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="122.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">파티션 로그</text>
+<text x="220.0" y="138.0" font-size="10.5" fill="#555" text-anchor="middle">msg0, msg1, …, msgN →</text>
+<line x1="220" y1="150" x2="220" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="179" font-size="10.5" fill="#333" text-anchor="start">offset부터 순차 read</text>
+<rect x="150" y="199" width="140" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="221.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨슈머</text>
+</svg>

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="360" viewBox="0 0 440 360" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="360" fill="#FFFFFF"/>
+<rect x="36" y="14" width="150" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="111.0" y="35.32" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">API 서버</text>
+<rect x="16" y="86" width="200" height="260" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="28" y="104" font-size="11" fill="#333" text-anchor="start" font-weight="bold">워커 노드</text>
+<rect x="36" y="116" width="150" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="111.0" y="137.32" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">kube-proxy</text>
+<rect x="36" y="196" width="150" height="58" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="111.0" y="213.96" font-size="11" fill="#7A5200" text-anchor="middle">노드 커널의</text>
+<text x="111.0" y="228.96" font-size="11" fill="#7A5200" text-anchor="middle">네트워크 규칙</text>
+<text x="111.0" y="243.96" font-size="11" fill="#7A5200" text-anchor="middle">(iptables, IPVS)</text>
+<rect x="36" y="298" width="150" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="111.0" y="319.14" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">요청 보내는 파드</text>
+<rect x="330" y="165" width="98" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="379.0" y="186.14" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">대상 파드 A</text>
+<rect x="330" y="250" width="98" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="379.0" y="271.14" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">대상 파드 B</text>
+<line x1="111" y1="48" x2="111" y2="115" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="119" y="66" font-size="10" fill="#333" text-anchor="start">① Service와</text>
+<text x="119" y="80" font-size="10" fill="#333" text-anchor="start">파드 목록 감시</text>
+<line x1="111" y1="150" x2="111" y2="195" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="119" y="177" font-size="10" fill="#333" text-anchor="start">② 규칙 작성</text>
+<line x1="111" y1="298" x2="111" y2="255" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="119" y="280" font-size="10" fill="#333" text-anchor="start">③ Service IP로 요청</text>
+<path d="M186,214 L240,214 L240,182 L329,182" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="285" y="160" font-size="10" fill="#333" text-anchor="middle">④ 파드 한 곳으로</text>
+<text x="285" y="173" font-size="10" fill="#333" text-anchor="middle">전달</text>
+<path d="M186,236 L240,236 L240,267 L329,267" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+</svg>

@@ -35,12 +35,36 @@ C4는 시스템의 **정적 구조**를 네 요소로 봅니다. 상위가 하�
 
 이 네 요소로 **레벨을 확대해 가며** 네 종류의 다이어그램을 그립니다. 구글 지도가 전체 → 도시 → 동네 → 건물로 확대되듯이.
 
-```mermaid
-flowchart LR
-  L1["① 컨텍스트<br/>시스템 ↔ 외부"] --> L2["② 컨테이너<br/>실행 단위"]
-  L2 --> L3["③ 컴포넌트<br/>컨테이너 내부"]
-  L3 --> L4["④ 코드<br/>클래스 수준"]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="76" viewBox="0 0 440 76" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="76" fill="#FFFFFF"/>
+<rect x="12.0" y="14" width="92" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="58.0" y="35.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">① 컨텍스트</text>
+<text x="58.0" y="51.0" font-size="10.5" fill="#555" text-anchor="middle">시스템 ↔ 외부</text>
+<line x1="105.0" y1="38" x2="119.0" y2="38" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="120.0" y="14" width="92" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="166.0" y="35.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">② 컨테이너</text>
+<text x="166.0" y="51.0" font-size="10.5" fill="#555" text-anchor="middle">실행 단위</text>
+<line x1="213.0" y1="38" x2="227.0" y2="38" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228.0" y="14" width="92" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="274.0" y="35.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">③ 컴포넌트</text>
+<text x="274.0" y="51.0" font-size="10.5" fill="#555" text-anchor="middle">컨테이너 내부</text>
+<line x1="321.0" y1="38" x2="335.0" y2="38" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="336.0" y="14" width="92" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="382.0" y="35.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">④ 코드</text>
+<text x="382.0" y="51.0" font-size="10.5" fill="#555" text-anchor="middle">클래스 수준</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/c4-levels-flow.svg" alt="컨텍스트, 컨테이너, 컴포넌트, 코드 순으로 확대되는 C4의 네 레벨" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 | 레벨 | 다이어그램 | 무엇을 보여주나 | 대상 독자 |
 |---|---|---|---|
@@ -58,7 +82,7 @@ flowchart LR
 가장 추상화된 그림. 우리 시스템을 가운데 배치하고, 상호작용하는 **사용자, 외부 시스템**만 그립니다. 기술 세부는 모두 생략해 비개발자도 이해할 수 있습니다. **시스템을 그리는 가장 좋은 출발점**입니다.
 
 <details>
-<summary>C4-PlantUML 코드</summary>
+<summary>C4-PlantUML 코드 (같은 내용을 코드로 작성한 예)</summary>
 
 ```plantuml
 @startuml
@@ -78,7 +102,45 @@ Rel(ib, email, "메일 발송")
 
 </details>
 
-![C4 시스템 컨텍스트 다이어그램](/img/c4/context.svg)
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="400" viewBox="0 0 440 400" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="400" fill="#FFFFFF"/>
+<circle cx="220" cy="34" r="13" fill="#08427B" stroke="#052E56" stroke-width="1.2"/>
+<rect x="115.0" y="44" width="210" height="62" rx="18" fill="#08427B" stroke="#052E56" stroke-width="1.2"/>
+<circle cx="220" cy="34" r="12.4" fill="#08427B"/>
+<text x="220" y="65.5" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">고객</text>
+<text x="220" y="80.5" font-size="9.5" fill="#DCE8F5" text-anchor="middle">[Person]</text>
+<text x="220" y="95.5" font-size="10.5" fill="#FFFFFF" text-anchor="middle">은행 계좌를 가진 고객</text>
+<line x1="220" y1="106" x2="220" y2="168" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="226" y="141" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">계좌 조회, 결제</text>
+<rect x="110" y="170" width="220" height="66" rx="8" fill="#1168BD" stroke="#0B4884" stroke-width="1.2"/>
+<text x="220.0" y="191.5" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">인터넷 뱅킹 시스템</text>
+<text x="220.0" y="206.5" font-size="9.5" fill="#E3EEF9" text-anchor="middle">[Software System]</text>
+<text x="220.0" y="221.5" font-size="10.5" fill="#FFFFFF" text-anchor="middle">계좌 조회, 결제를 제공</text>
+<line x1="180" y1="236" x2="112" y2="318" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="132" y="280" font-size="10.5" fill="#333" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">계좌 정보 조회, 결제</text>
+<line x1="260" y1="236" x2="328" y2="318" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="314" y="280" font-size="10.5" fill="#333" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">메일 발송</text>
+<rect x="18" y="320" width="188" height="66" rx="8" fill="#999999" stroke="#6B6B6B" stroke-width="1.2"/>
+<text x="112.0" y="341.5" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">코어 뱅킹 시스템</text>
+<text x="112.0" y="356.5" font-size="9.5" fill="#F2F2F2" text-anchor="middle">[Software System]</text>
+<text x="112.0" y="371.5" font-size="10.5" fill="#FFFFFF" text-anchor="middle">계좌, 거래 처리</text>
+<rect x="234" y="320" width="188" height="66" rx="8" fill="#999999" stroke="#6B6B6B" stroke-width="1.2"/>
+<text x="328.0" y="341.5" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">이메일 서비스</text>
+<text x="328.0" y="356.5" font-size="9.5" fill="#F2F2F2" text-anchor="middle">[Software System]</text>
+<text x="328.0" y="371.5" font-size="10.5" fill="#FFFFFF" text-anchor="middle">알림 발송</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/context.svg" alt="고객이 인터넷 뱅킹 시스템을 사용하고, 이 시스템이 코어 뱅킹 시스템과 이메일 서비스를 호출하는 시스템 컨텍스트 다이어그램" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 박스마다 **제목 + 설명**을, 화살표마다 **관계를 설명하는 라벨**을 붙이는 게 핵심입니다. **모든 개발팀에 권장**됩니다.
 
@@ -87,7 +149,7 @@ Rel(ib, email, "메일 발송")
 시스템 경계 안으로 한 단계 들어가, 어떤 **실행 단위**가 있고 책임이 어떻게 나뉘는지, 그리고 **기술 선택과 통신 프로토콜**을 표현합니다.
 
 <details>
-<summary>C4-PlantUML 코드</summary>
+<summary>C4-PlantUML 코드 (같은 내용을 코드로 작성한 예)</summary>
 
 ```plantuml
 @startuml
@@ -108,7 +170,51 @@ Rel(api, db, "읽기, 쓰기", "MySQL")
 
 </details>
 
-![C4 컨테이너 다이어그램](/img/c4/container.svg)
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="508" viewBox="0 0 440 508" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="508" fill="#FFFFFF"/>
+<circle cx="220" cy="34" r="13" fill="#08427B" stroke="#052E56" stroke-width="1.2"/>
+<rect x="140.0" y="44" width="160" height="46" rx="18" fill="#08427B" stroke="#052E56" stroke-width="1.2"/>
+<circle cx="220" cy="34" r="12.4" fill="#08427B"/>
+<text x="220" y="65.0" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">고객</text>
+<text x="220" y="80.0" font-size="9.5" fill="#DCE8F5" text-anchor="middle">[Person]</text>
+<line x1="220" y1="90" x2="220" y2="178" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="111" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">사용</text>
+<text x="228" y="124" font-size="9.5" fill="#666" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">[HTTPS]</text>
+<rect x="30" y="136" width="380" height="360" rx="6" fill="none" stroke="#666" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="40" y="154" font-size="11.5" fill="#333" text-anchor="start" font-weight="bold">인터넷 뱅킹 시스템</text>
+<text x="40" y="168" font-size="9.5" fill="#666" text-anchor="start">[Software System]</text>
+<rect x="110" y="180" width="220" height="62" rx="8" fill="#438DD5" stroke="#2E6295" stroke-width="1.2"/>
+<text x="220.0" y="199.5" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">UI 애플리케이션</text>
+<text x="220.0" y="214.5" font-size="9.5" fill="#EAF2FB" text-anchor="middle">[Container: JavaScript, Angular]</text>
+<text x="220.0" y="229.5" font-size="10.5" fill="#FFFFFF" text-anchor="middle">SPA</text>
+<line x1="220" y1="242" x2="220" y2="298" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="268" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">호출</text>
+<text x="228" y="281" font-size="9.5" fill="#666" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">[JSON/HTTPS]</text>
+<rect x="110" y="300" width="220" height="62" rx="8" fill="#438DD5" stroke="#2E6295" stroke-width="1.2"/>
+<text x="220.0" y="319.5" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">백엔드 애플리케이션</text>
+<text x="220.0" y="334.5" font-size="9.5" fill="#EAF2FB" text-anchor="middle">[Container: Java, Spring Boot]</text>
+<text x="220.0" y="349.5" font-size="10.5" fill="#FFFFFF" text-anchor="middle">REST API</text>
+<line x1="220" y1="362" x2="220" y2="410" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="384" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">읽기, 쓰기</text>
+<text x="228" y="397" font-size="9.5" fill="#666" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">[MySQL]</text>
+<path d="M140,420 V472 A80.0,8 0 0 0 300,472 V420" fill="#438DD5" stroke="#2E6295" stroke-width="1.2"/>
+<ellipse cx="220.0" cy="420" rx="80.0" ry="8" fill="#438DD5" stroke="#2E6295" stroke-width="1.2"/>
+<text x="220.0" y="438.5" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">데이터베이스</text>
+<text x="220.0" y="453.5" font-size="9.5" fill="#EAF2FB" text-anchor="middle">[Container: MySQL]</text>
+<text x="220.0" y="468.5" font-size="10.5" fill="#FFFFFF" text-anchor="middle">사용자, 로그</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/container.svg" alt="인터넷 뱅킹 시스템 경계 안에서 고객이 UI 애플리케이션을 사용하고, UI가 백엔드 애플리케이션을, 백엔드가 데이터베이스를 호출하는 컨테이너 다이어그램" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 컨텍스트와 달리 **API, HTTPS, MySQL 프로토콜** 같은 기술 통신이 나타납니다. 다만 **클러스터링, 로드밸런싱, 장애조치 같은 배포 관점은 여기 넣지 않습니다**(환경마다 다르므로 뒤의 디플로이먼트 다이어그램으로). 역시 **모든 개발팀에 권장**됩니다.
 
@@ -117,7 +223,7 @@ Rel(api, db, "읽기, 쓰기", "MySQL")
 컨테이너 하나(여기선 **백엔드 애플리케이션**)를 열어 내부 컴포넌트를 봅니다.
 
 <details>
-<summary>C4-PlantUML 코드</summary>
+<summary>C4-PlantUML 코드 (같은 내용을 코드로 작성한 예)</summary>
 
 ```plantuml
 @startuml
@@ -146,7 +252,66 @@ Rel(stmtc, s3, "파일 읽기, 쓰기")
 
 </details>
 
-![C4 컴포넌트 다이어그램](/img/c4/component.svg)
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="560" viewBox="0 0 440 560" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="560" fill="#FFFFFF"/>
+<circle cx="86" cy="34" r="13" fill="#08427B" stroke="#052E56" stroke-width="1.2"/>
+<rect x="16.0" y="44" width="140" height="46" rx="18" fill="#08427B" stroke="#052E56" stroke-width="1.2"/>
+<circle cx="86" cy="34" r="12.4" fill="#08427B"/>
+<text x="86" y="65.0" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">고객</text>
+<text x="86" y="80.0" font-size="9.5" fill="#DCE8F5" text-anchor="middle">[Person]</text>
+<line x1="86" y1="90" x2="86" y2="176" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="94" y="114" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">요청</text>
+<rect x="10" y="134" width="420" height="274" rx="6" fill="none" stroke="#666" stroke-width="1.2" stroke-dasharray="7 4"/>
+<text x="20" y="390" font-size="11.5" fill="#333" text-anchor="start" font-weight="bold">백엔드 애플리케이션</text>
+<text x="20" y="404" font-size="9.5" fill="#666" text-anchor="start">[Container]</text>
+<rect x="22" y="178" width="124" height="50" rx="8" fill="#85BBF0" stroke="#5D82A8" stroke-width="1.2"/>
+<text x="84.0" y="199.0" font-size="12" fill="#0B2F55" text-anchor="middle" font-weight="bold">로그인 API</text>
+<text x="84.0" y="214.0" font-size="9.5" fill="#1F3F66" text-anchor="middle">[Component]</text>
+<rect x="158" y="178" width="124" height="50" rx="8" fill="#85BBF0" stroke="#5D82A8" stroke-width="1.2"/>
+<text x="220.0" y="199.0" font-size="12" fill="#0B2F55" text-anchor="middle" font-weight="bold">계좌요약 API</text>
+<text x="220.0" y="214.0" font-size="9.5" fill="#1F3F66" text-anchor="middle">[Component]</text>
+<rect x="294" y="178" width="124" height="50" rx="8" fill="#85BBF0" stroke="#5D82A8" stroke-width="1.2"/>
+<text x="356.0" y="199.0" font-size="12" fill="#0B2F55" text-anchor="middle" font-weight="bold">명세서 API</text>
+<text x="356.0" y="214.0" font-size="9.5" fill="#1F3F66" text-anchor="middle">[Component]</text>
+<rect x="22" y="300" width="260" height="62" rx="8" fill="#85BBF0" stroke="#5D82A8" stroke-width="1.2"/>
+<text x="152.0" y="319.5" font-size="12" fill="#0B2F55" text-anchor="middle" font-weight="bold">시큐리티 컴포넌트</text>
+<text x="152.0" y="334.5" font-size="9.5" fill="#1F3F66" text-anchor="middle">[Component]</text>
+<text x="152.0" y="349.5" font-size="10.5" fill="#0B2F55" text-anchor="middle">로그인, 토큰 검증</text>
+<rect x="294" y="300" width="124" height="62" rx="8" fill="#85BBF0" stroke="#5D82A8" stroke-width="1.2"/>
+<text x="356.0" y="319.5" font-size="12" fill="#0B2F55" text-anchor="middle" font-weight="bold">명세서 컴포넌트</text>
+<text x="356.0" y="334.5" font-size="9.5" fill="#1F3F66" text-anchor="middle">[Component]</text>
+<text x="356.0" y="349.5" font-size="10.5" fill="#0B2F55" text-anchor="middle">명세서 생성</text>
+<line x1="84.0" y1="228" x2="84.0" y2="298" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="92.0" y="266" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">검증 위임</text>
+<line x1="220.0" y1="228" x2="220.0" y2="298" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228.0" y="266" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">검증 위임</text>
+<line x1="356.0" y1="228" x2="356.0" y2="298" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="364.0" y="266" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">위임</text>
+<line x1="152.0" y1="362" x2="152.0" y2="466" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="160.0" y="440" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">읽기, 쓰기</text>
+<line x1="356.0" y1="362" x2="356.0" y2="466" stroke="#707070" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="356.0" y="440" font-size="10.5" fill="#333" text-anchor="middle" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">파일 읽기, 쓰기</text>
+<path d="M72.0,476 V522 A80.0,8 0 0 0 232.0,522 V476" fill="#438DD5" stroke="#2E6295" stroke-width="1.2"/>
+<ellipse cx="152.0" cy="476" rx="80.0" ry="8" fill="#438DD5" stroke="#2E6295" stroke-width="1.2"/>
+<text x="152.0" y="499.0" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">데이터베이스</text>
+<text x="152.0" y="514.0" font-size="9.5" fill="#EAF2FB" text-anchor="middle">[Container: MySQL]</text>
+<rect x="284" y="468" width="144" height="62" rx="8" fill="#999999" stroke="#6B6B6B" stroke-width="1.2"/>
+<text x="356.0" y="487.5" font-size="12" fill="#FFFFFF" text-anchor="middle" font-weight="bold">명세서 저장소</text>
+<text x="356.0" y="502.5" font-size="9.5" fill="#F2F2F2" text-anchor="middle">[Software System]</text>
+<text x="356.0" y="517.5" font-size="10.5" fill="#FFFFFF" text-anchor="middle">AWS S3</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/component.svg" alt="백엔드 애플리케이션 안의 로그인, 계좌요약, 명세서 API가 시큐리티 컴포넌트와 명세서 컴포넌트에 위임하고, 이들이 데이터베이스와 명세서 저장소를 읽고 쓰는 컴포넌트 다이어그램" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 핵심은 이 컴포넌트들이 **독립 배포 단위가 아니라** 백엔드라는 **한 컨테이너, 한 프로세스** 안의 논리적 역할이라는 점입니다. 컴포넌트 레벨은 **필수는 아니며**, 가치가 있을 때만 그립니다. 자주 바뀌므로 **장기 문서화는 자동화 도구**로 생성하는 편이 더 유리합니다.
 
@@ -155,7 +320,7 @@ Rel(stmtc, s3, "파일 읽기, 쓰기")
 컴포넌트를 코드로 어떻게 구현했는지 — 과거 UML의 **클래스/ER 다이어그램** 수준입니다(그래서 C4-PlantUML이 아니라 일반 PlantUML 클래스 다이어그램으로 그립니다). 예로 앞의 **코어 뱅킹 어댑터** 컴포넌트를 열어 보면:
 
 <details>
-<summary>PlantUML 클래스 다이어그램 코드</summary>
+<summary>PlantUML 클래스 다이어그램 코드 (같은 내용을 코드로 작성한 예)</summary>
 
 ```plantuml
 @startuml
@@ -180,7 +345,54 @@ package "코어 뱅킹 어댑터" {
 
 </details>
 
-![C4 코드(클래스) 다이어그램](/img/c4/code.svg)
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="420" viewBox="0 0 440 420" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker><marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="#FFFFFF" stroke="#666"/></marker></defs>
+<rect x="0" y="0" width="440" height="420" fill="#FFFFFF"/>
+<path d="M10,30 V22 Q10,18 14,18 H150 Q154,18 154,22 V30" fill="#F7F7F7" stroke="#999"/>
+<rect x="10" y="30" width="420" height="380" rx="4" fill="#F7F7F7" stroke="#999"/>
+<text x="18" y="28" font-size="11" fill="#333" text-anchor="start" font-weight="bold">코어 뱅킹 어댑터</text>
+<rect x="110" y="50" width="220" height="70" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<circle cx="146.8" cy="64" r="8" fill="#B4A7E5" stroke="#666" stroke-width="0.8"/>
+<text x="146.8" y="68" font-size="10" fill="#333" text-anchor="middle" font-weight="bold">I</text>
+<text x="158.8" y="68" font-size="12" fill="#26508F" text-anchor="start" font-weight="bold" font-style="italic">CoreBankingClient</text>
+<line x1="110" y1="78" x2="330" y2="78" stroke="#4C7FE0"/>
+<text x="122" y="96" font-size="11" fill="#333" text-anchor="start">+getAccount(id) : Account</text>
+<text x="122" y="112" font-size="11" fill="#333" text-anchor="start">+transfer(req) : Result</text>
+<rect x="120" y="178" width="200" height="28" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<circle cx="143.2" cy="192" r="8" fill="#ADD1B2" stroke="#666" stroke-width="0.8"/>
+<text x="143.2" y="196" font-size="10" fill="#333" text-anchor="middle" font-weight="bold">C</text>
+<text x="155.2" y="196" font-size="12" fill="#26508F" text-anchor="start" font-weight="bold">CoreBankingAdapter</text>
+<line x1="220" y1="178" x2="220" y2="121" stroke="#666" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#tri)"/>
+<rect x="140" y="268" width="160" height="28" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<circle cx="172.0" cy="282" r="8" fill="#ADD1B2" stroke="#666" stroke-width="0.8"/>
+<text x="172.0" y="286" font-size="10" fill="#333" text-anchor="middle" font-weight="bold">C</text>
+<text x="184.0" y="286" font-size="12" fill="#26508F" text-anchor="start" font-weight="bold">Connection</text>
+<line x1="220" y1="206" x2="220" y2="267" stroke="#666" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="241" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">사용</text>
+<rect x="22" y="368" width="186" height="28" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<circle cx="38.2" cy="382" r="8" fill="#ADD1B2" stroke="#666" stroke-width="0.8"/>
+<text x="38.2" y="386" font-size="10" fill="#333" text-anchor="middle" font-weight="bold">C</text>
+<text x="50.2" y="386" font-size="12" fill="#26508F" text-anchor="start" font-weight="bold">BankAccountRequest</text>
+<rect x="232" y="368" width="186" height="28" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<circle cx="244.60000000000002" cy="382" r="8" fill="#ADD1B2" stroke="#666" stroke-width="0.8"/>
+<text x="244.60000000000002" y="386" font-size="10" fill="#333" text-anchor="middle" font-weight="bold">C</text>
+<text x="256.6" y="386" font-size="12" fill="#26508F" text-anchor="start" font-weight="bold">BankAccountResponse</text>
+<line x1="190" y1="296" x2="115" y2="367" stroke="#666" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="92" y="336" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">생성</text>
+<line x1="250" y1="296" x2="325" y2="367" stroke="#666" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="296" y="336" font-size="10.5" fill="#333" text-anchor="start" stroke="#FFFFFF" stroke-width="4" paint-order="stroke">반환</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/code.svg" alt="CoreBankingAdapter가 CoreBankingClient 인터페이스를 구현하고 Connection을 사용하며, Connection이 BankAccountRequest를 생성하고 BankAccountResponse를 반환하는 클래스 다이어그램" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 인터페이스, 클래스, 꼭 필요한 메서드, 호출 관계 **정도까지만** 표현하고, 너무 세밀한 건 생략합니다. 변경이 잦으니 **IDE 등으로 자동 생성**하길 권합니다(필수 아님).
 
@@ -202,7 +414,7 @@ package "코어 뱅킹 어댑터" {
 
 ## 다이어그램을 코드로 — C4-PlantUML
 
-앞서 각 레벨 그림 위에 실은 코드가 보여 주듯, C4는 아예 **다이어그램을 코드로 작성**하기 좋은 모델입니다(위 그림들은 모두 그 코드를 렌더한 것). 코드로 작성하면 **Git으로 버전 관리**하고, PR에서 리뷰하고, 요소가 바뀔 때 손으로 다시 그리지 않아도 됩니다. 위 예시는 **C4-PlantUML**(PlantUML에 C4 매크로를 더한 것)로, 레벨에 따라 `C4_Context.puml`, `C4_Container.puml`, `C4_Component.puml`을 include하고 `Person`, `System`, `Container`, `Component`, `Rel` 매크로만 바꿔 쓰면 됩니다.
+앞서 각 레벨 그림 위에 실은 코드가 보여 주듯, C4는 아예 **다이어그램을 코드로 작성**하기 좋은 모델입니다(각 레벨 그림 위의 코드는 같은 내용을 C4-PlantUML로 작성한 예입니다). 코드로 작성하면 **Git으로 버전 관리**하고, PR에서 리뷰하고, 요소가 바뀔 때 손으로 다시 그리지 않아도 됩니다. 위 예시는 **C4-PlantUML**(PlantUML에 C4 매크로를 더한 것)로, 레벨에 따라 `C4_Context.puml`, `C4_Container.puml`, `C4_Component.puml`을 include하고 `Person`, `System`, `Container`, `Component`, `Rel` 매크로만 바꿔 쓰면 됩니다.
 
 도구는 취향껏 고르면 됩니다.
 

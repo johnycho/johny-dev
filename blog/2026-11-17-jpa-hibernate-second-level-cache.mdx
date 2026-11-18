@@ -49,38 +49,65 @@ JPA에는 이미 1차 캐시가 있는데 왜 이 SELECT가 줄지 않을까요?
 3. 둘 다 없으면 **DB에서 SELECT**하고, 결과를 두 캐시에 모두 기록한 뒤 반환합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-skinparam maxMessageSize 100
-participant "앱" as A
-participant "1차 캐시\n(EntityManager)" as P
-participant "2차 캐시\n(SessionFactory)" as S
-database "DB" as DB
-A -> P : find(Product, 1)
-alt 1차 캐시에 있음
-  P --> A : 같은 인스턴스
-else 없음
-  P -> S : id=1 조회
-  alt 2차 캐시에 있음
-    S --> P : 분해된 상태 값
-  else 없음
-    P -> DB : select (id=1)
-    DB --> P : 행
-    P -> S : 상태 값 저장
-  end
-  P -> P : 인스턴스 생성 후 등록
-  P --> A : 엔티티
-end
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="470" viewBox="0 0 440 470" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="470" fill="#FFFFFF"/>
+<rect x="16.0" y="14" width="80" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="56" y="40.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">앱</text>
+<rect x="116.0" y="14" width="104" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="168" y="33.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">1차 캐시</text>
+<text x="168" y="47.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">(EntityManager)</text>
+<rect x="228.0" y="14" width="104" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="280" y="33.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">2차 캐시</text>
+<text x="280" y="47.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">(SessionFactory)</text>
+<rect x="350.0" y="14" width="84" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="392" y="40.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+<line x1="56" y1="58" x2="56" y2="460" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="168" y1="58" x2="168" y2="460" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="280" y1="58" x2="280" y2="460" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="392" y1="58" x2="392" y2="460" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="56" y1="88" x2="167" y2="88" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="112.0" y="83" font-size="10" fill="#333" text-anchor="middle">find(Product, 1)</text>
+<rect x="10" y="100" width="422" height="350" fill="none" stroke="#999"/>
+<path d="M10,100 h30 v12 l-5,5 h-25 z" fill="#F7F7F7" stroke="#999"/>
+<text x="23" y="112" font-size="10" fill="#333" text-anchor="middle" font-weight="bold">alt</text>
+<text x="46" y="113" font-size="10" fill="#555" text-anchor="start">[1차 캐시에 있음]</text>
+<line x1="168" y1="140" x2="57" y2="140" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="112.0" y="135" font-size="10" fill="#333" text-anchor="middle">같은 인스턴스</text>
+<line x1="10" y1="152" x2="432" y2="152" stroke="#999" stroke-dasharray="5 4"/>
+<text x="16" y="165" font-size="10" fill="#555" text-anchor="start">[없음]</text>
+<line x1="168" y1="184" x2="279" y2="184" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="224.0" y="179" font-size="10" fill="#333" text-anchor="middle">id=1 조회</text>
+<rect x="118" y="196" width="308" height="174" fill="none" stroke="#999"/>
+<path d="M118,196 h30 v12 l-5,5 h-25 z" fill="#F7F7F7" stroke="#999"/>
+<text x="131" y="208" font-size="10" fill="#333" text-anchor="middle" font-weight="bold">alt</text>
+<text x="154" y="209" font-size="10" fill="#555" text-anchor="start">[2차 캐시에 있음]</text>
+<line x1="280" y1="236" x2="169" y2="236" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="224.0" y="231" font-size="10" fill="#333" text-anchor="middle">분해된 상태 값</text>
+<line x1="118" y1="248" x2="426" y2="248" stroke="#999" stroke-dasharray="5 4"/>
+<text x="124" y="261" font-size="10" fill="#555" text-anchor="start">[없음]</text>
+<line x1="168" y1="288" x2="391" y2="288" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="280.0" y="283" font-size="10" fill="#333" text-anchor="middle">select (id=1)</text>
+<line x1="392" y1="320" x2="169" y2="320" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="280.0" y="315" font-size="10" fill="#333" text-anchor="middle">행</text>
+<line x1="168" y1="352" x2="279" y2="352" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="224.0" y="347" font-size="10" fill="#333" text-anchor="middle">상태 값 저장</text>
+<polyline points="168,386 194,386 194,400 169,400" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="198" y="386" width="112" height="15" fill="#FFFFFF"/>
+<text x="200" y="397" font-size="10" fill="#333" text-anchor="start">인스턴스 생성 후 등록</text>
+<line x1="168" y1="432" x2="57" y2="432" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="112.0" y="427" font-size="10" fill="#333" text-anchor="middle">엔티티</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML find 호출 시 1차 캐시 → 2차 캐시 → DB 조회 순서](/img/c4/pu-jpa-second-level-cache-find.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-second-level-cache-find.svg" alt="find 호출 시 1차 캐시, 2차 캐시, DB 순서로 엔티티를 찾고 2차 캐시에 상태 값을 저장한 뒤 인스턴스를 만들어 돌려주는 순서" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 2차 캐시에서 가져온 엔티티도 1차 캐시에 등록되므로 일반 엔티티와 똑같이 사용할 수 있습니다. 필드를 변경하면 UPDATE가 실행되고(변경 감지), LAZY 연관관계도 정상적으로 로딩됩니다. 조회 결과가 언제 이와 같은 "관리되는 상태(영속 상태)"가 되는지는 [조회 결과는 언제 영속 상태가 되나](/blog/jpa-managed-entity-criteria)에서 설명했습니다.
 

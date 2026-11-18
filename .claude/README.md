@@ -23,10 +23,10 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 │   ├── trend-post-java/SKILL.md     · Java/JDK 동향(JEP·신버전·preview → OpenJDK 검증) 게시글 (/trend-post-java)
 │   ├── trend-post-backend/SKILL.md  · 백엔드 최신 동향(GeekNews 등 발굴 → 1차 소스 검증) 게시글 (/trend-post-backend)
 │   ├── trend-post-ai/SKILL.md       · AI 개발 활용 동향(LLM 방법론·도구·MCP·하네스 → 공식 소스 검증) 게시글 (/trend-post-ai)
-│   ├── diagram-static/SKILL.md      · 정적 다이어그램(C4-PlantUML→PlantUML→Mermaid, Kroki SVG) (/diagram-static)
+│   ├── diagram-static/SKILL.md      · [보관, 미사용] 정적 다이어그램(C4-PlantUML→PlantUML→Mermaid, Kroki SVG)
 │   ├── diagram-svg/SKILL.md         · 손수 작성 SVG 개념도(겹침 범위·축/공간 배치형, 레이아웃 완전 통제) (/diagram-svg)
 │   ├── chart-canvas/SKILL.md        · 지표·추이 Canvas 애니메이션(MonitorCharts) (/chart-canvas)
-│   ├── diagram-archify/SKILL.md     · 인터랙티브 다이어그램(archify → iframe 임베드) (/diagram-archify)
+│   ├── diagram-archify/SKILL.md     · [보관, 미사용] 인터랙티브 다이어그램(archify → iframe 임베드)
 │   ├── blog-review/SKILL.md         · 작성한 글을 단어·작성·MDX·다이어그램 규칙으로 검토·피드백 (/blog-review)
 │   ├── blog-polishing/SKILL.md      · 단어·문장 규칙(SSOT)으로 글 표현을 실제로 다듬어 수정 (/blog-polishing)
 │   ├── rule-sync/SKILL.md          · 커밋 전 피드백과 규칙 대조, 빠진 규칙 추가, 블로그 전체 적용 (/rule-sync)
@@ -42,7 +42,7 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 
 ## 사용
 - **게시글 작성**: `/blog-post` 스킬 호출 또는 "블로그 글 추가해줘" → skill이 wiki 규칙을 따름.
-- **다이어그램·시각화**: 대상에 맞게 골라 쓴다 — 정적(구조·시퀀스·상태…)은 `/diagram-static`, **겹침 범위·축/공간 배치형 설명 개념도는 `/diagram-svg`(손수 SVG, 적극·우선 검토)**, 지표·추이 애니메이션은 `/chart-canvas`, 아키텍처·구조의 인터랙티브 탐색은 `/diagram-archify`(적합하면 적극 적용). 선택 기준은 [blog-authoring.md](wiki/blog-authoring.md) 4절.
+- **다이어그램·시각화**: 블로그 그림은 **손수 SVG(`/diagram-svg`)만** 쓴다. 지표·추이 애니메이션은 `/chart-canvas`. PlantUML, Mermaid, archify(`/diagram-static`, `/diagram-archify`)는 보관, 미사용이며 새로 쓰면 스캐너가 지적한다.
 - **스프링 부트 시리즈**: `/trend-post-spring` 호출 또는 "스프링부트 업데이트 글 써줘" → 공식 소스 조사 후 blog-authoring 규칙대로 작성.
 - **백엔드 동향 글**: `/trend-post-backend` 호출 또는 "백엔드 동향 글 써줘/이 기사로 블로그" → GeekNews 등에서 주제 발굴 → **1차 소스로 사실 검증** 후 johny-dev 톤으로 작성(스프링 전용은 위 스킬).
 - **Java/JDK 동향 글**: `/trend-post-java` 호출 또는 "자바 최신 동향/이 JEP로 블로그" → OpenJDK JEP·Inside Java 등 1차 소스로 검증(preview/final·버전 명시) 후 작성.
@@ -53,7 +53,7 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 - **소개 페이지·이력서 수정/검증**: `/resume-verify` 호출 또는 "소개페이지 수정/이력서 내용 바꿔/이력서 검증" → 내용은 `data.ts`만 고치고, Rezumi 피드백 반영 + PDF 페이지 오버플로 최종 확인(about-resume.md 규칙)을 필수로 거친다.
 - **규칙 확인/수정**: `wiki/` 문서를 본다. 규칙이 바뀌면 wiki를 갱신하고, 절차가 바뀌면 skill을, 자동화가 바뀌면 hook을 수정.
 - **hook(폴리싱, 규칙 동기화 강제)**: 커밋 명령 직전에 두 가지를 확인하고, 아니면 커밋을 막는다.
-  - **블로그 전체** `blog/*.mdx`를 `scan-polishing.py --check`로 스캔해 처리되지 않은 지적이 0건인지. 지적은 고치거나, 문맥상 규칙 예외면 사유와 함께 `allowlist.tsv`에 등록(`--allow`)해야 사라진다(등록은 그 줄 내용에 묶여, 줄이 바뀌면 다시 검토 대상).
+  - **블로그 전체** `blog/*.mdx`와 `static/diagrams/*.html`을 `scan-polishing.py --check`로 스캔해 처리되지 않은 지적이 0건인지. 지적은 고치거나, 문맥상 규칙 예외면 사유와 함께 `allowlist.tsv`에 등록(`--allow`)해야 사라진다(등록은 그 줄 내용에 묶여, 줄이 바뀌면 다시 검토 대상).
   - `/rule-sync`를 마치고 `mark-done.sh`로 남긴 완료 표시가 현재 변경 상태와 같은지(`.claude/.rule-sync-stamp`, 로컬 전용)
   - 순서: 글 수정 → `/blog-polishing`(지적 0건까지) → `/rule-sync`(마지막에 `mark-done.sh`) → 커밋
   - **막히면 임의로 바꾸지 않는다.** 고칠 것, 예외로 둘 것(사유), 규칙 갱신안을 사용자에게 보여 주고 **확인을 받은 뒤** 반영하고, 커밋을 다시 시도한다.

@@ -36,32 +36,51 @@ public void rename(Long id, String name) {
 `setName`을 호출한 줄에서 UPDATE가 실행되는 게 아닙니다. **메서드가 끝나는 순간** 커밋 과정에서 flush가 일어나 그때 UPDATE가 실행됩니다. 아래 그림이 이 흐름입니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-skinparam sequenceMessageAlign center
-participant "@Transactional\n메서드" as M
-participant "영속성 컨텍스트\n(1차 캐시)" as PC
-database DB
-
-M -> DB : BEGIN (트랜잭션 시작)
-M -> PC : persist / 엔티티 수정
-note right of PC : 아직 SQL 없음\n변경을 모아 둠(쓰기 지연)
-M -> PC : JPQL 쿼리 실행
-PC -> DB : (AUTO) flush\nINSERT, UPDATE 보냄
-PC -> DB : SELECT 실행
-M -> PC : 메서드 정상 종료
-PC -> DB : flush — 남은 변경 보냄
-M -> DB : COMMIT (확정)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="382" viewBox="0 0 440 382" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="382" fill="#FFFFFF"/>
+<rect x="10.0" y="14" width="120" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="70" y="33.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">@Transactional</text>
+<text x="70" y="47.0" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">메서드</text>
+<rect x="165.0" y="14" width="120" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="225" y="33.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">영속성 컨텍스트</text>
+<text x="225" y="47.0" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">(1차 캐시)</text>
+<rect x="330.0" y="14" width="100" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="380" y="40.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+<line x1="70" y1="58" x2="70" y2="372" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="225" y1="58" x2="225" y2="372" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="380" y1="58" x2="380" y2="372" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="70" y1="92" x2="379" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="225.0" y="87" font-size="10" fill="#333" text-anchor="middle">BEGIN (트랜잭션 시작)</text>
+<rect x="234" y="104" width="138" height="38" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="303.0" y="121" font-size="10" fill="#5A4300" text-anchor="middle">아직 SQL 없음</text>
+<text x="303.0" y="135" font-size="10" fill="#5A4300" text-anchor="middle">변경을 모아 둠(쓰기 지연)</text>
+<line x1="70" y1="154" x2="224" y2="154" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="147.5" y="149" font-size="10" fill="#333" text-anchor="middle">persist / 엔티티 수정</text>
+<line x1="70" y1="186" x2="224" y2="186" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="147.5" y="181" font-size="10" fill="#333" text-anchor="middle">JPQL 쿼리 실행</text>
+<line x1="225" y1="230" x2="379" y2="230" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="302.5" y="212" font-size="10" fill="#333" text-anchor="middle">(AUTO) flush</text>
+<text x="302.5" y="225" font-size="10" fill="#333" text-anchor="middle">INSERT, UPDATE 보냄</text>
+<line x1="225" y1="262" x2="379" y2="262" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="302.5" y="257" font-size="10" fill="#333" text-anchor="middle">SELECT 실행</text>
+<line x1="70" y1="294" x2="224" y2="294" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="147.5" y="289" font-size="10" fill="#333" text-anchor="middle">메서드 정상 종료</text>
+<line x1="225" y1="326" x2="379" y2="326" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="302.5" y="321" font-size="10" fill="#333" text-anchor="middle">flush — 남은 변경 보냄</text>
+<line x1="70" y1="358" x2="379" y2="358" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="225.0" y="353" font-size="10" fill="#333" text-anchor="middle">COMMIT (확정)</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML @Transactional 경계에서 flush와 commit이 실행되는 시점](/img/c4/pu-jpa-flush-commit.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-flush-commit.svg" alt="@Transactional 메서드에서 변경은 영속성 컨텍스트에 모였다가 JPQL 실행 전 자동 flush와 메서드 종료 시 flush로 DB에 보내지고 마지막에 COMMIT되는 순서" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## flush는 언제 실행되나 — 모드와 트리거
 

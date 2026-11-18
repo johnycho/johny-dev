@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="76" viewBox="0 0 440 76" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="76" fill="#FFFFFF"/>
+<rect x="14.0" y="20" width="88" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="58" y="42.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">트래픽 급증</text>
+<rect x="122.0" y="20" width="88" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="166" y="42.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">포화도 상승</text>
+<line x1="102" y1="38" x2="121" y2="38" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="230.0" y="20" width="88" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="274" y="42.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">지연 증가</text>
+<line x1="210" y1="38" x2="229" y2="38" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="338.0" y="20" width="88" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="382" y="42.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">에러 발생</text>
+<line x1="318" y1="38" x2="337" y2="38" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>

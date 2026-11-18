@@ -30,36 +30,46 @@ import {AnimatedLineChart} from '@site/src/components/blog/MonitorCharts';
 <mark>예전에는 이 메타데이터를 별도 ZooKeeper 앙상블(Ensemble)이 맡았지만, Kafka 4.0(2025-03)부터는 ZooKeeper가 제거되고 **KRaft**(카프카 자체 합의 프로토콜)만 남았습니다.</mark> 컨트롤러 역할을 하는 브로커들이 Raft 기반 쿼럼으로 메타데이터를 직접 복제, 관리합니다. 운영 관점에서 달라지는 건 "관리할 클러스터가 하나로 줄었다"는 점 — 별도 ZooKeeper를 기동하고 튜닝할 필요가 없어졌습니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam node {
-  BackgroundColor #FFFFFF
-  BorderColor #556080
-}
-title Kafka 클러스터 구성 (KRaft — ZooKeeper 없음)
-
-actor "클라이언트\n(프로듀서, 컨슈머)" as cli
-
-package "Kafka 클러스터" {
-  node "Broker 1\n(+ Controller)" as b1
-  node "Broker 2\n(+ Controller)" as b2
-  node "Broker 3\n(+ Controller)" as b3
-}
-
-cli --> b1 : 접속, 메타데이터 요청
-b1 <--> b2 : 메타데이터 복제 (Raft 쿼럼)
-b2 <--> b3
-b1 <--> b3
-note bottom of b2 : 컨트롤러 쿼럼이\n리더 선출, 메타데이터 관리
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="372" viewBox="0 0 440 372" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="372" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">Kafka 클러스터 구성 (KRaft — ZooKeeper 없음)</text>
+<rect x="145" y="38" width="150" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="55.75" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">클라이언트</text>
+<text x="220.0" y="70.25" font-size="10.5" fill="#555" text-anchor="middle">(프로듀서, 컨슈머)</text>
+<rect x="15" y="104" width="410" height="254" rx="8" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="25" y="120" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">Kafka 클러스터</text>
+<line x1="220" y1="80" x2="220" y2="132" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="98" font-size="10.5" fill="#333" text-anchor="start">접속, 메타데이터 요청</text>
+<rect x="160" y="134" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="152.75" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Broker 1</text>
+<text x="220.0" y="167.25" font-size="10.5" fill="#555" text-anchor="middle">(+ Controller)</text>
+<rect x="35" y="236" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="95.0" y="254.75" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Broker 2</text>
+<text x="95.0" y="269.25" font-size="10.5" fill="#555" text-anchor="middle">(+ Controller)</text>
+<rect x="285" y="236" width="120" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="345.0" y="254.75" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Broker 3</text>
+<text x="345.0" y="269.25" font-size="10.5" fill="#555" text-anchor="middle">(+ Controller)</text>
+<polyline points="185,178 115,236" fill="none" stroke="#888" stroke-width="1.2" marker-start="url(#ah)" marker-end="url(#ah)"/>
+<polyline points="155,258 285,258" fill="none" stroke="#888" stroke-width="1.2" marker-start="url(#ah)" marker-end="url(#ah)"/>
+<polyline points="255,178 325,236" fill="none" stroke="#888" stroke-width="1.2" marker-start="url(#ah)" marker-end="url(#ah)"/>
+<rect x="71.345" y="201.5" width="157.31" height="15.5" fill="#FFFFFF"/>
+<text x="150" y="212" font-size="10.5" fill="#333" text-anchor="middle">메타데이터 복제 (Raft 쿼럼)</text>
+<rect x="35" y="298" width="200" height="44" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="135.0" y="316" font-size="10.5" fill="#5A4300" text-anchor="middle">컨트롤러 쿼럼이</text>
+<text x="135.0" y="332" font-size="10.5" fill="#5A4300" text-anchor="middle">리더 선출, 메타데이터 관리</text>
+<line x1="95" y1="280" x2="95" y2="298" stroke="#E0A000" stroke-dasharray="3 3"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML Kafka 클러스터 구성](/img/c4/kf-cluster.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-cluster.svg" alt="클라이언트가 Broker 1에 접속하고, 컨트롤러를 겸한 브로커 세 대가 Raft 쿼럼으로 메타데이터를 복제하는 Kafka 클러스터 구성" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 복제 — 리더와 팔로워, 그리고 복제 계수
 
@@ -72,48 +82,51 @@ note bottom of b2 : 컨트롤러 쿼럼이\n리더 선출, 메타데이터 관�
 - **팔로워**는 리더의 로그를 **직접 fetch 해서 따라 씁니다** — 마치 팔로워가 리더를 구독하는 컨슈머처럼 동작합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam node {
-  BackgroundColor #FFFFFF
-  BorderColor #556080
-}
-skinparam card {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-skinparam defaultTextAlignment center
-title 파티션 P0 복제 배치 (RF=3, rack로 zone 분산)
-
-actor "프로듀서 / 컨슈머" as cli
-
-node "Zone A" as za {
-  node "Broker 1" as b1 {
-    card "P0 리더\n(ISR)" as l0
-  }
-}
-node "Zone B" as zb {
-  node "Broker 2" as b2 {
-    card "P0 팔로워\n(ISR)" as f1
-  }
-}
-node "Zone C" as zc {
-  node "Broker 3" as b3 {
-    card "P0 팔로워\n(ISR에서 이탈)" as f2
-  }
-}
-
-cli --> l0 : 읽기, 쓰기는 리더로만
-l0 --> f1 : 복제 (팔로워가 fetch)
-l0 --> f2 : 복제 (지연되면 ISR 제외)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="450" height="330" viewBox="0 0 450 330" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="450" height="330" fill="#FFFFFF"/>
+<text x="225.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">파티션 P0 복제 배치 (RF=3, rack로 zone 분산)</text>
+<rect x="20" y="38" width="136" height="32" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="88.0" y="58.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">프로듀서 / 컨슈머</text>
+<rect x="15" y="104" width="126" height="140" rx="8" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="25" y="120" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">Zone A</text>
+<rect x="23" y="126" width="110" height="108" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="78.0" y="142" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">Broker 1</text>
+<rect x="31" y="150" width="94" height="74" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="78.0" y="183.75" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">P0 리더</text>
+<text x="78.0" y="198.25" font-size="10.5" fill="#555" text-anchor="middle">(ISR)</text>
+<rect x="162" y="104" width="126" height="140" rx="8" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="172" y="120" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">Zone B</text>
+<rect x="170" y="126" width="110" height="108" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="225.0" y="142" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">Broker 2</text>
+<rect x="178" y="150" width="94" height="74" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="225.0" y="183.75" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">P0 팔로워</text>
+<text x="225.0" y="198.25" font-size="10.5" fill="#555" text-anchor="middle">(ISR)</text>
+<rect x="309" y="104" width="126" height="140" rx="8" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="319" y="120" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">Zone C</text>
+<rect x="317" y="126" width="110" height="108" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="372.0" y="142" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">Broker 3</text>
+<rect x="325" y="150" width="94" height="74" rx="6" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="5 4"/>
+<text x="372.0" y="183.75" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">P0 팔로워</text>
+<text x="372.0" y="198.25" font-size="10.5" fill="#555" text-anchor="middle">(ISR에서 이탈)</text>
+<line x1="40" y1="70" x2="40" y2="148" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="44" y="81.5" width="120.77" height="15.5" fill="#FFFFFF"/>
+<text x="48" y="92" font-size="10.5" fill="#333" text-anchor="start">읽기, 쓰기는 리더로만</text>
+<polyline points="74,224 74,272 225,272 225,226" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="100,224 100,302 372,302 372,226" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="160" y="266" font-size="10.5" fill="#333" text-anchor="middle">복제 (팔로워가 fetch)</text>
+<text x="300" y="296" font-size="10.5" fill="#333" text-anchor="middle">복제 (지연되면 ISR 제외)</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 파티션 복제 배치](/img/c4/kf-replication.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-replication.svg" alt="Zone A, B, C의 브로커에 P0 리더와 팔로워 둘이 나뉘어 있고, 읽기와 쓰기는 리더로만 가며 팔로워는 리더를 fetch로 복제하는 배치" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>모든 읽기와 쓰기는 리더가 처리하고, 팔로워는 리더를 따라 복제만 합니다 — 그래서 리더에 장애가 발생하면 팔로워 중 하나가 새 리더가 되어야 서비스가 이어집니다.</mark>
 
@@ -131,32 +144,39 @@ ISR이 중요한 이유는 **리더에 장애가 발생했을 때 ISR 안에서�
 <mark>ISR은 "리더를 따라잡은 최신 복제본 집합"이고, 새 리더는 원칙적으로 이 집합 안에서만 선출됩니다.</mark>
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title 파티션 P0의 ISR — 리더 + 따라잡은 팔로워만
-
-rectangle "ISR (In-Sync)" #E9F2E9 {
-  rectangle "리더\nLEO=100" as L
-  rectangle "팔로워 A\nLEO=100 (최신)" as A
-}
-rectangle "ISR 밖" #FBECEC {
-  rectangle "팔로워 B\nLEO=72 (지연)" as B
-}
-L --> A : fetch로 따라잡음
-L --> B : 30초 넘게 지연 → ISR 제외
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="304" viewBox="0 0 440 304" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="304" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">파티션 P0의 ISR — 리더 + 따라잡은 팔로워만</text>
+<rect x="20" y="40" width="400" height="106" rx="8" fill="#F5FAF5" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="30" y="56" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">ISR (In-Sync)</text>
+<rect x="45" y="70" width="130" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="94.75" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">리더</text>
+<text x="110.0" y="109.25" font-size="10.5" fill="#555" text-anchor="middle">LEO=100</text>
+<rect x="265" y="70" width="130" height="56" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="330.0" y="94.75" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">팔로워 A</text>
+<text x="330.0" y="109.25" font-size="10.5" fill="#555" text-anchor="middle">LEO=100 (최신)</text>
+<line x1="175" y1="98" x2="263" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="219" y="91" font-size="10.5" fill="#333" text-anchor="middle">fetch로 따라잡음</text>
+<rect x="20" y="186" width="400" height="104" rx="8" fill="#FDF3F6" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="30" y="202" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold">ISR 밖</text>
+<rect x="45" y="216" width="130" height="56" rx="6" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="5 4"/>
+<text x="110.0" y="240.75" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">팔로워 B</text>
+<text x="110.0" y="255.25" font-size="10.5" fill="#555" text-anchor="middle">LEO=72 (지연)</text>
+<line x1="110" y1="126" x2="110" y2="214" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="116" y="159.5" width="152.9" height="15.5" fill="#FFFFFF"/>
+<text x="120" y="170" font-size="10.5" fill="#333" text-anchor="start">30초 넘게 지연 → ISR 제외</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 파티션 ISR 구성](/img/c4/kf-isr.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-isr.svg" alt="리더와 LEO=100까지 따라잡은 팔로워 A는 ISR 안에, LEO=72로 30초 넘게 지연된 팔로워 B는 ISR 밖에 있는 구성" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## acks와 min.insync.replicas — 쓰기를 언제 "성공"으로 볼까
 
@@ -186,35 +206,73 @@ acks=all
 <mark>`RF=3`, `min.insync.replicas=2`, `acks=all`이면, 브로커 한 대에 장애가 발생해도(ISR 2개 유지) 쓰기가 계속되고 내구성도 지켜지는 균형점이 됩니다.</mark> 만약 두 대에 장애가 발생해 ISR이 1개가 되면 쓰기는 막히지만(가용성↓), 유실은 막습니다(내구성↑). 이 트레이드오프의 방향을 정하는 게 다음 절의 리더 선출입니다. 메시지가 실제로 몇 번 전달되는지(at-least-once/exactly-once)는 [전달 보장](./kafka-delivery-semantics)과 [트랜잭션, 멱등 프로듀서](./kafka-transactions-exactly-once)에서 이어집니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-autonumber
-participant "프로듀서" as p
-participant "리더" as l
-participant "팔로워1 (ISR)" as f1
-participant "팔로워2 (ISR)" as f2
-
-== 정상 (ISR 충분) ==
-p -> l : produce (acks=all)
-l -> l : 로그에 기록
-f1 -> l : fetch (복제)
-f2 -> l : fetch (복제)
-note over l : ISR 수가 min.insync.replicas(2) 이상 → 성공 인정
-l -> p : ack (성공)
-
-== ISR 부족 ==
-p -> l : produce (acks=all)
-note over l : ISR 수가 2 미만 → 유실 위험
-l -> p : NotEnoughReplicas 오류 (쓰기 거부)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="456" height="448" viewBox="0 0 456 448" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="456" height="448" fill="#FFFFFF"/>
+<g transform="translate(0,-22)">
+<rect x="12.0" y="36" width="92" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="58.0" y="56.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">프로듀서</text>
+<line x1="58" y1="70" x2="58" y2="456" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="142.0" y="36" width="92" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="188.0" y="56.75" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">리더</text>
+<line x1="188" y1="70" x2="188" y2="456" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="252.0" y="36" width="92" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="298.0" y="56.75" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">팔로워1 (ISR)</text>
+<line x1="298" y1="70" x2="298" y2="456" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="352.0" y="36" width="92" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="398.0" y="56.75" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">팔로워2 (ISR)</text>
+<line x1="398" y1="70" x2="398" y2="456" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="10" y1="92" x2="446" y2="92" stroke="#BBBBBB"/>
+<rect x="176.685" y="82" width="102.63" height="20" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="228.0" y="96" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">정상 (ISR 충분)</text>
+<line x1="58" y1="128" x2="187" y2="128" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="70" cy="117" r="8" fill="#4C7FE0"/>
+<text x="70" y="120.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<text x="83" y="122" font-size="10.5" fill="#333" text-anchor="start">produce (acks=all)</text>
+<polyline points="188,146 216,146 216,162 189,162" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="174" cy="154" r="8" fill="#4C7FE0"/>
+<text x="174" y="157.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<text x="222" y="158" font-size="10.5" fill="#333" text-anchor="start">로그에 기록</text>
+<line x1="298" y1="200" x2="189" y2="200" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="200" cy="189" r="8" fill="#4C7FE0"/>
+<text x="200" y="192.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<text x="213" y="194" font-size="10.5" fill="#333" text-anchor="start">fetch (복제)</text>
+<line x1="398" y1="232" x2="189" y2="232" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="200" cy="221" r="8" fill="#4C7FE0"/>
+<text x="200" y="224.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+<text x="213" y="226" font-size="10.5" fill="#333" text-anchor="start">fetch (복제)</text>
+<rect x="48" y="246" width="300" height="26" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="198.0" y="264" font-size="10.5" fill="#5A4300" text-anchor="middle">ISR 수가 min.insync.replicas(2) 이상 → 성공 인정</text>
+<line x1="188" y1="300" x2="59" y2="300" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="70" cy="289" r="8" fill="#4C7FE0"/>
+<text x="70" y="292.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+<text x="83" y="294" font-size="10.5" fill="#333" text-anchor="start">ack (성공)</text>
+<line x1="10" y1="330" x2="446" y2="330" stroke="#BBBBBB"/>
+<rect x="196.32" y="320" width="63.36" height="20" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="228.0" y="334" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">ISR 부족</text>
+<line x1="58" y1="368" x2="187" y2="368" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="70" cy="357" r="8" fill="#4C7FE0"/>
+<text x="70" y="360.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+<text x="83" y="362" font-size="10.5" fill="#333" text-anchor="start">produce (acks=all)</text>
+<rect x="78" y="382" width="220" height="26" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="188.0" y="400" font-size="10.5" fill="#5A4300" text-anchor="middle">ISR 수가 2 미만 → 유실 위험</text>
+<line x1="188" y1="446" x2="59" y2="446" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="70" cy="435" r="8" fill="#4C7FE0"/>
+<text x="70" y="438.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">7</text>
+<text x="83" y="427" font-size="10.5" fill="#333" text-anchor="start">NotEnoughReplicas</text>
+<text x="83" y="440" font-size="10.5" fill="#333" text-anchor="start">오류 (쓰기 거부)</text>
+</g>
+</svg>
 ```
 
 </details>
 
-![PlantUML acks=all 쓰기 성공 조건](/img/c4/kf-acks.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-acks.svg" alt="acks=all 쓰기에서 ISR 수가 min.insync.replicas 이상이면 ack를 돌려주고, 2 미만이면 NotEnoughReplicas 오류로 쓰기를 거부하는 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 오프셋 3종 — 로그 오프셋, 커밋 오프셋, 현재 위치
 
@@ -227,38 +285,58 @@ l -> p : NotEnoughReplicas 오류 (쓰기 거부)
 - **현재 위치(position)** — 컨슈머가 다음에 fetch 할 위치(메모리상). 처리는 했지만 아직 커밋 안 한 구간이 커밋 오프셋과 현재 위치 사이입니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title 한 파티션 로그의 오프셋 — 세 위치를 구분
-
-rectangle "..97" as m97
-rectangle "98" as m98
-rectangle "99" as m99
-rectangle "100" as m100
-rectangle "101" as m101
-
-m97 -[hidden]right- m98
-m98 -[hidden]right- m99
-m99 -[hidden]right- m100
-m100 -[hidden]right- m101
-
-note bottom of m98 : 커밋 오프셋\n(그룹이 처리 완료로 기록)
-note bottom of m99 : 현재 위치(position)\n(다음 fetch 지점)
-note bottom of m100 : HW\n(ISR가 복제한 끝 = 읽기 가능 한계)
-note bottom of m101 : LEO\n(다음에 쓸 위치)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="246" viewBox="0 0 480 246" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="480" height="246" fill="#FFFFFF"/>
+<text x="240.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">한 파티션 로그의 오프셋 — 세 위치를 구분</text>
+<rect x="20" y="52" width="88" height="36" fill="#F7F7F7" stroke="#999999"/>
+<text x="64.0" y="75" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">..97</text>
+<rect x="108" y="52" width="88" height="36" fill="#F7F7F7" stroke="#999999"/>
+<text x="152.0" y="75" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">98</text>
+<rect x="196" y="52" width="88" height="36" fill="#F7F7F7" stroke="#999999"/>
+<text x="240.0" y="75" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">99</text>
+<rect x="284" y="52" width="88" height="36" fill="#F7F7F7" stroke="#999999"/>
+<text x="328.0" y="75" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">100</text>
+<rect x="372" y="52" width="88" height="36" fill="#F7F7F7" stroke="#999999"/>
+<text x="416.0" y="75" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">101</text>
+<line x1="20" y1="102" x2="474" y2="102" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="64.0" y1="96" x2="64.0" y2="108" stroke="#888" stroke-width="1.2"/>
+<line x1="152.0" y1="96" x2="152.0" y2="108" stroke="#888" stroke-width="1.2"/>
+<line x1="240.0" y1="96" x2="240.0" y2="108" stroke="#888" stroke-width="1.2"/>
+<line x1="328.0" y1="96" x2="328.0" y2="108" stroke="#888" stroke-width="1.2"/>
+<line x1="416.0" y1="96" x2="416.0" y2="108" stroke="#888" stroke-width="1.2"/>
+<line x1="152.0" y1="108" x2="152.0" y2="122" stroke="#E0A000" stroke-width="1.2"/>
+<circle cx="152.0" cy="102" r="4" fill="#E0A000"/>
+<rect x="77.0" y="122" width="150" height="35" rx="5" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="152.0" y="137" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">커밋 오프셋</text>
+<text x="152.0" y="152" font-size="10" fill="#555" text-anchor="middle">(그룹이 처리 완료로 기록)</text>
+<line x1="328.0" y1="108" x2="328.0" y2="122" stroke="#4C7FE0" stroke-width="1.2"/>
+<circle cx="328.0" cy="102" r="4" fill="#4C7FE0"/>
+<rect x="263.0" y="122" width="130" height="50" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="328.0" y="137" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">HW</text>
+<text x="328.0" y="152" font-size="10" fill="#555" text-anchor="middle">(ISR가 복제한 끝</text>
+<text x="328.0" y="167" font-size="10" fill="#555" text-anchor="middle">= 읽기 가능 한계)</text>
+<line x1="240.0" y1="108" x2="240.0" y2="200" stroke="#E0A000" stroke-width="1.2"/>
+<circle cx="240.0" cy="102" r="4" fill="#E0A000"/>
+<rect x="175.0" y="200" width="130" height="35" rx="5" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="240.0" y="215" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">현재 위치(position)</text>
+<text x="240.0" y="230" font-size="10" fill="#555" text-anchor="middle">(다음 fetch 지점)</text>
+<line x1="416.0" y1="108" x2="416.0" y2="200" stroke="#4C7FE0" stroke-width="1.2"/>
+<circle cx="416.0" cy="102" r="4" fill="#4C7FE0"/>
+<rect x="366.0" y="200" width="100" height="35" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="416.0" y="215" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">LEO</text>
+<text x="416.0" y="230" font-size="10" fill="#555" text-anchor="middle">(다음에 쓸 위치)</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 파티션 로그 오프셋](/img/c4/kf-offsets.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-offsets.svg" alt="파티션 로그 축 위에서 커밋 오프셋 98, 현재 위치 99, HW 100, LEO 101의 위치를 구분한 그림" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 이 셋을 구분하면 흔한 문제가 설명됩니다. **처리와 커밋의 순서가 맞지 않으면**, 처리 전에 커밋해 버리면(현재 위치만 앞서고 커밋이 먼저) 장애 시 **유실**, 처리 후 커밋인데 그 사이 재시작하면 **중복** 재처리가 됩니다.
 
@@ -276,108 +354,136 @@ note bottom of m101 : LEO\n(다음에 쓸 위치)
 <mark>unclean 리더 선출은 "잠깐 멈추고 유실 없음" vs "계속 동작하지만 일부 유실" 사이의 스위치입니다 — 대부분은 기본값(false, 내구성 우선)이 맞습니다.</mark>
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-start
-:리더 브로커 장애 감지\n(컨트롤러);
-if (ISR에 살아있는 복제본이 있나?) then (있음)
-  :ISR 중 하나를 새 리더로 선출\n(clean, 커밋 데이터 보존);
-  stop
-else (없음)
-  if (unclean.leader.election.enable) then (false, 기본)
-    :파티션 오프라인\n(읽기, 쓰기 중단, 유실 없음);
-    stop
-  else (true)
-    :ISR 밖 복제본을 리더로\n(가용성 유지, 일부 유실);
-    stop
-  endif
-endif
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="445" height="304" viewBox="0 0 445 304" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="445" height="304" fill="#FFFFFF"/>
+<g transform="translate(0,-22)">
+<circle cx="115" cy="44" r="7" fill="#555"/>
+<line x1="115" y1="51" x2="115" y2="62" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="64" width="190" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115.0" y="80.75" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">리더 브로커 장애 감지</text>
+<text x="115.0" y="95.25" font-size="10.5" fill="#555" text-anchor="middle">(컨트롤러)</text>
+<line x1="115" y1="104" x2="115" y2="124" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="126" width="210" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="115.0" y="146.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">ISR에 살아있는 복제본이 있나?</text>
+<line x1="220" y1="143" x2="258" y2="143" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="239" y="137" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Y</text>
+<rect x="260" y="120" width="175" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="347.5" y="139.25" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">ISR 중 하나를 새 리더로 선출</text>
+<text x="347.5" y="153.75" font-size="10.5" fill="#555" text-anchor="middle">(clean, 커밋 데이터 보존)</text>
+<line x1="115" y1="160" x2="115" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="133" y="183" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold">N</text>
+<rect x="10" y="200" width="210" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="115.0" y="220.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">unclean.leader.election.enable</text>
+<line x1="220" y1="217" x2="258" y2="217" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="239" y="211" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">true</text>
+<rect x="260" y="194" width="175" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="347.5" y="213.25" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">ISR 밖 복제본을 리더로</text>
+<text x="347.5" y="227.75" font-size="10.5" fill="#555" text-anchor="middle">(가용성 유지, 일부 유실)</text>
+<line x1="115" y1="234" x2="115" y2="266" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="133" y="255" font-size="10.5" fill="#333" text-anchor="start" font-weight="bold">false, 기본</text>
+<rect x="15" y="268" width="200" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115.0" y="287.25" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">파티션 오프라인</text>
+<text x="115.0" y="301.75" font-size="10.5" fill="#555" text-anchor="middle">(읽기, 쓰기 중단, 유실 없음)</text>
+</g>
+</svg>
 ```
 
 </details>
 
-![PlantUML 리더 선출 clean vs unclean](/img/c4/kf-election.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-election.svg" alt="리더 장애 시 ISR에 살아 있는 복제본이 있으면 clean 선출, 없으면 unclean.leader.election.enable 값에 따라 파티션 오프라인 또는 ISR 밖 복제본을 리더로 세우는 판단 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## rack 배치 — region/zone 장애를 견디기
 
 복제본을 3개 배치해도 **셋 다 같은 가용영역(AZ)에 있으면** 그 영역 전체가 내려갈 때 파티션 전체를 잃습니다. 그래서 브로커마다 **`broker.rack`** 에 자신의 zone/region을 지정하면, 카프카가 **복제본을 서로 다른 rack에 나눠 배치**합니다(아래 그림처럼 Zone A/B/C로 분산). 한 zone이 내려가도 다른 zone에 복제본이 남아 리더 선출이 가능합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam node {
-  BackgroundColor #FFFFFF
-  BorderColor #556080
-}
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title broker.rack — P0 복제본을 zone에 분산 (한 zone 장애 견딤)
-
-node "Zone A" {
-  rectangle "Broker 1\nP0 리더" as a
-}
-node "Zone B" {
-  rectangle "Broker 2\nP0 팔로워" as b
-}
-node "Zone C (장애)" #FBECEC {
-  rectangle "Broker 3\nP0 팔로워" as c
-}
-a --> b : 복제
-a ..> c : 복제 중단
-note bottom of b : Zone C가 죽어도 A, B에\n복제본이 남아 리더 선출 가능
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="296" viewBox="0 0 440 296" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="296" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">broker.rack — P0 복제본을 zone에 분산 (한 zone 장애 견딤)</text>
+<rect x="15" y="40" width="120" height="124" rx="8" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="25" y="56" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">Zone A</text>
+<rect x="23" y="62" width="104" height="92" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="75.0" y="78" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">Broker 1</text>
+<rect x="33" y="86" width="84" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="75.0" y="117.75" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">P0 리더</text>
+<rect x="160" y="40" width="120" height="124" rx="8" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="170" y="56" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">Zone B</text>
+<rect x="168" y="62" width="104" height="92" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="78" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">Broker 2</text>
+<rect x="178" y="86" width="84" height="56" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="117.75" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">P0 팔로워</text>
+<rect x="305" y="40" width="120" height="124" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="315" y="56" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold">Zone C (장애)</text>
+<rect x="313" y="62" width="104" height="92" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="365.0" y="78" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">Broker 3</text>
+<rect x="323" y="86" width="84" height="56" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="365.0" y="117.75" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">P0 팔로워</text>
+<line x1="117" y1="114" x2="176" y2="114" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="147" y="107" font-size="10.5" fill="#333" text-anchor="middle">복제</text>
+<polyline points="60,142 60,196 365,196 365,144" fill="none" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="271.955" y="189.5" width="56.09" height="15.5" fill="#FFFFFF"/>
+<text x="300" y="200" font-size="10.5" fill="#333" text-anchor="middle">복제 중단</text>
+<rect x="95" y="236" width="250" height="44" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220.0" y="254" font-size="10.5" fill="#5A4300" text-anchor="middle">Zone C에 장애가 발생해도 A, B에</text>
+<text x="220.0" y="270" font-size="10.5" fill="#5A4300" text-anchor="middle">복제본이 남아 리더 선출 가능</text>
+<line x1="220" y1="164" x2="220" y2="236" stroke="#E0A000" stroke-dasharray="3 3"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML broker.rack 복제본 zone 분산](/img/c4/kf-rack-place.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-rack-place.svg" alt="broker.rack으로 P0 리더와 팔로워를 Zone A, B, C에 나눠 두어 Zone C 장애에도 A, B의 복제본으로 리더 선출이 가능한 배치" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 한 가지 더, 멀티 AZ에서는 **크로스 AZ 트래픽 비용**이 문제입니다. 컨슈머가 항상 리더(다른 zone일 수 있음)에서 읽으면 비용이 커집니다. 이때 **`client.rack`** 을 지정하고 브로커에 rack-aware replica selector를 활성화하면, 컨슈머가 **같은 zone의 팔로워에서 읽어**(follower fetching) 크로스 AZ 트래픽을 줄일 수 있습니다.
 
 <mark>`broker.rack`은 복제본을 zone에 분산해 영역 장애를 견디게 하고, `client.rack`(팔로워 읽기)은 크로스 AZ 트래픽 비용을 줄입니다.</mark>
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam node {
-  BackgroundColor #FFFFFF
-  BorderColor #556080
-}
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title client.rack — 같은 zone 팔로워에서 읽어 크로스 AZ 절감
-
-node "Zone A" {
-  rectangle "리더 P0" as L
-  actor "컨슈머 (rack=A)" as ca
-}
-node "Zone B" {
-  rectangle "팔로워 P0" as F
-  actor "컨슈머 (rack=B)" as cb
-}
-ca --> L : 같은 zone 리더에서 읽기
-cb --> F : 같은 zone 팔로워에서 읽기
-L --> F : 복제
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="250" viewBox="0 0 460 250" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="460" height="250" fill="#FFFFFF"/>
+<text x="230.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">client.rack — 같은 zone 팔로워에서 읽어 크로스 AZ 절감</text>
+<rect x="15" y="40" width="205" height="196" rx="8" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="25" y="56" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">Zone A</text>
+<rect x="240" y="40" width="205" height="196" rx="8" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="250" y="56" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">Zone B</text>
+<rect x="27" y="66" width="110" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="82.0" y="86.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">컨슈머 (rack=A)</text>
+<rect x="252" y="66" width="110" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="307.0" y="86.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">컨슈머 (rack=B)</text>
+<rect x="27" y="176" width="110" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="82.0" y="199.75" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">리더 P0</text>
+<rect x="252" y="176" width="110" height="40" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="307.0" y="199.75" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">팔로워 P0</text>
+<line x1="82" y1="100" x2="82" y2="174" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="90" y="141" font-size="10.5" fill="#333" text-anchor="start">같은 zone 리더에서 읽기</text>
+<line x1="307" y1="100" x2="307" y2="174" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="315" y="141" font-size="10.5" fill="#333" text-anchor="start">같은 zone 팔로워에서 읽기</text>
+<line x1="137" y1="196" x2="250" y2="196" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="194" y="189" font-size="10.5" fill="#333" text-anchor="middle">복제</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML client.rack 팔로워 읽기](/img/c4/kf-rack.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-rack.svg" alt="client.rack을 지정한 컨슈머가 각자 같은 zone의 리더와 팔로워에서 읽어 크로스 AZ 트래픽을 줄이는 구성" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 컨슈머 그룹과 그룹 코디네이터 {#coordinator}
 
@@ -390,32 +496,40 @@ L --> F : 복제
 <mark>그룹 코디네이터(브로커)는 조율만 하고, 파티션 할당 계산은 코디네이터가 지정한 그룹 리더(컨슈머)가 합니다 — 둘은 다른 주체입니다.</mark>
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title 그룹 코디네이터(브로커) vs 그룹 리더(컨슈머)
-
-rectangle "그룹 코디네이터 (브로커)\n조인, 이탈, 오프셋 조율" as gc
-rectangle "그룹 리더 (컨슈머 C1)\n파티션 할당 계산" as gl
-rectangle "멤버 (컨슈머 C2)" as c2
-rectangle "멤버 (컨슈머 C3)" as c3
-
-gc --> gl : 리더로 지정 + 멤버 목록
-gl --> gc : 할당 결과 제출 (SyncGroup)
-gc --> c2 : 배정 파티션 전달
-gc --> c3 : 배정 파티션 전달
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="470" height="300" viewBox="0 0 470 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="470" height="300" fill="#FFFFFF"/>
+<text x="235.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">그룹 코디네이터(브로커) vs 그룹 리더(컨슈머)</text>
+<rect x="15" y="50" width="160" height="236" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="95.0" y="164.5" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">그룹 코디네이터 (브로커)</text>
+<text x="95.0" y="179.0" font-size="10.5" fill="#555" text-anchor="middle">조인, 이탈, 오프셋 조율</text>
+<rect x="310" y="50" width="145" height="86" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="382.5" y="89.5" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">그룹 리더 (컨슈머 C1)</text>
+<text x="382.5" y="104.0" font-size="10.5" fill="#555" text-anchor="middle">파티션 할당 계산</text>
+<rect x="310" y="166" width="145" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="382.5" y="189.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">멤버 (컨슈머 C2)</text>
+<rect x="310" y="236" width="145" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="382.5" y="259.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">멤버 (컨슈머 C3)</text>
+<line x1="175" y1="76" x2="308" y2="76" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="242" y="70" font-size="10.5" fill="#333" text-anchor="middle">리더로 지정 + 멤버 목록</text>
+<line x1="310" y1="124" x2="177" y2="124" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="242" y="104" font-size="10.5" fill="#333" text-anchor="middle">할당 결과 제출</text>
+<text x="242" y="117" font-size="10.5" fill="#333" text-anchor="middle">(SyncGroup)</text>
+<line x1="175" y1="186" x2="308" y2="186" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="242" y="180" font-size="10.5" fill="#333" text-anchor="middle">배정 파티션 전달</text>
+<line x1="175" y1="256" x2="308" y2="256" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="242" y="250" font-size="10.5" fill="#333" text-anchor="middle">배정 파티션 전달</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 그룹 코디네이터와 그룹 리더](/img/c4/kf-coord.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-coord.svg" alt="그룹 코디네이터(브로커)가 그룹 리더 C1을 지정하고 할당 결과를 받아 멤버 C2, C3에 배정 파티션을 전달하는 관계" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 멤버십 유지 — 하트비트, `session.timeout`, `max.poll.interval`
 
@@ -425,31 +539,37 @@ gc --> c3 : 배정 파티션 전달
 - **poll 주기 — 처리 스레드가 보냄.** `max.poll.interval.ms`(기본 5분) 안에 `poll()`을 다시 호출하지 않으면, 하트비트가 살아 있어도 **처리가 멈춘 것으로 보고** 그 멤버를 그룹에서 제외합니다. → **실제 처리 진행** 신호.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title 멤버 생존을 판단하는 두 신호
-
-rectangle "컨슈머 인스턴스" {
-  rectangle "하트비트 스레드" as hb
-  rectangle "처리 스레드 (poll 루프)" as pl
-}
-rectangle "그룹 코디네이터" as gc
-
-hb --> gc : Heartbeat (기본 3초 주기)\n끊기고 session.timeout(45초) 지나면 사망 판정
-pl --> gc : poll 재호출\nmax.poll.interval(5분) 넘기면 처리 정지 판정
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="280" viewBox="0 0 480 280" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="480" height="280" fill="#FFFFFF"/>
+<text x="240.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">멤버 생존을 판단하는 두 신호</text>
+<rect x="15" y="42" width="165" height="224" rx="8" fill="#FFFAF2" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="27" y="60" font-size="11" fill="#7A5200" text-anchor="start" font-weight="bold">컨슈머 인스턴스</text>
+<rect x="25" y="96" width="145" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="97.5" y="119.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">하트비트 스레드</text>
+<rect x="25" y="206" width="145" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="97.5" y="229.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">처리 스레드 (poll 루프)</text>
+<rect x="370" y="60" width="100" height="200" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="420.0" y="163.75" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">그룹 코디네이터</text>
+<line x1="170" y1="116" x2="368" y2="116" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="275" y="72" font-size="10.5" fill="#333" text-anchor="middle">Heartbeat (기본 3초 주기)</text>
+<text x="275" y="86" font-size="10.5" fill="#333" text-anchor="middle">중단되고 session.timeout(45초)</text>
+<text x="275" y="100" font-size="10.5" fill="#333" text-anchor="middle">지나면 사망 판정</text>
+<line x1="170" y1="226" x2="368" y2="226" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="275" y="182" font-size="10.5" fill="#333" text-anchor="middle">poll 재호출</text>
+<text x="275" y="196" font-size="10.5" fill="#333" text-anchor="middle">max.poll.interval(5분) 넘기면</text>
+<text x="275" y="210" font-size="10.5" fill="#333" text-anchor="middle">처리 정지 판정</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 하트비트와 poll 두 신호](/img/c4/kf-liveness.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-liveness.svg" alt="컨슈머 인스턴스의 하트비트 스레드와 처리 스레드가 각각 Heartbeat와 poll 재호출로 그룹 코디네이터에 생존과 진행을 알리는 두 신호" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 둘을 나눈 이유가 있습니다. 하트비트만 있으면, 메시지 하나 처리가 오래 걸려(`poll` 사이가 길어져) 실제로는 일을 못 하는데도 "살아 있다"고 오인할 수 있습니다. 그래서 **생존(하트비트)** 과 **진행(poll)** 을 분리해 각각 감시합니다.
 
@@ -460,41 +580,90 @@ pl --> gc : poll 재호출\nmax.poll.interval(5분) 넘기면 처리 정지 판�
 멤버가 추가, 이탈하거나 파티션이 늘면, 파티션을 다시 나눠 맡는 **리밸런싱(rebalancing)** 이 발생합니다. 아래는 조인, 하트비트, 이탈의 전체 흐름입니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-autonumber
-participant "컨슈머 C1" as c1
-participant "컨슈머 C2" as c2
-participant "그룹 코디네이터\n(한 브로커)" as gc
-
-== 그룹 조인 ==
-c1 -> gc : JoinGroup
-c2 -> gc : JoinGroup
-gc -> c1 : 그룹 리더로 지정 + 멤버, 파티션 목록
-c1 -> c1 : 파티션 할당 계산 (assignor)
-c1 -> gc : SyncGroup(할당안)
-gc -> c1 : 배정된 파티션
-gc -> c2 : 배정된 파티션
-
-== 정상 운영 ==
-c1 -> gc : Heartbeat (heartbeat.interval.ms 주기)
-c2 -> gc : Heartbeat
-
-== C2 이탈 ==
-c2 -x gc : Heartbeat 끊김
-... session.timeout.ms 경과 ...
-gc -> c1 : 리밸런스 시작 — C2 파티션 재배정
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="526" viewBox="0 0 440 526" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="526" fill="#FFFFFF"/>
+<g transform="translate(0,-22)">
+<rect x="7.0" y="36" width="110" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="62.0" y="59.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">컨슈머 C1</text>
+<line x1="62" y1="76" x2="62" y2="534" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="135.0" y="36" width="110" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="190.0" y="59.75" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">컨슈머 C2</text>
+<line x1="190" y1="76" x2="190" y2="534" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="305.0" y="36" width="110" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="360.0" y="52.75" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">그룹 코디네이터</text>
+<text x="360.0" y="66.75" font-size="10" fill="#555" text-anchor="middle">(한 브로커)</text>
+<line x1="360" y1="76" x2="360" y2="534" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<line x1="10" y1="98" x2="430" y2="98" stroke="#BBBBBB"/>
+<rect x="186.95499999999998" y="88" width="66.09" height="20" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="102" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">그룹 조인</text>
+<line x1="62" y1="134" x2="359" y2="134" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="74" cy="123" r="8" fill="#4C7FE0"/>
+<text x="74" y="126.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<text x="87" y="128" font-size="10.5" fill="#333" text-anchor="start">JoinGroup</text>
+<line x1="190" y1="164" x2="359" y2="164" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="202" cy="153" r="8" fill="#4C7FE0"/>
+<text x="202" y="156.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<text x="215" y="158" font-size="10.5" fill="#333" text-anchor="start">JoinGroup</text>
+<line x1="360" y1="194" x2="63" y2="194" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="74" cy="183" r="8" fill="#4C7FE0"/>
+<text x="74" y="186.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<text x="87" y="188" font-size="10.5" fill="#333" text-anchor="start">그룹 리더로 지정 + 멤버, 파티션 목록</text>
+<polyline points="62,210 90,210 90,226 63,226" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="48" cy="218" r="8" fill="#4C7FE0"/>
+<text x="48" y="221.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+<text x="96" y="222" font-size="10.5" fill="#333" text-anchor="start">파티션 할당 계산 (assignor)</text>
+<line x1="62" y1="262" x2="359" y2="262" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="74" cy="251" r="8" fill="#4C7FE0"/>
+<text x="74" y="254.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+<text x="87" y="256" font-size="10.5" fill="#333" text-anchor="start">SyncGroup(할당안)</text>
+<line x1="360" y1="292" x2="63" y2="292" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="74" cy="281" r="8" fill="#4C7FE0"/>
+<text x="74" y="284.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+<text x="87" y="286" font-size="10.5" fill="#333" text-anchor="start">배정된 파티션</text>
+<line x1="360" y1="322" x2="191" y2="322" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="202" cy="311" r="8" fill="#4C7FE0"/>
+<text x="202" y="314.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">7</text>
+<text x="215" y="316" font-size="10.5" fill="#333" text-anchor="start">배정된 파티션</text>
+<line x1="10" y1="350" x2="430" y2="350" stroke="#BBBBBB"/>
+<rect x="186.95499999999998" y="340" width="66.09" height="20" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="354" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">정상 운영</text>
+<line x1="62" y1="386" x2="359" y2="386" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="74" cy="375" r="8" fill="#4C7FE0"/>
+<text x="74" y="378.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">8</text>
+<text x="87" y="380" font-size="10.5" fill="#333" text-anchor="start">Heartbeat (heartbeat.interval.ms 주기)</text>
+<line x1="190" y1="416" x2="359" y2="416" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="202" cy="405" r="8" fill="#4C7FE0"/>
+<text x="202" y="408.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">9</text>
+<text x="215" y="410" font-size="10.5" fill="#333" text-anchor="start">Heartbeat</text>
+<line x1="10" y1="444" x2="430" y2="444" stroke="#BBBBBB"/>
+<rect x="191.365" y="434" width="57.269999999999996" height="20" rx="4" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="448" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">C2 이탈</text>
+<line x1="190" y1="480" x2="330" y2="480" stroke="#888" stroke-width="1.2"/>
+<path d="M325,475 L335,485 M325,485 L335,475" stroke="#D06A86" stroke-width="2"/>
+<circle cx="202" cy="469" r="8" fill="#4C7FE0"/>
+<text x="202" y="472.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">10</text>
+<text x="215" y="474" font-size="10.5" fill="#333" text-anchor="start">Heartbeat 중단</text>
+<rect x="120" y="490" width="200" height="18" fill="#FFFFFF"/>
+<text x="220" y="503" font-size="10.5" fill="#888" text-anchor="middle">... session.timeout.ms 경과 ...</text>
+<line x1="360" y1="530" x2="63" y2="530" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="74" cy="519" r="8" fill="#4C7FE0"/>
+<text x="74" y="522.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">11</text>
+<text x="87" y="524" font-size="10.5" fill="#333" text-anchor="start">리밸런스 시작 — C2 파티션 재배정</text>
+</g>
+</svg>
 ```
 
 </details>
 
-![PlantUML 컨슈머 그룹 리밸런싱 흐름](/img/c4/kf-rebalance.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kf-rebalance.svg" alt="컨슈머 C1, C2가 그룹에 조인해 파티션을 배정받고, 하트비트를 보내다가 C2의 하트비트가 중단되면 session.timeout.ms 경과 후 리밸런스가 시작되는 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
-리밸런싱을 **어떻게** 하느냐가 안정성을 크게 좌우합니다.
+리밸런싱을 **어떻게** 하는지가 안정성을 크게 좌우합니다.
 
 - **eager(기본, RangeAssignor 등)** — 리밸런스가 시작되면 **모든 컨슈머가 자기 파티션을 전부 반납**하고, 다시 배정받을 때까지 **전원이 멈춥니다(stop-the-world).** 멤버 하나가 잠깐 재시작해도 그룹 전체가 처리를 멈추는 게 문제입니다.
 - **cooperative-sticky(CooperativeStickyAssignor)** — **옮겨야 할 파티션만** 반납하고, 나머지는 계속 처리합니다(incremental). 리밸런스를 두 번에 나눠 하지만 전체 정지가 없어 훨씬 부드럽습니다. 협력적 리밸런싱을 사용하려면 `partition.assignment.strategy`를 이 assignor로 변경합니다.

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="230" viewBox="0 0 440 230" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="230" fill="#FFFFFF"/>
+<rect x="16" y="14" width="408" height="84" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="28" y="32" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">Kafka 트랜잭션 — 함께 commit / abort</text>
+<rect x="32" y="44" width="120" height="38" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="92.0" y="67.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">토픽 A 읽기</text>
+<rect x="160" y="44" width="120" height="38" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="220.0" y="67.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">토픽 B 쓰기</text>
+<rect x="288" y="44" width="120" height="38" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="348.0" y="67.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">오프셋 커밋</text>
+<rect x="40" y="124" width="170" height="38" rx="6" fill="#FFEBEE" stroke="#D06A86"/>
+<text x="125.0" y="147.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">외부 DB 쓰기</text>
+<line x1="125" y1="162" x2="125" y2="176" stroke="#E0A000" stroke-dasharray="3 3"/>
+<rect x="40" y="176" width="170" height="40" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="125.0" y="192.5" font-size="10.5" fill="#5A4300" text-anchor="middle">트랜잭션 밖 — abort해도</text>
+<text x="125.0" y="207.5" font-size="10.5" fill="#5A4300" text-anchor="middle">롤백되지 않음</text>
+<rect x="230" y="124" width="170" height="38" rx="6" fill="#FFEBEE" stroke="#D06A86"/>
+<text x="315.0" y="147.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">외부 API 호출</text>
+<line x1="315" y1="162" x2="315" y2="176" stroke="#E0A000" stroke-dasharray="3 3"/>
+<rect x="230" y="176" width="170" height="40" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="315.0" y="192.5" font-size="10.5" fill="#5A4300" text-anchor="middle">트랜잭션 밖 — 재처리 시</text>
+<text x="315.0" y="207.5" font-size="10.5" fill="#5A4300" text-anchor="middle">중복 호출 가능</text>
+</svg>

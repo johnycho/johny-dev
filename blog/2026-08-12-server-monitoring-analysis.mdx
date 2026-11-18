@@ -22,40 +22,66 @@ import {AnimatedLineChart, AnimatedBars} from '@site/src/components/blog/Monitor
 
 <mark>앞의 셋(트래픽, 지연, 에러)은 "사용자의 증상", 포화도는 "원인 후보"입니다.</mark> 그래서 증상 셋을 먼저 읽고, 포화도와 리소스로 내려가며 원인 범위를 줄입니다.
 
-```mermaid
-flowchart LR
-    subgraph 증상["증상 — 사용자가 겪는 것"]
-        T["트래픽"]
-        L["지연"]
-        E["에러"]
-    end
-    subgraph 원인["원인 후보 — 자원"]
-        S["포화도<br/>CPU, 메모리, 풀"]
-    end
-    증상 --> 원인
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="250" viewBox="0 0 440 250" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="250" fill="#FFFFFF"/>
+<rect x="20" y="15" width="400" height="95" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="32" y="33" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">증상 — 사용자가 겪는 것</text>
+<rect x="40" y="45" width="110" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="95.0" y="69.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">트래픽</text>
+<rect x="165" y="45" width="110" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="69.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">지연</text>
+<rect x="290" y="45" width="110" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="345.0" y="69.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">에러</text>
+<line x1="220" y1="110" x2="220" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="140" width="400" height="95" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="32" y="158" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">원인 후보 — 자원</text>
+<rect x="135" y="168" width="170" height="50" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="190.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">포화도</text>
+<text x="220.0" y="206.0" font-size="10.5" fill="#555" text-anchor="middle">CPU, 메모리, 풀</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/monitoring-symptom-cause.svg" alt="사용자가 겪는 증상인 트래픽, 지연, 에러에서 원인 후보인 자원 포화도(CPU, 메모리, 풀)로 이어지는 관계" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 비슷한 틀로 **RED**(Rate, Errors, Duration — 요청 흐름 관점)와 **USE**(Utilization, Saturation, Errors — 자원 관점)도 자주 사용됩니다. 이름만 다를 뿐 "사용자 쪽 증상"과 "자원 쪽 원인"을 나눠 본다는 발상은 같습니다(구글 골든 시그널은 사용자 경험, USE는 자원, RED는 요청 중심이라 **상호 보완적**이라 실무에선 조합해 사용합니다). 어떤 틀을 사용하든 <mark>중요한 건 "무엇을 먼저 보고, 어디로 범위를 줄여 갈지" 순서를 정해 두는 것</mark>입니다.
 
 특히 네 지표는 서로 독립이 아니라 **인과 관계**로 이어집니다. 과부하형 장애의 전형은 **트래픽 급증 → 포화도 상승 → 지연 증가 → 에러 발생**입니다(물론 DB 데드락, 외부 API 장애처럼 트래픽과 무관하게 에러가 먼저 나는 경우도 있습니다). 그래서 대시보드도 이 순서대로 **트래픽 → 포화도 → 지연 → 에러**로 배치하면, 장애 때 눈이 자연스럽게 원인 추적 방향을 따라갑니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-start
-:트래픽 급증;
-:포화도 상승;
-:지연 증가;
-:에러 발생;
-stop
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="76" viewBox="0 0 440 76" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="76" fill="#FFFFFF"/>
+<rect x="14.0" y="20" width="88" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="58" y="42.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">트래픽 급증</text>
+<rect x="122.0" y="20" width="88" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="166" y="42.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">포화도 상승</text>
+<line x1="102" y1="38" x2="121" y2="38" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="230.0" y="20" width="88" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="274" y="42.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">지연 증가</text>
+<line x1="210" y1="38" x2="229" y2="38" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="338.0" y="20" width="88" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="382" y="42.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">에러 발생</text>
+<line x1="318" y1="38" x2="337" y2="38" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML 과부하 인과 관계 — 트래픽, 포화도, 지연, 에러](/img/c4/pu-overload-chain.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/overload-chain.svg" alt="트래픽 급증, 포화도 상승, 지연 증가, 에러 발생으로 이어지는 과부하 인과 관계" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 2. 지연은 "평균"이 아니라 "P99"로 본다
 
@@ -133,12 +159,36 @@ stop
 
 **병목(bottleneck)** — 병목 지점 앞에는 대기가 쌓이고 뒤는 여유가 있습니다. <mark>전체 처리량은 언제나 가장 느린 한 단계로 제한됩니다 — 그 단계보다 빨라질 수 없습니다.</mark> 각 단계 처리량을 나란히 보면, 앞단은 유입만큼 처리되는데 특정 단계에서 뚝 떨어지는 지점이 원인입니다.
 
-```mermaid
-flowchart LR
-    IN["유입<br/>100 rps"] --> A["A단계<br/>여유 100"]
-    A --> B["B단계 ⚠️<br/>한계 40"]
-    B --> C["C단계<br/>여유 40"]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="90" viewBox="0 0 440 90" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="90" fill="#FFFFFF"/>
+<rect x="12" y="22" width="92" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="58.0" y="42.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">유입</text>
+<text x="58.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">100 rps</text>
+<line x1="104" y1="45" x2="119" y2="45" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="120" y="22" width="92" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="166.0" y="42.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">A단계</text>
+<text x="166.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">여유 100</text>
+<line x1="212" y1="45" x2="227" y2="45" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="22" width="92" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="274.0" y="42.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">B단계 ⚠️</text>
+<text x="274.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">한계 40</text>
+<line x1="320" y1="45" x2="335" y2="45" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="336" y="22" width="92" height="46" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="382.0" y="42.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">C단계</text>
+<text x="382.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">여유 40</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/monitoring-bottleneck-stage.svg" alt="100 rps 유입이 여유 100인 A단계를 지나 한계 40인 B단계에서 막히고 C단계로 이어지는 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 B단계가 40까지만 처리하니, C단계가 아무리 여유로워도 전체 처리량은 40으로 제한되고 B 앞에는 대기가 쌓입니다.
 
@@ -171,16 +221,38 @@ B단계가 40까지만 처리하니, C단계가 아무리 여유로워도 전체
 
 **타임아웃 예산(timeout budget)** — 하나의 요청이 게이트웨이 → 백엔드 → DB처럼 여러 계층을 거칠 때, 각 계층의 타임아웃을 **외부일수록 길게, 안쪽일수록 짧게** 차등 설정하는 것입니다. 요청 하나에 허용된 전체 시간(예산)을 계층들이 나눠 갖되, **안쪽이 항상 외부보다 먼저 타임아웃되도록** 조금씩 여유를 남깁니다. 모든 계층에 같은 값을 설정하면, 외부가 기다리다 포기한 뒤에도 안쪽은 그 사실을 모른 채 계속 일해 자원을 낭비합니다.
 
-```mermaid
-flowchart LR
-    G["게이트웨이<br/>3.0s"] --> B["백엔드<br/>2.5s"] --> D["DB<br/>2.0s"]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="90" viewBox="0 0 440 90" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="90" fill="#FFFFFF"/>
+<rect x="20" y="22" width="110" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="75.0" y="42.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">게이트웨이</text>
+<text x="75.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">3.0s</text>
+<line x1="130" y1="45" x2="164" y2="45" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="165" y="22" width="110" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="42.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">백엔드</text>
+<text x="220.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">2.5s</text>
+<line x1="275" y1="45" x2="309" y2="45" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="310" y="22" width="110" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="365.0" y="42.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">DB</text>
+<text x="365.0" y="58.0" font-size="10.5" fill="#555" text-anchor="middle">2.0s</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/monitoring-timeout-chain.svg" alt="게이트웨이 3.0s, 백엔드 2.5s, DB 2.0s로 안쪽일수록 짧아지는 타임아웃 예산" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 안쪽(DB)이 먼저 타임아웃되어야, 외부(게이트웨이)가 **"안쪽이 시간 초과됐다"는 명확한 실패 응답**을 제때 받아 정상적으로 처리(에러 반환, 대체 동작)할 수 있습니다. 반대로 외부가 먼저 타임아웃되면, 이미 손을 놓은 요청을 안쪽은 모른 채 계속 처리해 자원만 낭비합니다.
 
 ## 5. 세 가지 시간 — 평시, 장애 중, 장애 후
 
-같은 지표라도 **언제 보느냐**에 따라 읽는 법이 다릅니다. 예를 들어 하루 트래픽은 대개 이와 같은 "정상 곡선"을 그립니다 — 이 모양을 외워둬야 오늘의 이상이 눈에 들어옵니다.
+같은 지표라도 **언제 보는지**에 따라 읽는 법이 다릅니다. 예를 들어 하루 트래픽은 대개 이와 같은 "정상 곡선"을 그립니다 — 이 모양을 외워둬야 오늘의 이상이 눈에 들어옵니다.
 
 <AnimatedLineChart
   title="평시 트래픽 — 이 '정상 곡선'을 외워둬야 이상이 보인다"

@@ -16,11 +16,32 @@ date: 2026-08-18T15:00:00
 
 Kafka의 파티션은 **끝에만 덧붙이는(append-only) 로그 파일**입니다. 쓰기는 항상 로그의 맨 뒤에, 읽기는 오프셋 위치부터 앞으로 순차적으로 진행됩니다.
 
-```mermaid
-flowchart LR
-    P["프로듀서"] -->|맨 뒤에 append| L["파티션 로그<br/>msg0, msg1, …, msgN →"]
-    L -->|offset부터 순차 read| C["컨슈머"]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="250" viewBox="0 0 440 250" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="250" fill="#FFFFFF"/>
+<rect x="150" y="15" width="140" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="37.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">프로듀서</text>
+<line x1="220" y1="51" x2="220" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="80" font-size="10.5" fill="#333" text-anchor="start">맨 뒤에 append</text>
+<rect x="90" y="100" width="260" height="50" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="122.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">파티션 로그</text>
+<text x="220.0" y="138.0" font-size="10.5" fill="#555" text-anchor="middle">msg0, msg1, …, msgN →</text>
+<line x1="220" y1="150" x2="220" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="179" font-size="10.5" fill="#333" text-anchor="start">offset부터 순차 read</text>
+<rect x="150" y="199" width="140" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="221.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨슈머</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kafka-append-log.svg" alt="프로듀서가 파티션 로그 맨 뒤에 append하고 컨슈머가 offset부터 순차로 읽는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>수정, 삭제 없이 뒤에만 쌓고 순서대로 읽으니, 디스크가 가장 잘하는 순차 접근만 쓰게 됩니다.</mark> 덤으로 로그가 남아 여러 소비자가 재생할 수 있는 것도 이 구조 덕분입니다.
 
@@ -36,15 +57,52 @@ Kafka 브로커는 **자체 캐시를 크게 만들지 않고 OS 페이지 캐�
 
 Kafka는 `sendfile` 시스템 콜로 **페이지 캐시에서 소켓(NIC)으로 커널 안에서 직접** 보냅니다. 유저 공간 복사를 건너뛰죠.
 
-```mermaid
-flowchart TB
-    subgraph T["전통 경로 (복사 4회 + 컨텍스트 스위치)"]
-        d1["디스크"] --> pc1["페이지 캐시"] --> app["애플리케이션 버퍼<br/>(유저 공간)"] --> sk["소켓 버퍼"] --> nic1["NIC"]
-    end
-    subgraph Z["zero-copy (sendfile)"]
-        d2["디스크"] --> pc2["페이지 캐시"] -->|sendfile| nic2["NIC"]
-    end
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="360" viewBox="0 0 440 360" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="360" fill="#FFFFFF"/>
+<rect x="10" y="10" width="205" height="340" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="22" y="28" font-size="11" fill="#333" text-anchor="start" font-weight="bold"></text>
+<text x="22" y="30" font-size="11" fill="#333" text-anchor="start" font-weight="bold">전통 경로</text>
+<text x="22" y="45" font-size="11" fill="#333" text-anchor="start" font-weight="bold">(복사 4회 + 컨텍스트 스위치)</text>
+<rect x="225" y="10" width="205" height="340" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="237" y="28" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold"></text>
+<text x="237" y="30" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">zero-copy (sendfile)</text>
+<rect x="37" y="60" width="150" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="112.0" y="82.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">디스크</text>
+<line x1="112" y1="96" x2="112" y2="117" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="37" y="118" width="150" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="112.0" y="140.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">페이지 캐시</text>
+<line x1="112" y1="154" x2="112" y2="175" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="37" y="176" width="150" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="112.0" y="196.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">애플리케이션 버퍼</text>
+<text x="112.0" y="212.0" font-size="10.5" fill="#555" text-anchor="middle">(유저 공간)</text>
+<line x1="112" y1="222" x2="112" y2="241" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="37" y="242" width="150" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="112.0" y="264.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">소켓 버퍼</text>
+<line x1="112" y1="278" x2="112" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="37" y="300" width="150" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="112.0" y="322.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">NIC</text>
+<rect x="252" y="60" width="150" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="327.0" y="82.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">디스크</text>
+<rect x="252" y="118" width="150" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="327.0" y="140.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">페이지 캐시</text>
+<rect x="252" y="300" width="150" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="327.0" y="322.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">NIC</text>
+<line x1="327" y1="96" x2="327" y2="117" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="327" y1="154" x2="327" y2="299" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="335" y="232" font-size="10.5" fill="#2E6B2E" text-anchor="start" font-weight="bold">sendfile</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kafka-zero-copy-path.svg" alt="전통 경로는 디스크, 페이지 캐시, 애플리케이션 버퍼, 소켓 버퍼를 거쳐 NIC로 가고, zero-copy는 페이지 캐시에서 sendfile로 바로 NIC로 가는 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>페이지 캐시에 한 번 올라온 데이터를 유저 공간으로 다시 퍼 나르지 않고 그대로 네트워크로 전송해, 전송 속도가 네트워크 한계에 가까워집니다.</mark>
 
@@ -68,15 +126,41 @@ compression.type=lz4   # 배치 단위로 압축(lz4·snappy·zstd)
 
 한 토픽을 여러 **파티션**으로 나눠 서로 다른 브로커와 디스크에 분산합니다. 쓰기와 읽기가 파티션별로 병렬로 발생하고, **컨슈머 그룹**은 파티션을 나눠 병렬 소비합니다.
 
-```mermaid
-flowchart TB
-    T["토픽"] --> P0["파티션 0"]
-    T --> P1["파티션 1"]
-    T --> P2["파티션 2"]
-    P0 --> C0["컨슈머 A"]
-    P1 --> C1["컨슈머 B"]
-    P2 --> C2["컨슈머 C"]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="200" viewBox="0 0 440 200" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="200" fill="#FFFFFF"/>
+<rect x="160" y="15" width="120" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="37.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">토픽</text>
+<path d="M220,51 L220,68 L85,68 L85,84" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="25" y="85" width="120" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="85.0" y="107.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">파티션 0</text>
+<line x1="85" y1="121" x2="85" y2="149" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="25" y="150" width="120" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="85.0" y="172.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨슈머 A</text>
+<path d="M220,51 L220,68 L220,68 L220,84" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="160" y="85" width="120" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="107.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">파티션 1</text>
+<line x1="220" y1="121" x2="220" y2="149" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="160" y="150" width="120" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="172.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨슈머 B</text>
+<path d="M220,51 L220,68 L355,68 L355,84" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="295" y="85" width="120" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="355.0" y="107.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">파티션 2</text>
+<line x1="355" y1="121" x2="355" y2="149" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="295" y="150" width="120" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="355.0" y="172.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨슈머 C</text>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kafka-partition-consumer.svg" alt="토픽의 파티션 0, 1, 2를 컨슈머 A, B, C가 하나씩 맡는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>처리량이 부족하면 파티션(과 컨슈머)을 늘려 선형에 가깝게 확장합니다 — 순서는 파티션 안에서만 보장됩니다.</mark>
 

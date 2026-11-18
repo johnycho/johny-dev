@@ -125,28 +125,41 @@ public Report generate(ReportType type) {
 그래서 충돌할 때의 기본값이 중요합니다. <mark>원칙이 충돌하면 기본값은 "일단 단순하게(KISS, YAGNI) 유지하고, 중복이 실제로 아플 때 통합한다(DRY)"입니다.</mark>
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-start
-:중복 코드 발견;
-if (정말 같은 지식인가?) then (Y)
-  if (세 번 이상 반복됐나?) then (Y)
-    :공통화, DRY;
-  else (아직)
-    :일단 미룬다, YAGNI;
-  endif
-else (N, 우연한 중복)
-  :그대로 둔다, KISS;
-endif
-stop
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="246" viewBox="0 0 440 246" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="246" fill="#FFFFFF"/>
+<rect x="50.0" y="16" width="180" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="140" y="36.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">중복 코드 발견</text>
+<line x1="140" y1="48" x2="140" y2="67" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="50.0" y="68" width="180" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="140" y="89.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">정말 같은 지식인가?</text>
+<line x1="230" y1="85" x2="309" y2="85" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="270" y="79" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">N, 우연한 중복</text>
+<rect x="310.0" y="68" width="110" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="365" y="89.0" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">그대로 둔다, KISS</text>
+<line x1="140" y1="102" x2="140" y2="131" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="148" y="121" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">Y</text>
+<rect x="50.0" y="132" width="180" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="140" y="153.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">세 번 이상 반복됐나?</text>
+<line x1="230" y1="149" x2="309" y2="149" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="270" y="143" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">N, 아직</text>
+<rect x="310.0" y="132" width="110" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="365" y="153.0" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">일단 미룬다, YAGNI</text>
+<line x1="140" y1="166" x2="140" y2="195" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="148" y="185" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">Y</text>
+<rect x="50.0" y="196" width="180" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="140" y="217.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">공통화, DRY</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 삼세번 규칙 결정 트리](/img/c4/pu-kiss-decision.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kiss-decision.svg" alt="중복 코드를 발견했을 때 같은 지식인지, 세 번 이상 반복됐는지에 따라 KISS, YAGNI, DRY로 나뉘는 판단 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ---
 

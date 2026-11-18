@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="232" viewBox="0 0 460 232" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="460" height="232" fill="#FFFFFF"/>
+<rect x="12" y="16" width="436" height="92" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="24" y="34" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">순차 접근 — 위치를 한 번만 정한다</text>
+<rect x="21" y="48" width="60" height="46" rx="6" fill="#FFE0B2" stroke="#E0A000"/>
+<text x="51.0" y="67.3" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">탐색+회전</text>
+<text x="51.0" y="82.1" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">(1회)</text>
+<rect x="93" y="48" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="123.0" y="74.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록1</text>
+<line x1="81" y1="71" x2="92" y2="71" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="165" y="48" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="195.0" y="74.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록2</text>
+<line x1="153" y1="71" x2="164" y2="71" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="237" y="48" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="267.0" y="74.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록3</text>
+<line x1="225" y1="71" x2="236" y2="71" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="12" y="124" width="436" height="92" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="24" y="142" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">랜덤 접근 — 블록마다 위치를 다시 정한다</text>
+<rect x="21" y="156" width="60" height="46" rx="6" fill="#FFE0B2" stroke="#E0A000"/>
+<text x="51.0" y="182.7" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">탐색+회전</text>
+<rect x="93" y="156" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="123.0" y="182.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록A</text>
+<line x1="81" y1="179" x2="92" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="165" y="156" width="60" height="46" rx="6" fill="#FFE0B2" stroke="#E0A000"/>
+<text x="195.0" y="182.7" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">탐색+회전</text>
+<line x1="153" y1="179" x2="164" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="237" y="156" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="267.0" y="182.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록B</text>
+<line x1="225" y1="179" x2="236" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="309" y="156" width="60" height="46" rx="6" fill="#FFE0B2" stroke="#E0A000"/>
+<text x="339.0" y="182.7" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">탐색+회전</text>
+<line x1="297" y1="179" x2="308" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="381" y="156" width="60" height="46" rx="6" fill="#C8E6C9" stroke="#8FBF8F"/>
+<text x="411.0" y="182.7" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">블록C</text>
+<line x1="369" y1="179" x2="380" y2="179" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>

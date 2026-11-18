@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="352" viewBox="0 0 440 352" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="352" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">ALB(L7)와 NLB(L4)가 요청에서 보는 범위</text>
+<rect x="10" y="38" width="200" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="59.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">ALB (L7)</text>
+<line x1="110" y1="72" x2="110" y2="89" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="90" width="200" height="92" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110" y="108" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">TCP/IP 계층: IP, 포트</text>
+<rect x="24" y="120" width="172" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="110.0" y="141.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">HTTP 계층</text>
+<text x="110.0" y="157.0" font-size="10.5" fill="#555" text-anchor="middle">경로, 호스트, 헤더</text>
+<text x="110" y="200" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">두 계층을 모두 해석해 분배</text>
+<line x1="90" y1="208" x2="57" y2="235" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="130" y1="208" x2="163" y2="235" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="236" width="94" height="42" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="57.0" y="254.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">대상 A</text>
+<text x="57.0" y="270.0" font-size="10.5" fill="#555" text-anchor="middle">/api 요청</text>
+<rect x="116" y="236" width="94" height="42" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="163.0" y="254.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">대상 B</text>
+<text x="163.0" y="270.0" font-size="10.5" fill="#555" text-anchor="middle">그 외 경로</text>
+<rect x="10" y="294" width="200" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="110" y="313" font-size="10.5" fill="#333" text-anchor="middle">경로, 호스트, 헤더 라우팅</text>
+<text x="110" y="329" font-size="10.5" fill="#333" text-anchor="middle">TLS 종료, WAF, 인증</text>
+<rect x="230" y="38" width="200" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="330.0" y="59.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">NLB (L4)</text>
+<line x1="330" y1="72" x2="330" y2="89" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="230" y="90" width="200" height="92" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="330" y="108" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">TCP/IP 계층: IP, 포트</text>
+<rect x="244" y="120" width="172" height="48" rx="6" fill="#F7F7F7" stroke="#999999" stroke-dasharray="5 4"/>
+<text x="330.0" y="141.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">HTTP 계층</text>
+<text x="330.0" y="157.0" font-size="10.5" fill="#555" text-anchor="middle">열어 보지 않음</text>
+<text x="330" y="200" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">IP, 포트만 보고 그대로 전달</text>
+<line x1="330" y1="208" x2="330" y2="235" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="230" y="236" width="200" height="42" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="330.0" y="254.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">대상</text>
+<text x="330.0" y="270.0" font-size="10.5" fill="#555" text-anchor="middle">클라이언트 IP가 그대로 보임</text>
+<rect x="230" y="294" width="200" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="330" y="313" font-size="10.5" fill="#333" text-anchor="middle">소스 IP 보존, 고정 IP</text>
+<text x="330" y="329" font-size="10.5" fill="#333" text-anchor="middle">높은 처리량, 낮은 지연</text>
+</svg>

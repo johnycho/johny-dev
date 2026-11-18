@@ -26,27 +26,48 @@ CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 `add(e)`는 사실 여러 단계입니다 — 대략 ① 공간이 부족하면 내부 배열을 늘리고(리사이즈) ② `elementData[size] = e` 로 넣고 ③ `size++`. 이 셋은 하나의 원자적 동작이 아니라서, 여러 스레드가 동시에 하면 이렇게 잘못됩니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-start
-fork
-  :스레드 A: size=5 읽음;
-  :A: elementData[5]=x;
-  :size++ → 6;
-fork again
-  :스레드 B: size=5 읽음;
-  :B: elementData[5]=y (x 덮어씀);
-  :size++ → 6 (하나는 유실, 7이어야 할 게 6);
-end fork
-stop
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="268" viewBox="0 0 440 268" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="268" fill="#FFFFFF"/>
+<circle cx="220" cy="14" r="7" fill="#444"/>
+<line x1="220" y1="21" x2="220" y2="31" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="32" width="360" height="5" rx="2" fill="#444"/>
+<line x1="114" y1="37" x2="114" y2="49" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="50" width="196" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="114" y="69.8" font-size="10.5" fill="#333" text-anchor="middle">스레드 A: size=5 읽음</text>
+<line x1="114" y1="82" x2="114" y2="95" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="96" width="196" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="114" y="115.8" font-size="10.5" fill="#333" text-anchor="middle">A: elementData[5]=x</text>
+<line x1="114" y1="128" x2="114" y2="141" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="16" y="142" width="196" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="114" y="167.8" font-size="10.5" fill="#333" text-anchor="middle">size++ → 6</text>
+<line x1="114" y1="186" x2="114" y2="225" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="326" y1="37" x2="326" y2="49" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="50" width="196" height="32" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="326" y="69.8" font-size="10.5" fill="#333" text-anchor="middle">스레드 B: size=5 읽음</text>
+<line x1="326" y1="82" x2="326" y2="95" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="96" width="196" height="32" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="326" y="115.8" font-size="10.5" fill="#333" text-anchor="middle">B: elementData[5]=y (x 덮어씀)</text>
+<line x1="326" y1="128" x2="326" y2="141" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="142" width="196" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="326" y="160.5" font-size="10.5" fill="#333" text-anchor="middle">size++ → 6</text>
+<text x="326" y="175" font-size="10.5" fill="#333" text-anchor="middle">(하나는 유실, 7이어야 할 게 6)</text>
+<line x1="326" y1="186" x2="326" y2="225" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="40" y="226" width="360" height="5" rx="2" fill="#444"/>
+<line x1="220" y1="231" x2="220" y2="242" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="251" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="220" cy="251" r="4.5" fill="#444"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML ArrayList 동시 add 레이스로 데이터 유실](/img/c4/pu-arraylist-race.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/arraylist-race.svg" alt="두 스레드가 같은 size 값을 읽고 같은 칸에 써서 한 요소가 덮어써지고 size가 7이 아닌 6이 되는 ArrayList 동시 add 경합" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 - **덮어쓰기 손실** — 두 스레드가 같은 `size`를 읽어 같은 칸에 써, 하나가 사라집니다.
 - **size 경합** — `size++`가 동시에 실행되어 실제보다 작게 세어집니다(개수가 모자람).

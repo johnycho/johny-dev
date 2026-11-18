@@ -48,32 +48,44 @@ EKS(쿠버네티스) 서비스가 외부 요청을 받는 방식은 보통 둘 �
 - **경로 B — Istio 인그레스(NLB → Envoy)** — 서비스 메시를 사용하면 외부 입구가 **istio-ingressgateway(Envoy)** 이고, 그 앞에 **NLB**를 배치해 트래픽을 받습니다. **L7(라우팅, 상태코드, 로그)은 Envoy가 담당**하고, 여기엔 **ALB가 들어가지 않습니다.**
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-hide empty members
-rectangle "클라이언트" as C #EEF3FB
-rectangle "ALB\n(L7, HTTP)" as ALB #E9F2E9
-rectangle "NLB\n(L4, TCP)" as NLB #FCE4EC
-rectangle "Envoy\n(L7, HTTP)" as ENV #E9F2E9
-rectangle "서비스(파드)" as S #FFF3E0
-
-C --> ALB : 경로 A
-C --> NLB : 경로 B
-ALB --> S : HTTP 로그 = ALB(S3)
-NLB --> ENV
-ENV --> S : HTTP 로그 = Envoy/애플리케이션
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="346" viewBox="0 0 440 346" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="346" fill="#FFFFFF"/>
+<rect x="160" y="16" width="120" height="36" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="38.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">클라이언트</text>
+<rect x="40" y="100" width="140" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="110.0" y="118.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">ALB</text>
+<text x="110.0" y="133.5" font-size="10.5" fill="#555" text-anchor="middle">(L7, HTTP)</text>
+<rect x="260" y="100" width="140" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="330.0" y="118.5" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">NLB</text>
+<text x="330.0" y="133.5" font-size="10.5" fill="#555" text-anchor="middle">(L4, TCP)</text>
+<rect x="260" y="190" width="140" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="330.0" y="208.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Envoy</text>
+<text x="330.0" y="223.5" font-size="10.5" fill="#555" text-anchor="middle">(L7, HTTP)</text>
+<rect x="160" y="290" width="120" height="36" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="312.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">서비스(파드)</text>
+<line x1="195" y1="52" x2="125" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="150" y="74" font-size="10.5" fill="#333" text-anchor="end">경로 A</text>
+<line x1="245" y1="52" x2="315" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="290" y="74" font-size="10.5" fill="#333" text-anchor="start">경로 B</text>
+<line x1="330" y1="144" x2="330" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<polyline points="110,144 110,308 159,308" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="117" y="230" font-size="10.5" fill="#333" text-anchor="start">HTTP 로그 = ALB(S3)</text>
+<polyline points="330,234 330,308 281,308" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="323" y="270" font-size="10.5" fill="#333" text-anchor="end">HTTP 로그 = Envoy/애플리케이션</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML EKS 인그레스 두 경로 — ALB 직접 vs NLB→Envoy](/img/c4/pu-eks-ingress-paths.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/eks-ingress-paths.svg" alt="클라이언트에서 서비스까지 ALB로 바로 가는 경로 A와 NLB를 거쳐 Envoy로 가는 경로 B, 경로마다 HTTP 로그가 남는 위치" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
-<mark>같은 클러스터와 같은 제품군이어도 서비스마다 경로가 다를 수 있습니다.</mark> ALB 경로 서비스는 ALB 접근 로그(S3)에 요청이 남아 요청 단위로 조회됐고, Istio(NLB) 경로 서비스는 ALB가 없으니 **ALB 로그에 아예 없고** 400은 Envoy나 애플리케이션이 남겨 **stdout → 로그 수집 스택**으로 전달됩니다. "어떤 건 ALB 로그에 있고 어떤 건 없다"의 이유는 **EKS 여부가 아니라, 그 서비스가 어느 경로로 들어오느냐**였습니다.
+<mark>같은 클러스터와 같은 제품군이어도 서비스마다 경로가 다를 수 있습니다.</mark> ALB 경로 서비스는 ALB 접근 로그(S3)에 요청이 남아 요청 단위로 조회됐고, Istio(NLB) 경로 서비스는 ALB가 없으니 **ALB 로그에 아예 없고** 400은 Envoy나 애플리케이션이 남겨 **stdout → 로그 수집 스택**으로 전달됩니다. "어떤 건 ALB 로그에 있고 어떤 건 없다"의 이유는 **EKS 여부가 아니라, 그 서비스가 어느 경로로 들어오는지**였습니다.
 
 ## 그래서 로그와 상태는 어디서 보나
 
@@ -85,7 +97,7 @@ ENV --> S : HTTP 로그 = Envoy/애플리케이션
 추적할 때 순서는 이렇습니다.
 
 1. **이 서비스는 어느 경로인가** — 로드밸런서 목록에서 ALB(`application`)인지 NLB(`network`, istio gateway)인지 확인합니다.
-2. **ALB 경로면** — CloudWatch로 `ELB_4XX`(LB가 반환한 것)인지 `Target_4XX`(애플리케이션이 반환한 것)인지 가르고, 접근 로그(S3)가 켜져 있으면 요청 단위로 봅니다.
+2. **ALB 경로면** — CloudWatch로 `ELB_4XX`(LB가 반환한 것)인지 `Target_4XX`(애플리케이션이 반환한 것)인지 구분하고, 접근 로그(S3)가 켜져 있으면 요청 단위로 봅니다.
 3. **Istio 경로면** — ALB 로그를 찾지 말고 **Envoy, 애플리케이션 로그(로그 수집 스택)** 에서 상태, 경로, 시각으로 검색합니다.
 
 ## 정리 — "EKS라 ALB 불필요"는 반만 맞다

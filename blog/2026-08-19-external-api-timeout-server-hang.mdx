@@ -37,24 +37,42 @@ public void placeOrder(...) {
 외부 API가 느려지자 이러한 연쇄가 발생했습니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-start
-:외부 API 느려짐;
-:요청마다 최대 30초 대기;
-:Tomcat 워커 스레드 + DB 커넥션을 30초씩 점유;
-:피크에 요청이 쌓이며 스레드, 커넥션 풀 고갈;
-:새 요청을 못 받음 → 서버 전체 Hang;
-:헬스체크 실패 → K8s가 Pod 재시작;
-stop
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="360" height="318" viewBox="0 0 360 318" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="360" height="318" fill="#FFFFFF"/>
+<circle cx="180" cy="14" r="7" fill="#444"/>
+<line x1="180" y1="21" x2="180" y2="31" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="32" width="320" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="180" y="51" font-size="11" fill="#333" text-anchor="middle">외부 API 느려짐</text>
+<line x1="180" y1="62" x2="180" y2="75" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="76" width="320" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="180" y="95" font-size="11" fill="#333" text-anchor="middle">요청마다 최대 30초 대기</text>
+<line x1="180" y1="106" x2="180" y2="119" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="120" width="320" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="180" y="139" font-size="11" fill="#333" text-anchor="middle">Tomcat 워커 스레드 + DB 커넥션을 30초씩 점유</text>
+<line x1="180" y1="150" x2="180" y2="163" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="164" width="320" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="180" y="183" font-size="11" fill="#333" text-anchor="middle">피크에 요청이 쌓이며 스레드, 커넥션 풀 고갈</text>
+<line x1="180" y1="194" x2="180" y2="207" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="208" width="320" height="30" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="180" y="227" font-size="11" fill="#9E3A57" text-anchor="middle">새 요청을 못 받음 → 서버 전체 Hang</text>
+<line x1="180" y1="238" x2="180" y2="251" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="252" width="320" height="30" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="180" y="271" font-size="11" fill="#9E3A57" text-anchor="middle">헬스체크 실패 → K8s가 Pod 재시작</text>
+<line x1="180" y1="282" x2="180" y2="291" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="180" cy="300" r="8" fill="#FFFFFF" stroke="#444" stroke-width="1.5"/>
+<circle cx="180" cy="300" r="4.5" fill="#444"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML 느린 외부 API로 인한 서버 행 연쇄](/img/c4/pu-api-hang.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/api-hang.svg" alt="외부 API 지연으로 요청마다 30초씩 스레드와 커넥션을 점유하다 풀이 고갈돼 서버 전체가 멈추고 Pod가 재시작되는 연쇄" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>느린 외부 호출 하나가 요청마다 공유 자원(스레드, DB 커넥션)을 30초씩 점유하고, 피크에 그게 쌓이며 풀이 고갈돼 서버 전체가 멈춘 것</mark>입니다. 특히 트랜잭션 안에서 호출해 **DB 커넥션까지** 30초씩 점유하고 있었던 게 컸습니다.
 

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="340" viewBox="0 0 440 340" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="340" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">ZGC — load barrier로 이동 중에도</text>
+<text x="220" y="39" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">애플리케이션이 멈추지 않음</text>
+<line x1="72" y1="86" x2="72" y2="278" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="8.0" y="54" width="128" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="72.0" y="74.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">애플리케이션 스레드</text>
+<line x1="220" y1="86" x2="220" y2="278" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="156.0" y="54" width="128" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="74.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">load barrier</text>
+<line x1="368" y1="86" x2="368" y2="278" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="304.0" y="54" width="128" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="368.0" y="74.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">GC 스레드</text>
+<polyline points="368,120 342,120 342,138 366,138" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="336" y="126.5" font-size="10.5" fill="#333" text-anchor="end">사용 중인 객체를 새 위치로 이동</text>
+<text x="336" y="139.5" font-size="10.5" fill="#333" text-anchor="end">(애플리케이션과 동시)</text>
+<line x1="72" y1="170" x2="219" y2="170" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="146.0" y="164" font-size="10.5" fill="#333" text-anchor="middle">참조를 읽음</text>
+<polyline points="220,212 246,212 246,230 222,230" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="252" y="225.0" font-size="10.5" fill="#333" text-anchor="start">옛 주소면 새 주소로 교정</text>
+<line x1="220" y1="262" x2="73" y2="262" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="146.0" y="256" font-size="10.5" fill="#333" text-anchor="middle">항상 올바른 객체 반환</text>
+<rect x="30" y="286" width="380" height="34" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220.0" y="307.0" font-size="10.5" fill="#5A4300" text-anchor="middle">애플리케이션은 멈추지 않음 — 정지 수 ms 이하</text>
+</svg>

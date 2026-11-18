@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="414" viewBox="0 0 440 414" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="414" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">WebFlux 도입 판단</text>
+<rect x="16" y="44" width="210" height="66" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="73.1" font-size="11.5" fill="#333" text-anchor="middle">전 구간을 논블로킹으로 만들 수 있나?</text>
+<text x="121.0" y="88.6" font-size="11.5" fill="#333" text-anchor="middle">DB(R2DBC), 외부호출 포함</text>
+<rect x="306" y="44" width="130" height="66" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="371.0" y="66.9" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">MVC 유지</text>
+<text x="371.0" y="81.6" font-size="10.5" fill="#555" text-anchor="middle">(블로킹 라이브러리가</text>
+<text x="371.0" y="95.7" font-size="10.5" fill="#555" text-anchor="middle">포함되면 이점 사라짐)</text>
+<line x1="226" y1="77.0" x2="305" y2="77.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="266.0" y="71.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">N</text>
+<line x1="121.0" y1="110" x2="121.0" y2="155" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="137" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">Y</text>
+<rect x="16" y="156" width="210" height="50" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="177.1" font-size="11.5" fill="#333" text-anchor="middle">스트리밍, 백프레셔, SSE 등</text>
+<text x="121.0" y="192.6" font-size="11.5" fill="#333" text-anchor="middle">리액티브 고유 기능이 필요?</text>
+<rect x="306" y="156" width="130" height="50" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="371.0" y="185.1" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">WebFlux</text>
+<line x1="226" y1="181.0" x2="305" y2="181.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="266.0" y="175.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="206" x2="121.0" y2="251" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="233" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">단순히 높은 동시성만 필요</text>
+<rect x="16" y="252" width="210" height="66" rx="6" fill="#FFFFFF" stroke="#999999"/>
+<text x="121.0" y="281.1" font-size="11.5" fill="#333" text-anchor="middle">Java 21+ 가상 스레드를</text>
+<text x="121.0" y="296.6" font-size="11.5" fill="#333" text-anchor="middle">쓸 수 있나?</text>
+<rect x="306" y="252" width="130" height="66" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="371.0" y="274.9" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">가상 스레드 + MVC</text>
+<text x="371.0" y="289.6" font-size="10.5" fill="#555" text-anchor="middle">(동기 코드로</text>
+<text x="371.0" y="303.7" font-size="10.5" fill="#555" text-anchor="middle">높은 동시성)</text>
+<line x1="226" y1="285.0" x2="305" y2="285.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="266.0" y="279.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="121.0" y1="318" x2="121.0" y2="363" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="129.0" y="345" font-size="10.5" fill="#26508F" text-anchor="start" font-weight="bold">N</text>
+<rect x="56.0" y="364" width="130" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="121.0" y="385.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">WebFlux</text>
+</svg>

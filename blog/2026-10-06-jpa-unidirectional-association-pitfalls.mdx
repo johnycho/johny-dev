@@ -9,7 +9,7 @@ description: "JPA 연관관계를 단방향으로 매핑할 때 생기는 문제
 
 <!-- truncate -->
 
-JPA에서 연관관계를 어느 방향으로 매핑하느냐는 단순한 취향 문제가 아닙니다. 특히 **`@OneToMany` 단방향**은 멀쩡해 보여도 숨은 쿼리를 만들어, 저장할 때마다 불필요한 `UPDATE`가 나가거나 의도치 않은 조인 테이블이 생깁니다. 단방향 매핑의 문제를 살펴보고, 실무에서 사용하는 해결 방향을 정리합니다.
+JPA에서 연관관계를 어느 방향으로 매핑하는지는 단순한 취향 문제가 아닙니다. 특히 **`@OneToMany` 단방향**은 멀쩡해 보여도 숨은 쿼리를 만들어, 저장할 때마다 불필요한 `UPDATE`가 나가거나 의도치 않은 조인 테이블이 생깁니다. 단방향 매핑의 문제를 살펴보고, 실무에서 사용하는 해결 방향을 정리합니다.
 
 <mark>핵심은 **"연관관계의 주인은 외래 키(FK)를 가진 쪽"** 이라는 규칙입니다 — FK가 없는 `@OneToMany` 쪽이 컬렉션을 주인처럼 관리하면, DB가 FK를 채우려고 추가 쿼리를 발생시킵니다.</mark>
 
@@ -31,26 +31,39 @@ JPA에서 연관관계를 어느 방향으로 매핑하느냐는 단순한 취�
 > 직관적으로는 "부모인 `Member`(일대다의 '1')가 주인"일 것 같지만, JPA의 주인은 **FK를 가진 자식 `Order`(일대다의 'N')** 입니다 — 방향(부모, 자식)이 아니라 **FK 위치**로 정해집니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam shadowing false
-skinparam defaultFontName sans-serif
-
-rectangle "Order.member (주인)\n@ManyToOne\n+ @JoinColumn" as ORD #C8E6C9
-rectangle "Member.orders (주인 아님)\n@OneToMany(mappedBy)" as MEM #FFF9C4
-rectangle "orders 테이블\nid | member_id\n(FK는 하나)" as T #FFCDD2
-
-ORD -down-> T : FK를 채움\n(INSERT/UPDATE)
-MEM ..> T : 조회만\n(FK 못 바꿈)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="264" viewBox="0 0 440 264" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="264" fill="#FFFFFF"/>
+<g transform="translate(0,-24)">
+<rect x="16" y="40" width="190" height="64" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="111.0" y="61.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Order.member (주인)</text>
+<text x="111.0" y="76.0" font-size="10.5" fill="#444" text-anchor="middle">@ManyToOne</text>
+<text x="111.0" y="91.0" font-size="10.5" fill="#444" text-anchor="middle">+ @JoinColumn</text>
+<rect x="234" y="40" width="190" height="64" rx="6" fill="#FFFBEA" stroke="#E0A000"/>
+<text x="329.0" y="68.5" font-size="12" fill="#5A4300" text-anchor="middle" font-weight="bold">Member.orders (주인 아님)</text>
+<text x="329.0" y="83.5" font-size="10.5" fill="#444" text-anchor="middle">@OneToMany(mappedBy)</text>
+<rect x="130" y="206" width="180" height="64" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="227.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">orders 테이블</text>
+<text x="220.0" y="242.0" font-size="10.5" fill="#444" text-anchor="middle">id | member_id</text>
+<text x="220.0" y="257.0" font-size="10.5" fill="#444" text-anchor="middle">(FK는 하나)</text>
+<line x1="111" y1="104" x2="180" y2="205" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="118" y="148" font-size="10.5" fill="#333" text-anchor="end">FK를 채움</text>
+<text x="118" y="162" font-size="10.5" fill="#333" text-anchor="end">(INSERT/UPDATE)</text>
+<line x1="329" y1="104" x2="260" y2="205" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="322" y="148" font-size="10.5" fill="#333" text-anchor="start">조회만</text>
+<text x="322" y="162" font-size="10.5" fill="#333" text-anchor="start">(FK 못 바꿈)</text>
+</g>
+</svg>
 ```
 
 </details>
 
-![PlantUML 연관관계 주인 - FK를 채우는 쪽](/img/c4/pu-jpa-association-owner.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-association-owner.svg" alt="FK를 가진 Order.member가 주인으로 orders 테이블의 FK를 채우고, mappedBy인 Member.orders는 조회만 하는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 예시는 **회원(`Member`) 1 : N 주문(`Order`)** 입니다 — FK `member_id`는 `orders` 테이블에 있습니다.
 
@@ -84,23 +97,32 @@ INSERT INTO orders (id, member_id) VALUES (?, ?);
 `@OneToMany` 단방향의 문제는 **주인과 FK가 서로 다른 테이블에 있다**는 점입니다. 효율적이려면 FK를 직접 가진 쪽이 주인이어야 하는데, `@OneToMany` 단방향은 **FK가 없는 `Member`를 주인으로** 삼습니다. 정작 FK(`member_id`)는 `orders` 테이블에 있으니, `Member`가 **자기 것이 아닌 `orders`의 FK를 원격으로 채워야** 해서 추가 쿼리가 생깁니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam shadowing false
-
-rectangle "Member (ONE 쪽, @OneToMany 단방향)\nFK 컬럼이 없다" as M #FFF9C4
-rectangle "orders 테이블 (MANY 쪽)\nid | member_id ← FK는 여기 있다" as O #C8E6C9
-
-M -down-> O : 주인인데 내 테이블엔\nFK가 없어서\norders.member_id를\n원격으로 채움\n→ INSERT 뒤 별도 UPDATE
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="300" viewBox="0 0 440 300" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="300" fill="#FFFFFF"/>
+<rect x="60" y="16" width="320" height="52" rx="6" fill="#FFFBEA" stroke="#E0A000"/>
+<text x="220.0" y="38.5" font-size="12" fill="#5A4300" text-anchor="middle" font-weight="bold">Member (ONE 쪽, @OneToMany 단방향)</text>
+<text x="220.0" y="53.5" font-size="10.5" fill="#444" text-anchor="middle">FK 컬럼이 없다</text>
+<rect x="60" y="232" width="320" height="52" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="254.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">orders 테이블 (MANY 쪽)</text>
+<text x="220.0" y="269.5" font-size="10.5" fill="#444" text-anchor="middle">id | member_id ← FK는 여기 있다</text>
+<line x1="150" y1="68" x2="150" y2="231" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="166" y="112" font-size="11" fill="#333" text-anchor="start">주인인데 내 테이블엔</text>
+<text x="166" y="128" font-size="11" fill="#333" text-anchor="start">FK가 없어서</text>
+<text x="166" y="144" font-size="11" fill="#333" text-anchor="start">orders.member_id를</text>
+<text x="166" y="160" font-size="11" fill="#333" text-anchor="start">원격으로 채움</text>
+<text x="166" y="176" font-size="11" fill="#333" text-anchor="start">→ INSERT 뒤 별도 UPDATE</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML FK 없는 OneToMany 쪽이 주인이 되는 불일치](/img/c4/pu-jpa-onetomany-owner-mismatch.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-onetomany-owner-mismatch.svg" alt="FK 컬럼이 없는 Member가 @OneToMany 단방향의 주인이 되어 orders.member_id를 INSERT 뒤 별도 UPDATE로 채우는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ### 문제 1 — `@JoinColumn`이 없으면 조인 테이블이 생긴다
 
@@ -118,29 +140,37 @@ class Member {
 이렇게 하면 Hibernate는 FK를 어디에 둘지 몰라, **중간 조인 테이블(`member_orders`)** 을 만들어 다대다처럼 관리합니다. 테이블이 하나 더 생기고, 조회, 저장 때마다 그 테이블을 거쳐 쿼리가 복잡해집니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam shadowing false
-
-rectangle "member\n(id)" as M #E3F2FD
-rectangle "member_orders\n(member_id, orders_id)\n← 의도치 않은 조인 테이블" as J #FFEBEE
-rectangle "orders\n(id, ...)" as O #E8F5E9
-
-M -down-> J
-J -down-> O
-note right of J
-  @OneToMany 단방향 + @JoinColumn 없음
-  → 중간 테이블로 관리
-end note
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="250" viewBox="0 0 440 250" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="250" fill="#FFFFFF"/>
+<rect x="30" y="16" width="200" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="130.0" y="34.5" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">member</text>
+<text x="130.0" y="49.5" font-size="10.5" fill="#444" text-anchor="middle">(id)</text>
+<rect x="30" y="96" width="200" height="60" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="130.0" y="115.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">member_orders</text>
+<text x="130.0" y="130.0" font-size="10.5" fill="#444" text-anchor="middle">(member_id, orders_id)</text>
+<text x="130.0" y="145.0" font-size="10.5" fill="#444" text-anchor="middle">← 의도치 않은 조인 테이블</text>
+<rect x="30" y="192" width="200" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="130.0" y="210.5" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">orders</text>
+<text x="130.0" y="225.5" font-size="10.5" fill="#444" text-anchor="middle">(id, ...)</text>
+<line x1="130" y1="60" x2="130" y2="95" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="130" y1="156" x2="130" y2="191" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="230" y1="126" x2="252" y2="126" stroke="#E0A000" stroke-dasharray="3 3"/>
+<rect x="252" y="92" width="176" height="68" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="340.0" y="110" font-size="10.5" fill="#5A4300" text-anchor="middle">@OneToMany 단방향 +</text>
+<text x="340.0" y="126" font-size="10.5" fill="#5A4300" text-anchor="middle">@JoinColumn 없음</text>
+<text x="340.0" y="142" font-size="10.5" fill="#5A4300" text-anchor="middle">→ 중간 테이블로 관리</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML @OneToMany 단방향이 만드는 조인 테이블](/img/c4/pu-jpa-onetomany-jointable.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-onetomany-jointable.svg" alt="@JoinColumn 없는 @OneToMany 단방향이 member와 orders 사이에 member_orders 조인 테이블을 만드는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ### 문제 2 — `@JoinColumn`을 사용해도 추가 UPDATE가 발생한다
 
@@ -238,28 +268,52 @@ class Order {
 ## 언제 단방향으로 충분한가 — 판단 기준
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-start
-:연관관계를 매핑한다;
-:FK를 가진 쪽에 @ManyToOne 단방향;
-if (부모에서 자식 목록을\n탐색해야 하나?) then (아니오)
-  :여기서 끝 - 단방향으로 충분;
-  stop
-else (예)
-  :부모에 @OneToMany(mappedBy) 추가\n(양방향);
-  :연관관계 편의 메서드로 동기화\n직렬화 순환 차단;
-  stop
-endif
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="352" viewBox="0 0 440 352" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="352" fill="#FFFFFF"/>
+<g transform="translate(0,-28)">
+<circle cx="220" cy="44" r="7" fill="#555"/>
+<line x1="220" y1="51" x2="220" y2="65" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="120" y="66" width="200" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="86.0" font-size="11.5" fill="#444" text-anchor="middle">연관관계를 매핑한다</text>
+<line x1="220" y1="98" x2="220" y2="115" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="90" y="116" width="260" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="136.0" font-size="11.5" fill="#444" text-anchor="middle">FK를 가진 쪽에 @ManyToOne 단방향</text>
+<line x1="220" y1="148" x2="220" y2="165" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="150" y="166" width="140" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="185.5" font-size="11.5" fill="#444" text-anchor="middle">부모에서 자식 목록을</text>
+<text x="220.0" y="200.5" font-size="11.5" fill="#444" text-anchor="middle">탐색해야 하나?</text>
+<polyline points="150,189 92,189 92,239" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="120" y="183" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">N</text>
+<rect x="12" y="240" width="160" height="32" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="92.0" y="260.0" font-size="11" fill="#444" text-anchor="middle">여기서 끝 - 단방향으로 충분</text>
+<line x1="92" y1="272" x2="92" y2="287" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="92" cy="296" r="8" fill="#FFFFFF" stroke="#555" stroke-width="1.5"/>
+<circle cx="92" cy="296" r="4.5" fill="#555"/>
+<polyline points="290,189 312,189 312,239" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="300" y="183" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">Y</text>
+<rect x="196" y="240" width="232" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="312.0" y="259.5" font-size="11.5" fill="#444" text-anchor="middle">부모에 @OneToMany(mappedBy) 추가</text>
+<text x="312.0" y="274.5" font-size="11.5" fill="#444" text-anchor="middle">(양방향)</text>
+<line x1="312" y1="286" x2="312" y2="303" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="196" y="304" width="232" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="312.0" y="323.5" font-size="11.5" fill="#444" text-anchor="middle">연관관계 편의 메서드로 동기화</text>
+<text x="312.0" y="338.5" font-size="11.5" fill="#444" text-anchor="middle">직렬화 순환 차단</text>
+<line x1="312" y1="350" x2="312" y2="363" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="312" cy="372" r="8" fill="#FFFFFF" stroke="#555" stroke-width="1.5"/>
+<circle cx="312" cy="372" r="4.5" fill="#555"/>
+</g>
+</svg>
 ```
 
 </details>
 
-![PlantUML 단방향, 양방향 선택 흐름](/img/c4/pu-jpa-association-decision.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-association-decision.svg" alt="FK를 가진 쪽에 @ManyToOne 단방향을 매핑하고, 부모에서 자식 목록을 탐색해야 할 때만 mappedBy 양방향을 추가하는 판단 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 - **`@ManyToOne` 단방향** — FK 가진 쪽에서만 참조하면 되는 대부분의 경우. 기본값으로 삼습니다.
 - **양방향** — 부모에서 자식 컬렉션 탐색이 실제로 필요할 때만. `@OneToMany`는 항상 `mappedBy`로 읽기 전용이어야 합니다.

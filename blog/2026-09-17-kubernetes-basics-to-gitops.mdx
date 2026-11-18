@@ -71,36 +71,47 @@ spec:
 ```
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title 쿠버네티스 기본 오브젝트 관계
-
-actor "사용자 트래픽" as u
-rectangle "Deployment\n(원하는 상태 선언)" as dep
-rectangle "ReplicaSet\n(레플리카 수 유지)" as rs
-rectangle "Pod 1 (컨테이너)" as p1
-rectangle "Pod 2 (컨테이너)" as p2
-rectangle "Service\n(고정 진입점, 부하 분산)" as svc
-
-dep --> rs : 관리
-rs --> p1 : 생성, 유지
-rs --> p2 : 생성, 유지
-u --> svc
-svc --> p1 : 분배
-svc --> p2 : 분배
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="400" viewBox="0 0 440 400" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="400" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">쿠버네티스 기본 오브젝트 관계</text>
+<rect x="140" y="36" width="160" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="52.32" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Deployment</text>
+<text x="220.0" y="68.32" font-size="10.5" fill="#444" text-anchor="middle">(원하는 상태 선언)</text>
+<line x1="220" y1="76" x2="220" y2="107" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="96" font-size="10" fill="#555" text-anchor="start">관리</text>
+<rect x="140" y="108" width="160" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="124.32" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">ReplicaSet</text>
+<text x="220.0" y="140.32" font-size="10.5" fill="#444" text-anchor="middle">(레플리카 수 유지)</text>
+<rect x="60" y="200" width="130" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="125.0" y="221.14" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Pod 1 (컨테이너)</text>
+<rect x="250" y="200" width="130" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="315.0" y="221.14" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Pod 2 (컨테이너)</text>
+<line x1="190" y1="148" x2="140" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="156" y="172" font-size="10" fill="#555" text-anchor="end">생성, 유지</text>
+<line x1="250" y1="148" x2="300" y2="199" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="284" y="172" font-size="10" fill="#555" text-anchor="start">생성, 유지</text>
+<rect x="140" y="286" width="160" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="302.32" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Service</text>
+<text x="220.0" y="318.32" font-size="10.5" fill="#444" text-anchor="middle">(고정 진입점, 부하 분산)</text>
+<line x1="190" y1="286" x2="140" y2="235" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="156" y="266" font-size="10" fill="#555" text-anchor="end">분배</text>
+<line x1="250" y1="286" x2="300" y2="235" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="284" y="266" font-size="10" fill="#555" text-anchor="start">분배</text>
+<rect x="160" y="354" width="120" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="374.14" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">사용자 트래픽</text>
+<line x1="220" y1="354" x2="220" y2="327" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+</svg>
 ```
 
 </details>
 
-![PlantUML 쿠버네티스 기본 오브젝트 관계](/img/c4/k8s-objects.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/k8s-objects.svg" alt="Deployment가 ReplicaSet을 관리하고 ReplicaSet이 Pod를 생성, 유지하며, 사용자 트래픽은 Service를 거쳐 Pod로 분배되는 관계" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 이 오브젝트들은 **Namespace(네임스페이스)** 로 나누어 환경(dev, stg, 운영)이나 팀별로 격리합니다. 그리고 이 모든 파드는 실제 서버인 **노드(Node)** 위에서 동작하고, 노드들의 집합이 **클러스터**입니다.
 
@@ -167,43 +178,57 @@ spec:
 이 글에서 설명하는 AWS 인프라를 한 장으로 보면 이렇습니다. 개발자와 CI가 이미지를 **ECR(Elastic Container Registry, 컨테이너 이미지 저장소)** 에 올리고 매니페스트를 **Git**에 커밋하면, **EKS(Elastic Kubernetes Service, 매니지드 쿠버네티스)** 안의 ArgoCD가 이를 감지해 **워커 노드(EC2, Elastic Compute Cloud 가상 서버)** 에 배포하고, 노드는 ECR에서 이미지를, **Secrets Manager**에서 시크릿을 가져옵니다. 각 요소는 이어지는 섹션에서 자세히 설명합니다.
 
 <details>
-<summary>PlantUML 코드 (AWS 아이콘)</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-!include <awslib14/AWSCommon>
-!include <awslib14/Groups/AWSCloud>
-!include <awslib14/Containers/ElasticKubernetesService>
-!include <awslib14/Containers/ElasticContainerRegistry>
-!include <awslib14/SecurityIdentityCompliance/SecretsManager>
-!include <awslib14/Compute/EC2>
-!include <awslib14/General/User>
-title EKS, GitOps 인프라 관계도
-
-User(dev, "개발자 / CI", "")
-rectangle "매니페스트 저장소 (Git)" as git
-
-AWSCloudGroup(aws){
-  ElasticContainerRegistry(ecr, "ECR", "컨테이너 이미지")
-  SecretsManager(sm, "Secrets Manager", "애플리케이션 시크릿")
-  ElasticKubernetesService(eks, "EKS 클러스터", "ArgoCD 포함")
-  EC2(nodea, "Worker Node, 가용영역 A", "Pod x2")
-  EC2(nodec, "Worker Node, 가용영역 C", "Pod x1")
-}
-
-dev --> ecr : 이미지 push
-dev --> git : 매니페스트 commit
-eks --> git : ArgoCD가 변경 감지
-eks --> nodea : 배포
-eks --> nodec : 배포
-nodea --> ecr : 이미지 pull
-nodea --> sm : 시크릿 로드
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="410" viewBox="0 0 440 410" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="410" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">EKS, GitOps 인프라 관계도</text>
+<rect x="20" y="38" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="95.0" y="64.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">개발자 / CI</text>
+<rect x="270" y="38" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="345.0" y="57.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">매니페스트 저장소</text>
+<text x="345.0" y="73.0" font-size="10.5" fill="#555" text-anchor="middle">Git</text>
+<rect x="10" y="108" width="420" height="292" rx="8" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="220.0" y="126" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">AWS Cloud</text>
+<rect x="20" y="140" width="150" height="48" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="95.0" y="161.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">ECR</text>
+<text x="95.0" y="177.0" font-size="10.5" fill="#555" text-anchor="middle">컨테이너 이미지 저장소</text>
+<rect x="270" y="140" width="150" height="48" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="345.0" y="161.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">EKS 클러스터</text>
+<text x="345.0" y="177.0" font-size="10.5" fill="#555" text-anchor="middle">ArgoCD 포함</text>
+<rect x="20" y="244" width="150" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="95.0" y="265.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">워커 노드 (EC2)</text>
+<text x="95.0" y="281.0" font-size="10.5" fill="#555" text-anchor="middle">가용영역 A, Pod 2개</text>
+<rect x="270" y="244" width="150" height="48" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="345.0" y="265.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">워커 노드 (EC2)</text>
+<text x="345.0" y="281.0" font-size="10.5" fill="#555" text-anchor="middle">가용영역 C, Pod 1개</text>
+<rect x="20" y="340" width="150" height="48" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="95.0" y="361.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Secrets Manager</text>
+<text x="95.0" y="377.0" font-size="10.5" fill="#555" text-anchor="middle">애플리케이션 시크릿</text>
+<line x1="170" y1="60" x2="269" y2="60" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="220" y="54" font-size="10" fill="#555" text-anchor="middle">매니페스트 커밋</text>
+<line x1="70" y1="82" x2="70" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="76" y="100" font-size="10" fill="#555" text-anchor="start">이미지 push</text>
+<line x1="370" y1="140" x2="370" y2="83" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="364" y="100" font-size="10" fill="#555" text-anchor="end">ArgoCD가 변경 감지</text>
+<line x1="300" y1="188" x2="150" y2="243" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="232" y="206" font-size="10" fill="#555" text-anchor="start">배포</text>
+<line x1="370" y1="188" x2="370" y2="243" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="376" y="220" font-size="10" fill="#555" text-anchor="start">배포</text>
+<line x1="70" y1="244" x2="70" y2="189" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="76" y="220" font-size="10" fill="#555" text-anchor="start">이미지 pull</text>
+<line x1="70" y1="292" x2="70" y2="339" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="76" y="320" font-size="10" fill="#555" text-anchor="start">시크릿 로드</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML EKS, GitOps AWS 인프라 관계도](/img/c4/k8s-aws.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/k8s-aws.svg" alt="EKS, GitOps 인프라 관계도: 개발자와 CI, Git, ECR, EKS 클러스터, 가용영역별 워커 노드, Secrets Manager" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 배포를 GitOps로 — "배포 = Git 커밋"
 
@@ -216,30 +241,64 @@ nodea --> sm : 시크릿 로드
 3. **ArgoCD**가 그 저장소를 지켜보다가 변경을 감지하면, 선언된 상태를 **클러스터에 자동 반영**합니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-autonumber
-participant "개발자 / CI" as dev
-participant "이미지 레지스트리" as reg
-participant "매니페스트 저장소 (Git)" as git
-participant "ArgoCD" as argo
-participant "쿠버네티스 클러스터" as k8s
-
-dev -> reg : 컨테이너 이미지 빌드, 푸시
-dev -> git : 매니페스트 커밋 (배포 = 커밋)
-argo -> git : 변경 감지 (주기적 동기화)
-argo -> k8s : 선언 상태를 클러스터에 apply
-k8s -> reg : 이미지 pull → 파드 기동
-note over argo, k8s : 클러스터 상태가 Git 선언과 달라지면\nArgoCD가 자동으로 되돌림 (self-heal)
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="430" viewBox="0 0 440 430" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="430" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">GitOps 배포 흐름</text>
+<rect x="20" y="38" width="150" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="95.0" y="64.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">개발자 / CI</text>
+<rect x="270" y="38" width="150" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="345.0" y="64.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">이미지 레지스트리</text>
+<rect x="20" y="140" width="150" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="95.0" y="159.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">매니페스트 저장소</text>
+<text x="95.0" y="175.0" font-size="10.5" fill="#555" text-anchor="middle">Git</text>
+<rect x="270" y="140" width="150" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="345.0" y="166.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">쿠버네티스 클러스터</text>
+<rect x="145" y="236" width="150" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="262.0" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">ArgoCD</text>
+<line x1="170" y1="60" x2="269" y2="60" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="220" cy="50" r="8" fill="#4C7FE0"/>
+<text x="220" y="53.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<line x1="95" y1="82" x2="95" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="107" cy="110" r="8" fill="#4C7FE0"/>
+<text x="107" y="113.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<line x1="190" y1="236" x2="120" y2="185" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="144" cy="222" r="8" fill="#4C7FE0"/>
+<text x="144" y="225.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<line x1="250" y1="236" x2="320" y2="185" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="296" cy="222" r="8" fill="#4C7FE0"/>
+<text x="296" y="225.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+<line x1="345" y1="140" x2="345" y2="83" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<circle cx="357" cy="110" r="8" fill="#4C7FE0"/>
+<text x="357" y="113.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+<circle cx="24" cy="304" r="8" fill="#4C7FE0"/>
+<text x="24" y="307.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<text x="38" y="308" font-size="10.5" fill="#333" text-anchor="start">CI가 컨테이너 이미지를 빌드해 레지스트리에 푸시</text>
+<circle cx="24" cy="322" r="8" fill="#4C7FE0"/>
+<text x="24" y="325.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<text x="38" y="326" font-size="10.5" fill="#333" text-anchor="start">매니페스트를 Git에 커밋 (배포 = 커밋)</text>
+<circle cx="24" cy="340" r="8" fill="#4C7FE0"/>
+<text x="24" y="343.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<text x="38" y="344" font-size="10.5" fill="#333" text-anchor="start">ArgoCD가 변경을 감지 (주기적 동기화)</text>
+<circle cx="24" cy="358" r="8" fill="#4C7FE0"/>
+<text x="24" y="361.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+<text x="38" y="362" font-size="10.5" fill="#333" text-anchor="start">ArgoCD가 선언 상태를 클러스터에 apply</text>
+<circle cx="24" cy="376" r="8" fill="#4C7FE0"/>
+<text x="24" y="379.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+<text x="38" y="380" font-size="10.5" fill="#333" text-anchor="start">클러스터가 이미지를 pull해 파드를 기동</text>
+<rect x="20" y="392" width="400" height="26" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220" y="409" font-size="10.5" fill="#5A4300" text-anchor="middle">클러스터 상태가 Git 선언과 달라지면 ArgoCD가 되돌립니다 (self-heal)</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML GitOps 배포 파이프라인](/img/c4/k8s-gitops.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/k8s-gitops.svg" alt="GitOps 배포 흐름: 이미지 푸시, 매니페스트 커밋, ArgoCD의 변경 감지와 apply, 이미지 pull" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 이 방식의 장점은 분명합니다.
 
@@ -360,42 +419,45 @@ spec:
 한 데이터센터(가용영역, AZ) 전체가 내려가도 서비스가 유지돼야 합니다. 그래서 워크로드를 **두 개의 가용영역에 나눠** 배치합니다. 한 AZ에 장애가 발생해도 다른 AZ의 레플리카가 트래픽을 받습니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam node {
-  BackgroundColor #FFFFFF
-  BorderColor #556080
-}
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-title 멀티 AZ 고가용성 — 워크로드를 두 가용영역에 분산
-
-actor "트래픽" as u
-rectangle "Service / Ingress" as svc
-
-node "가용영역 A" {
-  rectangle "Pod (레플리카)" as a1
-  rectangle "Pod (레플리카)" as a2
-}
-node "가용영역 C (장애)" #FBECEC {
-  rectangle "Pod (레플리카)" as c1
-}
-u --> svc
-svc --> a1
-svc --> a2
-svc ..> c1 : AZ 장애 시 제외
-note bottom of a2 : 한 AZ가 죽어도 다른 AZ\n레플리카가 트래픽 수용
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="312" viewBox="0 0 440 312" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="312" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">멀티 AZ 고가용성: 워크로드를 두 가용영역에 분산</text>
+<rect x="160" y="38" width="120" height="36" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="60.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">트래픽</text>
+<rect x="150" y="100" width="140" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="124.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">Service / Ingress</text>
+<rect x="10" y="178" width="250" height="82" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="22" y="196" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">가용영역 A</text>
+<rect x="22" y="206" width="108" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="76.0" y="223.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Pod</text>
+<text x="76.0" y="239.0" font-size="10.5" fill="#555" text-anchor="middle">레플리카</text>
+<rect x="140" y="206" width="108" height="40" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="194.0" y="223.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Pod</text>
+<text x="194.0" y="239.0" font-size="10.5" fill="#555" text-anchor="middle">레플리카</text>
+<rect x="276" y="178" width="154" height="82" rx="8" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="418" y="196" font-size="11" fill="#9E3A57" text-anchor="end" font-weight="bold">가용영역 C (장애)</text>
+<rect x="298" y="206" width="110" height="40" rx="6" fill="#F7F7F7" stroke="#999999" stroke-dasharray="5 4"/>
+<text x="353.0" y="223.0" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">Pod</text>
+<text x="353.0" y="239.0" font-size="10.5" fill="#555" text-anchor="middle">레플리카</text>
+<line x1="220" y1="74" x2="220" y2="99" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="190" y1="140" x2="90" y2="205" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="210" y1="140" x2="194" y2="205" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="250" y1="140" x2="322" y2="205" stroke="#D06A86" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="300" y="164" font-size="10" fill="#9E3A57" text-anchor="start">AZ 장애 시 제외</text>
+<rect x="40" y="272" width="360" height="28" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="5 4"/>
+<text x="220" y="290" font-size="10.5" fill="#5A4300" text-anchor="middle">한 AZ에 장애가 발생해도 다른 AZ의 레플리카가 트래픽을 받습니다</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 멀티 AZ 고가용성](/img/c4/k8s-ha.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/k8s-ha.svg" alt="멀티 AZ 고가용성: 가용영역 C에 장애가 발생하면 트래픽이 가용영역 A의 레플리카로만 전달되는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 가용성은 여러 계층이 함께 만듭니다.
 

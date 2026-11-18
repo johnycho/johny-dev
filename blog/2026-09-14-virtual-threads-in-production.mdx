@@ -22,33 +22,40 @@ import {AnimatedLineChart} from '@site/src/components/blog/MonitorCharts';
 OS 스레드는 비쌉니다(스택 메모리, 컨텍스트 스위칭). 그래서 톰캣 스레드 풀은 보통 200개 안팎으로 제한됩니다. 외부 호출이 느려지면 200개가 전부 **대기 상태에 빠져** 새 요청을 못 받습니다 — 이게 [외부 API 하나가 느려지자 서버 전체가 멈춘](./external-api-timeout-server-hang) 그 상황입니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-skinparam rectangle {
-  BackgroundColor #F4F6FB
-  BorderColor #556080
-}
-
-package "플랫폼 스레드 (스레드 = OS 스레드)" {
-  rectangle "요청 1 → OS 스레드 1\n(I/O 대기 중에도 점유)" as t1
-  rectangle "요청 2 → OS 스레드 2\n(I/O 대기 중에도 점유)" as t2
-  rectangle "요청 N → OS 스레드 부족\n대기 / 거절" as t3
-}
-
-package "가상 스레드 (I/O 블로킹 시 캐리어 반납)" {
-  rectangle "가상 스레드 수만 개" as v1
-  rectangle "캐리어(OS) 스레드 소수" as c1
-  v1 --> c1 : I/O로 블로킹되면 캐리어를\n반납(unmount) → 다른 가상 스레드가 사용
-}
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="382" viewBox="0 0 440 382" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="382" fill="#FFFFFF"/>
+<rect x="10" y="10" width="420" height="196" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="22" y="28" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">플랫폼 스레드 (스레드 = OS 스레드)</text>
+<rect x="90" y="38" width="260" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="56.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">요청 1 → OS 스레드 1</text>
+<text x="220.0" y="71.5" font-size="10.5" fill="#444" text-anchor="middle">(I/O 대기 중에도 점유)</text>
+<rect x="90" y="92" width="260" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="110.0" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">요청 2 → OS 스레드 2</text>
+<text x="220.0" y="125.5" font-size="10.5" fill="#444" text-anchor="middle">(I/O 대기 중에도 점유)</text>
+<rect x="90" y="146" width="260" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220.0" y="164.0" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">요청 N → OS 스레드 부족</text>
+<text x="220.0" y="179.5" font-size="10.5" fill="#444" text-anchor="middle">대기 / 거절</text>
+<rect x="10" y="222" width="420" height="150" rx="8" fill="#E9F2E9" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="22" y="240" font-size="11" fill="#2E6B2E" text-anchor="start" font-weight="bold">가상 스레드 (I/O 블로킹 시 캐리어 반납)</text>
+<rect x="30" y="250" width="180" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="120.0" y="270.75" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">가상 스레드 수만 개</text>
+<line x1="120" y1="284" x2="120" y2="323" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="132" y="299" font-size="10" fill="#333" text-anchor="start">I/O로 블로킹되면 캐리어를</text>
+<text x="132" y="312" font-size="10" fill="#333" text-anchor="start">반납(unmount) → 다른 가상 스레드가 사용</text>
+<rect x="30" y="324" width="180" height="34" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="120.0" y="344.75" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">캐리어(OS) 스레드 소수</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML 플랫폼 스레드 vs 가상 스레드](/img/c4/vthreads-platform-vs-virtual.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/vthreads-platform-vs-virtual.svg" alt="플랫폼 스레드는 요청마다 OS 스레드를 점유해 부족해지고, 가상 스레드는 I/O 블로킹 때 캐리어 스레드를 반납해 수만 개가 소수 캐리어를 함께 사용하는 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 가상 스레드가 하는 일
 

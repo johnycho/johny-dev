@@ -50,32 +50,93 @@ Hibernate는 엔티티를 로딩할 때 필드별 **스냅샷**을 떠 두고, f
 이 유령 UPDATE가 왜 장애로 이어졌는지, 콜백 처리 흐름으로 따라가 봅니다.
 
 <details>
-<summary>PlantUML 코드</summary>
+<summary>SVG 코드</summary>
 
-```plantuml
-@startuml
-skinparam defaultTextAlignment center
-autonumber
-participant "콜백 서비스\n(쓰기 트랜잭션)" as svc
-participant "Hibernate\n(영속성 컨텍스트)" as hib
-database "DB" as db
-participant "Kafka 컨슈머" as consumer
-
-svc -> hib : 엔티티 조회 (items = JSON 컬럼)
-hib -> hib : 스냅샷 생성\n직렬화 → 역직렬화 (deep copy)
-svc -> svc : 상태 판정만 (필드 대입 없음)
-consumer -> db : 같은 트랜잭션이 발행한\n메시지로 정상 UPDATE (version 1→2)
-svc -> hib : 커밋 → flush
-hib -> hib : areEqual = false\n(equals 없어 참조 비교 실패)
-hib -> db : UPDATE items, version\nWHERE version = 1
-db --> hib : 0 rows (이미 version = 2)
-hib --> svc : OptimisticLockException
-@enduml
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="467" viewBox="0 0 480 467" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="480" height="467" fill="#FFFFFF"/>
+<line x1="60" y1="58" x2="60" y2="455" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="10.0" y="14" width="100" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="60.0" y="32.39" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">콜백 서비스</text>
+<text x="60.0" y="47.89" font-size="10" fill="#444" text-anchor="middle">(쓰기 트랜잭션)</text>
+<line x1="196" y1="58" x2="196" y2="455" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="146.0" y="14" width="100" height="44" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="196.0" y="32.39" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">Hibernate</text>
+<text x="196.0" y="47.89" font-size="10" fill="#444" text-anchor="middle">(영속성 컨텍스트)</text>
+<line x1="318" y1="58" x2="318" y2="455" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="268.0" y="14" width="100" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="318.0" y="40.14" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">DB</text>
+<line x1="426" y1="58" x2="426" y2="455" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<rect x="376.0" y="14" width="100" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="426.0" y="40.14" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">Kafka 컨슈머</text>
+<line x1="60" y1="97" x2="195" y2="97" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="109.8" y="69.0" width="54.5" height="12.0" fill="#FFFFFF"/>
+<text x="137.0" y="78" font-size="10" fill="#333" text-anchor="middle">엔티티 조회</text>
+<rect x="89.3" y="82.0" width="95.3" height="12.0" fill="#FFFFFF"/>
+<text x="137.0" y="91" font-size="10" fill="#333" text-anchor="middle">(items = JSON 컬럼)</text>
+<path d="M196,121 L222,121 L222,137 L198,137" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228.0" y="116.0" width="54.5" height="12.0" fill="#FFFFFF"/>
+<text x="230" y="125" font-size="10" fill="#333" text-anchor="start">스냅샷 생성</text>
+<rect x="228.0" y="129.0" width="142.9" height="12.0" fill="#FFFFFF"/>
+<text x="230" y="138" font-size="10" fill="#333" text-anchor="start">직렬화 → 역직렬화 (deep copy)</text>
+<path d="M60,173 L86,173 L86,189 L62,189" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="92.0" y="168.0" width="126.9" height="12.0" fill="#FFFFFF"/>
+<text x="94" y="177" font-size="10" fill="#333" text-anchor="start">상태 판정만 (필드 대입 없음)</text>
+<line x1="426" y1="249" x2="319" y2="249" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="310.5" y="208.0" width="105.0" height="12.0" fill="#FFFFFF"/>
+<text x="363.0" y="217" font-size="10" fill="#333" text-anchor="middle">같은 트랜잭션이 발행한</text>
+<rect x="310.9" y="221.0" width="104.2" height="12.0" fill="#FFFFFF"/>
+<text x="363.0" y="230" font-size="10" fill="#333" text-anchor="middle">메시지로 정상 UPDATE</text>
+<rect x="327.7" y="234.0" width="70.6" height="12.0" fill="#FFFFFF"/>
+<text x="363.0" y="243" font-size="10" fill="#333" text-anchor="middle">(version 1→2)</text>
+<line x1="60" y1="279" x2="195" y2="279" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="104.9" y="264.0" width="64.2" height="12.0" fill="#FFFFFF"/>
+<text x="137.0" y="273" font-size="10" fill="#333" text-anchor="middle">커밋 → flush</text>
+<path d="M196,303 L222,303 L222,319 L198,319" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228.0" y="298.0" width="83.8" height="12.0" fill="#FFFFFF"/>
+<text x="230" y="307" font-size="10" fill="#333" text-anchor="start">areEqual = false</text>
+<rect x="228.0" y="311.0" width="129.1" height="12.0" fill="#FFFFFF"/>
+<text x="230" y="320" font-size="10" fill="#333" text-anchor="start">(equals 없어 참조 비교 실패)</text>
+<line x1="196" y1="374" x2="317" y2="374" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="209.8" y="346.0" width="112.5" height="12.0" fill="#FFFFFF"/>
+<text x="266.0" y="355" font-size="10" fill="#333" text-anchor="middle">UPDATE items, version</text>
+<rect x="220.1" y="359.0" width="91.9" height="12.0" fill="#FFFFFF"/>
+<text x="266.0" y="368" font-size="10" fill="#333" text-anchor="middle">WHERE version = 1</text>
+<line x1="318" y1="417" x2="197" y2="417" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="230.4" y="389.0" width="35.2" height="12.0" fill="#FFFFFF"/>
+<text x="248.0" y="398" font-size="10" fill="#333" text-anchor="middle">0 rows</text>
+<rect x="204.8" y="402.0" width="86.3" height="12.0" fill="#FFFFFF"/>
+<text x="248.0" y="411" font-size="10" fill="#333" text-anchor="middle">(이미 version = 2)</text>
+<line x1="196" y1="447" x2="61" y2="447" stroke="#888" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<rect x="56.9" y="432.0" width="124.1" height="12.0" fill="#FFFFFF"/>
+<text x="119.0" y="441" font-size="10" fill="#333" text-anchor="middle">OptimisticLockException</text>
+<circle cx="72" cy="97" r="8" fill="#4C7FE0"/>
+<text x="72" y="100.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<circle cx="209" cy="120" r="8" fill="#4C7FE0"/>
+<text x="209" y="123.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<circle cx="73" cy="172" r="8" fill="#4C7FE0"/>
+<text x="73" y="175.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<circle cx="414" cy="249" r="8" fill="#4C7FE0"/>
+<text x="414" y="252.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+<circle cx="72" cy="279" r="8" fill="#4C7FE0"/>
+<text x="72" y="282.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+<circle cx="209" cy="302" r="8" fill="#4C7FE0"/>
+<text x="209" y="305.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+<circle cx="208" cy="374" r="8" fill="#4C7FE0"/>
+<text x="208" y="377.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">7</text>
+<circle cx="306" cy="417" r="8" fill="#4C7FE0"/>
+<text x="306" y="420.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">8</text>
+<circle cx="184" cy="447" r="8" fill="#4C7FE0"/>
+<text x="184" y="450.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">9</text>
+</svg>
 ```
 
 </details>
 
-![PlantUML JSON 컬럼 유령 UPDATE 연쇄](/img/c4/json-phantom-update.svg)
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/json-phantom-update.svg" alt="콜백 서비스가 필드를 바꾸지 않았는데도 스냅샷 비교 실패로 UPDATE가 나가고, 그 사이 컨슈머가 version을 올려 OptimisticLockException이 발생하는 순서" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 - **콜백 서비스가 쓰기 트랜잭션에서 조회한다.** 상태 콜백 서비스가 클래스 레벨 `@Transactional`이라, 읽기 경로도 쓰기 트랜잭션입니다. 이때 `items` 스냅샷이 JSON 왕복으로 떠집니다.
 - **아무것도 바꾸지 않았는데 dirty로 판정된다.** 호출되는 것은 상태 판정 메서드뿐인데, flush 시 `areEqual`이 false를 반환합니다.

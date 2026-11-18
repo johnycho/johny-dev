@@ -39,13 +39,40 @@ Redis는 명령을 **하나의 스레드가 순서대로** 처리합니다. 언�
 
 "한 스레드면 커넥션 하나 처리하는 동안 나머지는 노나?" 아닙니다. Redis는 **I/O 멀티플렉싱**(`epoll`(리눅스), `kqueue`(맥/BSD) 등)을 사용합니다. 수천 개 소켓을 논블로킹으로 등록해 두고, **데이터가 준비된 소켓만** 선별해 처리합니다.
 
-```mermaid
-flowchart LR
-    C1["커넥션 1"] --> M["I/O 멀티플렉서<br/>(epoll/kqueue)"]
-    C2["커넥션 2"] --> M
-    C3["커넥션 …N"] --> M
-    M -->|준비된 것만| L["단일 이벤트 루프<br/>명령 순차 처리"]
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="256" viewBox="0 0 440 256" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="256" fill="#FFFFFF"/>
+<g transform="translate(0,-24)">
+<rect x="30" y="44" width="110" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="85.0" y="64.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">커넥션 1</text>
+<line x1="85" y1="76" x2="199.75" y2="118" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="165" y="44" width="110" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="64.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">커넥션 2</text>
+<line x1="220" y1="76" x2="220.0" y2="118" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="300" y="44" width="110" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="355.0" y="64.0" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">커넥션 …N</text>
+<line x1="355" y1="76" x2="240.25" y2="118" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="140" y="120" width="160" height="48" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="141.0" font-size="12" fill="#7A5200" text-anchor="middle" font-weight="bold">I/O 멀티플렉서</text>
+<text x="220.0" y="157.0" font-size="10.5" fill="#555" text-anchor="middle">(epoll/kqueue)</text>
+<line x1="220" y1="168" x2="220" y2="218" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="197" font-size="10.5" fill="#333" text-anchor="start">준비된 것만</text>
+<rect x="140" y="220" width="160" height="48" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="241.0" font-size="12" fill="#2E6B2E" text-anchor="middle" font-weight="bold">단일 이벤트 루프</text>
+<text x="220.0" y="257.0" font-size="10.5" fill="#555" text-anchor="middle">명령 순차 처리</text>
+</g>
+</svg>
 ```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/redis-single-thread-event-loop.svg" alt="커넥션 1, 2, …N이 I/O 멀티플렉서(epoll/kqueue)로 모이고, 준비된 것만 단일 이벤트 루프가 명령을 순차 처리하는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>커넥션마다 스레드를 만드는 대신, 한 스레드가 "준비된 이벤트"만 돌아가며 처리해 수천 연결을 감당합니다.</mark> 이게 단일 스레드로도 높은 동시성을 내는 핵심입니다.
 

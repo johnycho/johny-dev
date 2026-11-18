@@ -41,19 +41,88 @@ def extract_terms(path):
 
 SVG_TEXT = re.compile(r"<text[^>]*>([^<]+)</text>")
 
+# PlantUML 라벨: 따옴표 문자열, 화살표와 note의 ':' 뒤 라벨, title, 여러 줄 note 본문
+PUML_QUOTED = re.compile(r'"([^"]*)"')
+PUML_COLON = re.compile(r"(?:-+>|<-+|\.+>|<\.+|--|\.\.|\bnote\b|\bover\b)[^:]*:\s*(.+)$")   # A -> B : 라벨
+PUML_TITLE = re.compile(r"^\s*(?:title|legend|header|footer)\s+(.+)$")
+PUML_ACTIVITY = re.compile(r"^\s*:(.+?);?\s*$")                                         # :액티비티;
+PUML_DECL = re.compile(r"^\s*(?:participant|actor|database|entity|queue|collections|boundary|control|rectangle|node|component|package|card|folder|frame|cloud|storage|usecase)\s+([^\s\"]+)")  # 따옴표 없는 이름
+PUML_COND = re.compile(r"^\s*(?:else)?if\s*\((.+?)\)|^\s*while\s*\((.+?)\)")          # if (조건) then
+HANGUL = re.compile(r"[가-힣]")
+
+# Mermaid 라벨: 노드 [..] (..) {..}, 간선 |..|, 따옴표, subgraph 제목, gitGraph id/branch
+MMD_SEG = re.compile(r'"([^"]*)"|\|([^|]*)\||\[\(?([^\]\)]*)\)?\]|\(\(?([^)]*)\)?\)|\{\{?([^}]*)\}?\}')
+MMD_SUB = re.compile(r"^\s*subgraph\s+\S+?\s*\[?\"?([^\"\]]*)")
+
+def mermaid_labels(ln):
+    out = [next(g for g in m if g) for m in MMD_SEG.findall(ln) if any(m)]
+    m = MMD_SUB.match(ln)
+    if m and m.group(1):
+        out.append(m.group(1))
+    out = [re.sub(r"<br\s*/?>", " ", s).strip('"[](){} ') for s in out]
+    return list(dict.fromkeys(s for s in out if HANGUL.search(s)))
+
+def puml_labels(ln):
+    out = [m.group(1) for m in PUML_QUOTED.finditer(ln)]
+    bare = PUML_QUOTED.sub("", ln)
+    m = PUML_ACTIVITY.match(bare)
+    if m:
+        out.append(m.group(1))
+    else:
+        for rx in (PUML_COLON, PUML_TITLE, PUML_COND, PUML_DECL):
+            m = rx.search(bare)
+            if m:
+                out.append(next(g for g in m.groups() if g))
+    return [s.replace("\\n", " ") for s in out if HANGUL.search(s)]
+
+HTML_TEXT = re.compile(r">([^<>]*[가-힣][^<>]*)<")
+JS_STR = re.compile(r"\"([^\"\n]*[가-힣][^\"\n]*)\"|'([^'\n]*[가-힣][^'\n]*)'|`([^`\n]*[가-힣][^`\n]*)`")
+
+def html_lines(path):
+    """static/diagrams/*.html(archify 등 인터랙티브 그림): 태그 사이 글자와 스크립트 문자열 리터럴의 한글."""
+    import html as H
+    out = []
+    for i, ln in enumerate(open(path, encoding="utf-8"), 1):
+        segs = HTML_TEXT.findall(ln) + [next(g for g in m if g) for m in JS_STR.findall(ln)]
+        for seg in dict.fromkeys(segs):
+            out.append((i, H.unescape(seg)))
+    return out
+
 def body_lines(path):
-    """코드펜스(```) 밖 줄 + ```svg 펜스 안의 <text> 내용(그림 속 라벨도 지양어 대상). 원래 줄번호 유지."""
-    out, infence, insvg = [], False, False
+    """코드펜스(```) 밖 줄 + 그림 펜스 안의 라벨(```svg의 <text>, ```plantuml/C4-PlantUML의 라벨, title, note, ```mermaid의 노드, 간선, subgraph 라벨).
+    그림 속 글자도 지양어 대상이다. 원래 줄번호 유지."""
+    if path.endswith(".html"):
+        return html_lines(path)
+    out, infence, insvg, inpuml, innote, inmmd = [], False, False, False, False, False
     for i, ln in enumerate(open(path, encoding="utf-8"), 1):
         if ln.startswith("```"):
             infence = not infence
             insvg = infence and ln.strip().startswith("```svg")
+            inpuml = infence and ln.strip().startswith(("```plantuml", "```puml"))
+            inmmd = infence and ln.strip().startswith("```mermaid")
+            innote = False
             continue
         if not infence:
             out.append((i, ln.rstrip("\n")))
         elif insvg:
             for m in SVG_TEXT.finditer(ln):
                 out.append((i, m.group(1)))
+        elif inmmd:
+            for lab in mermaid_labels(ln):
+                out.append((i, lab))
+        elif inpuml:
+            s = ln.strip()
+            if innote:
+                if re.match(r"end\s?note", s):
+                    innote = False
+                elif HANGUL.search(s):
+                    out.append((i, s))
+                continue
+            if re.match(r"note\b", s) and ":" not in s:
+                innote = True
+                continue
+            for lab in puml_labels(ln):
+                out.append((i, lab))
     return out
 
 # 평서체(비존댓) 종결 — 줄 끝이 '…다.'인데 '…니다.'(존댓말)가 아닌 경우(한다/된다/낮다 등). </mark>·따옴표·괄호는 무시.
@@ -70,6 +139,8 @@ CONTEXT = [
      "주다(→설정하다)"),
     # 가운데점 나열 금지(phrasing #21) — 인라인 코드 안 포함 전부. 쉼표 또는 '와/과'로.
     (re.compile(r"\u00b7"), "가운데점(→쉼표 또는 와/과, phrasing #21)"),
+    # 구어 의문형 어미 '~냐, ~느냐'(ALB냐 NLB냐, 어떻게 하느냐). 한 글자라 좌열 추출로 못 잡는다.
+    (re.compile(r"냐"), "~냐(→~인지, ~하는지)"),
 ]
 
 # 볼드 미적용(플랭킹): 볼드 interior가 구두점(따옴표·괄호·백틱)으로 끝나고 닫는 ** 뒤가 한글/영숫자면
@@ -82,7 +153,7 @@ FLANK = re.compile(
 
 # 지양어 표면형을 우연히 포함하는 별개 단어(오탐 방지용 마스킹)
 MASK = re.compile(
-    r"부담|분담|담당|담백|상담|면담|대담|헥사고날|지오해시"
+    r"부담|분담|담당|담백|상담|면담|대담|헥사고날|지오해시|엇갈|헷갈|가르치|가르침|(?<=[가-힣])가를"
     # 보조동사(~어/아 두다, ~어/아 주다)와 주고받다: 본동사 "값을 두다/주다"만 지양 대상
     r"|(?<=[가-힣])(?<![을를에로도만은는게히이가])\s?(두고|두면|두는|둡니다|둬야|둔|둘|줍니다|주고|주면|주는|준다|줘야)|주고받"
     r"|나타[내냅낸]|보[냅낸내]"                                   # 나타내다, 보내다 ≠ 내다
@@ -124,8 +195,26 @@ def load_allow():
                     allow.add((c[0], c[1], c[2]))
     return allow
 
+# 그림은 손수 SVG만 쓴다(blog-authoring 4절). PlantUML, Mermaid, Archify가 새로 생기면 지적한다.
+# 보관 중인 방식을 꼭 써야 하는 글(예: C4 모델 글의 C4-PlantUML 코드 예시)은 --allow로 예외 등록한다.
+SVG_BLOCK = re.compile(r"```svg\n(.*?)\n```(?:(?!```svg).)*?/img/c4/([\w.-]+)\.svg", re.S)
+DIAGRAM_FMT = re.compile(r"^```(plantuml|puml|mermaid)\b|<ArchifyEmbed\b")
+
 def scan_file(f, terms):
     hits = []   # (줄번호, 항목, 문맥, 분류)
+    if f.endswith(".mdx") or f.endswith(".md"):
+        for n, raw in enumerate(open(f, encoding="utf-8"), 1):
+            if DIAGRAM_FMT.search(raw):
+                hits.append((n, "그림형식(→손수 SVG)", raw.strip()[:60], "그림"))
+        # 글 안 ```svg 블록(스캔 대상)과 실제로 보이는 그림 파일이 다르면, 블록만 고치고 파일에 옛 문구가 남은 것이다.
+        text = open(f, encoding="utf-8").read()
+        for m in SVG_BLOCK.finditer(text):
+            p = os.path.join(ROOT, "static", "img", "c4", m.group(2) + ".svg")
+            n = text[:m.start()].count("\n") + 1
+            if not os.path.exists(p):
+                hits.append((n, "그림불일치(파일 없음)", m.group(2), "그림"))
+            elif m.group(1).strip() != open(p, encoding="utf-8").read().strip():
+                hits.append((n, "그림불일치(블록≠파일)", m.group(2), "그림"))
     for n, line in body_lines(f):
         # 지양어를 부분문자열로 포함하는 별개 단어(부담을→담을 등)는 가려서 오탐을 막는다.
         masked = MASK.sub(lambda m: "□" * len(m.group()), line)
