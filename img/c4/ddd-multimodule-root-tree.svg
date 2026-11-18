@@ -63,7 +63,7 @@
 <path d="M33,222.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1"/>
 <text x="50" y="230" font-size="11" fill="#2E6B2E" text-anchor="start" font-family="Menlo, Consolas, monospace">shared-domain/</text>
 <rect x="150.708" y="221.5" width="25.6" height="13" rx="3" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="0.8"/><text x="163.5" y="230.9" font-size="9" fill="#2E6B2E" text-anchor="middle" font-weight="bold">공유</text>
-<text x="181.3" y="230" font-size="9.5" fill="#777" text-anchor="start">여러 서비스가 쓰는 공용 도메인(엔티티, 인터페이스)</text>
+<text x="181.3" y="230" font-size="9.5" fill="#777" text-anchor="start">여러 서비스가 사용하는 공용 도메인(엔티티, 인터페이스)</text>
 <path d="M33,242.0 h4.5 l1.5,-1.8 h6 v10.8 h-12 z" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1"/>
 <text x="50" y="250" font-size="11" fill="#2E6B2E" text-anchor="start" font-family="Menlo, Consolas, monospace">shared-service-infra/</text>
 <rect x="197.062" y="241.5" width="25.6" height="13" rx="3" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="0.8"/><text x="209.9" y="250.9" font-size="9" fill="#2E6B2E" text-anchor="middle" font-weight="bold">공유</text>

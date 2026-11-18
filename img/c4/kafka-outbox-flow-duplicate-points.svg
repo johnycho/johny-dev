@@ -7,7 +7,7 @@
 <text x="134.0" y="69.3" font-size="11" fill="#26508F" text-anchor="middle">비즈니스 로직 수행</text>
 <line x1="134.0" y1="78" x2="134.0" y2="92" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="16" y="94" width="236" height="74" rx="6" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
-<text x="26" y="110" font-size="10.5" fill="#8A6400" text-anchor="start" font-weight="bold">하나의 DB 트랜잭션</text>
+<text x="26" y="110" font-size="10.5" fill="#8A6400" text-anchor="start" font-weight="bold">한 DB 트랜잭션</text>
 <rect x="26" y="120" width="104" height="38" rx="6" fill="#F7F7F7" stroke="#999999"/>
 <text x="78" y="135.4" font-size="10.5" fill="#333" text-anchor="middle">비즈니스</text>
 <text x="78" y="149.9" font-size="10.5" fill="#333" text-anchor="middle">테이블 변경</text>
