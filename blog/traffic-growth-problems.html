@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -65,7 +65,7 @@ CPU가 차면 런 큐가 길어지고, 힙 압박으로 <strong>GC가 자주, �
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="대응-원칙">대응 원칙<a href="#대응-원칙" class="hash-link" aria-label="대응 원칙에 대한 직접 링크" title="대응 원칙에 대한 직접 링크">​</a></h2>
 <p>증상별 대처가 아니라 방향만 요약하면:</p>
 <ul>
-<li><strong>여유(headroom)를 두고 임계점 전에 확장</strong> — 자원 사용률을 100%가 아니라 여유 구간에서 운영, 오토스케일은 웜업 시간을 감안.</li>
+<li><strong>여유(headroom)를 확보하고 임계점 전에 확장</strong> — 자원 사용률을 100%가 아니라 여유 구간에서 운영, 오토스케일은 웜업 시간을 감안.</li>
 <li><strong>캐시, 풀 튜닝</strong> — 히트율, 풀 크기와 타임아웃을 부하에 맞게.</li>
 <li><strong>백프레셔, 로드 셰딩</strong> — 못 받을 요청은 빨리 거절(<code>429 Too Many Requests</code>)해 전체를 지킴.</li>
 <li><strong>서킷 브레이커, 타임아웃, 백오프(지터)</strong> — 재시도 폭풍, 연쇄 장애 차단.</li>
@@ -79,7 +79,7 @@ CPU가 차면 런 큐가 길어지고, 힙 압박으로 <strong>GC가 자주, �
 <li>보통 <strong>커넥션/풀 → 캐시 → DB</strong> 순으로 먼저 문제가 생기고, CPU, GC, 큐, 핫키가 뒤따릅니다.</li>
 <li>최악은 <strong>재시도 폭풍, 연쇄 장애</strong>로, 실패를 빨리와 국소적으로 만드는 장치가 필수입니다.</li>
 <li>
-<mark>대비의 핵심은 &quot;여유를 두고, 실패를 빨리 차단하고, 병목을 분산하고, 지표로 미리 본다&quot;입니다.</mark>
+<mark>대비의 핵심은 &quot;여유를 확보하고, 실패를 빨리 차단하고, 병목을 분산하고, 지표로 미리 본다&quot;입니다.</mark>
 </li>
 </ul>
 <p>메시지 큐로 스파이크를 완충하는 선택은 <a href="/blog/message-queue-comparison">메시지 큐 비교</a>도 함께 보세요.</p>

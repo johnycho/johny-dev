@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -30,7 +30,7 @@
 <p>기존 메시징 시스템(전통적 MQ)은 메시지당 전달 보장, 복잡한 라우팅에 초점이 맞춰져, 초당 수십만 건을 처리하는 <strong>로그 처리</strong>에는 무거웠습니다. 로그 데이터는 조금 유실돼도 치명적이지 않은 대신 <strong>처리량과 단순함</strong>이 훨씬 중요합니다. 카프카는 이 지점에 초점을 두고, 전통적 MQ와 다른 선택을 합니다.</p>
 <mark>&quot;로그 데이터는 대량이지만 유실 허용도가 있다&quot;는 전제가, 강한 보장 대신 처리량과 단순함을 택하게 만든 출발점입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-메시지를-지우지-않는다--append-only-커밋-로그">1. 메시지를 지우지 않는다 — append-only 커밋 로그<a href="#1-메시지를-지우지-않는다--append-only-커밋-로그" class="hash-link" aria-label="1. 메시지를 지우지 않는다 — append-only 커밋 로그에 대한 직접 링크" title="1. 메시지를 지우지 않는다 — append-only 커밋 로그에 대한 직접 링크">​</a></h2>
-<p>전통적 MQ는 소비된 메시지를 큐에서 삭제합니다. 카프카는 다릅니다. 각 파티션을 <strong>파일 끝에만 덧붙이는(append-only) 로그</strong>로 두고, 소비돼도 지우지 않습니다. 대신 <strong>시간, 용량 기준으로 보존(retention)</strong> 하다 오래된 것을 한꺼번에 버립니다(기본 보존 기간은 시간 기반).</p>
+<p>전통적 MQ는 소비된 메시지를 큐에서 삭제합니다. 카프카는 다릅니다. 각 파티션을 <strong>파일 끝에만 덧붙이는(append-only) 로그</strong>로 구성하고, 소비돼도 지우지 않습니다. 대신 <strong>시간, 용량 기준으로 보존(retention)</strong> 하다 오래된 것을 한꺼번에 버립니다(기본 보존 기간은 시간 기반).</p>
 <ul>
 <li>쓰기는 항상 <strong>파일 끝에 순차 추가</strong> — 복잡한 자료구조를 갱신할 필요도, 랜덤 접근과 삭제도 없습니다.</li>
 <li>소비는 읽기일 뿐이라, 같은 데이터를 <strong>여러 컨슈머가 각자 다시</strong> 읽을 수 있습니다(재처리와 리플레이).</li>
@@ -67,7 +67,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-브로커는-상태를-갖지-않는다--오프셋을-컨슈머가-관리">5. 브로커는 상태를 갖지 않는다 — 오프셋을 컨슈머가 관리<a href="#5-브로커는-상태를-갖지-않는다--오프셋을-컨슈머가-관리" class="hash-link" aria-label="5. 브로커는 상태를 갖지 않는다 — 오프셋을 컨슈머가 관리에 대한 직접 링크" title="5. 브로커는 상태를 갖지 않는다 — 오프셋을 컨슈머가 관리에 대한 직접 링크">​</a></h2>
 <p>전통적 MQ는 브로커가 &quot;이 소비자가 어디까지 받았나&quot;를 추적하고, 소비 확인(ack)을 받아 메시지를 삭제합니다. 이 방식은 복잡한 상태 관리를 요구하고 디스크 쓰기를 유발합니다. 카프카는 이 책임을 <strong>컨슈머 쪽으로 넘깁니다.</strong> 각 컨슈머(그룹)가 <strong>자신의 오프셋</strong>을 들고 있고, 브로커는 그 위치의 데이터를 돌려줄 뿐입니다(원논문 시점엔 ZooKeeper에 저장, 조정).</p>
 <p>그럼 삭제는 어떻게 할까요? &quot;누가 다 읽었는지&quot;를 브로커가 모르니, <strong>시간 기반 보존 정책</strong>(원논문 기본 7일)으로 일정 시간이 지난 메시지를 자동으로 버립니다. 컨슈머 상태를 추적할 필요가 없습니다.</p>
-<p>이 <strong>무상태 브로커(stateless broker)</strong> 는 부수 효과로 <strong>리와인드(되감기)</strong> 를 공짜로 줍니다. 브로커가 소비 상태를 안 들고 있으니, 컨슈머는 언제든 원하는 오프셋으로 돌아가 다시 읽을 수 있습니다. 논문이 든 사례는 세 가지입니다.</p>
+<p>이 <strong>무상태 브로커(stateless broker)</strong> 는 부수 효과로 <strong>리와인드(되감기)</strong> 를 추가 비용 없이 제공합니다. 브로커가 소비 상태를 안 들고 있으니, 컨슈머는 언제든 원하는 오프셋으로 돌아가 다시 읽을 수 있습니다. 논문이 든 사례는 세 가지입니다.</p>
 <ol>
 <li>컨슈머 코드에 버그가 있어 <strong>수정 후 재처리</strong>할 때.</li>
 <li><strong>ETL 작업이 실패</strong>해 특정 시점부터 다시 처리할 때.</li>
@@ -79,7 +79,7 @@
 <p>한 토픽을 여러 <strong>파티션</strong>으로 나눕니다. 파티션은 <strong>병렬 처리의 최소 단위</strong>입니다.</p>
 <ul>
 <li><strong>컨슈머 그룹</strong>: 같은 그룹 안에서 하나의 메시지는 딱 한 컨슈머에게만 전달됩니다. 반면 <strong>서로 다른 그룹</strong>은 같은 파티션을 <strong>독립적으로</strong> 소비합니다(예: 그룹 A는 실시간 서비스, 그룹 B는 하둡 오프라인 처리가 같은 토픽을 각자 읽음).</li>
-<li><strong>파티션 하나는 컨슈머 하나</strong>가 맡습니다. 여러 컨슈머가 한 파티션을 동시에 소비하면 &quot;누가 뭘 읽었나&quot;를 조율할 락, 상태 관리가 필요한데, 하나만 담당하게 하면 <strong>락이 없습니다.</strong> 그래서 <strong>최대 병렬도 = 파티션 수</strong>이고, 병렬성을 늘리려면 파티션을 늘립니다(논문은 컨슈머 수보다 파티션을 넉넉히 두는 <strong>오버 파티셔닝</strong>을 권장 — <a href="/blog/kafka-partition-count">파티션 개수 정하기</a> 참고).</li>
+<li><strong>파티션 하나는 컨슈머 하나</strong>가 맡습니다. 여러 컨슈머가 한 파티션을 동시에 소비하면 &quot;누가 뭘 읽었나&quot;를 조율할 락, 상태 관리가 필요한데, 하나만 담당하게 하면 <strong>락이 없습니다.</strong> 그래서 <strong>최대 병렬도 = 파티션 수</strong>이고, 병렬성을 늘리려면 파티션을 늘립니다(논문은 컨슈머 수보다 파티션을 넉넉히 만드는 <strong>오버 파티셔닝</strong>을 권장 — <a href="/blog/kafka-partition-count">파티션 개수 정하기</a> 참고).</li>
 <li><strong>순서는 파티션 안에서만</strong> 보장됩니다. 파티션 간 순서는 보장되지 않으니, &quot;같은 키는 같은 파티션&quot;으로 필요한 범위의 순서만 지킵니다.</li>
 </ul>
 <p>그룹, 파티션 배분은 <strong>ZooKeeper</strong>가 조율합니다(중앙 마스터 노드 없이). ZooKeeper에는 네 종류의 레지스트리(브로커, 컨슈머, 오너십, 오프셋)가 저장되는데, 여기 잘 설계된 장치가 있습니다. 앞의 셋은 <strong>일시적 노드(ephemeral)</strong> 라 <strong>연결이 종료되면 자동 삭제</strong>됩니다. 덕분에 브로커에 장애가 발생하면 별도의 장애 감지 로직 없이 ZooKeeper가 노드를 지우고, 이를 지켜보던 컨슈머들이 즉시 <strong>리밸런싱</strong>을 시작합니다. 반면 <strong>오프셋 레지스트리만 영속(persistent)</strong> 노드입니다 — 브로커와 컨슈머가 종료돼도 오프셋은 보존돼야 하니까요.</p>

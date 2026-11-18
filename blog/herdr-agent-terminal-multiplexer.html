@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -53,12 +53,12 @@
 <li><strong>키보드, 마우스 모두 완전히 지원</strong> — <code>tmux</code> 스타일 prefix 키(<code>ctrl+b</code>)와 클릭, 드래그, 분할을 <strong>상황에 따라 선택해</strong> 쓸 수 있습니다.</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="agent-native--에이전트가-herdr을-조종한다">agent-native — 에이전트가 Herdr을 조종한다<a href="#agent-native--에이전트가-herdr을-조종한다" class="hash-link" aria-label="agent-native — 에이전트가 Herdr을 조종한다에 대한 직접 링크" title="agent-native — 에이전트가 Herdr을 조종한다에 대한 직접 링크">​</a></h3>
-<p>가장 특징적인 건 <mark>에이전트가 <strong>소켓 API</strong>로 Herdr 자체를 조종할 수 있다는 점입니다</mark> — 페인을 새로 띄우고, 다른 에이전트에게 프롬프트를 보내고, <strong>다른 에이전트가 정말로 막힐(blocked) 때까지 기다리는</strong> 식의 흐름을 구성할 수 있습니다. 이는 로컬 소켓 위에서 <strong>줄 단위 JSON(NDJSON)</strong> 으로 주고받습니다(유닉스 도메인 소켓, 기본 경로 <code>~/.config/herdr/herdr.sock</code>). 스크립트나 상위 에이전트가 하위 에이전트들을 지휘하는 &quot;오케스트레이션&quot;을 터미널 안에서 구성할 수 있다는 뜻입니다. 이러한 방식으로 AI 작업을 잡, 상태, 의존으로 연동하는 설계는 <a href="/blog/graph-engineering-ai-workflow">AI 작업을 그래프로 설계하기</a> 글의 관점과도 통합니다.</p>
+<p>가장 특징적인 건 <mark>에이전트가 <strong>소켓 API</strong>로 Herdr 자체를 조종할 수 있다는 점입니다</mark> — 페인을 새로 생성하고, 다른 에이전트에게 프롬프트를 보내고, <strong>다른 에이전트가 정말로 막힐(blocked) 때까지 기다리는</strong> 식의 흐름을 구성할 수 있습니다. 이는 로컬 소켓 위에서 <strong>줄 단위 JSON(NDJSON)</strong> 으로 주고받습니다(유닉스 도메인 소켓, 기본 경로 <code>~/.config/herdr/herdr.sock</code>). 스크립트나 상위 에이전트가 하위 에이전트들을 지휘하는 &quot;오케스트레이션&quot;을 터미널 안에서 구성할 수 있다는 뜻입니다. 이러한 방식으로 AI 작업을 잡, 상태, 의존으로 연동하는 설계는 <a href="/blog/graph-engineering-ai-workflow">AI 작업을 그래프로 설계하기</a> 글의 관점과도 통합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="하네스를-쓰면-herdr은-필요-없을까">하네스를 쓰면 Herdr은 필요 없을까<a href="#하네스를-쓰면-herdr은-필요-없을까" class="hash-link" aria-label="하네스를 쓰면 Herdr은 필요 없을까에 대한 직접 링크" title="하네스를 쓰면 Herdr은 필요 없을까에 대한 직접 링크">​</a></h2>
 <p>예상되는 질문 하나 — 전에 소개한 <a href="/blog/ai-engineering-harness">AI 엔지니어링 하네스</a>는 &quot;규칙, 스킬, 훅을 파일로 정의해 에이전트가 세션이 바뀌어도 일관되게 일하게&quot; 하는 장치입니다. 그럼 하네스가 있으면 Herdr은 안 써도 될까요? <mark>답은 &quot;둘은 담당하는 영역이 달라 대체 관계가 아니다&quot;입니다.</mark></p>
 <ul>
 <li><strong>하네스</strong>는 에이전트 <strong>한 명의 행동</strong>을 담당합니다 — 무엇을, 어떤 순서로, 어떤 안전장치 아래 일할지를 파일(규칙, 스킬, 훅)로 고정합니다. &quot;에이전트가 제대로 일하게&quot; 만드는 영역입니다.</li>
-<li><strong>Herdr</strong>은 그런 에이전트 <strong>여러 프로세스</strong>를 관리합니다 — 여러 개를 띄우고, 누가 막혔는지 관찰하고, 연결이 종료되어도 유지하고, 소켓 API로 서로 조종하게 하는 런타임입니다. &quot;에이전트들을 한눈에 몰 수 있게&quot; 만드는 영역입니다.</li>
+<li><strong>Herdr</strong>은 그런 에이전트 <strong>여러 프로세스</strong>를 관리합니다 — 여러 개를 실행하고, 누가 막혔는지 관찰하고, 연결이 종료되어도 유지하고, 소켓 API로 서로 조종하게 하는 런타임입니다. &quot;에이전트들을 한눈에 몰 수 있게&quot; 만드는 영역입니다.</li>
 </ul>
 <p>그래서 하네스로 에이전트를 아무리 잘 길들여도, <strong>동시에 여러 개를 돌리는 순간</strong> &quot;지금 어느 터미널이 승인을 기다리나, 종료된 세션을 어떻게 다시 연결하나&quot;는 그대로 남습니다 — 이건 Herdr의 영역입니다. 반대로 Herdr로 여러 에이전트를 잘 관측해도, 각 에이전트의 작업 방식이 세션마다 달라지는 문제는 하네스가 해결합니다. 한 명을 잘 일하게 하는 하네스와 여러 명을 잘 몰 수 있게 하는 Herdr은 <strong>함께 쓸 때 서로를 보완</strong>합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="언제-쓰고-무엇을-조심하나">언제 쓰고, 무엇을 조심하나<a href="#언제-쓰고-무엇을-조심하나" class="hash-link" aria-label="언제 쓰고, 무엇을 조심하나에 대한 직접 링크" title="언제 쓰고, 무엇을 조심하나에 대한 직접 링크">​</a></h2>

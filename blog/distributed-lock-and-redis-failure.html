@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -28,7 +28,7 @@
 <p>분산락을 반사적으로 쓰기 전에, <strong>DB로 이미 해결되는 문제인지</strong> 먼저 봐야 합니다.</p>
 <p><strong>분산락이 어울리는 상황 (구체 예시)</strong></p>
 <ul>
-<li><strong>여러 인스턴스에 걸린 스케줄러와 배치의 중복 실행 방지</strong> — 서버 3대에 같은 크론(<code>@Scheduled</code>)이 붙어 있으면 &quot;매일 새벽 정산 배치&quot;가 3번 실행됩니다. 분산락으로 <strong>그 시각에 한 대만</strong> 실행하게 합니다. 예: 정산 배치, 만료 포인트, 쿠폰 일괄 회수, 리포트 생성, 대량 푸시 발송. (이 용도의 라이브러리로 ShedLock이 있습니다.)</li>
+<li><strong>여러 인스턴스에서 실행되는 스케줄러와 배치의 중복 실행 방지</strong> — 서버 3대에 같은 크론(<code>@Scheduled</code>)이 붙어 있으면 &quot;매일 새벽 정산 배치&quot;가 3번 실행됩니다. 분산락으로 <strong>그 시각에 한 대만</strong> 실행하게 합니다. 예: 정산 배치, 만료 포인트, 쿠폰 일괄 회수, 리포트 생성, 대량 푸시 발송. (이 용도의 라이브러리로 ShedLock이 있습니다.)</li>
 <li><strong>서드파티, 외부 자원의 동시 호출 제한</strong> — DB 트랜잭션 밖이라 DB 락으로 못 감싸는 자원. 예: &quot;이 외부 API는 계정당 동시에 한 번만&quot; 호출해 레이트리밋 초과를 막기, 공유 스토리지의 <strong>같은 파일/객체를 한 워커만</strong> 쓰기, 외부 결제, 발송 게이트웨이에 같은 작업을 두 번 보내지 않기.</li>
 <li><strong>캐시 재생성 직렬화(스탬피드 방지)</strong> — 인기 키가 만료된 순간 여러 요청이 동시에 원본을 다시 만들지 않도록 <strong>한 요청만</strong> 재생성하고 나머지는 대기하거나 이전 값을 사용합니다. (자세히는 <a href="/blog/commerce-cache-traffic-strategy">커머스 캐시 트래픽 대응</a>)</li>
 <li><strong>여러 자원과 단계를 아우르는 임계 구역</strong> — 한 행(row) 락으로 감싸기 어려운, &quot;사용자별로 이 복합 절차를 한 번에 하나만&quot; 같은 경우. 예: 한 사용자의 (포인트 적립 → 등급 재계산 → 알림)이 동시에 두 번 실행되면 꼬이는 절차를 <strong>사용자 키로 잠가 직렬화</strong>.</li>
@@ -56,7 +56,7 @@
 <div style="height:520px"></div>
 <p>즉 Sentinel, Cluster로 가용성은 올려도, <strong>락의 상호배제까지 100% 보장되진 않습니다.</strong> 여러 독립 마스터의 과반 획득을 요구하는 <strong>Redlock</strong>은 이 위험을 줄이려는 시도지만, GC 정지, 시계 문제 등으로 완벽하진 않다는 논쟁이 있고 구성도 무겁습니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="그래서-redis-장애에도-견디게-하려면">그래서 Redis 장애에도 견디게 하려면<a href="#그래서-redis-장애에도-견디게-하려면" class="hash-link" aria-label="그래서 Redis 장애에도 견디게 하려면에 대한 직접 링크" title="그래서 Redis 장애에도 견디게 하려면에 대한 직접 링크">​</a></h2>
-<p>핵심은 하나입니다 — <mark>&quot;락이 잠깐 해제되어도 데이터는 안전&quot;하도록, 정합성의 최종 방어선을 DB에 둡니다.</mark></p>
+<p>핵심은 하나입니다 — <mark>&quot;락이 잠깐 해제되어도 데이터는 안전&quot;하도록, 정합성의 최종 방어선은 DB가 맡습니다.</mark></p>
 <ul>
 <li><strong>정합성 최종 보장은 DB에</strong> — 분산락으로 대부분의 경합을 없애되, 실제 올바름은 DB 원자 연산, 유니크 제약, 낙관적 락이 지키게 합니다. 락이 페일오버로 잠깐 이중 획득돼도 <code>WHERE stock &gt; 0</code> 같은 조건이 과판매를 막습니다.</li>
 <li><strong>펜싱 토큰(fencing token)</strong> — 락 획득 시 단조 증가 토큰을 받아 자원이 검증하면, 멈췄다 되살아난 옛 소유자의 쓰기를 거부할 수 있습니다. (예시는 <a href="/blog/redis-distributed-lock">Redis 분산락</a>의 워치독 절)</li>
@@ -70,7 +70,7 @@
 <li>서버가 여러 대면 언어 락이 안 통한다 → <strong>분산락</strong>이 여러 노드가 공유하는 락을 제공합니다.</li>
 <li>그러나 <strong>재고, 중복 생성, 동시 수정은 대개 DB(원자 연산, 유니크, 낙관/비관 락)로</strong> 해결됩니다. 분산락은 스케줄러 중복 방지, 외부 자원처럼 DB로 어려운 곳에.</li>
 <li>Redis는 SPOF이고, <strong>비동기 복제 때문에 페일오버 시 락이 이중 획득될 수 있습니다.</strong></li>
-<li>그래서 <mark>분산락은 &quot;최적화&quot;, 정합성의 최종 보루는 DB에 두고, 펜싱 토큰, 락 실패 처리와 HA로 장애를 견디게 설계합니다.</mark></li>
+<li>그래서 <mark>분산락은 &quot;최적화&quot;, 정합성의 최종 보루는 DB가 맡고, 펜싱 토큰, 락 실패 처리와 HA로 장애를 견디게 설계합니다.</mark></li>
 </ul>
 <p>락을 쓰든 안 쓰든 &quot;Redis에 장애가 난다&quot;를 전제로 설계하면, 장애가 데이터 손상이 아니라 잠깐의 가용성 저하로 그칩니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="용어-한-줄-정리">용어 한 줄 정리<a href="#용어-한-줄-정리" class="hash-link" aria-label="용어 한 줄 정리에 대한 직접 링크" title="용어 한 줄 정리에 대한 직접 링크">​</a></h3>

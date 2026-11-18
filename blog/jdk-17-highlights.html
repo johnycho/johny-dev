@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -53,7 +53,7 @@
 <div class="language-bash codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-bash codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token plain">java -XX:+UseZGC -jar app.jar</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 </li>
 <li><strong>macOS/AArch64 포트(JEP 391, JDK 17).</strong> Apple Silicon(M1)에서 네이티브로 동작합니다.</li>
-<li><strong>JDK 내부 강한 캡슐화(JEP 403, JDK 17).</strong> <code>sun.*</code> 같은 내부 API 접근이 기본 차단됩니다. 오래된 라이브러리가 내부 API에 기대고 있었다면 <strong>11 → 17 이관에서 가장 먼저 걸리는 지점</strong>이니, 실행 시 <code>InaccessibleObjectException</code>, 리플렉션 경고를 미리 점검해야 합니다.</li>
+<li><strong>JDK 내부 강한 캡슐화(JEP 403, JDK 17).</strong> <code>sun.*</code> 같은 내부 API 접근이 기본 차단됩니다. 오래된 라이브러리가 내부 API에 기대고 있었다면 <strong>11 → 17 이관에서 가장 먼저 문제가 되는 지점</strong>이니, 실행 시 <code>InaccessibleObjectException</code>, 리플렉션 경고를 미리 점검해야 합니다.</li>
 <li><strong>제거, 지원 종료.</strong> Nashorn 자바스크립트 엔진 제거(JEP 372, JDK 15), RMI Activation 제거(JEP 407, JDK 17), Applet API 제거 예고, <strong>Security Manager 지원 종료 예고</strong>(JEP 411, JDK 17).</li>
 </ul>
 <mark>11 → 17 이관에서 코드 자체보다 자주 걸림돌이 되는 건 <strong>내부 API 강한 캡슐화와 제거된 모듈</strong>입니다 — 언어 기능은 대부분 소스 호환이라, 이관 리스크는 의존 라이브러리 쪽에서 먼저 확인하는 게 순서입니다.</mark>

@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -45,7 +45,7 @@
 <p><strong>대처</strong>:</p>
 <ul>
 <li>캐시 용도면 <code>maxmemory</code> + <strong><code>allkeys-lru</code>/<code>allkeys-lfu</code></strong> 정책을 명시(자주 사용하지 않는 키부터 제거함).</li>
-<li>캐시 키엔 <strong>반드시 TTL</strong>. 단, 많은 키의 TTL이 같은 시각에 몰리면 대량 만료가 한꺼번에 발생하니 <strong>만료 시각에 지터(랜덤 편차)</strong> 를 줍니다.</li>
+<li>캐시 키엔 <strong>반드시 TTL</strong>. 단, 많은 키의 TTL이 같은 시각에 몰리면 대량 만료가 한꺼번에 발생하니 <strong>만료 시각에 지터(랜덤 편차)</strong> 를 추가합니다.</li>
 <li><code>evicted_keys</code>, <code>used_memory</code>를 모니터링(<a href="/blog/server-monitoring-analysis">서버 지표 읽기</a> 참고).</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-캐시-스탬피드--인기-키가-만료되는-순간">5. 캐시 스탬피드 — 인기 키가 만료되는 순간<a href="#5-캐시-스탬피드--인기-키가-만료되는-순간" class="hash-link" aria-label="5. 캐시 스탬피드 — 인기 키가 만료되는 순간에 대한 직접 링크" title="5. 캐시 스탬피드 — 인기 키가 만료되는 순간에 대한 직접 링크">​</a></h2>

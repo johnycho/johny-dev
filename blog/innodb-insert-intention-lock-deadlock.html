@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -40,7 +40,7 @@
 <p><img decoding="async" loading="lazy" alt="PlantUML 상태 전환이 재발송(FOR UPDATE)을 자동 호출해 진행 중 배치 INSERT와 충돌하는 타임라인" src="/assets/images/pu-innodb-deadlock-seq-deee19998adceca4428d6b8ad7dc925d.svg" width="449" height="500" class="img_ev3q"></p>
 <mark>특히 핸들러가 <strong>전환 상태를 구분하지 않고</strong> 재발송을 호출한 점이 문제였습니다 — 재발송이 필요 없는 완료 전환에서도 <code>FOR UPDATE</code>가 실행됐습니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="왜-교착이-생겼나--서로를-기다리는-두-트랜잭션">왜 교착이 생겼나 — 서로를 기다리는 두 트랜잭션<a href="#왜-교착이-생겼나--서로를-기다리는-두-트랜잭션" class="hash-link" aria-label="왜 교착이 생겼나 — 서로를 기다리는 두 트랜잭션에 대한 직접 링크" title="왜 교착이 생겼나 — 서로를 기다리는 두 트랜잭션에 대한 직접 링크">​</a></h2>
-<p>원인을 보기 전에 <strong>잠금(lock)</strong> 과 <strong>갭(gap)</strong> 만 간단히 정리하겠습니다. DB는 같은 데이터를 여럿이 동시에 수정해 데이터가 깨지는 것을 막으려고, 작업 중인 행에 <strong>잠금</strong>을 걸어 다른 트랜잭션의 접근을 막습니다. InnoDB의 잠금은 <strong>행 하나</strong>만 잠그기도 하고, 인덱스로 정렬된 행과 행 <strong>사이의 빈 구간(갭)</strong> 까지 잠그기도 합니다. 갭을 잠그는 이유는, 그 사이로 새 행이 들어와 조회 결과가 달라지는 것을 막기 위해서입니다.</p>
+<p>원인을 보기 전에 <strong>잠금(lock)</strong> 과 <strong>갭(gap)</strong> 만 간단히 정리하겠습니다. DB는 같은 데이터를 여럿이 동시에 수정해 데이터가 손상되는 것을 막으려고, 작업 중인 행에 <strong>잠금</strong>을 걸어 다른 트랜잭션의 접근을 막습니다. InnoDB의 잠금은 <strong>행 하나</strong>만 잠그기도 하고, 인덱스로 정렬된 행과 행 <strong>사이의 빈 구간(갭)</strong> 까지 잠그기도 합니다. 갭을 잠그는 이유는, 그 사이로 새 행이 들어와 조회 결과가 달라지는 것을 막기 위해서입니다.</p>
 <p>이제 사건을 보면, 핵심은 <strong>재발송의 범위 잠금이 조회 대상이 아닌 행까지 닿았다</strong>는 것입니다.</p>
 <ul>
 <li>재발송은 원래 <code>SLACK</code> 알림만 잠그면 됩니다.</li>
@@ -153,7 +153,7 @@
 <ol>
 <li><strong>재발송 트랜잭션을 READ COMMITTED로 (1차 적용)</strong> — 그 트랜잭션의 격리 수준만 낮춰 <strong>갭을 잠그는 동작을 없앴습니다.</strong> <code>FOR UPDATE</code>가 <code>SLACK</code> 행만 잠그고 옆 <code>MAIL</code> 행, 갭을 건드리지 않게 되어, 이 유형의 교착이 사라집니다. 격리 수준을 <strong>그 트랜잭션에만</strong> 낮춰 다른 로직은 그대로 둡니다(<a href="/blog/db-isolation-levels">트랜잭션 격리 수준</a>).</li>
 <li><strong>핸들러에 전환 상태 필터 (보완)</strong> — 완료 전환처럼 재발송이 불필요한 경우엔 애초에 <code>FOR UPDATE</code>를 실행하지 않게 해, 불필요한 범위 잠금 자체를 없앱니다.</li>
-<li><strong>배치 트랜잭션 짧게 하기</strong> — 청크를 작게 하거나 <strong>외부 발송을 트랜잭션 밖으로 빼서</strong>, 배치가 잠금을 유지하는 시간을 줄입니다.</li>
+<li><strong>배치 트랜잭션 짧게 하기</strong> — 청크를 작게 하거나 <strong>외부 발송을 트랜잭션 외부로 분리해서</strong>, 배치가 잠금을 유지하는 시간을 줄입니다.</li>
 <li><strong>인덱스 보강 / 직렬화</strong> — 조회 조건 컬럼을 인덱스에 추가해 잠금 범위를 좁히거나(<a href="/blog/mysql-index-btree-explain">인덱스, 실행계획</a>), named lock으로 재발송을 한 번에 하나씩만 실행되도록 합니다(<a href="/blog/mysql-get-lock-distributed-lock">MySQL 네임드 락</a>).</li>
 </ol>
 <mark>핵심 대응은 <strong>재발송 트랜잭션만 READ COMMITTED로 낮춰 갭 락을 없앤 것</strong>입니다. 나머지(전환 상태 필터, 트랜잭션 짧게 하기, 인덱스 보강)는 같은 데드락이 다시 생기지 않게 하는 추가 대책입니다.</mark>

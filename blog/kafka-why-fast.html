@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -46,7 +46,7 @@
 <!-- -->
 <mark>처리량이 부족하면 파티션(과 컨슈머)을 늘려 선형에 가깝게 확장합니다 — 순서는 파티션 안에서만 보장됩니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="6-단순한-브로커-똑똑한-클라이언트">6. 단순한 브로커, 똑똑한 클라이언트<a href="#6-단순한-브로커-똑똑한-클라이언트" class="hash-link" aria-label="6. 단순한 브로커, 똑똑한 클라이언트에 대한 직접 링크" title="6. 단순한 브로커, 똑똑한 클라이언트에 대한 직접 링크">​</a></h2>
-<p>Kafka 브로커는 라우팅, 소비 상태를 맡지 않습니다. <strong>&quot;어디까지 읽었는지(오프셋)&quot;는 컨슈머가 관리</strong>하고, 컨슈머가 원하는 속도로 <strong>pull</strong> 해 갑니다. 브로커가 할 일이 적으니 그만큼 빠르고, 컨슈머는 자기 처리 능력에 맞춰 배치 크기를 조절할 수 있습니다.</p>
+<p>Kafka 브로커는 라우팅, 소비 상태를 맡지 않습니다. <strong>&quot;어디까지 읽었는지(오프셋)&quot;는 컨슈머가 관리</strong>하고, 컨슈머가 원하는 속도로 <strong>pull</strong> 방식으로 가져옵니다. 브로커가 할 일이 적으니 그만큼 빠르고, 컨슈머는 자기 처리 능력에 맞춰 배치 크기를 조절할 수 있습니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="트레이드오프--공짜는-아니다">트레이드오프 — 공짜는 아니다<a href="#트레이드오프--공짜는-아니다" class="hash-link" aria-label="트레이드오프 — 공짜는 아니다에 대한 직접 링크" title="트레이드오프 — 공짜는 아니다에 대한 직접 링크">​</a></h2>
 <p>이 설계는 <strong>처리량(throughput)에 최적화</strong>돼 있습니다. 반대로 배치, <code>linger.ms</code>는 <strong>개별 메시지의 지연을 조금 늘립니다.</strong> 건당 초저지연이나 정교한 라우팅과 우선순위가 중요하면 RabbitMQ 같은 브로커 큐가 더 맞을 수 있습니다(<a href="/blog/message-queue-comparison">메시지 큐 비교</a>). 또 순차 로그라 특정 메시지 하나를 지우거나 콕 집어 수정하는 건 맞지 않습니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="#정리" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>

@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -44,7 +44,7 @@
 </ul>
 <mark>HTTP(S) 기반 마이크로서비스에서 경로와 호스트로 나눠 보내고, WAF, 인증까지 앞단에서 처리하고 싶다면 ALB입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="nlb--l4의-강점">NLB — L4의 강점<a href="#nlb--l4의-강점" class="hash-link" aria-label="NLB — L4의 강점에 대한 직접 링크" title="NLB — L4의 강점에 대한 직접 링크">​</a></h2>
-<p>NLB는 연결을 해석하지 않고 그대로 넘기므로 <strong>극한의 성능과 낮은 지연</strong>을 보입니다. 사전 워밍업 없이 <strong>급격한 트래픽 폭증</strong>도 그대로 받아냅니다.</p>
+<p>NLB는 연결을 해석하지 않고 그대로 넘기므로 <strong>극한의 성능과 낮은 지연</strong>을 보입니다. 사전 워밍업 없이 <strong>급격한 트래픽 폭증</strong>도 그대로 처리합니다.</p>
 <ul>
 <li><strong>TCP/UDP</strong> — HTTP가 아닌 프로토콜(게임, IoT, DB, gRPC 위의 커스텀 등)도 처리.</li>
 <li><strong>소스 IP 보존</strong> — 백엔드가 <strong>실제 클라이언트 IP를 그대로</strong> 봅니다(ALB처럼 헤더로 전달하는 게 아니라 패킷 수준에서 보존). IP 기반 접근 제어와 감사에 유리.</li>

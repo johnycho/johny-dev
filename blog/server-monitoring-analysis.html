@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -63,7 +63,7 @@
 <p><strong>이벤트 루프 서버(Node.js 등)</strong> — 핵심 지표는 <strong>이벤트 루프 지연</strong>입니다. 평균이 아니라 최댓값과 P99로 보세요. CPU를 오래 사용하는 작업 하나가 루프를 막으면 그 순간 모든 요청이 멈춥니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-지표-하나로는-안-보이는-복합-패턴">4. 지표 하나로는 안 보이는 복합 패턴<a href="#4-지표-하나로는-안-보이는-복합-패턴" class="hash-link" aria-label="4. 지표 하나로는 안 보이는 복합 패턴에 대한 직접 링크" title="4. 지표 하나로는 안 보이는 복합 패턴에 대한 직접 링크">​</a></h2>
 <p>실제 장애는 지표 하나가 아니라 <strong>여러 지표의 조합</strong>으로 나타납니다.</p>
-<p><strong>병목(bottleneck)</strong> — 병목 지점 앞에는 대기가 쌓이고 뒤는 여유가 있습니다. <mark>전체 처리량은 언제나 가장 느린 한 단계로 제한됩니다 — 그 단계보다 빨라질 수 없습니다.</mark> 각 단계 처리량을 나란히 보면, 앞단은 유입만큼 나가는데 특정 단계에서 뚝 떨어지는 지점이 원인입니다.</p>
+<p><strong>병목(bottleneck)</strong> — 병목 지점 앞에는 대기가 쌓이고 뒤는 여유가 있습니다. <mark>전체 처리량은 언제나 가장 느린 한 단계로 제한됩니다 — 그 단계보다 빨라질 수 없습니다.</mark> 각 단계 처리량을 나란히 보면, 앞단은 유입만큼 처리되는데 특정 단계에서 뚝 떨어지는 지점이 원인입니다.</p>
 <!-- -->
 <p>B단계가 40까지만 처리하니, C단계가 아무리 여유로워도 전체 처리량은 40으로 제한되고 B 앞에는 대기가 쌓입니다.</p>
 <p><strong>백프레셔(backpressure)</strong> — 큐 길이가 줄지 않고 계속 쌓이면 유입이 처리 속도를 앞선 것입니다. 아래처럼 <strong>대기 큐가 발산</strong>하면 곧 응답시간도 수직으로 오릅니다.</p>
@@ -85,7 +85,7 @@
 <li><strong>장애 후</strong> — 장애를 돌아볼 때(포스트모템) 원인만 보지 말고 <strong>&quot;왜 늦게 감지했나, 왜 대응이 느렸나&quot;</strong> 도 함께 점검해 다음 개선 과제로 남깁니다. 원인 자체보다 <strong>더 빨리 감지하고 더 빨리 대응하도록</strong> 만드는 게 개선의 핵심입니다.</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="6-그래서--알람은-증상에-건다">6. 그래서 — 알람은 &quot;증상&quot;에 건다<a href="#6-그래서--알람은-증상에-건다" class="hash-link" aria-label="6. 그래서 — 알람은 &quot;증상&quot;에 건다에 대한 직접 링크" title="6. 그래서 — 알람은 &quot;증상&quot;에 건다에 대한 직접 링크">​</a></h2>
-<p>가장 중요한 실무 원칙 하나로 정리됩니다. <mark>알람은 리소스(CPU 80%)가 아니라 증상(지연 P99, 에러율)에 걸어야 합니다.</mark> CPU가 높아도 사용자가 멀쩡하면 급한 일이 아니고, CPU가 낮아도 P99가 급증하면 급한 일입니다. 알람은 &quot;사용자가 아픈가&quot;를 물어야지 &quot;자원이 찼나&quot;를 물으면 노이즈만 늘어납니다.</p>
+<p>가장 중요한 실무 원칙 하나로 정리됩니다. <mark>알람은 리소스(CPU 80%)가 아니라 증상(지연 P99, 에러율)에 걸어야 합니다.</mark> CPU가 높아도 사용자가 멀쩡하면 급한 일이 아니고, CPU가 낮아도 P99가 급증하면 급한 일입니다. 알람은 &quot;사용자에게 문제가 생겼는가&quot;를 물어야지 &quot;자원이 찼나&quot;를 물으면 노이즈만 늘어납니다.</p>
 <p>관측 자체를 갖추는 쪽은 이 블로그의 <a href="/blog/spring-boot-structured-logging">구조적 로깅</a>, <a href="/blog/kafka-distributed-tracing">분산 추적</a> 글과 이어집니다 — 로그와 트레이스로 재료를 모으고, 이 글의 방식으로 그 재료를 <strong>읽어</strong> 분석하는 것입니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="#정리" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>
 <ul>

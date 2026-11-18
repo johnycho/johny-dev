@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.301ba5a9.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.9c0f274a.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -29,7 +29,7 @@
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="그런데-세션도-분산에서-잘-됩니다">그런데 세션도 분산에서 잘 됩니다<a href="#그런데-세션도-분산에서-잘-됩니다" class="hash-link" aria-label="그런데 세션도 분산에서 잘 됩니다에 대한 직접 링크" title="그런데 세션도 분산에서 잘 됩니다에 대한 직접 링크">​</a></h2>
 <p>여기가 핵심입니다. 위 문제는 &quot;세션이 <strong>로컬 메모리에만</strong> 있을 때&quot;의 문제일 뿐, 세션 방식 자체의 한계가 아닙니다. 분산 환경에서 세션을 사용하는 정석 해법이 여럿 있습니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="1-스티키-세션-세션-어피니티">1) 스티키 세션 (세션 어피니티)<a href="#1-스티키-세션-세션-어피니티" class="hash-link" aria-label="1) 스티키 세션 (세션 어피니티)에 대한 직접 링크" title="1) 스티키 세션 (세션 어피니티)에 대한 직접 링크">​</a></h3>
-<p>쉽게 말하면 은행 창구와 같습니다. 처음 방문한 손님에게 <strong>번호표</strong>를 주고, 다음에 와도 그 번호표를 보고 <strong>같은 창구(서버)</strong> 로 안내하는 것입니다. 손님(사용자)의 상담 기록(세션)이 그 창구에만 있어도, 늘 같은 창구로 가니 문제가 없습니다.</p>
+<p>쉽게 말하면 은행 창구와 같습니다. 처음 방문한 손님에게 <strong>번호표</strong>를 발급하고, 다음에 와도 그 번호표를 보고 <strong>같은 창구(서버)</strong> 로 안내하는 것입니다. 손님(사용자)의 상담 기록(세션)이 그 창구에만 있어도, 늘 같은 창구로 가니 문제가 없습니다.</p>
 <p>이 &quot;번호표&quot;를 무엇으로 삼느냐에 따라 두 방식이 있습니다.</p>
 <p><strong>방식 1. 쿠키를 번호표로</strong> — 로드밸런서가 사용자의 첫 요청을 A 서버로 보낸 뒤, 응답에 &quot;너는 A 담당&quot; 이라는 쿠키를 붙여 줍니다. 이후 요청에는 브라우저가 그 쿠키를 자동으로 실어 보내고, 로드밸런서는 그걸 보고 다시 A로 보냅니다. <strong>이 과정은 전부 로드밸런서가 하고, 우리 서버 코드는 손댈 게 없습니다.</strong></p>
 <p>AWS의 로드밸런서(ALB)라면 체크박스 하나 활성화하는 수준입니다.</p>
@@ -42,7 +42,7 @@
 <div class="language-yaml codeBlockContainer_Ckt0 theme-code-block" style="--prism-color:#F8F8F2;--prism-background-color:#282A36"><div class="codeBlockContent_biex"><pre tabindex="0" class="prism-code language-yaml codeBlock_bY9V thin-scrollbar" style="color:#F8F8F2;background-color:#282A36"><code class="codeBlockLines_e6Vv"><span class="token-line" style="color:#F8F8F2"><span class="token key atrule">spec</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"></span><br></span><span class="token-line" style="color:#F8F8F2"><span class="token plain">  </span><span class="token key atrule">sessionAffinity</span><span class="token punctuation" style="color:rgb(248, 248, 242)">:</span><span class="token plain"> ClientIP   </span><span class="token comment" style="color:rgb(98, 114, 164)"># 같은 IP는 항상 같은 Pod(서버)로</span><br></span></code></pre><div class="buttonGroup__atx"><button type="button" aria-label="클립보드에 코드 복사" title="복사" class="clean-btn"><span class="copyButtonIcons_eSgA" aria-hidden="true"><svg viewBox="0 0 24 24" class="copyButtonIcon_y97N"><path fill="currentColor" d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z"></path></svg><svg viewBox="0 0 24 24" class="copyButtonSuccessIcon_LjdS"><path fill="currentColor" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path></svg></span></button></div></div></div>
 <ul>
 <li>장점: <strong>서버 코드를 안 바꿔도 됩니다.</strong> 로드밸런서, 인프라 설정만으로 됩니다.</li>
-<li>한계: 특정 서버로 손님이 쏠릴 수 있고, 그 서버가 멈추면 거기 붙어 있던 세션이 <strong>전부 사라져</strong> 재로그인해야 합니다. 배포와 오토스케일로 서버가 교체돼도 마찬가지입니다. 특히 IP 방식은 회사와 모바일처럼 여러 사람이 <strong>같은 IP로 나가는 환경</strong>에서 한 서버로 몰릴 수 있습니다.</li>
+<li>한계: 특정 서버로 손님이 쏠릴 수 있고, 그 서버가 멈추면 거기 붙어 있던 세션이 <strong>전부 사라져</strong> 재로그인해야 합니다. 배포와 오토스케일로 서버가 교체돼도 마찬가지입니다. 특히 IP 방식은 회사와 모바일처럼 여러 사람이 <strong>같은 IP로 외부에 접속하는 환경</strong>에서 한 서버로 몰릴 수 있습니다.</li>
 </ul>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="2-중앙-세션-스토어-외부화">2) 중앙 세션 스토어 (외부화)<a href="#2-중앙-세션-스토어-외부화" class="hash-link" aria-label="2) 중앙 세션 스토어 (외부화)에 대한 직접 링크" title="2) 중앙 세션 스토어 (외부화)에 대한 직접 링크">​</a></h3>
 <p>세션을 서버 메모리가 아니라 <strong>모든 서버가 공유하는 외부 저장소</strong>(주로 Redis)에 저장합니다. 어느 서버로 요청이 가든 같은 Redis를 조회하므로 로그인이 유지됩니다. Spring Session 같은 도구가 이 방식을 표준으로 지원합니다.</p>
