@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.31e38bc7.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6395b51c.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -140,7 +140,7 @@
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="5-b-불량-5박스--반품--회송--폐기-반품-정리-시스템">5-B. 불량 5박스 → 반품 / 회송 / 폐기 (반품, 정리 시스템)<a href="#5-b-불량-5박스--반품--회송--폐기-반품-정리-시스템" class="hash-link" aria-label="5-B. 불량 5박스 → 반품 / 회송 / 폐기 (반품, 정리 시스템)에 대한 직접 링크" title="5-B. 불량 5박스 → 반품 / 회송 / 폐기 (반품, 정리 시스템)에 대한 직접 링크">​</a></h3>
 <p>상한 5박스는 창고에 두면 안 되니 처리합니다. 세 가지이고, 헷갈리기 쉬워 표로 정리합니다.</p>
 <table><thead><tr><th>구분</th><th>뜻</th><th>예</th></tr></thead><tbody><tr><td><strong>반품(Return)</strong></td><td>공급사에 &quot;문제 있어요, 돌려줄게요&quot; 접수하는 <strong>절차(서류상 결정)</strong></td><td>상한 우유 5박스 반품 접수</td></tr><tr><td><strong>회송(RTS)</strong></td><td>실제로 공급사(또는 다른 센터)로 <strong>물건을 되돌려 보내는 물류 행위</strong></td><td>반품 접수된 우유를 트럭에 실어 보냄</td></tr><tr><td><strong>폐기(Scrap)</strong></td><td>돌려보낼 수도 없어 <strong>버리는 것</strong>(재고 제거 + 손실 처리)</td><td>완전히 상해 반품 불가한 우유 폐기</td></tr></tbody></table>
-<p>&quot;반품은 서류상 결정, 회송은 실제 이동, 폐기는 버림&quot;으로 기억하면 됩니다. 불량품이 재고에 섞이면 안 되고, 그 손실을 <strong>정산에 반영</strong>해야 하기 때문에 따로 처리합니다.</p>
+<p>&quot;반품은 서류상 결정, 회송은 실제 이동, 폐기는 버림&quot;으로 기억하면 됩니다. 불량품이 재고에 포함되면 안 되고, 그 손실을 <strong>정산에 반영</strong>해야 하기 때문에 따로 처리합니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="6-결과를-구매팀에-알린다--입고-확정-입고-관제--구매-정산-시스템">6. 결과를 구매팀에 알린다 — 입고 확정 (입고 관제 → 구매, 정산 시스템)<a href="#6-결과를-구매팀에-알린다--입고-확정-입고-관제--구매-정산-시스템" class="hash-link" aria-label="6. 결과를 구매팀에 알린다 — 입고 확정 (입고 관제 → 구매, 정산 시스템)에 대한 직접 링크" title="6. 결과를 구매팀에 알린다 — 입고 확정 (입고 관제 → 구매, 정산 시스템)에 대한 직접 링크">​</a></h3>
 <p>&quot;우유는 주문 100박스 중 95박스 입고, 5박스 불량(공급사 귀책)&quot;이라는 결과를 구매팀 시스템에 <strong>게시판 공지(Kafka)</strong> 로 알립니다. 정산은 <strong>실제로 받은 수량</strong> 기준으로 계산하기 때문입니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="7-돈을-계산한다--정산-구매-정산-시스템">7. 돈을 계산한다 — 정산 (구매, 정산 시스템)<a href="#7-돈을-계산한다--정산-구매-정산-시스템" class="hash-link" aria-label="7. 돈을 계산한다 — 정산 (구매, 정산 시스템)에 대한 직접 링크" title="7. 돈을 계산한다 — 정산 (구매, 정산 시스템)에 대한 직접 링크">​</a></h3>

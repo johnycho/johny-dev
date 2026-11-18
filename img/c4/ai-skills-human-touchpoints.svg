@@ -14,7 +14,7 @@
 
   <!-- 1. mattpocock -->
   <text x="8" y="84" font-size="11.5" font-weight="bold" fill="#333">mattpocock</text>
-  <text x="8" y="99" font-size="9.5" fill="#888">앞쪽에 몰림</text>
+  <text x="8" y="99" font-size="9.5" fill="#888">구현 전에 집중</text>
   <line x1="108" y1="88" x2="426" y2="88" stroke="#CCCCCC" stroke-dasharray="2 3"/>
   <rect x="222" y="81" width="150" height="14" rx="3" fill="#D6E4FB" stroke="#4C7FE0"/>
   <g fill="#FBDCE4" stroke="#D06A86">
@@ -31,7 +31,7 @@
 
   <!-- 2. superpowers -->
   <text x="8" y="154" font-size="11.5" font-weight="bold" fill="#333">superpowers</text>
-  <text x="8" y="169" font-size="9.5" fill="#888">승인 관문 뒤 자율</text>
+  <text x="8" y="169" font-size="9.5" fill="#888">승인 뒤 자율 진행</text>
   <line x1="108" y1="158" x2="426" y2="158" stroke="#CCCCCC" stroke-dasharray="2 3"/>
   <rect x="226" y="151" width="168" height="14" rx="3" fill="#D6E4FB" stroke="#4C7FE0"/>
   <g fill="#FBDCE4" stroke="#D06A86">
@@ -82,7 +82,7 @@
     <circle cx="16" cy="364" r="5" fill="#FBDCE4" stroke="#D06A86"/>
     <text x="26" y="367">사람이 답, 승인, 선택</text>
     <path d="M140 358 L146 364 L140 370 L134 364 Z" fill="#FFF3E0" stroke="#E0A000"/>
-    <text x="152" y="367">통과해야 넘어가는 관문</text>
+    <text x="152" y="367">승인해야 진행되는 단계</text>
     <rect x="274" y="358" width="22" height="12" rx="3" fill="#D6E4FB" stroke="#4C7FE0"/>
     <text x="302" y="367">AI 혼자 진행</text>
     <circle cx="16" cy="382" r="6" fill="#FFFFFF" stroke="#D06A86" stroke-dasharray="3 2"/>

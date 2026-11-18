@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.31e38bc7.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6395b51c.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -61,7 +61,7 @@
 <p>Redis의 기본 자료구조엔 &quot;필드별 TTL&quot;이 없는데, Redisson은 <code>RMapCache</code>로 그런 편의를 더해 줍니다(내부적으로 별도 관리).</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="직렬화-런타임-규모">직렬화, 런타임, 규모<a href="#직렬화-런타임-규모" class="hash-link" aria-label="직렬화, 런타임, 규모에 대한 직접 링크" title="직렬화, 런타임, 규모에 대한 직접 링크">​</a></h2>
 <table><thead><tr><th>항목</th><th>RedisTemplate (Spring Data Redis)</th><th>Redisson</th></tr></thead><tbody><tr><td>추상화</td><td>명령 중심(<code>opsForX</code>)</td><td>객체, 동시성 프리미티브</td></tr><tr><td>분산 락/세마포어/리미터</td><td>내장 없음(직접, Spring Integration)</td><td>내장 지원</td></tr><tr><td>자료구조</td><td>raw 명령에 밀착</td><td><code>java.util</code> 인터페이스 구현</td></tr><tr><td>직렬화</td><td><code>RedisSerializer</code>(String, JSON, JDK)</td><td>코덱(JSON, Kryo 등)</td></tr><tr><td>런타임</td><td>Lettuce/Jedis</td><td>Netty</td></tr><tr><td>API</td><td>동기, 리액티브</td><td>동기, 비동기, 리액티브, RxJava</td></tr><tr><td>규모</td><td>가벼움, Spring 네이티브</td><td>기능 많고 의존성 큼</td></tr></tbody></table>
-<p>Redisson도 <strong>Spring Boot 스타터</strong>가 있어 통합이 쉽고, Spring Cache 백엔드로도 쓸 수 있습니다. <mark>그리고 둘은 배타적이지 않습니다 — 캐시는 <code>RedisTemplate</code>, 분산 락만 Redisson처럼 섞어 사용하는 구성이 흔합니다.</mark></p>
+<p>Redisson도 <strong>Spring Boot 스타터</strong>가 있어 통합이 쉽고, Spring Cache 백엔드로도 쓸 수 있습니다. <mark>그리고 둘은 배타적이지 않습니다 — 캐시는 <code>RedisTemplate</code>, 분산 락만 Redisson처럼 함께 사용하는 구성이 흔합니다.</mark></p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="선택-가이드">선택 가이드<a href="#선택-가이드" class="hash-link" aria-label="선택 가이드에 대한 직접 링크" title="선택 가이드에 대한 직접 링크">​</a></h2>
 <table><thead><tr><th>상황</th><th>추천</th></tr></thead><tbody><tr><td>캐시, 세션, 카운터, 단순 명령</td><td>RedisTemplate</td></tr><tr><td>리액티브 스택에서 가벼운 Redis 접근</td><td>RedisTemplate(Lettuce)</td></tr><tr><td>분산 락, 세마포어, 레이트리미터</td><td>Redisson</td></tr><tr><td><code>Map</code>/<code>List</code>처럼 사용하는 분산 컬렉션, near-cache</td><td>Redisson</td></tr><tr><td>블룸필터, 분산 실행 등 고급 기능</td><td>Redisson</td></tr><tr><td>최소 의존성과 Redis에 밀착</td><td>RedisTemplate</td></tr></tbody></table>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="정리">정리<a href="#정리" class="hash-link" aria-label="정리에 대한 직접 링크" title="정리에 대한 직접 링크">​</a></h2>

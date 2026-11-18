@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.31e38bc7.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6395b51c.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -30,7 +30,7 @@
 <p>기존 메시징 시스템(전통적 MQ)은 메시지당 전달 보장, 복잡한 라우팅에 초점이 맞춰져, 초당 수십만 건을 처리하는 <strong>로그 처리</strong>에는 무거웠습니다. 로그 데이터는 조금 유실돼도 치명적이지 않은 대신 <strong>처리량과 단순함</strong>이 훨씬 중요합니다. 카프카는 이 지점에 초점을 두고, 전통적 MQ와 다른 선택을 합니다.</p>
 <mark>&quot;로그 데이터는 대량이지만 유실 허용도가 있다&quot;는 전제가, 강한 보장 대신 처리량과 단순함을 택하게 만든 출발점입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="1-메시지를-지우지-않는다--append-only-커밋-로그">1. 메시지를 지우지 않는다 — append-only 커밋 로그<a href="#1-메시지를-지우지-않는다--append-only-커밋-로그" class="hash-link" aria-label="1. 메시지를 지우지 않는다 — append-only 커밋 로그에 대한 직접 링크" title="1. 메시지를 지우지 않는다 — append-only 커밋 로그에 대한 직접 링크">​</a></h2>
-<p>전통적 MQ는 소비된 메시지를 큐에서 지웁니다. 카프카는 다릅니다. 각 파티션을 <strong>파일 끝에만 덧붙이는(append-only) 로그</strong>로 두고, 소비돼도 지우지 않습니다. 대신 <strong>시간, 용량 기준으로 보존(retention)</strong> 하다 오래된 것을 한꺼번에 버립니다(기본 보존 기간은 시간 기반).</p>
+<p>전통적 MQ는 소비된 메시지를 큐에서 삭제합니다. 카프카는 다릅니다. 각 파티션을 <strong>파일 끝에만 덧붙이는(append-only) 로그</strong>로 두고, 소비돼도 지우지 않습니다. 대신 <strong>시간, 용량 기준으로 보존(retention)</strong> 하다 오래된 것을 한꺼번에 버립니다(기본 보존 기간은 시간 기반).</p>
 <ul>
 <li>쓰기는 항상 <strong>파일 끝에 순차 추가</strong> — 복잡한 자료구조를 갱신할 필요도, 랜덤 접근과 삭제도 없습니다.</li>
 <li>소비는 읽기일 뿐이라, 같은 데이터를 <strong>여러 컨슈머가 각자 다시</strong> 읽을 수 있습니다(재처리와 리플레이).</li>
@@ -65,7 +65,7 @@
 <!-- -->
 <mark>pull 모델에서는 컨슈머가 소비 속도의 주인입니다 — 브로커는 &quot;요청받은 만큼만&quot; 내주면 되므로 느린 컨슈머에도 안전하고 구현이 단순합니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="5-브로커는-상태를-갖지-않는다--오프셋을-컨슈머가-관리">5. 브로커는 상태를 갖지 않는다 — 오프셋을 컨슈머가 관리<a href="#5-브로커는-상태를-갖지-않는다--오프셋을-컨슈머가-관리" class="hash-link" aria-label="5. 브로커는 상태를 갖지 않는다 — 오프셋을 컨슈머가 관리에 대한 직접 링크" title="5. 브로커는 상태를 갖지 않는다 — 오프셋을 컨슈머가 관리에 대한 직접 링크">​</a></h2>
-<p>전통적 MQ는 브로커가 &quot;이 소비자가 어디까지 받았나&quot;를 추적하고, 소비 확인(ack)을 받아 메시지를 지웁니다. 이 방식은 복잡한 상태 관리를 요구하고 디스크 쓰기를 유발합니다. 카프카는 이 책임을 <strong>컨슈머 쪽으로 넘깁니다.</strong> 각 컨슈머(그룹)가 <strong>자신의 오프셋</strong>을 들고 있고, 브로커는 그 위치의 데이터를 돌려줄 뿐입니다(원논문 시점엔 ZooKeeper에 저장, 조정).</p>
+<p>전통적 MQ는 브로커가 &quot;이 소비자가 어디까지 받았나&quot;를 추적하고, 소비 확인(ack)을 받아 메시지를 삭제합니다. 이 방식은 복잡한 상태 관리를 요구하고 디스크 쓰기를 유발합니다. 카프카는 이 책임을 <strong>컨슈머 쪽으로 넘깁니다.</strong> 각 컨슈머(그룹)가 <strong>자신의 오프셋</strong>을 들고 있고, 브로커는 그 위치의 데이터를 돌려줄 뿐입니다(원논문 시점엔 ZooKeeper에 저장, 조정).</p>
 <p>그럼 삭제는 어떻게 할까요? &quot;누가 다 읽었는지&quot;를 브로커가 모르니, <strong>시간 기반 보존 정책</strong>(원논문 기본 7일)으로 일정 시간이 지난 메시지를 자동으로 버립니다. 컨슈머 상태를 추적할 필요가 없습니다.</p>
 <p>이 <strong>무상태 브로커(stateless broker)</strong> 는 부수 효과로 <strong>리와인드(되감기)</strong> 를 공짜로 줍니다. 브로커가 소비 상태를 안 들고 있으니, 컨슈머는 언제든 원하는 오프셋으로 돌아가 다시 읽을 수 있습니다. 논문이 든 사례는 세 가지입니다.</p>
 <ol>

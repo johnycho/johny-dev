@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.31e38bc7.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6395b51c.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -28,7 +28,7 @@
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="io란">I/O란?<a href="#io란" class="hash-link" aria-label="I/O란?에 대한 직접 링크" title="I/O란?에 대한 직접 링크">​</a></h3>
 <p>I/O(Input/Output, 입출력)는 CPU, 메모리 외부의 장치(디스크, 네트워크 등)와 데이터를 주고받는 작업입니다. 이 글에서 살펴보는 <strong>디스크 I/O</strong>는 저장 장치에서 데이터를 읽고 쓰는 것을 가리킵니다. CPU 연산이 나노초 단위인 반면 디스크 I/O는 그보다 수천~수백만 배 느려서, 데이터를 처리하는 시스템의 성능은 대개 <strong>연산량보다 I/O를 얼마나 잘 처리하느냐</strong>로 결정됩니다. &quot;랜덤 I/O를 줄인다&quot;가 성능 이야기의 핵심인 이유입니다.</p>
 <h3 class="anchor anchorWithStickyNavbar_LWe7" id="여기서-랜덤은-무작위가-아니다">여기서 &quot;랜덤&quot;은 &quot;무작위&quot;가 아니다<a href="#여기서-랜덤은-무작위가-아니다" class="hash-link" aria-label="여기서 &quot;랜덤&quot;은 &quot;무작위&quot;가 아니다에 대한 직접 링크" title="여기서 &quot;랜덤&quot;은 &quot;무작위&quot;가 아니다에 대한 직접 링크">​</a></h3>
-<p>이름의 <em>random</em> 은 확률적 무작위가 아니라 <strong>&quot;임의의 위치에, 순서에 구애받지 않고 바로 접근한다&quot;</strong> 는 뜻입니다. 옛 자기 테이프는 100번을 읽으려면 1~99번을 지나야 하는 <strong>순차 전용</strong>이었고, 이와 대비해 아무 주소나 바로 읽는 메모리를 <strong>RAM(Random Access Memory)</strong> 이라 불렀습니다. 그래서 &quot;랜덤&quot;의 반대는 &quot;확정적&quot;이 아니라 <strong>&quot;순차적(sequential)&quot;</strong> 이며, 성능 맥락의 &quot;랜덤 I/O&quot;는 <strong>연속되지 않고 떨어진 위치를 오가는</strong> 접근 패턴을 가리킵니다.</p>
+<p>이름의 <em>random</em> 은 확률적 무작위가 아니라 <strong>&quot;임의의 위치에, 순서에 구애받지 않고 바로 접근한다&quot;</strong> 는 뜻입니다. 옛 자기 테이프는 100번을 읽으려면 1~99번을 지나야 하는 <strong>순차 전용</strong>이었고, 이와 대비해 아무 주소나 바로 읽는 메모리를 <strong>RAM(Random Access Memory)</strong> 이라고 했습니다. 그래서 &quot;랜덤&quot;의 반대는 &quot;확정적&quot;이 아니라 <strong>&quot;순차적(sequential)&quot;</strong> 이며, 성능 맥락의 &quot;랜덤 I/O&quot;는 <strong>연속되지 않고 떨어진 위치를 오가는</strong> 접근 패턴을 가리킵니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="hdd-랜덤-io가-느린-근본-이유">HDD: 랜덤 I/O가 느린 근본 이유<a href="#hdd-랜덤-io가-느린-근본-이유" class="hash-link" aria-label="HDD: 랜덤 I/O가 느린 근본 이유에 대한 직접 링크" title="HDD: 랜덤 I/O가 느린 근본 이유에 대한 직접 링크">​</a></h2>
 <p>HDD(하드디스크)는 <strong>회전하는 원판(platter)</strong> 위를 <strong>헤드(head)</strong> 가 움직이며 읽습니다. 특정 블록을 읽으려면 두 가지 물리적 대기가 생깁니다.</p>
 <ul>

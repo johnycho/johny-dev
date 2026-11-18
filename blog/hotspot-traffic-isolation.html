@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.31e38bc7.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6395b51c.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -22,7 +22,7 @@
 <mark>전체를 키우는 대신, 갑자기 튀는 극소수(핫스팟)만 감지해 따로 처리하는 것이 핵심입니다.</mark>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="문제--어디서-트래픽이-100배로-튀나">문제 — 어디서 트래픽이 100배로 튀나<a href="#문제--어디서-트래픽이-100배로-튀나" class="hash-link" aria-label="문제 — 어디서 트래픽이 100배로 튀나에 대한 직접 링크" title="문제 — 어디서 트래픽이 100배로 튀나에 대한 직접 링크">​</a></h2>
 <p>한 가지를 전제하고 시작합니다. 이 서비스의 저장소(<strong>MySQL, Redis</strong>)는 데이터가 한 대에 다 안 들어가고 부하도 못 견디므로, <strong>채팅방 기준으로 여러 샤드에 나뉘어</strong>(샤딩) 있습니다. 그래서 한 방의 데이터와 요청은 특정 샤드 하나가 담당합니다. 이 구조를 기억해 두면 뒤의 문제와 해법이 자연스럽게 이어집니다.</p>
-<p>이때 부하가 전체적으로 고르게 오르는 게 아니라, <strong>특정 방 하나에 집중</strong>되는 것이 문제의 본질입니다. 튀는 방을 &quot;핫 챗&quot;이라 부르면, 크게 두 패턴이 있습니다.</p>
+<p>이때 부하가 전체적으로 고르게 오르는 게 아니라, <strong>특정 방 하나에 집중</strong>되는 것이 문제의 본질입니다. 튀는 방을 &quot;핫 챗&quot;이라고 하면, 크게 두 패턴이 있습니다.</p>
 <ul>
 <li><strong>이벤트 폭증</strong>: 인기 방에서 수천 명이 동시에 메시지를 주고받습니다. 이벤트 하나가 생길 때마다 모든 참여자에게 알림을 보내야 하므로, 참여자가 읽으러 오는 조회(페치) API 요청이 폭증하고 그 방을 담당하는 MySQL, Redis 샤드가 과부하됩니다.</li>
 <li><strong>참여 폭증</strong>: 인플루언서가 초대 QR을 공유하면 초당 수천 건의 가입 요청이 한 방으로 몰립니다. 대량 INSERT로 MySQL이 응답 타임아웃에 빠집니다.</li>

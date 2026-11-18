@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="198" viewBox="0 0 440 198" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="198" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">예시 ②: 완료 조건이 분명한 버그 수정 (pstack)</text>
+<line x1="60.0" y1="40" x2="60.0" y2="150" stroke="#EEE"/>
+<text x="60.0" y="38" font-size="9.5" fill="#888" text-anchor="middle">18:00</text>
+<line x1="130.0" y1="40" x2="130.0" y2="150" stroke="#EEE"/>
+<text x="130.0" y="38" font-size="9.5" fill="#888" text-anchor="middle">21:00</text>
+<line x1="200.0" y1="40" x2="200.0" y2="150" stroke="#EEE"/>
+<text x="200.0" y="38" font-size="9.5" fill="#888" text-anchor="middle">00:00</text>
+<line x1="270.0" y1="40" x2="270.0" y2="150" stroke="#EEE"/>
+<text x="270.0" y="38" font-size="9.5" fill="#888" text-anchor="middle">03:00</text>
+<line x1="340.0" y1="40" x2="340.0" y2="150" stroke="#EEE"/>
+<text x="340.0" y="38" font-size="9.5" fill="#888" text-anchor="middle">06:00</text>
+<line x1="410.0" y1="40" x2="410.0" y2="150" stroke="#EEE"/>
+<text x="410.0" y="38" font-size="9.5" fill="#888" text-anchor="middle">09:00</text>
+<text x="54" y="74" font-size="11" fill="#9E3A57" text-anchor="end" font-weight="bold">사람</text>
+<text x="54" y="128" font-size="11" fill="#26508F" text-anchor="end" font-weight="bold">AI</text>
+<rect x="60.0" y="52" width="11.7" height="36" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="75.7" y="74" font-size="9.5" fill="#9E3A57" text-anchor="start">조건 작성</text>
+<rect x="386.7" y="52" width="23.3" height="36" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="398.3" y="66.6" font-size="9.5" fill="#9E3A57" text-anchor="middle">기록</text>
+<text x="398.3" y="80.1" font-size="9.5" fill="#9E3A57" text-anchor="middle">점검</text>
+<rect x="71.7" y="106" width="315.0" height="36" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="229.2" y="127.3" font-size="9.5" fill="#26508F" text-anchor="middle">④⑤ 재현, 수정, 검증을 반복하며 결정 기록</text>
+<text x="60" y="164" font-size="9.5" fill="#555" text-anchor="start">퇴근 전 30분에 완료 조건을 주고, 다음 날 아침 1시간 동안 기록과 결과를 점검합니다.</text>
+<text x="60" y="178" font-size="9.5" fill="#555" text-anchor="start">(신뢰 조건 네 가지를 갖춘 뒤의 예시입니다)</text>
+</svg>

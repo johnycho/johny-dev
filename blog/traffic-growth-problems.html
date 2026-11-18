@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.31e38bc7.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6395b51c.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -40,7 +40,7 @@
 </ul>
 <p>여기에 두 패턴이 더해집니다. 인기 키가 만료되는 짧은 순간 다수 요청이 동시에 미스 나 원본으로 몰리는 <strong>캐시 스탬피드</strong>, 특정 키에 요청이 집중돼 그 키를 보관한 노드가 과부하되는 <strong>핫키</strong>입니다. 결국 캐시가 흡수하던 부하가 DB로 전가되고, 캐시가 완충 역할을 못 하는 순간 DB가 앞서 말한 임계점을 넘습니다. → <a href="/blog/commerce-cache-traffic-strategy">커머스 캐시 트래픽 대응</a>.</p>
 <p><strong>③ DB 병목</strong><br>
-대개 최종 병목은 DB입니다. 슬로 쿼리, 인덱스 부재가 트래픽과 겹쳐 커지고, 락 경합이 심해지며, 읽기 복제본은 <strong>복제 지연</strong>이 벌어집니다. 커넥션 상한도 먼저 찹니다.</p>
+대개 최종 병목은 DB입니다. 슬로 쿼리, 인덱스 부재가 트래픽과 함께 커지고, 락 경합이 심해지며, 읽기 복제본은 <strong>복제 지연</strong>이 벌어집니다. 커넥션 상한도 먼저 찹니다.</p>
 <p><strong>④ 큐 적체, 백프레셔(backpressure)</strong><br>
 유입이 처리 속도를 앞서면 큐가 계속 쌓입니다. 방치하면 메모리까지 밀어붙이죠. → <a href="/blog/redis-large-scale-pitfalls">대용량 Redis 대응</a>, <a href="/blog/server-monitoring-analysis">서버 지표 읽기</a>.</p>
 <p><strong>⑤ CPU, 메모리, GC 포화</strong><br>

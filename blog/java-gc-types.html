@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.31e38bc7.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.6395b51c.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -26,7 +26,7 @@
 <li><strong>Minor GC (Young 영역)</strong> — 새로 생성된 영역을 <strong>자주, 빠르게</strong> 정리합니다. 대부분 여기서 끝납니다.</li>
 <li><strong>Major/Full GC (Old 영역)</strong> — 오래 남은 영역까지 <strong>가끔 크게</strong> 정리합니다. 무겁고 느립니다.</li>
 </ul>
-<p><mark>&quot;오래된 부분까지 크게 하는 Full GC&quot;가 길어질 때가 문제라, GC 종류마다 이걸 어떻게 다루느냐가 달라집니다.</mark> 세차하려고 <strong>달리던 차(애플리케이션)를 잠깐 멈추는 것</strong>을 <strong>stop-the-world(STW)</strong> 라고 부릅니다.</p>
+<p><mark>&quot;오래된 부분까지 크게 하는 Full GC&quot;가 길어질 때가 문제라, GC 종류마다 이걸 어떻게 다루느냐가 달라집니다.</mark> 세차하려고 <strong>달리던 차(애플리케이션)를 잠깐 멈추는 것</strong>을 <strong>stop-the-world(STW)</strong> 라고 합니다.</p>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="핵심-기준-하나--처리량-vs-정지-시간">핵심 기준 하나 — 처리량 vs 정지 시간<a href="#핵심-기준-하나--처리량-vs-정지-시간" class="hash-link" aria-label="핵심 기준 하나 — 처리량 vs 정지 시간에 대한 직접 링크" title="핵심 기준 하나 — 처리량 vs 정지 시간에 대한 직접 링크">​</a></h2>
 <p>GC를 선택하는 기준은 사실상 이 둘 사이의 <strong>트레이드오프</strong>입니다.</p>
 <ul>
