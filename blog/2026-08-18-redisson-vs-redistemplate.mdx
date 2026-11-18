@@ -46,6 +46,71 @@ Netty 기반 클라이언트로, 이러한 "분산 도구"들을 폭넓게 제�
 
 즉 Redisson은 "Redis 명령"이 아니라 **"여러 서버가 공유하는 자료구조, 동시성 도구"** 로 접근하는 관점입니다.
 
+두 클라이언트의 추상화 레벨을 나란히 놓으면 다음과 같습니다.
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="346" viewBox="0 0 440 346" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="346" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">같은 Redis, 다른 추상화 레벨</text>
+<rect x="20" y="36" width="400" height="30" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="56" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">애플리케이션 (Spring)</text>
+<line x1="117.0" y1="66" x2="117.0" y2="82" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="323.0" y1="66" x2="323.0" y2="82" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="84" width="194" height="128" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="117.0" y="102" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">RedisTemplate</text>
+<text x="117.0" y="118" font-size="10" fill="#555" text-anchor="middle">명령에 1:1로 대응</text>
+<rect x="28" y="128" width="120" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="88" y="142" font-size="9" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">opsForValue().set</text>
+<line x1="150" y1="138" x2="162" y2="138" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="164" y="128" width="42" height="20" rx="3" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="185" y="142" font-size="9.5" fill="#8A6400" text-anchor="middle" font-family="Menlo, Consolas, monospace">SET</text>
+<rect x="28" y="154" width="120" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="88" y="168" font-size="9" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">opsForHash().put</text>
+<line x1="150" y1="164" x2="162" y2="164" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="164" y="154" width="42" height="20" rx="3" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="185" y="168" font-size="9.5" fill="#8A6400" text-anchor="middle" font-family="Menlo, Consolas, monospace">HSET</text>
+<rect x="28" y="180" width="120" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="88" y="194" font-size="9" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">opsForZSet().add</text>
+<line x1="150" y1="190" x2="162" y2="190" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="164" y="180" width="42" height="20" rx="3" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="185" y="194" font-size="9.5" fill="#8A6400" text-anchor="middle" font-family="Menlo, Consolas, monospace">ZADD</text>
+<rect x="226" y="84" width="194" height="128" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="323.0" y="102" font-size="12" fill="#9E3A57" text-anchor="middle" font-weight="bold">Redisson</text>
+<text x="323.0" y="118" font-size="10" fill="#555" text-anchor="middle">분산 객체, 동시성 도구</text>
+<rect x="234" y="128" width="82" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="275" y="142" font-size="9.5" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">RLock</text>
+<text x="324" y="142" font-size="9.5" fill="#555" text-anchor="start">락</text>
+<rect x="234" y="154" width="82" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="275" y="168" font-size="9.5" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">RRateLimiter</text>
+<text x="324" y="168" font-size="9.5" fill="#555" text-anchor="start">레이트리미터</text>
+<rect x="234" y="180" width="82" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="275" y="194" font-size="9.5" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">RMap</text>
+<text x="324" y="194" font-size="9.5" fill="#555" text-anchor="start">java.util.Map</text>
+<text x="117.0" y="226" font-size="10" fill="#555" text-anchor="middle">Lettuce(기본) / Jedis</text>
+<text x="323.0" y="226" font-size="10" fill="#555" text-anchor="middle">Netty 기반 클라이언트</text>
+<line x1="117.0" y1="232" x2="117.0" y2="250" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="323.0" y1="232" x2="323.0" y2="250" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="252" width="400" height="30" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220" y="272" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Redis (같은 Redis 서버)</text>
+<rect x="20" y="294" width="194" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="117.0" y="310.5" font-size="10" fill="#26508F" text-anchor="middle">분산 락은 내장 없음</text>
+<text x="117.0" y="324.5" font-size="10" fill="#26508F" text-anchor="middle">SET NX로 직접 구현</text>
+<rect x="226" y="294" width="194" height="40" rx="6" fill="#FCE4EC" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="323.0" y="310.5" font-size="10" fill="#9E3A57" text-anchor="middle">락, 리미터를</text>
+<text x="323.0" y="324.5" font-size="10" fill="#9E3A57" text-anchor="middle">자바 객체로 제공</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/redisson-vs-redistemplate-layers.svg" alt="애플리케이션과 Redis 사이에서 명령에 1:1로 대응하는 RedisTemplate과 분산 객체를 제공하는 Redisson의 추상화 레벨 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 ## 같은 작업, 두 방식 — ① 분산 락
 
 가장 차이가 나타나는 예입니다.
@@ -76,6 +141,65 @@ try {
     lock.unlock();
 }
 ```
+
+두 방식에서 애플리케이션이 직접 처리하는 부분을 비교하면 다음과 같습니다.
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="376" viewBox="0 0 440 376" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="376" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">분산 락: 애플리케이션이 작성하는 부분</text>
+<rect x="14" y="34" width="198" height="24" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="113.0" y="50" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">RedisTemplate</text>
+<rect x="228" y="34" width="198" height="24" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="327.0" y="50" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">Redisson</text>
+<rect x="14" y="70" width="198" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="113.0" y="87" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">① 토큰 생성</text>
+<text x="113.0" y="102" font-size="9" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">UUID</text>
+<line x1="113.0" y1="110" x2="113.0" y2="120" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="122" width="198" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="113.0" y="139" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">② SET NX + 만료 10초</text>
+<text x="113.0" y="154" font-size="9" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">setIfAbsent</text>
+<line x1="113.0" y1="162" x2="113.0" y2="172" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="174" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="113.0" y="199" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">③ 임계 구역</text>
+<line x1="113.0" y1="214" x2="113.0" y2="224" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="226" width="198" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="113.0" y="243" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">④ 내 토큰이면 DEL</text>
+<text x="113.0" y="258" font-size="9" fill="#555" text-anchor="middle">Lua 스크립트로 원자적 실행</text>
+<rect x="228" y="70" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="327.0" y="87" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">① 락 객체 얻기</text>
+<text x="327.0" y="102" font-size="9" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">getLock("lock:order")</text>
+<line x1="327.0" y1="110" x2="327.0" y2="120" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="122" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="327.0" y="147" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">② lock(10초)</text>
+<line x1="327.0" y1="162" x2="327.0" y2="172" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="174" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="327.0" y="199" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">③ 임계 구역</text>
+<line x1="327.0" y1="214" x2="327.0" y2="224" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="226" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="327.0" y="251" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">④ unlock()</text>
+<rect x="14" y="278" width="14" height="12" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="34" y="288" font-size="9.5" fill="#555" text-anchor="start">토큰, 만료, 안전 해제를 애플리케이션이 직접 처리</text>
+<rect x="14" y="300" width="198" height="64" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="113.0" y="318" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">제공되지 않는 것</text>
+<text x="113.0" y="338.5" font-size="10" fill="#555" text-anchor="middle">재진입</text>
+<text x="113.0" y="352.5" font-size="10" fill="#555" text-anchor="middle">락 만료 자동 연장(워치독)</text>
+<rect x="228" y="300" width="198" height="64" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="327.0" y="318" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Redisson이 제공</text>
+<text x="327.0" y="338.5" font-size="10" fill="#555" text-anchor="middle">재진입, 워치독(자동 연장)</text>
+<text x="327.0" y="352.5" font-size="10" fill="#555" text-anchor="middle">공정락</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/redisson-vs-redistemplate-lock-both-ways.svg" alt="RedisTemplate은 토큰 생성, SET NX와 만료, Lua 안전 해제를 직접 처리하고 Redisson은 RLock으로 재진입과 워치독까지 제공하는 분산 락 흐름 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>분산 락처럼 "제대로 만들기 어려운" 기능은 Redisson이 압도적으로 편합니다.</mark>
 

@@ -45,6 +45,44 @@ try (Stream<Order> stream = orderRepository.streamAll()) {   // 커서 기반
 }
 ```
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="366" viewBox="0 0 440 366" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="366" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">한 번에 적재 vs 스트리밍 (개념 예시)</text>
+<text x="20" y="46" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">findAll(): 전체를 List로 받음</text>
+<line x1="50" y1="154" x2="420" y2="154" stroke="#999"/>
+<line x1="50" y1="58" x2="50" y2="154" stroke="#999"/>
+<line x1="50" y1="74" x2="420" y2="74" stroke="#D9534F" stroke-dasharray="5 4"/>
+<text x="56" y="70" font-size="9.5" fill="#B52B27" text-anchor="start">힙 상한 (-Xmx)</text>
+<text x="44" y="110.0" font-size="9.5" fill="#888" text-anchor="end">힙</text>
+<text x="420" y="168" font-size="9.5" fill="#888" text-anchor="end">처리 진행 →</text>
+<polyline points="50.0,149.2 72.2,141.0 94.4,132.9 116.6,124.7 138.8,116.6 161.0,108.4 183.2,100.2 205.4,92.1 227.6,83.9 249.8,75.8 272.0,67.6" fill="none" stroke="#D06A86" stroke-width="2"/>
+<circle cx="272.0" cy="67.6" r="5" fill="#FDECEC" stroke="#D9534F"/>
+<rect x="282.0" y="63.6" width="112" height="22" rx="4" fill="#FDECEC" stroke="#D9534F"/>
+<text x="338.0" y="78.6" font-size="10" fill="#B52B27" text-anchor="middle" font-weight="bold">OutOfMemoryError</text>
+<text x="58" y="184" font-size="10" fill="#555" text-anchor="start">건수만큼 힙 사용량이 늘어 상한에 도달합니다</text>
+<text x="20" y="214" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">스트리밍, 청크: 한 건 또는 한 청크씩 처리</text>
+<line x1="50" y1="322" x2="420" y2="322" stroke="#999"/>
+<line x1="50" y1="226" x2="50" y2="322" stroke="#999"/>
+<line x1="50" y1="242" x2="420" y2="242" stroke="#D9534F" stroke-dasharray="5 4"/>
+<text x="56" y="238" font-size="9.5" fill="#B52B27" text-anchor="start">힙 상한 (-Xmx)</text>
+<text x="44" y="278.0" font-size="9.5" fill="#888" text-anchor="end">힙</text>
+<text x="420" y="336" font-size="9.5" fill="#888" text-anchor="end">처리 진행 →</text>
+<polyline points="50.0,310.5 87.0,293.2 96.2,310.5 133.2,293.2 142.5,310.5 179.5,293.2 188.8,310.5 225.8,293.2 235.0,310.5 272.0,293.2 281.2,310.5 318.2,293.2 327.5,310.5 364.5,293.2 373.8,310.5 410.8,293.2 420.0,310.5" fill="none" stroke="#4C7FE0" stroke-width="2"/>
+<text x="58" y="352" font-size="10" fill="#555" text-anchor="start">처리한 객체는 바로 GC 대상이 되어 힙 점유가 일정합니다</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jvm-memory-load-all-vs-streaming.svg" alt="전체를 한 번에 적재하면 힙 사용량이 상한까지 오르고, 스트리밍으로 처리하면 일정하게 유지되는 개념 그래프" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 <mark>메모리 문제의 8할은 GC 옵션이 아니라 "전부 메모리에 올리는 코드"를 스트리밍과 청크로 변경하면 해결됩니다.</mark>
 
 ## 2) 힙 크기 — 컨테이너에서는 비율로 잡는다
@@ -64,7 +102,38 @@ java -Xms2g -Xmx2g -jar app.jar   # 초기·최대를 같게 → 런타임 중 �
 java -XX:InitialRAMPercentage=75 -XX:MaxRAMPercentage=75 -jar app.jar
 ```
 
-100%가 아니라 75% 정도만 힙에 주는 이유는, JVM이 힙 외에도 **메타스페이스, 스레드 스택, 다이렉트 버퍼, GC 자체 메모리**를 쓰기 때문입니다. 힙을 한도에 꽉 채우면 이 비힙(off-heap) 영역이 한도를 넘겨 OOM Kill로 이어집니다. (네이티브 메모리 고갈로 스레드조차 못 만드는 사례는 [OOM: unable to create native thread](/blog/oom-unable-to-create-native-thread) 참고.)
+100%가 아니라 75% 정도만 힙에 주는 이유는, JVM이 힙 외에도 **메타스페이스, 스레드 스택, 다이렉트 버퍼, GC 자체 메모리**를 쓰기 때문입니다. 힙을 한도까지 가득 채우면 이 비힙(off-heap) 영역이 한도를 넘겨 OOM Kill로 이어집니다. (네이티브 메모리 고갈로 스레드조차 못 만드는 사례는 [OOM: unable to create native thread](/blog/oom-unable-to-create-native-thread) 참고.)
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="226" viewBox="0 0 440 226" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="226" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">컨테이너 메모리 한도와 힙 비율</text>
+<line x1="350" y1="40" x2="350" y2="192" stroke="#D9534F" stroke-dasharray="5 4"/>
+<text x="350" y="36" font-size="9.5" fill="#B52B27" text-anchor="middle">컨테이너 메모리 한도</text>
+<text x="20" y="62" font-size="11" fill="#333" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">MaxRAMPercentage=75</text>
+<rect x="20" y="70" width="247.5" height="34" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="143.75" y="92" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">힙 (75%)</text>
+<rect x="267.5" y="70" width="82.5" height="34" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="308.75" y="92" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">비힙 여유</text>
+<text x="342" y="120" font-size="9.5" fill="#555" text-anchor="end">메타스페이스, 스레드 스택, 다이렉트 버퍼, GC 자체 메모리</text>
+<text x="20" y="150" font-size="11" fill="#333" text-anchor="start" font-weight="bold">힙을 한도까지 가득 채우면</text>
+<rect x="20" y="158" width="330" height="34" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="185.0" y="180" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">힙 (100%)</text>
+<rect x="350" y="158" width="72" height="34" rx="4" fill="#FDECEC" stroke="#D9534F"/>
+<text x="386" y="180" font-size="10.5" fill="#B52B27" text-anchor="middle" font-weight="bold">비힙</text>
+<text x="420" y="216" font-size="10" fill="#B52B27" text-anchor="end" font-weight="bold">비힙이 한도를 넘어 OOM Kill</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jvm-memory-container-ratio.svg" alt="MaxRAMPercentage 75%일 때 힙과 비힙 여유가 한도 안에 들어가고, 힙을 한도까지 가득 채우면 비힙이 한도를 넘는 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>컨테이너에서는 `-Xmx` 고정값 대신 `MaxRAMPercentage`로 한도 대비 비율(예: 75%)을 주어, 파드 스펙이 바뀌어도 힙이 따라오고 비힙 여유도 남기게 합니다.</mark>
 

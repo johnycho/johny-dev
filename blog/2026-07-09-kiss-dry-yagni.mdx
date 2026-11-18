@@ -131,13 +131,13 @@ public Report generate(ReportType type) {
 @startuml
 start
 :중복 코드 발견;
-if (정말 같은 지식인가?) then (예)
-  if (세 번 이상 반복됐나?) then (예)
+if (정말 같은 지식인가?) then (Y)
+  if (세 번 이상 반복됐나?) then (Y)
     :공통화, DRY;
   else (아직)
     :일단 미룬다, YAGNI;
   endif
-else (아니오 (우연한 중복))
+else (N, 우연한 중복)
   :그대로 둔다, KISS;
 endif
 stop

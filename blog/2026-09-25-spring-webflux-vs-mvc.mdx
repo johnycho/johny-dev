@@ -342,18 +342,18 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
 @startuml
 title WebFlux 도입 판단
 start
-if (전 구간을 논블로킹으로 만들 수 있나? DB(R2DBC), 외부호출 포함) then (아니오)
+if (전 구간을 논블로킹으로 만들 수 있나? DB(R2DBC), 외부호출 포함) then (N)
   :MVC 유지\n(블로킹 라이브러리가 섞이면 이점 사라짐);
   stop
-else (예)
-  if (스트리밍, 백프레셔, SSE 등 리액티브 고유 기능이 필요?) then (예)
+else (Y)
+  if (스트리밍, 백프레셔, SSE 등 리액티브 고유 기능이 필요?) then (Y)
     :WebFlux;
     stop
   else (단순히 높은 동시성만 필요)
-    if (Java 21+ 가상 스레드를 쓸 수 있나?) then (예)
+    if (Java 21+ 가상 스레드를 쓸 수 있나?) then (Y)
       :가상 스레드 + MVC\n(동기 코드로 높은 동시성);
       stop
-    else (아니오)
+    else (N)
       :WebFlux;
       stop
     endif

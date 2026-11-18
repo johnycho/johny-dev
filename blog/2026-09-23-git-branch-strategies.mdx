@@ -173,18 +173,18 @@ gitGraph
 @startuml
 title 브랜치 전략 고르기
 start
-if (여러 버전을 동시에 유지, 지원?) then (예)
+if (여러 버전을 동시에 유지, 지원?) then (Y)
   :Git Flow;
   stop
-else (아니오)
-  if (병합하면 바로 운영 배포 가능?) then (아니오 - 승인, 환경 승격 필요)
+else (N)
+  if (병합하면 바로 운영 배포 가능?) then (N - 승인, 환경 승격 필요)
     :GitLab Flow;
     stop
-  else (예)
-    if (CI, 테스트가 튼튼하고 고빈도 배포?) then (예)
+  else (Y)
+    if (CI, 테스트가 튼튼하고 고빈도 배포?) then (Y)
       :Trunk-Based Development;
       stop
-    else (아직 아니오)
+    else (N, 아직)
       :GitHub Flow;
       stop
     endif

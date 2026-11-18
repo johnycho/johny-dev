@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="342" viewBox="0 0 440 342" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4C7FE0"/></marker></defs>
+<rect x="0" y="0" width="440" height="342" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">리틀의 법칙을 서버에 대입하면</text>
+<rect x="10" y="62" width="78" height="64" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="49" y="83.2" font-size="10.5" fill="#26508F" text-anchor="middle">들어오는 요청</text>
+<text x="49" y="97.7" font-size="10.5" fill="#26508F" text-anchor="middle">TPS</text>
+<text x="49" y="112.2" font-size="10.5" fill="#26508F" text-anchor="middle">초당 10건</text>
+<rect x="352" y="62" width="78" height="64" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="391" y="83.2" font-size="10.5" fill="#2E6B2E" text-anchor="middle">처리 완료</text>
+<text x="391" y="97.7" font-size="10.5" fill="#2E6B2E" text-anchor="middle">TPS</text>
+<text x="391" y="112.2" font-size="10.5" fill="#2E6B2E" text-anchor="middle">초당 10건</text>
+<rect x="104" y="40" width="232" height="130" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="58" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">시스템 안에 머무는 요청 = CU</text>
+<text x="150" y="80" font-size="9.5" fill="#888" text-anchor="middle">대기 중</text>
+<text x="274" y="80" font-size="9.5" fill="#888" text-anchor="middle">처리 중</text>
+<rect x="118" y="88" width="10" height="16" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<rect x="131" y="88" width="10" height="16" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<rect x="144" y="88" width="10" height="16" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<rect x="157" y="88" width="10" height="16" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<rect x="170" y="88" width="10" height="16" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<line x1="186" y1="96" x2="226" y2="96" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="236" y="86" width="20" height="20" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<rect x="262" y="86" width="20" height="20" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<rect x="288" y="86" width="20" height="20" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220" y="124" font-size="10.5" fill="#333" text-anchor="middle">예: 100건 (처리 중 + 대기 중)</text>
+<line x1="118" y1="146" x2="322" y2="146" stroke="#4C7FE0" stroke-width="1.2" marker-end="url(#ahb)" marker-start="url(#ahb)"/>
+<rect x="150" y="138" width="140" height="16" fill="#F7F7F7"/>
+<text x="220" y="150" font-size="10" fill="#26508F" text-anchor="middle" font-weight="bold">한 건이 머무는 시간 MRT 10초</text>
+<line x1="88" y1="94" x2="102" y2="94" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="336" y1="94" x2="350" y2="94" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="10" y="188" width="132" height="56" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="76" y="205" font-size="9.5" fill="#888" text-anchor="middle">L (평균 항목 수)</text>
+<text x="76" y="223" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">CU</text>
+<text x="76" y="237" font-size="9.5" fill="#555" text-anchor="middle">동시 접속자</text>
+<rect x="154" y="188" width="132" height="56" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="220" y="205" font-size="9.5" fill="#888" text-anchor="middle">λ (도착률)</text>
+<text x="220" y="223" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">TPS</text>
+<text x="220" y="237" font-size="9.5" fill="#555" text-anchor="middle">초당 처리량</text>
+<rect x="298" y="188" width="132" height="56" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="364" y="205" font-size="9.5" fill="#888" text-anchor="middle">W (체류시간)</text>
+<text x="364" y="223" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">MRT</text>
+<text x="364" y="237" font-size="9.5" fill="#555" text-anchor="middle">평균 응답시간</text>
+<text x="220.0" y="260" font-size="10" fill="#888" text-anchor="middle">↓  L = λ × W 를 서버 지표로 바꾸면</text>
+<rect x="60" y="270" width="320" height="58" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="294" font-size="12.5" fill="#333" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">CU = TPS × MRT   →   TPS = CU / MRT</text>
+<text x="220" y="315" font-size="10.5" fill="#555" text-anchor="middle">100건 = 초당 10건 × 10초</text>
+</svg>

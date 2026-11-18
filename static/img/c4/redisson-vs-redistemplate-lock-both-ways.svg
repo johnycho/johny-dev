@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="376" viewBox="0 0 440 376" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="376" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">분산 락: 애플리케이션이 작성하는 부분</text>
+<rect x="14" y="34" width="198" height="24" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="113.0" y="50" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">RedisTemplate</text>
+<rect x="228" y="34" width="198" height="24" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="327.0" y="50" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">Redisson</text>
+<rect x="14" y="70" width="198" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="113.0" y="87" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">① 토큰 생성</text>
+<text x="113.0" y="102" font-size="9" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">UUID</text>
+<line x1="113.0" y1="110" x2="113.0" y2="120" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="122" width="198" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="113.0" y="139" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">② SET NX + 만료 10초</text>
+<text x="113.0" y="154" font-size="9" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">setIfAbsent</text>
+<line x1="113.0" y1="162" x2="113.0" y2="172" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="174" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="113.0" y="199" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">③ 임계 구역</text>
+<line x1="113.0" y1="214" x2="113.0" y2="224" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="226" width="198" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="113.0" y="243" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">④ 내 토큰이면 DEL</text>
+<text x="113.0" y="258" font-size="9" fill="#555" text-anchor="middle">Lua 스크립트로 원자적 실행</text>
+<rect x="228" y="70" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="327.0" y="87" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">① 락 객체 얻기</text>
+<text x="327.0" y="102" font-size="9" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">getLock("lock:order")</text>
+<line x1="327.0" y1="110" x2="327.0" y2="120" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="122" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="327.0" y="147" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">② lock(10초)</text>
+<line x1="327.0" y1="162" x2="327.0" y2="172" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="174" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="327.0" y="199" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">③ 임계 구역</text>
+<line x1="327.0" y1="214" x2="327.0" y2="224" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="228" y="226" width="198" height="40" rx="6" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="327.0" y="251" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">④ unlock()</text>
+<rect x="14" y="278" width="14" height="12" rx="2" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="34" y="288" font-size="9.5" fill="#555" text-anchor="start">토큰, 만료, 안전 해제를 애플리케이션이 직접 처리</text>
+<rect x="14" y="300" width="198" height="64" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="113.0" y="318" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">제공되지 않는 것</text>
+<text x="113.0" y="338.5" font-size="10" fill="#555" text-anchor="middle">재진입</text>
+<text x="113.0" y="352.5" font-size="10" fill="#555" text-anchor="middle">락 만료 자동 연장(워치독)</text>
+<rect x="228" y="300" width="198" height="64" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="327.0" y="318" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">Redisson이 제공</text>
+<text x="327.0" y="338.5" font-size="10" fill="#555" text-anchor="middle">재진입, 워치독(자동 연장)</text>
+<text x="327.0" y="352.5" font-size="10" fill="#555" text-anchor="middle">공정락</text>
+</svg>

@@ -61,9 +61,120 @@ public <S extends T> S save(S entity) {
 
 → 새 엔티티면 넘긴 객체 자체가 영속 상태가 되고, 기존 엔티티면 `merge`가 돌려준 다른 인스턴스가 영속 상태입니다. ([SimpleJpaRepository.java](https://github.com/spring-projects/spring-data-jpa/blob/main/spring-data-jpa/src/main/java/org/springframework/data/jpa/repository/support/SimpleJpaRepository.java))
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="338" viewBox="0 0 440 338" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="338" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">save()가 호출하는 persist와 merge의 차이</text>
+<rect x="262" y="36" width="166" height="266" rx="8" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="345.0" y="54" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">영속성 컨텍스트</text>
+<text x="14" y="70" font-size="10" fill="#555" text-anchor="start" font-weight="bold">새 엔티티 (isNew = true)</text>
+<rect x="14" y="80" width="110" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="69" y="98.4" font-size="10.5" fill="#333" text-anchor="middle">order</text>
+<text x="69" y="112.9" font-size="10.5" fill="#333" text-anchor="middle">비영속</text>
+<line x1="124" y1="102" x2="276" y2="102" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="193" y="96" font-size="9.5" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">persist(order)</text>
+<rect x="278" y="80" width="134" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1.5"/>
+<text x="345.0" y="98.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle">order</text>
+<text x="345.0" y="112.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle">같은 객체가 영속</text>
+<text x="345.0" y="140" font-size="9.5" fill="#555" text-anchor="middle">넘긴 객체를 그대로 반환</text>
+<text x="14" y="166" font-size="10" fill="#555" text-anchor="start" font-weight="bold">기존 엔티티 (isNew = false)</text>
+<rect x="14" y="176" width="110" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="69" y="194.4" font-size="10.5" fill="#333" text-anchor="middle">detached</text>
+<text x="69" y="208.9" font-size="10.5" fill="#333" text-anchor="middle">준영속</text>
+<line x1="124" y1="198" x2="276" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="193" y="192" font-size="9.5" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">merge(detached)</text>
+<text x="193" y="212" font-size="9.5" fill="#888" text-anchor="middle">값을 복사</text>
+<rect x="278" y="176" width="134" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1.5"/>
+<text x="345.0" y="194.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle">managed</text>
+<text x="345.0" y="208.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle">다른 인스턴스가 영속</text>
+<text x="345.0" y="236" font-size="9.5" fill="#555" text-anchor="middle">이 인스턴스를 반환</text>
+<rect x="14" y="250" width="110" height="42" rx="4" fill="#FDECEC" stroke="#D9534F"/>
+<text x="69" y="267.5" font-size="10" fill="#B52B27" text-anchor="middle">변경해도</text>
+<text x="69" y="281.5" font-size="10" fill="#B52B27" text-anchor="middle">반영되지 않음</text>
+<line x1="69" y1="220" x2="69" y2="250" stroke="#CCC" stroke-width="1.2" stroke-dasharray="3 3"/>
+<rect x="278" y="250" width="134" height="42" rx="4" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="345.0" y="267.5" font-size="10" fill="#2E6B2E" text-anchor="middle">변경하면</text>
+<text x="345.0" y="281.5" font-size="10" fill="#2E6B2E" text-anchor="middle">UPDATE에 반영</text>
+<line x1="345.0" y1="242" x2="345.0" y2="250" stroke="#CCC" stroke-width="1.2" stroke-dasharray="3 3"/>
+<text x="14" y="326" font-size="9.5" fill="#888" text-anchor="start">save()의 반환값을 사용해야 두 경우 모두 영속 엔티티를 사용합니다</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-managed-persist-vs-merge.svg" alt="persist는 넘긴 객체를 영속 상태로 만들고, merge는 준영속 객체의 값을 복사한 다른 인스턴스를 영속 상태로 반환하는 차이" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 ## 조회할 때의 기준 — 방법별 정리
 
 같은 `orders` 테이블을 여러 방법으로 조회해 보고, 결과가 영속 상태인지 차례로 확인합니다.
+
+아래 그림은 ①~⑦을 세 가지 질문으로 분류한 것입니다.
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="380" viewBox="0 0 440 380" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="380" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">조회 결과가 영속 상태인지 정하는 기준</text>
+<rect x="20" y="38" width="250" height="38" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="145.0" y="61" font-size="11" fill="#333" text-anchor="middle">EntityManager를 거쳐 실행하는가?</text>
+<line x1="270" y1="57" x2="294" y2="57" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="280.0" y="72" font-size="9.5" fill="#888" text-anchor="middle">N</text>
+<rect x="296" y="32" width="134" height="50" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="363.0" y="47.2" font-size="10.5" fill="#333" text-anchor="middle">⑥ QueryDSL SQL,</text>
+<text x="363.0" y="60.2" font-size="10.5" fill="#333" text-anchor="middle">JdbcTemplate</text>
+<text x="363.0" y="76" font-size="10.5" fill="#555555" text-anchor="middle" font-weight="bold">비영속(값)</text>
+<line x1="145.0" y1="76" x2="145.0" y2="102" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="153.0" y="93" font-size="9.5" fill="#888" text-anchor="start">Y</text>
+<rect x="20" y="102" width="250" height="38" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="145.0" y="125" font-size="11" fill="#333" text-anchor="middle">SELECT로 조회하는가?</text>
+<line x1="270" y1="121" x2="294" y2="121" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="280.0" y="136" font-size="9.5" fill="#888" text-anchor="middle">N</text>
+<rect x="296" y="96" width="134" height="50" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="363.0" y="111.2" font-size="10.5" fill="#333" text-anchor="middle">⑦ 벌크 연산</text>
+<text x="363.0" y="124.2" font-size="10.5" fill="#333" text-anchor="middle">(UPDATE, DELETE)</text>
+<text x="363.0" y="140" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨텍스트 우회</text>
+<line x1="145.0" y1="140" x2="145.0" y2="166" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="153.0" y="157" font-size="9.5" fill="#888" text-anchor="start">Y</text>
+<rect x="60" y="166" width="320" height="38" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="189" font-size="11" fill="#333" text-anchor="middle">SELECT 대상(결과 타입)이 엔티티 클래스인가?</text>
+<line x1="117" y1="204" x2="117" y2="236" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="125" y="224" font-size="9.5" fill="#888" text-anchor="start">Y</text>
+<line x1="323" y1="204" x2="323" y2="236" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="331" y="224" font-size="9.5" fill="#888" text-anchor="start">N</text>
+<rect x="17" y="236" width="200" height="112" rx="6" fill="#E9F2E9" stroke="#8FBF8F" stroke-width="1.5"/>
+<text x="117.0" y="254" font-size="11.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">영속 엔티티</text>
+<text x="27" y="274" font-size="10.5" fill="#333" text-anchor="start">① em.find, findById</text>
+<text x="27" y="289" font-size="10.5" fill="#333" text-anchor="start">② JPQL, QueryDSL JPA로</text>
+<text x="41" y="304" font-size="10.5" fill="#333" text-anchor="start">엔티티 SELECT</text>
+<text x="27" y="319" font-size="10.5" fill="#333" text-anchor="start">③ 네이티브 쿼리 + 엔티티 클래스</text>
+<line x1="27" y1="324" x2="207" y2="324" stroke="#CCC" stroke-width="1.2"/>
+<text x="117.0" y="339" font-size="10" fill="#2E6B2E" text-anchor="middle">변경 감지 O, 지연 로딩 O</text>
+<rect x="223" y="236" width="200" height="112" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="323.0" y="254" font-size="11.5" fill="#555555" text-anchor="middle" font-weight="bold">비영속(값)</text>
+<text x="233" y="274" font-size="10.5" fill="#333" text-anchor="start">④ 네이티브 쿼리 + 결과 타입 없음</text>
+<text x="247" y="289" font-size="10.5" fill="#333" text-anchor="start">(Object[])</text>
+<text x="233" y="304" font-size="10.5" fill="#333" text-anchor="start">⑤ DTO 프로젝션</text>
+<text x="247" y="319" font-size="10.5" fill="#333" text-anchor="start">(JPQL, QueryDSL, 인터페이스)</text>
+<line x1="233" y1="324" x2="413" y2="324" stroke="#CCC" stroke-width="1.2"/>
+<text x="323.0" y="339" font-size="10" fill="#555555" text-anchor="middle">변경 감지 X, 지연 로딩 X</text>
+<text x="220.0" y="368" font-size="9.5" fill="#888" text-anchor="middle">조회 도구(JPQL, QueryDSL, 네이티브)가 아니라 SELECT 대상이 상태를 정합니다</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jpa-managed-lookup-criteria.svg" alt="EntityManager 경유 여부, SELECT 여부, 결과 타입이 엔티티인지에 따라 조회 방법 ①~⑦을 영속, 비영속(값), 컨텍스트 우회로 나눈 흐름도" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ### ① `em.find`, Spring Data JPA `findById` — 영속
 

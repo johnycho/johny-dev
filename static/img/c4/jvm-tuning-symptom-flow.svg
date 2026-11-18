@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="476" viewBox="0 0 440 476" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="476" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">증상에서 상황 찾기</text>
+<rect x="80" y="34" width="280" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="54" font-size="11" fill="#333" text-anchor="middle">GC 로그, JFR, 힙 덤프로 증상 확인</text>
+<line x1="220" y1="66" x2="220" y2="78" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="20" y="94" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">오류로 종료되는 경우</text>
+<line x1="20" y1="100" x2="420" y2="100" stroke="#D06A86" stroke-width="0.8"/>
+<rect x="20" y="108" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="145" y="130.7" font-size="10.5" fill="#333" text-anchor="middle">OutOfMemoryError: Java heap space</text>
+<line x1="270" y1="127" x2="292" y2="127" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="108" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="124" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 2</text>
+<text x="357" y="139" font-size="9.5" fill="#555" text-anchor="middle">누수인지 부족인지</text>
+<rect x="20" y="154" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="145" y="176.7" font-size="10.5" fill="#333" text-anchor="middle">OutOfMemoryError: Metaspace</text>
+<line x1="270" y1="173" x2="292" y2="173" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="154" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="170" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 3</text>
+<text x="357" y="185" font-size="9.5" fill="#555" text-anchor="middle">MaxMetaspaceSize</text>
+<rect x="20" y="200" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="145" y="222.7" font-size="10.5" fill="#333" text-anchor="middle">예외 없이 OOMKilled (exit 137)</text>
+<line x1="270" y1="219" x2="292" y2="219" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="200" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="216" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 4</text>
+<text x="357" y="231" font-size="9.5" fill="#555" text-anchor="middle">MaxRAMPercentage</text>
+<rect x="20" y="246" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="145" y="268.7" font-size="10.5" fill="#333" text-anchor="middle">StackOverflowError, 스레드 과다</text>
+<line x1="270" y1="265" x2="292" y2="265" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="246" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="262" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 7</text>
+<text x="357" y="277" font-size="9.5" fill="#555" text-anchor="middle">-Xss 조정</text>
+<text x="20" y="314" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">느리거나 목적이 따로 있는 경우</text>
+<line x1="20" y1="320" x2="420" y2="320" stroke="#4C7FE0" stroke-width="0.8"/>
+<rect x="20" y="328" width="250" height="38" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="145" y="350.7" font-size="10.5" fill="#333" text-anchor="middle">가끔 응답이 크게 지연 (긴 STW 정지)</text>
+<line x1="270" y1="347" x2="292" y2="347" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="328" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="344" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 1</text>
+<text x="357" y="359" font-size="9.5" fill="#555" text-anchor="middle">Xms=Xmx, GC 교체</text>
+<rect x="20" y="374" width="250" height="38" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="145" y="396.7" font-size="10.5" fill="#333" text-anchor="middle">배치 전체 처리량이 중요</text>
+<line x1="270" y1="393" x2="292" y2="393" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="374" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="390" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 5</text>
+<text x="357" y="405" font-size="9.5" fill="#555" text-anchor="middle">Parallel GC</text>
+<rect x="20" y="420" width="250" height="38" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="145" y="442.7" font-size="10.5" fill="#333" text-anchor="middle">기동이 느려 스케일 대응이 늦음</text>
+<line x1="270" y1="439" x2="292" y2="439" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="420" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="436" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 6</text>
+<text x="357" y="451" font-size="9.5" fill="#555" text-anchor="middle">AppCDS, Tiered=1</text>
+</svg>

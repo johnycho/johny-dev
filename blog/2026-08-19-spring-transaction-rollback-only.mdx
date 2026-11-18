@@ -51,13 +51,13 @@ start
 :signUp() 트랜잭션 시작;
 :user 저장;
 :grantSignupCoupon() — 같은 트랜잭션에 참여;
-if (외부 실패로 예외?) then (예)
+if (외부 실패로 예외?) then (Y)
   :스프링이 트랜잭션을 rollback-only로 표시;
   :외부 try-catch가 예외를 무시;
   :정상처럼 커밋 시도;
   :이미 rollback-only → 커밋 거부\nUnexpectedRollbackException + 전체 롤백;
   stop
-else (아니오)
+else (N)
   :정상 커밋;
   stop
 endif

@@ -113,6 +113,71 @@ Kafka 메시지 헤더의 `traceparent`를 읽어 OpenTelemetry 컨텍스트를 
 2. **OpenTelemetryKafkaTracer**: 컨텍스트 추출 및 스코프 관리
 3. **OpenTelemetryKafkaExtractor**: Kafka 헤더에서 `traceparent` 추출
 
+기존 방식과 개선 방식에서 trace 정보가 프로듀서부터 컨슈머까지 전달되는 과정을 비교하면 아래와 같습니다.
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="392" viewBox="0 0 440 392" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="392" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">컨슈머의 traceId가 달라지는 이유와 개선</text>
+<rect x="14" y="34" width="200" height="24" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="50" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">기존 방식 (문제점 1, 2)</text>
+<rect x="226" y="34" width="200" height="24" rx="4" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="326.0" y="50" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">개선 방식</text>
+<rect x="14" y="70" width="200" height="56" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="114.0" y="87.0" font-size="10.5" fill="#555555" text-anchor="middle" font-weight="bold">프로듀서</text>
+<text x="114.0" y="103.0" font-size="10.5" fill="#333" text-anchor="middle">Agent가 traceparent 주입</text>
+<text x="114.0" y="118.0" font-size="10.5" fill="#333" text-anchor="middle">인터셉터가 traceId 헤더 추가</text>
+<rect x="226" y="70" width="200" height="56" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="326.0" y="87.0" font-size="10.5" fill="#555555" text-anchor="middle" font-weight="bold">프로듀서</text>
+<text x="326.0" y="103.0" font-size="10.5" fill="#333" text-anchor="middle">Agent가 traceparent 주입</text>
+<text x="326.0" y="118.0" font-size="10.5" fill="#333" text-anchor="middle">traceparent로 전파 수단 통일</text>
+<line x1="114.0" y1="126" x2="114.0" y2="141" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="326.0" y1="126" x2="326.0" y2="141" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="142" width="200" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="114.0" y="158.5" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">Kafka 레코드 헤더</text>
+<text x="114.0" y="174.5" font-size="10" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">traceparent, traceId</text>
+<rect x="226" y="142" width="200" height="40" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="326.0" y="158.5" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">Kafka 레코드 헤더</text>
+<text x="326.0" y="174.5" font-size="10" fill="#333" text-anchor="middle" font-family="Menlo, Consolas, monospace">traceparent</text>
+<line x1="114.0" y1="182" x2="114.0" y2="197" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="326.0" y1="182" x2="326.0" y2="197" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="198" width="200" height="56" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="215.0" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">컨슈머 인터셉터</text>
+<text x="114.0" y="231.0" font-size="10.5" fill="#333" text-anchor="middle">traceId를 MDC에 설정</text>
+<text x="114.0" y="246.0" font-size="10.5" fill="#333" text-anchor="middle">여러 레코드면 특정 레코드 값만 반영</text>
+<rect x="226" y="198" width="200" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="326.0" y="215.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">컨슈머 (메시지마다)</text>
+<text x="326.0" y="231.0" font-size="10.5" fill="#333" text-anchor="middle">traceparent에서 컨텍스트 복원</text>
+<text x="326.0" y="246.0" font-size="10.5" fill="#333" text-anchor="middle">현재 스레드에 컨텍스트 적용</text>
+<line x1="114.0" y1="254" x2="114.0" y2="269" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="326.0" y1="254" x2="326.0" y2="269" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="270" width="200" height="56" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="287.0" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">OpenTelemetry 컨텍스트</text>
+<text x="114.0" y="303.0" font-size="10.5" fill="#333" text-anchor="middle">traceparent 추출 로직 없음</text>
+<text x="114.0" y="318.0" font-size="10.5" fill="#333" text-anchor="middle">새 traceId로 스팬 시작</text>
+<rect x="226" y="270" width="200" height="56" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="326.0" y="287.0" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">OpenTelemetry 컨텍스트</text>
+<text x="326.0" y="303.0" font-size="10.5" fill="#333" text-anchor="middle">복원한 컨텍스트에서</text>
+<text x="326.0" y="318.0" font-size="10.5" fill="#333" text-anchor="middle">비즈니스 로직 실행</text>
+<line x1="114.0" y1="326" x2="114.0" y2="341" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="326.0" y1="326" x2="326.0" y2="341" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="14" y="342" width="200" height="36" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="114.0" y="364" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">프로듀서와 컨슈머의 traceId 불일치</text>
+<rect x="226" y="342" width="200" height="36" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="326.0" y="364" font-size="10.5" fill="#2E6B2E" text-anchor="middle" font-weight="bold">같은 traceId로 스팬 연결</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kafka-tracing-before-after.svg" alt="기존 방식은 별도 traceId 헤더와 MDC를 사용하고 컨텍스트를 추출하지 않아 traceId가 불일치하고, 개선 방식은 traceparent에서 컨텍스트를 복원해 같은 traceId로 스팬이 연결되는 비교" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 ## 구현 상세
 
 ### 1. MessageConsumer 인터페이스
@@ -275,6 +340,63 @@ public class SchedulerMessageConsumer implements MessageConsumer<String> {
 ```
 
 ### 동작 흐름
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="536" viewBox="0 0 440 536" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="536" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">컨슈머에서 trace 컨텍스트를 복원하는 흐름</text>
+<rect x="70" y="36" width="300" height="44" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220.0" y="54" font-size="10.5" fill="#555555" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">@KafkaListener</text>
+<text x="220.0" y="70" font-size="10.5" fill="#333" text-anchor="middle">메시지 수신</text>
+<line x1="220.0" y1="80" x2="220.0" y2="94" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="70" y="94" width="300" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="112" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">MessageConsumer.consume()</text>
+<text x="220.0" y="128" font-size="10.5" fill="#333" text-anchor="middle">기본 구현이 트레이서 호출</text>
+<line x1="220.0" y1="138" x2="220.0" y2="152" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="70" y="152" width="300" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="170" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">OpenTelemetryKafkaTracer.run()</text>
+<text x="220.0" y="186" font-size="10.5" fill="#333" text-anchor="middle">메시지마다 아래 과정 반복</text>
+<line x1="220.0" y1="196" x2="220.0" y2="210" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="210" width="400" height="132" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="30" y="226" font-size="10" fill="#8A6400" text-anchor="start" font-weight="bold" font-family="Menlo, Consolas, monospace">OpenTelemetryKafkaExtractor.extract()</text>
+<rect x="70" y="236" width="300" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220.0" y="250" font-size="10.5" fill="#333" text-anchor="middle">Kafka native headers에</text>
+<text x="220.0" y="264" font-size="10.5" fill="#333" text-anchor="middle">traceparent가 있는가?</text>
+<line x1="160.0" y1="270" x2="122.0" y2="300" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="138.0" y="286" font-size="10" fill="#555" text-anchor="middle" font-weight="bold">Y</text>
+<line x1="280.0" y1="270" x2="318.0" y2="300" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="302.0" y="286" font-size="10" fill="#555" text-anchor="middle" font-weight="bold">N</text>
+<rect x="34" y="300" width="176" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="122.0" y="314" font-size="10.5" fill="#333" text-anchor="middle">Kafka native headers의</text>
+<text x="122.0" y="328" font-size="10.5" fill="#333" text-anchor="middle">traceparent로 추출</text>
+<rect x="230" y="300" width="176" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="318.0" y="314" font-size="10.5" fill="#333" text-anchor="middle">Spring Message 헤더에서</text>
+<text x="318.0" y="328" font-size="10.5" fill="#333" text-anchor="middle">추출 (fallback)</text>
+<line x1="220.0" y1="342" x2="220.0" y2="356" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="70" y="356" width="300" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="374" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">context.makeCurrent()</text>
+<text x="220.0" y="390" font-size="10.5" fill="#333" text-anchor="middle">추출한 컨텍스트를 현재 스레드에 설정</text>
+<line x1="220.0" y1="400" x2="220.0" y2="414" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="70" y="414" width="300" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="432" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold" font-family="Menlo, Consolas, monospace">processMessage()</text>
+<text x="220.0" y="448" font-size="10.5" fill="#333" text-anchor="middle">같은 컨텍스트에서 비즈니스 로직 실행</text>
+<line x1="220.0" y1="458" x2="220.0" y2="472" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="70" y="472" width="300" height="34" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="220.0" y="493" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">프로듀서와 같은 traceId로 스팬 연결</text>
+<text x="220.0" y="524" font-size="9.5" fill="#888" text-anchor="middle">try-with-resources로 처리 후 스코프 자동 종료</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kafka-tracing-consumer-flow.svg" alt="@KafkaListener 수신부터 MessageConsumer, OpenTelemetryKafkaTracer, OpenTelemetryKafkaExtractor를 거쳐 컨텍스트를 현재 스레드에 설정하고 비즈니스 로직을 실행하는 흐름" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 1. `@KafkaListener`가 메시지를 수신
 2. `consume(List.of(message))` 호출 → `MessageConsumer`의 기본 구현 실행
 3. `OpenTelemetryKafkaTracer.run()` → 메시지 헤더를 읽어 컨텍스트 추출 및 설정

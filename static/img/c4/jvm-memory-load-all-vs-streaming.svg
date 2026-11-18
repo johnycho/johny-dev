@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="366" viewBox="0 0 440 366" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="366" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">한 번에 적재 vs 스트리밍 (개념 예시)</text>
+<text x="20" y="46" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">findAll(): 전체를 List로 받음</text>
+<line x1="50" y1="154" x2="420" y2="154" stroke="#999"/>
+<line x1="50" y1="58" x2="50" y2="154" stroke="#999"/>
+<line x1="50" y1="74" x2="420" y2="74" stroke="#D9534F" stroke-dasharray="5 4"/>
+<text x="56" y="70" font-size="9.5" fill="#B52B27" text-anchor="start">힙 상한 (-Xmx)</text>
+<text x="44" y="110.0" font-size="9.5" fill="#888" text-anchor="end">힙</text>
+<text x="420" y="168" font-size="9.5" fill="#888" text-anchor="end">처리 진행 →</text>
+<polyline points="50.0,149.2 72.2,141.0 94.4,132.9 116.6,124.7 138.8,116.6 161.0,108.4 183.2,100.2 205.4,92.1 227.6,83.9 249.8,75.8 272.0,67.6" fill="none" stroke="#D06A86" stroke-width="2"/>
+<circle cx="272.0" cy="67.6" r="5" fill="#FDECEC" stroke="#D9534F"/>
+<rect x="282.0" y="63.6" width="112" height="22" rx="4" fill="#FDECEC" stroke="#D9534F"/>
+<text x="338.0" y="78.6" font-size="10" fill="#B52B27" text-anchor="middle" font-weight="bold">OutOfMemoryError</text>
+<text x="58" y="184" font-size="10" fill="#555" text-anchor="start">건수만큼 힙 사용량이 늘어 상한에 도달합니다</text>
+<text x="20" y="214" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">스트리밍, 청크: 한 건 또는 한 청크씩 처리</text>
+<line x1="50" y1="322" x2="420" y2="322" stroke="#999"/>
+<line x1="50" y1="226" x2="50" y2="322" stroke="#999"/>
+<line x1="50" y1="242" x2="420" y2="242" stroke="#D9534F" stroke-dasharray="5 4"/>
+<text x="56" y="238" font-size="9.5" fill="#B52B27" text-anchor="start">힙 상한 (-Xmx)</text>
+<text x="44" y="278.0" font-size="9.5" fill="#888" text-anchor="end">힙</text>
+<text x="420" y="336" font-size="9.5" fill="#888" text-anchor="end">처리 진행 →</text>
+<polyline points="50.0,310.5 87.0,293.2 96.2,310.5 133.2,293.2 142.5,310.5 179.5,293.2 188.8,310.5 225.8,293.2 235.0,310.5 272.0,293.2 281.2,310.5 318.2,293.2 327.5,310.5 364.5,293.2 373.8,310.5 410.8,293.2 420.0,310.5" fill="none" stroke="#4C7FE0" stroke-width="2"/>
+<text x="58" y="352" font-size="10" fill="#555" text-anchor="start">처리한 객체는 바로 GC 대상이 되어 힙 점유가 일정합니다</text>
+</svg>

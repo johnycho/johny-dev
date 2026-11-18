@@ -249,13 +249,13 @@ title G1 GC 동작 흐름 — Young GC → 동시 마킹 → Mixed GC
 start
 :Eden 구역이 가득 채워짐;
 :Young GC [STW, 짧음]\n사용 중인 객체를 Survivor/Old 구역으로 복사하고 Eden 영역을 회수;
-if (Old 사용량이 임계치를 넘었나? 기본 45퍼센트) then (예)
+if (Old 사용량이 임계치를 넘었나? 기본 45퍼센트) then (Y)
   :동시 마킹 Concurrent Marking 시작;
   :Initial Mark [아주 짧은 STW];
   :Concurrent Mark [애플리케이션과 동시]\n구역별 사용하지 않는 객체 양 계산;
   :Remark, Cleanup [짧은 STW]\n객체 없는 구역은 즉시 회수;
   :Mixed GC [STW]\nYoung + 사용하지 않는 객체 많은 Old 구역 일부를\n함께 회수 garbage first;
-else (아니오)
+else (N)
   :Young GC만 계속 반복;
 endif
 stop
@@ -334,7 +334,7 @@ title Epsilon — 회수 없이 할당만, 힙이 차면 종료
 start
 repeat
   :객체 할당 (GC 안 함, 오버헤드 0);
-repeat while (힙에 여유 있음?) is (예) not (아니오)
+repeat while (힙에 여유 있음?) is (Y) not (N)
 :힙이 가득 참 → OutOfMemoryError로 종료;
 stop
 @enduml
@@ -363,12 +363,12 @@ stop
 ```plantuml
 @startuml
 start
-if (정지 시간이 가장 중요?) then (예)
+if (정지 시간이 가장 중요?) then (Y)
   :ZGC / Shenandoah;
-else (아니오)
-  if (지연은 무관, 처리량이 최우선?) then (예)
+else (N)
+  if (지연은 무관, 처리량이 최우선?) then (Y)
     :Parallel GC;
-  else (아니오)
+  else (N)
     :G1 (기본);
   endif
 endif

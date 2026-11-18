@@ -127,9 +127,9 @@ start
 :isEnabled(...)에서 예외 발생;
 :리스너 밖으로 전파 → 컨테이너가 받음;
 :DefaultErrorHandler로 전달;
-if (RuntimeException\n= non-retryable?) then (예)
+if (RuntimeException\n= non-retryable?) then (Y)
   :재시도 없이\n바로 recoverer;
-else (아니오)
+else (N)
   :FixedBackOff 재시도\n→ 소진 후 recoverer;
 endif
 :recoverer 실행(log + Slack);

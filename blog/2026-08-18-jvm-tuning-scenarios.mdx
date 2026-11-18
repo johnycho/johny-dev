@@ -23,6 +23,52 @@ JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데
 
 <mark>즉 문제는 늘 "집의 어느 공간이 부족한가"로 나뉩니다 — 방(힙)이냐, 설계도 책꽂이(Metaspace)냐, 베란다까지 합친 전체 평수(컨테이너)냐.</mark> 이 그림만 있으면 아래 상황들이 한눈에 들어옵니다.
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="304" viewBox="0 0 440 304" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="304" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">JVM이 메모리를 사용하는 공간</text>
+<rect x="10" y="34" width="420" height="258" rx="8" fill="#F7F7F7" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="22" y="52" font-size="11" fill="#555" text-anchor="start" font-weight="bold">컨테이너 메모리 한도 (집 전체 평수)</text>
+<rect x="22" y="62" width="200" height="170" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="122" y="82" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">힙 (방)</text>
+<text x="122" y="99" font-size="10.5" fill="#333" text-anchor="middle">new로 만든 객체가 놓이는 곳</text>
+<rect x="40" y="110" width="18" height="14" rx="2" fill="#D6E4FB" stroke="#B9CBE8"/>
+<rect x="64" y="110" width="18" height="14" rx="2" fill="#D6E4FB" stroke="#B9CBE8"/>
+<rect x="88" y="110" width="18" height="14" rx="2" fill="#D6E4FB" stroke="#B9CBE8"/>
+<rect x="112" y="110" width="18" height="14" rx="2" fill="#D6E4FB" stroke="#B9CBE8"/>
+<rect x="136" y="110" width="18" height="14" rx="2" fill="#D6E4FB" stroke="#B9CBE8"/>
+<rect x="160" y="110" width="18" height="14" rx="2" fill="#D6E4FB" stroke="#B9CBE8"/>
+<rect x="184" y="110" width="18" height="14" rx="2" fill="#D6E4FB" stroke="#B9CBE8"/>
+<rect x="34" y="136" width="176" height="44" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="122" y="154.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle">GC (로봇 청소기)가 정리</text>
+<text x="122" y="168.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle">정지(STW)가 길면 → 상황 1</text>
+<rect x="34" y="190" width="176" height="30" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="122" y="209" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">힙이 가득 차면 → 상황 2</text>
+<rect x="232" y="62" width="188" height="170" rx="6" fill="#FFFFFF" stroke="#999999" stroke-dasharray="4 3"/>
+<text x="326" y="79" font-size="11" fill="#555" text-anchor="middle" font-weight="bold">힙 밖 (네이티브)</text>
+<rect x="242" y="88" width="168" height="62" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="326" y="108.2" font-size="10.5" fill="#9E3A57" text-anchor="middle">Metaspace (설계도 책꽂이)</text>
+<text x="326" y="122.7" font-size="10.5" fill="#9E3A57" text-anchor="middle">클래스 메타데이터</text>
+<text x="326" y="137.2" font-size="10.5" fill="#9E3A57" text-anchor="middle">가득 차면 → 상황 3</text>
+<rect x="242" y="158" width="168" height="64" rx="6" fill="#FFF3E0" stroke="#E8C98F"/>
+<text x="326" y="179.5" font-size="10" fill="#333" text-anchor="middle">베란다, 창고</text>
+<text x="326" y="193.5" font-size="10" fill="#333" text-anchor="middle">스레드 스택, 다이렉트 버퍼,</text>
+<text x="326" y="207.5" font-size="10" fill="#333" text-anchor="middle">코드 캐시 (스택 총합 → 상황 7)</text>
+<rect x="22" y="244" width="398" height="36" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="221" y="266" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">힙 + 힙 밖 합계가 한도를 넘으면 → 상황 4 (OOMKilled)</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jvm-tuning-memory-areas.svg" alt="컨테이너 메모리 한도 안에서 힙, Metaspace, 네이티브 메모리가 차지하는 공간과 각 공간이 부족할 때 해당하는 상황 번호" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 ## 튜닝 전에 — 측정부터
 
 옵션을 바꾸기 전에 **무슨 일이 발생하는지부터** 봅니다. 이 셋은 운영에 항상 활성화해 두는 걸 권합니다.
@@ -39,6 +85,74 @@ JVM 튜닝이라고 하면 옵션을 잔뜩 붙이는 걸 떠올리기 쉬운데
 ```
 
 <mark>측정 없이 하는 튜닝은 추측입니다 — GC 로그, JFR, 힙 덤프로 원인을 먼저 특정한 뒤, 옵션은 한 번에 하나씩만 변경해 효과를 확인합니다.</mark>
+
+측정으로 확인한 증상이 아래 상황 중 어디에 해당하는지는 다음 흐름으로 찾습니다.
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="476" viewBox="0 0 440 476" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="476" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">증상에서 상황 찾기</text>
+<rect x="80" y="34" width="280" height="32" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="220" y="54" font-size="11" fill="#333" text-anchor="middle">GC 로그, JFR, 힙 덤프로 증상 확인</text>
+<line x1="220" y1="66" x2="220" y2="78" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="20" y="94" font-size="11" fill="#9E3A57" text-anchor="start" font-weight="bold">오류로 종료되는 경우</text>
+<line x1="20" y1="100" x2="420" y2="100" stroke="#D06A86" stroke-width="0.8"/>
+<rect x="20" y="108" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="145" y="130.7" font-size="10.5" fill="#333" text-anchor="middle">OutOfMemoryError: Java heap space</text>
+<line x1="270" y1="127" x2="292" y2="127" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="108" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="124" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 2</text>
+<text x="357" y="139" font-size="9.5" fill="#555" text-anchor="middle">누수인지 부족인지</text>
+<rect x="20" y="154" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="145" y="176.7" font-size="10.5" fill="#333" text-anchor="middle">OutOfMemoryError: Metaspace</text>
+<line x1="270" y1="173" x2="292" y2="173" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="154" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="170" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 3</text>
+<text x="357" y="185" font-size="9.5" fill="#555" text-anchor="middle">MaxMetaspaceSize</text>
+<rect x="20" y="200" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="145" y="222.7" font-size="10.5" fill="#333" text-anchor="middle">예외 없이 OOMKilled (exit 137)</text>
+<line x1="270" y1="219" x2="292" y2="219" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="200" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="216" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 4</text>
+<text x="357" y="231" font-size="9.5" fill="#555" text-anchor="middle">MaxRAMPercentage</text>
+<rect x="20" y="246" width="250" height="38" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="145" y="268.7" font-size="10.5" fill="#333" text-anchor="middle">StackOverflowError, 스레드 과다</text>
+<line x1="270" y1="265" x2="292" y2="265" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="246" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="262" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 7</text>
+<text x="357" y="277" font-size="9.5" fill="#555" text-anchor="middle">-Xss 조정</text>
+<text x="20" y="314" font-size="11" fill="#26508F" text-anchor="start" font-weight="bold">느리거나 목적이 따로 있는 경우</text>
+<line x1="20" y1="320" x2="420" y2="320" stroke="#4C7FE0" stroke-width="0.8"/>
+<rect x="20" y="328" width="250" height="38" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="145" y="350.7" font-size="10.5" fill="#333" text-anchor="middle">가끔 응답이 크게 지연 (긴 STW 정지)</text>
+<line x1="270" y1="347" x2="292" y2="347" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="328" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="344" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 1</text>
+<text x="357" y="359" font-size="9.5" fill="#555" text-anchor="middle">Xms=Xmx, GC 교체</text>
+<rect x="20" y="374" width="250" height="38" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="145" y="396.7" font-size="10.5" fill="#333" text-anchor="middle">배치 전체 처리량이 중요</text>
+<line x1="270" y1="393" x2="292" y2="393" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="374" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="390" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 5</text>
+<text x="357" y="405" font-size="9.5" fill="#555" text-anchor="middle">Parallel GC</text>
+<rect x="20" y="420" width="250" height="38" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="145" y="442.7" font-size="10.5" fill="#333" text-anchor="middle">기동이 느려 스케일 대응이 늦음</text>
+<line x1="270" y1="439" x2="292" y2="439" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="294" y="420" width="126" height="38" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="357" y="436" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">상황 6</text>
+<text x="357" y="451" font-size="9.5" fill="#555" text-anchor="middle">AppCDS, Tiered=1</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/jvm-tuning-symptom-flow.svg" alt="확인한 증상별로 해당하는 상황 번호와 조절할 옵션을 찾는 흐름도" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 ## 상황 1 — GC 정지가 길다(지연 스파이크)
 

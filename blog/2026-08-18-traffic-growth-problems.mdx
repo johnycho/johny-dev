@@ -65,8 +65,92 @@ CPU가 차면 런 큐가 길어지고, 힙 압박으로 **GC가 자주, 오래**
 트래픽 증가의 가장 무서운 형태는 **스스로 커지는 실패**입니다.
 
 - **재시도 폭풍(retry storm)** — 느려진 서비스에 클라이언트가 재시도하면, 그 재시도가 부하를 더 키워 더 느려지는 악순환.
-- **연쇄 장애(cascading failure)** — 한 컴포넌트가 느려지면 그걸 기다리는 상류가 함께 밀리고, 스레드가 점유된 채 대기해 옆 기능까지 정지.
+- **연쇄 장애(cascading failure)** — 한 컴포넌트가 느려지면 그걸 기다리는 상류가 함께 밀리고, 스레드가 점유된 채 대기해 다른 기능까지 정지.
 - **동시 쇄도(thundering herd)** — 캐시 만료, 재시작 직후 수많은 요청이 한꺼번에 몰림.
+
+재시도 폭풍과 연쇄 장애가 전파되는 순서는 다음과 같습니다.
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="296" viewBox="0 0 440 296" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4C7FE0"/></marker></defs>
+<rect x="0" y="0" width="440" height="296" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">재시도 폭풍: 재시도가 부하를 키우는 악순환</text>
+<rect x="148" y="41" width="144" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="220" y="62" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">서비스가 느려짐</text>
+<rect x="268" y="111" width="144" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="340" y="132" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">클라이언트가 재시도</text>
+<rect x="148" y="181" width="144" height="34" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="202" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">요청 수 증가</text>
+<rect x="28" y="111" width="144" height="34" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="100" y="132" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">서비스가 더 느려짐</text>
+<line x1="292" y1="58" x2="340" y2="109" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="340" y1="145" x2="292" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="148" y1="198" x2="100" y2="147" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="100" y1="111" x2="148" y2="58" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="220" y="126" font-size="10" fill="#888" text-anchor="middle">반복될수록</text>
+<text x="220" y="141" font-size="10" fill="#888" text-anchor="middle">부하가 커짐</text>
+<rect x="20" y="232" width="400" height="50" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="220" y="252" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">악순환을 막는 방법</text>
+<text x="220" y="270" font-size="10.5" fill="#333" text-anchor="middle">타임아웃, 서킷 브레이커, 백오프(지터), 로드 셰딩</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/traffic-retry-storm-loop.svg" alt="서비스가 느려지면 클라이언트가 재시도하고 요청 수가 늘어 서비스가 더 느려지는 재시도 폭풍 순환" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="278" viewBox="0 0 440 278" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4C7FE0"/></marker></defs>
+<rect x="0" y="0" width="440" height="278" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">연쇄 장애: 한 곳의 지연이 상류로 전파되는 순서</text>
+<rect x="10" y="52" width="96" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="58" y="68.5" font-size="10" fill="#26508F" text-anchor="middle">B를 쓰는 기능</text>
+<text x="58" y="82.5" font-size="10" fill="#26508F" text-anchor="middle">요청</text>
+<rect x="10" y="118" width="96" height="40" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="58" y="134.5" font-size="10" fill="#26508F" text-anchor="middle">B와 무관한</text>
+<text x="58" y="148.5" font-size="10" fill="#26508F" text-anchor="middle">다른 기능 요청</text>
+<rect x="132" y="40" width="160" height="130" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="212" y="58" font-size="11" fill="#333" text-anchor="middle" font-weight="bold">서비스 A (상류)</text>
+<text x="212" y="74" font-size="9.5" fill="#888" text-anchor="middle">스레드 풀</text>
+<rect x="150" y="82" width="124" height="16" rx="3" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="212" y="94" font-size="9.5" fill="#9E3A57" text-anchor="middle">B 응답 대기 중</text>
+<rect x="150" y="102" width="124" height="16" rx="3" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="212" y="114" font-size="9.5" fill="#9E3A57" text-anchor="middle">B 응답 대기 중</text>
+<rect x="150" y="122" width="124" height="16" rx="3" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="212" y="134" font-size="9.5" fill="#9E3A57" text-anchor="middle">B 응답 대기 중</text>
+<rect x="150" y="142" width="124" height="16" rx="3" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="212" y="154" font-size="9.5" fill="#9E3A57" text-anchor="middle">B 응답 대기 중</text>
+<rect x="322" y="72" width="108" height="52" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="376" y="94.3" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">서비스 B</text>
+<text x="376" y="109.3" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">느려짐</text>
+<line x1="106" y1="72" x2="148" y2="90" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="274" y1="98" x2="320" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="106" y1="138" x2="146" y2="138" stroke="#D9534F" stroke-width="1.2" stroke-dasharray="3 2"/>
+<text x="126" y="142" font-size="13" fill="#D9534F" text-anchor="middle" font-weight="bold">✕</text>
+<text x="212" y="188" font-size="10" fill="#B52B27" text-anchor="middle" font-weight="bold">빈 스레드가 없어 다른 기능 요청도 대기</text>
+<text x="20" y="214" font-size="11" fill="#B52B27" text-anchor="start" font-weight="bold">①</text>
+<text x="38" y="214" font-size="10.5" fill="#333" text-anchor="start">서비스 B가 느려집니다.</text>
+<text x="20" y="234" font-size="11" fill="#B52B27" text-anchor="start" font-weight="bold">②</text>
+<text x="38" y="234" font-size="10.5" fill="#333" text-anchor="start">A의 스레드가 B의 응답을 기다리며 점유된 채 대기합니다.</text>
+<text x="20" y="254" font-size="11" fill="#B52B27" text-anchor="start" font-weight="bold">③</text>
+<text x="38" y="254" font-size="10.5" fill="#333" text-anchor="start">A의 스레드 풀이 가득 차 B와 무관한 다른 기능까지 멈춥니다.</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/traffic-cascading-failure-threads.svg" alt="서비스 B가 느려지자 서비스 A의 스레드가 모두 B 응답을 기다리며 점유돼 B와 무관한 다른 기능 요청까지 대기하는 연쇄 장애" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
 
 <mark>이걸 막으려면 "실패를 빨리, 국소적으로" 만들어야 합니다 — 타임아웃, 서킷 브레이커, 백오프, 로드 셰딩.</mark> 관련 개념은 [내결함성과 고가용성](./fault-tolerance-high-availability).
 

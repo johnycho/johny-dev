@@ -82,15 +82,15 @@ description: "MySQL, PostgreSQL, Oracle을 라이선스, 기능, 성능, 확장,
 @startuml
 title RDBMS 고르기
 start
-if (상용 라이선스로 엔터프라이즈 지원, RAC 고가용성이 꼭 필요?) then (예)
+if (상용 라이선스로 엔터프라이즈 지원, RAC 고가용성이 꼭 필요?) then (Y)
   :Oracle / SQL Server;
   stop
-else (아니오)
-  if (복잡한 분석 쿼리, 고급 타입, GIS, JSONB가 중요?) then (예)
+else (N)
+  if (복잡한 분석 쿼리, 고급 타입, GIS, JSONB가 중요?) then (Y)
     :PostgreSQL;
     stop
-  else (아니오)
-    if (수평 확장, 글로벌 분산이 필요?) then (예)
+  else (N)
+    if (수평 확장, 글로벌 분산이 필요?) then (Y)
       :분산 SQL (CockroachDB 등);
       stop
     else (단순, 읽기 위주 웹 서비스)

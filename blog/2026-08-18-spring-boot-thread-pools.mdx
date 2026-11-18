@@ -189,16 +189,16 @@ title 응답이 느려질 때 — 무엇부터 바꾸나
 start
 :증상 관측 - p99 지연 상승, 요청 대기;
 :지표 확인 - CPU, 톰캣 active 스레드, Hikari active, pending, 큐 길이;
-if (CPU가 포화 상태인가?) then (예)
+if (CPU가 포화 상태인가?) then (Y)
   :CPU 바운드 - 스레드 늘려도 불리\n수평 확장, 연산 최적화, 캐시;
   stop
-else (아니오, CPU 여유)
-  if (Hikari가 꽉 차고 대기가 있나?) then (예)
+else (N, CPU 여유)
+  if (Hikari가 가득 차고 대기가 있나?) then (Y)
     :커넥션이 병목\n1. 느린 쿼리, 긴 트랜잭션부터 단축\n2. maximum-pool-size 상향 - DB 한도 내;
-  else (아니오)
-    if (톰캣 스레드가 꽉 차고 큐가 쌓이나?) then (예)
+  else (N)
+    if (톰캣 스레드가 가득 차고 큐가 쌓이나?) then (Y)
       :요청 스레드가 병목 - IO 대기\n리틀의 법칙으로 목표 동시수 산출\nthreads.max 상향 + Hikari, 다운스트림 동반;
-    else (아니오)
+    else (N)
       :다운스트림 외부 API 한도, 타임아웃 확인;
     endif
   endif

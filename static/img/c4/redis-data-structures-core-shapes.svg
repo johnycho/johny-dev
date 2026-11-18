@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="540" viewBox="0 0 440 540" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="540" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">핵심 자료구조: 키에 붙는 값의 모양</text>
+<rect x="110" y="32" width="14" height="12" rx="2" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="130" y="42" font-size="9.5" fill="#555" text-anchor="start">키</text>
+<rect x="170" y="32" width="14" height="12" rx="2" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="190" y="42" font-size="9.5" fill="#555" text-anchor="start">값(자료구조)</text>
+<rect x="10" y="58" width="206" height="112" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="20" y="76" font-size="12" fill="#333" text-anchor="start" font-weight="bold">String</text>
+<text x="206" y="76" font-size="9.5" fill="#888" text-anchor="end">단일 값</text>
+<rect x="20" y="86" width="79.1" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="59.55" y="99" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">session:abc</text>
+<line x1="113.0" y1="106" x2="113.0" y2="118" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="58" y="122" width="110" height="28" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="113" y="140" font-size="11" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">"user-123"</text>
+<rect x="224" y="58" width="206" height="112" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="234" y="76" font-size="12" fill="#333" text-anchor="start" font-weight="bold">Hash</text>
+<text x="420" y="76" font-size="9.5" fill="#888" text-anchor="end">필드-값 모음</text>
+<rect x="234" y="86" width="48.599999999999994" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="258.3" y="99" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">user:1</text>
+<line x1="282.6" y1="95" x2="332" y2="95" stroke="#888" stroke-width="1.2"/>
+<rect x="334" y="88" width="42" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="355" y="102" font-size="10" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">name</text>
+<rect x="378" y="88" width="42" height="20" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="399" y="102" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">Kim</text>
+<rect x="334" y="112" width="42" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="355" y="126" font-size="10" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">age</text>
+<rect x="378" y="112" width="42" height="20" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="399" y="126" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">30</text>
+<rect x="334" y="136" width="42" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="355" y="150" font-size="10" fill="#555" text-anchor="middle" font-family="Menlo, Consolas, monospace">tier</text>
+<rect x="378" y="136" width="42" height="20" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="399" y="150" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">gold</text>
+<text x="236" y="130" font-size="10" fill="#555" text-anchor="start">필드-값 여러 개</text>
+<text x="236" y="146" font-size="10" fill="#555" text-anchor="start">필드 단위로 읽고 쓰기</text>
+<rect x="10" y="178" width="206" height="112" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="20" y="196" font-size="12" fill="#333" text-anchor="start" font-weight="bold">List</text>
+<text x="206" y="196" font-size="9.5" fill="#888" text-anchor="end">순서 있는 목록</text>
+<rect x="20" y="206" width="73.0" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="56.5" y="219" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">queue:jobs</text>
+<rect x="58" y="242" width="36" height="24" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="76" y="258" font-size="9.5" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">job-3</text>
+<rect x="96" y="242" width="36" height="24" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="114" y="258" font-size="9.5" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">job-2</text>
+<rect x="134" y="242" width="36" height="24" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="152" y="258" font-size="9.5" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">job-1</text>
+<text x="18" y="258" font-size="9.5" fill="#555" text-anchor="start" font-family="Menlo, Consolas, monospace">LPUSH</text>
+<line x1="48" y1="254" x2="56" y2="254" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="172" y1="254" x2="182" y2="254" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="185" y="258" font-size="9.5" fill="#555" text-anchor="start" font-family="Menlo, Consolas, monospace">RPOP</text>
+<text x="113.0" y="282" font-size="9.5" fill="#888" text-anchor="middle">왼쪽에 넣고 오른쪽에서 빼면 FIFO</text>
+<rect x="224" y="178" width="206" height="112" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="234" y="196" font-size="12" fill="#333" text-anchor="start" font-weight="bold">Set</text>
+<text x="420" y="196" font-size="9.5" fill="#888" text-anchor="end">중복 없는 집합</text>
+<rect x="234" y="206" width="79.1" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="273.55" y="219" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">post:1:tags</text>
+<ellipse cx="327.0" cy="256" rx="70" ry="22" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="299.0" y="254" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">"redis"</text>
+<text x="357.0" y="266" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">"db"</text>
+<rect x="10" y="298" width="206" height="112" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="20" y="316" font-size="12" fill="#333" text-anchor="start" font-weight="bold">Sorted Set</text>
+<text x="206" y="316" font-size="9.5" fill="#888" text-anchor="end">점수로 정렬</text>
+<rect x="20" y="326" width="79.1" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="59.55" y="339" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">leaderboard</text>
+<line x1="99.1" y1="335" x2="118" y2="335" stroke="#888" stroke-width="1.2"/>
+<rect x="120" y="328" width="42" height="20" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="141" y="342" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">lee</text>
+<rect x="164" y="328" width="42" height="20" rx="3" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="185" y="342" font-size="10" fill="#8A6400" text-anchor="middle" font-family="Menlo, Consolas, monospace">1720</text>
+<rect x="120" y="352" width="42" height="20" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="141" y="366" font-size="10" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">kim</text>
+<rect x="164" y="352" width="42" height="20" rx="3" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="185" y="366" font-size="10" fill="#8A6400" text-anchor="middle" font-family="Menlo, Consolas, monospace">1500</text>
+<text x="163" y="392" font-size="9.5" fill="#888" text-anchor="middle">점수 높은 순</text>
+<text x="22" y="370" font-size="10" fill="#555" text-anchor="start">원소마다 점수</text>
+<text x="22" y="386" font-size="10" fill="#555" text-anchor="start">점수로 자동 정렬</text>
+<rect x="224" y="298" width="206" height="112" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="234" y="316" font-size="12" fill="#333" text-anchor="start" font-weight="bold">Stream</text>
+<text x="420" y="316" font-size="9.5" fill="#888" text-anchor="end">이벤트 로그</text>
+<rect x="234" y="326" width="48.599999999999994" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="258.3" y="339" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">orders</text>
+<rect x="236" y="354" width="44" height="22" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="258" y="369" font-size="9.5" fill="#26508F" text-anchor="middle">이벤트 1</text>
+<rect x="282" y="354" width="44" height="22" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="304" y="369" font-size="9.5" fill="#26508F" text-anchor="middle">이벤트 2</text>
+<rect x="328" y="354" width="44" height="22" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="350" y="369" font-size="9.5" fill="#26508F" text-anchor="middle">이벤트 3</text>
+<rect x="376" y="354" width="40" height="22" rx="3" fill="#EEF3FB" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="396" y="369" font-size="9" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">XADD</text>
+<text x="327.0" y="392" font-size="9.5" fill="#888" text-anchor="middle">끝에 추가만 하는 로그</text>
+<text x="327.0" y="406" font-size="9.5" fill="#888" text-anchor="middle">소비자 그룹이 나눠 읽고 ack</text>
+<rect x="10" y="418" width="206" height="112" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="20" y="436" font-size="12" fill="#333" text-anchor="start" font-weight="bold">JSON</text>
+<text x="206" y="436" font-size="9.5" fill="#888" text-anchor="end">중첩 문서</text>
+<rect x="20" y="446" width="48.599999999999994" height="18" rx="4" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="44.3" y="459" font-size="10" fill="#9E3A57" text-anchor="middle" font-family="Menlo, Consolas, monospace">user:1</text>
+<line x1="68.6" y1="455" x2="114" y2="455" stroke="#888" stroke-width="1.2"/>
+<rect x="116" y="448" width="90" height="20" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="161" y="462" font-size="9.5" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">name: "Kim"</text>
+<rect x="116" y="474" width="90" height="48" rx="3" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="122" y="488" font-size="9.5" fill="#26508F" text-anchor="start" font-family="Menlo, Consolas, monospace">addr:</text>
+<rect x="122" y="494" width="78" height="20" rx="3" fill="#FFFFFF" stroke="#B9CBE8"/>
+<text x="161" y="508" font-size="9" fill="#26508F" text-anchor="middle" font-family="Menlo, Consolas, monospace">city: "Seoul"</text>
+<text x="22" y="490" font-size="10" fill="#555" text-anchor="start">중첩 문서</text>
+<text x="22" y="506" font-size="10" fill="#555" text-anchor="start">JSONPath로 일부만</text>
+<text x="22" y="520" font-size="10" fill="#555" text-anchor="start">읽고 수정</text>
+<rect x="224" y="418" width="206" height="112" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="327.0" y="452" font-size="10.5" fill="#8A6400" text-anchor="middle" font-weight="bold">참고: String 기반 자료구조</text>
+<text x="327.0" y="480.5" font-size="10" fill="#555" text-anchor="middle">Bitmap: 비트 단위 on/off</text>
+<text x="327.0" y="498.5" font-size="10" fill="#555" text-anchor="middle">HyperLogLog: 대략적인 고유 개수</text>
+</svg>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="276" viewBox="0 0 440 276" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4C7FE0"/></marker></defs>
+<rect x="0" y="0" width="440" height="276" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">임계점 이후 TPS = CU / MRT 에서 개선할 지점</text>
+<rect x="20" y="36" width="190" height="44" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="115" y="54.4" font-size="10.5" fill="#9E3A57" text-anchor="middle">스레드풀, 커넥션 풀 늘리기</text>
+<text x="115" y="68.9" font-size="10.5" fill="#9E3A57" text-anchor="middle">또는 CU 더 받기</text>
+<rect x="230" y="36" width="190" height="44" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="325" y="54.4" font-size="10.5" fill="#26508F" text-anchor="middle">분모 MRT 줄이기</text>
+<text x="325" y="68.9" font-size="10.5" fill="#26508F" text-anchor="middle">(건당 응답시간 단축)</text>
+<line x1="115" y1="80" x2="115" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="325" y1="80" x2="325" y2="98" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="100" width="190" height="80" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="115" y="121.9" font-size="10.5" fill="#333" text-anchor="middle">CPU, 스레드, DB 커넥션이</text>
+<text x="115" y="136.4" font-size="10.5" fill="#333" text-anchor="middle">이미 모두 사용 중인 상태</text>
+<text x="115" y="150.9" font-size="10.5" fill="#333" text-anchor="middle">초과 요청은 큐에서 대기</text>
+<text x="115" y="165.4" font-size="10.5" fill="#333" text-anchor="middle">컨텍스트 스위칭만 증가</text>
+<rect x="230" y="100" width="190" height="80" rx="6" fill="#F7F7F7" stroke="#999999"/>
+<text x="325" y="129.2" font-size="10.5" fill="#333" text-anchor="middle">DB 튜닝 (쿼리, 인덱스)</text>
+<text x="325" y="143.7" font-size="10.5" fill="#333" text-anchor="middle">캐시 적용</text>
+<text x="325" y="158.2" font-size="10.5" fill="#333" text-anchor="middle">비동기 처리</text>
+<line x1="115" y1="180" x2="115" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<line x1="325" y1="180" x2="325" y2="198" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="20" y="200" width="190" height="40" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="115" y="223.8" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">TPS 그대로 또는 하락</text>
+<rect x="230" y="200" width="190" height="40" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="325" y="223.8" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">MRT가 줄어 TPS 상승</text>
+<text x="220.0" y="262" font-size="9.5" fill="#888" text-anchor="middle">풀 확대는 서버 자원에 아직 여유가 있을 때만 효과가 있습니다</text>
+</svg>

@@ -107,6 +107,52 @@ WHERE id = 10;
 
 즉, <mark>락 획득 순서 불일치 (Lock Ordering Inconsistency)가 데드락의 핵심 원인</mark>입니다.
 
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="298" viewBox="0 0 440 298" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="298" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">두 트랜잭션이 서로의 인덱스 락을 기다리는 순환</text>
+<rect x="140" y="40" width="160" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="59.4" font-size="10.5" fill="#333" text-anchor="middle">idx_user_status 레코드</text>
+<text x="220" y="73.9" font-size="10.5" fill="#333" text-anchor="middle">(user_id=100, status=0)</text>
+<rect x="140" y="214" width="160" height="46" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="220" y="233.4" font-size="10.5" fill="#333" text-anchor="middle">PK 레코드</text>
+<text x="220" y="247.9" font-size="10.5" fill="#333" text-anchor="middle">(id=10)</text>
+<rect x="12" y="127" width="118" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="71" y="146.4" font-size="10.5" fill="#26508F" text-anchor="middle">트랜잭션 A</text>
+<text x="71" y="160.9" font-size="10.5" fill="#26508F" text-anchor="middle">세컨더리 → PK 순</text>
+<rect x="310" y="127" width="118" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="369" y="146.4" font-size="10.5" fill="#9E3A57" text-anchor="middle">트랜잭션 B</text>
+<text x="369" y="160.9" font-size="10.5" fill="#9E3A57" text-anchor="middle">PK → 세컨더리 순</text>
+<line x1="80" y1="127" x2="150" y2="88" stroke="#4C7FE0" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="78" y="104" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">① 보유</text>
+<line x1="360" y1="173" x2="290" y2="212" stroke="#D06A86" stroke-width="1.6" marker-end="url(#ah)"/>
+<text x="362" y="204" font-size="10.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">① 보유</text>
+<line x1="80" y1="173" x2="150" y2="212" stroke="#D9534F" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="64" y="200" font-size="10" fill="#B52B27" text-anchor="middle">② 잠금 시도,</text>
+<text x="64" y="213" font-size="10" fill="#B52B27" text-anchor="middle">대기</text>
+<line x1="360" y1="127" x2="290" y2="88" stroke="#D9534F" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ah)"/>
+<text x="376" y="96" font-size="10" fill="#B52B27" text-anchor="middle">③ 잠금 시도,</text>
+<text x="376" y="109" font-size="10" fill="#B52B27" text-anchor="middle">대기</text>
+<text x="220" y="154" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">서로 상대 락을</text>
+<text x="220" y="169" font-size="11" fill="#B52B27" text-anchor="middle" font-weight="bold">기다리며 데드락</text>
+<line x1="60" y1="282" x2="90" y2="282" stroke="#4C7FE0" stroke-width="1.6"/>
+<text x="96" y="286" font-size="9.5" fill="#555" text-anchor="start">락 보유</text>
+<line x1="170" y1="282" x2="200" y2="282" stroke="#D9534F" stroke-width="1.6" stroke-dasharray="5 4"/>
+<text x="206" y="286" font-size="9.5" fill="#555" text-anchor="start">락 대기</text>
+<text x="260" y="286" font-size="9.5" fill="#555" text-anchor="start">원인: 락 획득 순서 불일치</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/index-deadlock-lock-cycle.svg" alt="트랜잭션 A는 idx_user_status 레코드를, 트랜잭션 B는 PK 레코드를 보유한 채 서로 상대가 보유한 레코드의 잠금을 기다려 순환이 생기는 구조" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 <table>
   <thead>
     <tr>

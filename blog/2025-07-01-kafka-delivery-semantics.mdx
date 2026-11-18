@@ -173,6 +173,64 @@ end-to-end `Exactly-once`는 Kafka 단독으로 보장되지 않으며,
 
 ## 4. 한눈에 비교
 
+세 방식의 차이는 메시지 처리와 offset 커밋의 순서에서 생기며, 아래 그림은 그 사이에 장애가 발생했을 때 결과가 어떻게 달라지는지 보여 줍니다.
+
+<details>
+<summary>SVG 코드</summary>
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="328" viewBox="0 0 440 328" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="328" fill="#FFFFFF"/>
+<text x="220.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">offset 커밋 시점과 장애가 발생했을 때의 결과</text>
+<text x="16" y="44" font-size="12" fill="#333" text-anchor="start" font-weight="bold">At-most-once</text>
+<text x="120" y="44" font-size="10" fill="#888" text-anchor="start">처리 전에 커밋</text>
+<rect x="16" y="54" width="92" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="62.0" y="79.0" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">offset 커밋</text>
+<line x1="108" y1="75.0" x2="127" y2="75.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="128" y="54" width="92" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="174.0" y="79.0" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">메시지 처리</text>
+<line x1="220" y1="75.0" x2="241" y2="75.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="242" y="54" width="182" height="42" rx="6" fill="#FDECEC" stroke="#D9534F"/>
+<text x="333.0" y="71.4" font-size="10.5" fill="#B52B27" text-anchor="middle">재시작 후 다음 offset부터 소비</text>
+<text x="333.0" y="85.9" font-size="10.5" fill="#B52B27" text-anchor="middle">처리하지 못한 메시지는 유실</text>
+<circle cx="216" cy="54" r="8" fill="#FDECEC" stroke="#D9534F" stroke-width="1.5"/><path d="M212.5,50.5 L219.5,57.5 M219.5,50.5 L212.5,57.5" stroke="#D9534F" stroke-width="1.8"/>
+<text x="16" y="130" font-size="12" fill="#333" text-anchor="start" font-weight="bold">At-least-once</text>
+<text x="120" y="130" font-size="10" fill="#888" text-anchor="start">처리 후에 커밋</text>
+<rect x="16" y="140" width="92" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="62.0" y="165.0" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">메시지 처리</text>
+<line x1="108" y1="161.0" x2="127" y2="161.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="128" y="140" width="92" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="174.0" y="165.0" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">offset 커밋</text>
+<line x1="220" y1="161.0" x2="241" y2="161.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="242" y="140" width="182" height="42" rx="6" fill="#FFF3E0" stroke="#E0A000"/>
+<text x="333.0" y="157.4" font-size="10.5" fill="#8A6400" text-anchor="middle">재시작 후 같은 메시지 다시 소비</text>
+<text x="333.0" y="171.9" font-size="10.5" fill="#8A6400" text-anchor="middle">같은 메시지가 중복 처리</text>
+<circle cx="118.0" cy="149.0" r="8" fill="#FDECEC" stroke="#D9534F" stroke-width="1.5"/><path d="M114.5,145.5 L121.5,152.5 M121.5,145.5 L114.5,152.5" stroke="#D9534F" stroke-width="1.8"/>
+<text x="16" y="216" font-size="12" fill="#333" text-anchor="start" font-weight="bold">Exactly-once</text>
+<text x="114" y="216" font-size="10" fill="#888" text-anchor="start">처리와 커밋을 하나의 트랜잭션으로</text>
+<rect x="16" y="226" width="204" height="42" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<rect x="22" y="232" width="192" height="30" rx="4" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="118.0" y="251.0" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">메시지 처리 + offset 커밋</text>
+<line x1="220" y1="247.0" x2="241" y2="247.0" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="242" y="226" width="182" height="42" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="333.0" y="243.4" font-size="10.5" fill="#2E6B2E" text-anchor="middle">처리 결과와 커밋이 함께 취소</text>
+<text x="333.0" y="257.9" font-size="10.5" fill="#2E6B2E" text-anchor="middle">다시 처리해도 한 번만 반영</text>
+<circle cx="216" cy="226" r="8" fill="#FDECEC" stroke="#D9534F" stroke-width="1.5"/><path d="M212.5,222.5 L219.5,229.5 M219.5,222.5 L212.5,229.5" stroke="#D9534F" stroke-width="1.8"/>
+<circle cx="24" cy="288" r="8" fill="#FDECEC" stroke="#D9534F" stroke-width="1.5"/><path d="M20.5,284.5 L27.5,291.5 M27.5,284.5 L20.5,291.5" stroke="#D9534F" stroke-width="1.8"/>
+<text x="38" y="292" font-size="10" fill="#555" text-anchor="start">장애 발생 지점</text>
+<rect x="130" y="281" width="14" height="14" rx="2" fill="#FFF3E0" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="150" y="292" font-size="10" fill="#555" text-anchor="start">Kafka 트랜잭션 (하나의 원자적 작업)</text>
+<text x="220.0" y="314" font-size="9.5" fill="#888" text-anchor="middle">Exactly-once는 Producer → Kafka → Consumer → offset 커밋 범위에서만 보장됩니다</text>
+</svg>
+```
+
+</details>
+
+<figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
+  <img src="/img/c4/kafka-delivery-semantics-commit-timing.svg" alt="At-most-once는 처리 전에 커밋해 장애 시 메시지가 유실되고, At-least-once는 처리 후에 커밋해 장애 시 중복 처리되며, Exactly-once는 처리와 커밋이 같은 트랜잭션에서 함께 반영되거나 함께 취소되는 모습" style={{width: '100%', maxWidth: '640px'}} />
+</figure>
+
 | 구분 | At-most-once | At-least-once | Exactly-once |
 |---|---|---|---|
 | 메시지 유실 | 가능 | 불가능 | 불가능 |
