@@ -75,4 +75,4 @@
 
 ## 참고
 - 방식 선택·모바일 폭·저작권: [blog-authoring.md](../../wiki/blog-authoring.md) 4절
-- 다른 시각화: [chart-canvas](../chart-canvas/SKILL.md)(지표 애니메이션). 보관, 미사용: [diagram-static](../diagram-static/SKILL.md), [diagram-archify](../diagram-archify/SKILL.md)
+- 다른 시각화: [chart-canvas](../chart-canvas/SKILL.md)(지표 애니메이션). 예외(사용자 승인 글만): anatomy 인터랙티브 등각 모형(`tools/anatomy/`, `<AnatomyEmbed>`, blog-authoring 4절). 보관, 미사용: [diagram-static](../diagram-static/SKILL.md), [diagram-archify](../diagram-archify/SKILL.md)

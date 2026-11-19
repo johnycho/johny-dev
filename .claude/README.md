@@ -42,7 +42,7 @@ johny-dev 기술 블로그 작업 규칙을 **wiki(참조) · skill(절차) · h
 
 ## 사용
 - **게시글 작성**: `/blog-post` 스킬 호출 또는 "블로그 글 추가해줘" → skill이 wiki 규칙을 따름.
-- **다이어그램·시각화**: 블로그 그림은 **손수 SVG(`/diagram-svg`)만** 쓴다. 지표·추이 애니메이션은 `/chart-canvas`. PlantUML, Mermaid, archify(`/diagram-static`, `/diagram-archify`)는 보관, 미사용이며 새로 쓰면 스캐너가 지적한다.
+- **다이어그램·시각화**: 블로그 그림은 **손수 SVG(`/diagram-svg`)만** 쓴다. 지표·추이 애니메이션은 `/chart-canvas`. PlantUML, Mermaid, archify(`/diagram-static`, `/diagram-archify`)는 보관, 미사용이며 새로 쓰면 스캐너가 지적한다. 예외로 SCM 글만 anatomy 인터랙티브 등각 모형(`~/.claude/skills/anatomy`, 빌드 `tools/anatomy/`, 삽입 `<AnatomyEmbed>`)을 함께 쓴다.
 - **스프링 부트 시리즈**: `/trend-post-spring` 호출 또는 "스프링부트 업데이트 글 써줘" → 공식 소스 조사 후 blog-authoring 규칙대로 작성.
 - **백엔드 동향 글**: `/trend-post-backend` 호출 또는 "백엔드 동향 글 써줘/이 기사로 블로그" → GeekNews 등에서 주제 발굴 → **1차 소스로 사실 검증** 후 johny-dev 톤으로 작성(스프링 전용은 위 스킬).
 - **Java/JDK 동향 글**: `/trend-post-java` 호출 또는 "자바 최신 동향/이 JEP로 블로그" → OpenJDK JEP·Inside Java 등 1차 소스로 검증(preview/final·버전 명시) 후 작성.

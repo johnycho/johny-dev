@@ -69,9 +69,18 @@
 |---|---|---|
 | **모든 그림** — 구조, 시퀀스, 흐름(판단, 액티비티), 상태, 인프라, ER, C4 표기, git 그래프, 정적 차트, 축/타임라인, 공간 배치형 | `<rect>`, `<text>` 좌표를 **손수 배치한 정적 SVG**(폭 440px 안팎, 본문 색인, 선명) | [diagram-svg](../skills/diagram-svg/SKILL.md) — **유일한 방식** |
 | 지표·추이·분포가 "움직임"으로 의미 있는 애니메이션 | 직접 만든 Canvas 애니메이션 컴포넌트(MonitorCharts) | [chart-canvas](../skills/chart-canvas/SKILL.md) |
+| (예외, 사용자 승인 글만) 현실의 물건 이동을 보여 주는 인터랙티브 등각 모형 | `static/diagrams/<이름>(-light).html`을 `<AnatomyEmbed>`로 삽입 | anatomy 스킬(`~/.claude/skills/anatomy`), 빌드 `tools/anatomy/<이름>/build.mjs` |
 | (보관, 미사용) PlantUML, C4-PlantUML, Mermaid / archify 인터랙티브 | — | [diagram-static](../skills/diagram-static/SKILL.md), [diagram-archify](../skills/diagram-archify/SKILL.md) — **보관용**. 쓰지 않는다 |
 
 - **그림은 손수 SVG만 쓴다. PlantUML, C4-PlantUML, Mermaid, archify는 쓰지 않는다.** 블로그의 그림 약 190개를 손수 SVG로 옮기면서 표현하지 못한 그림이 없었다. 스킬과 컴포넌트(`ArchifyEmbed`)는 언젠가 필요할 수 있어 삭제하지 않고 보관한다. `scan-polishing.py`가 ` ```plantuml `, ` ```mermaid `, `<ArchifyEmbed`를 지적하므로, 보관 방식을 꼭 써야 하는 글(예: C4 모델 글의 C4-PlantUML 코드 예시)만 사유와 함께 `--allow`로 예외 등록한다.
+- **anatomy 인터랙티브 모형은 예외로만 쓴다.** 손수 SVG가 기본이고, anatomy는 현실의 물건 이동을 모형으로 보여 주면 이해가 크게 쉬워지는 글에서 기존 SVG를 **보완**할 때만 쓴다(현재 SCM 글). `scan-polishing.py`가 `<AnatomyEmbed`를 `그림형식`으로 지적하므로, 새 글에 쓰려면 사용자 확인 후 `--allow`로 예외 등록한다. 그림 문구(제목, readout, 범례, 캡션)도 지양어 검사 대상이다(`static/diagrams/*.html`). 다크와 라이트 두 테마(`--light`)를 모두 빌드하고 390px 폭에서 읽히는지 확인한다.
+  - **색**: 블로그 팔레트의 연한 중간 톤을 쓴다(윗면 파랑 `#B4C9F2`, 초록 `#A9D9B0`, 분홍 `#F2B8CB`, 주황 `#F8D58C`, 청록 `#9FDBE3`, 옆면은 한 단계 진하게, 선은 stroke 색). 너무 짙거나 무채색이면 안 된다.
+  - **강조**: 지금 단계의 구역은 굵은 테두리와 발광으로 첫눈에 보이게 하고, 나머지는 원래 색을 옅게 남긴 톤으로 낮춘다(완전히 투명하게 하지 않는다).
+  - **작업자**: 단순한 마네킹형으로 그리고, 작업복은 컬리 보라(`#5F0080` 계열)로 한다. 다른 의미 색과 겹치지 않게 한다.
+  - **둥근 부품**(바퀴, 다이얼, 팬)은 원통과 원으로 그린다. 상자로 대신하지 않는다.
+  - **공간이 있는 주제**(물류센터 등)는 층을 위아래로 띄운 분해 단면으로 전체 흐름을 보여 주고, 예시 배치임을 캡션에 밝힌다.
+  - **그림 문구**는 `build.mjs`의 `TEXT` 한 곳에 모은다. readout은 "층 장소, 지금 일어나는 일", 범례는 "이름(색): 완결 문장" 형식으로 쓴다.
+  - **iframe 배경**: 글 배경과 이어지도록 페이지 배경을 투명하게 하고 `html`의 `color-scheme`을 테마별로 강제한다(`AnatomyEmbed`가 iframe의 `color-scheme`을 사이트 테마에 맞춘다. 둘이 다르면 브라우저가 불투명 배경을 칠한다).
 - **ASCII 그림 금지 — 박스 문자 그림과 디렉터리 트리도 SVG로.** `┌─┐`, `│`, `▼`, `──▶` 같은 문자로 그린 구조도, 흐름도, 영수증 같은 예시, `├──`로 그린 디렉터리 트리는 코드블록 안에 두지 않고 SVG로 그린다(트리는 폴더 아이콘, 가이드 선, 역할별 색, 주석을 작은 회색 글자로). 한글이 섞이면 코드블록에서 열 정렬이 깨지고 모바일에서 줄이 넘친다.
 - **글 안 ` ```svg ` 블록과 `static/img/c4/*.svg` 파일은 항상 같아야 한다.** 그림 문구를 고칠 때는 둘을 함께 고친다. 스캐너는 블록의 글자를 검사하고 독자는 파일을 보므로, 한쪽만 고치면 지양어가 그림에 남는다. `scan-polishing.py`가 다르면 `그림불일치`로 지적한다.
 - **그림 안 텍스트도 단어, 문장 규칙 대상이다.** 라벨, 제목, 범례, alt에도 지양어와 구어("꽉 찬", "손볼 곳", "번지는", "옆 기능", "응답이 튐", "장애가 났을 때", "보너스")를 쓰지 않는다. `scan-polishing.py`가 ` ```svg ` 코드블록의 `<text>` 내용과 ` ```plantuml ` 코드블록(C4-PlantUML 포함)의 라벨(따옴표 문자열, 화살표와 note의 `:` 뒤, title, 여러 줄 note, 액티비티, 조건), ` ```mermaid ` 코드블록의 노드, 간선, subgraph 라벨, `static/diagrams/*.html`의 글자도 검사한다. 분기 라벨은 `Y` / `N`.

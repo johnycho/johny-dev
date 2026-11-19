@@ -198,7 +198,7 @@ def load_allow():
 # 그림은 손수 SVG만 쓴다(blog-authoring 4절). PlantUML, Mermaid, Archify가 새로 생기면 지적한다.
 # 보관 중인 방식을 꼭 써야 하는 글(예: C4 모델 글의 C4-PlantUML 코드 예시)은 --allow로 예외 등록한다.
 SVG_BLOCK = re.compile(r"```svg\n(.*?)\n```(?:(?!```svg).)*?/img/c4/([\w.-]+)\.svg", re.S)
-DIAGRAM_FMT = re.compile(r"^```(plantuml|puml|mermaid)\b|<ArchifyEmbed\b")
+DIAGRAM_FMT = re.compile(r"^```(plantuml|puml|mermaid)\b|<ArchifyEmbed\b|<AnatomyEmbed\b")
 
 def scan_file(f, terms):
     hits = []   # (줄번호, 항목, 문맥, 분류)
