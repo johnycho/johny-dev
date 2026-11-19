@@ -13,8 +13,8 @@
 
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
-<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.34c68209.css">
-<script src="/assets/js/runtime~main.595196fd.js" defer="defer"></script>
+<script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.b6c42bb3.css">
+<script src="/assets/js/runtime~main.b5969e35.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -42,7 +42,7 @@
 <li>값이 잘 안 바뀌면 키를 여러 벌 복제해 분산(<code>hotkey:1</code>~<code>hotkey:N</code> 랜덤 읽기).</li>
 </ul>
 <h2 class="anchor anchorWithStickyNavbar_LWe7" id="4-메모리-eviction-ttl">4. 메모리, eviction, TTL<a href="#4-메모리-eviction-ttl" class="hash-link" aria-label="4. 메모리, eviction, TTL에 대한 직접 링크" title="4. 메모리, eviction, TTL에 대한 직접 링크">​</a></h2>
-<p>Redis는 메모리 저장소라, 한계에 닿으면 <code>maxmemory-policy</code>에 따라 키를 <strong>퇴출합니다(eviction)</strong>. TTL 없이 계속 넣기만 하면 메모리가 무한정 늘어 결국 eviction이나 쓰기 거부가 납니다.</p>
+<p>Redis는 메모리 저장소라, 한계에 이르면 <code>maxmemory-policy</code>에 따라 키를 <strong>퇴출합니다(eviction)</strong>. TTL 없이 계속 넣기만 하면 메모리가 무한정 늘어 결국 eviction이나 쓰기 거부가 납니다.</p>
 <p><strong>대처</strong>:</p>
 <ul>
 <li>캐시 용도면 <code>maxmemory</code> + <strong><code>allkeys-lru</code>/<code>allkeys-lfu</code></strong> 정책을 명시(자주 사용하지 않는 키부터 제거함).</li>
