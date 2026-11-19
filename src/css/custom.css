@@ -611,6 +611,12 @@ div[class*='codeBlockContainer'] {
     word-break: keep-all;
     overflow-wrap: anywhere;
   }
+  /* 첫 열(항목 이름)은 단어 단위로만 줄바꿈: anywhere면 최소 폭이 한 글자까지 줄어
+     표 폭 분배에서 첫 열이 가장 먼저 좁아지고 "transien/t"처럼 단어 중간이 끊긴다 */
+  .markdown table th:first-child,
+  .markdown table td:first-child {
+    overflow-wrap: break-word;
+  }
   /* 코드/식별자 등 긴 토큰은 셀 폭에 눌리지 않게 살짝 더 작게 */
   .markdown table code { font-size: 0.92em; padding: 0.02em 0.2em; }
 }

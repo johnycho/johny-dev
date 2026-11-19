@@ -89,7 +89,7 @@ redis-cli --bigkeys        # 큰 키 탐지
 
 ## 4. 메모리, eviction, TTL
 
-Redis는 메모리 저장소라, 한계에 닿으면 `maxmemory-policy`에 따라 키를 **퇴출합니다(eviction)**. TTL 없이 계속 넣기만 하면 메모리가 무한정 늘어 결국 eviction이나 쓰기 거부가 납니다.
+Redis는 메모리 저장소라, 한계에 이르면 `maxmemory-policy`에 따라 키를 **퇴출합니다(eviction)**. TTL 없이 계속 넣기만 하면 메모리가 무한정 늘어 결국 eviction이나 쓰기 거부가 납니다.
 
 **대처**:
 - 캐시 용도면 `maxmemory` + **`allkeys-lru`/`allkeys-lfu`** 정책을 명시(자주 사용하지 않는 키부터 제거함).

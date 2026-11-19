@@ -2,7 +2,6 @@
 blog/2026-09-03-ticketing-system-architecture.mdx	씁니다	8b25e20eda22	DB에 데이터를 기록하는 쓰기(write) 의미	B에는 감당 가능한 속도로만 씁니다.
 blog/2026-09-03-ticketing-system-architecture.mdx	구는	972d33de4f57	'요구는'의 부분 일치(굴다 의미 아님)	- 요구는 단순합니다. "지금 내가
 blog/2026-09-03-ticketing-system-architecture.mdx	묶어	fc67d5c54c6e	조회+판단+차감을 원자적으로 결합하는 기술적 의미(예외)	 조회+판단+차감을 한 번에 묶어야 하므로 Lua가 필요합
-blog/2026-09-03-ticketing-system-architecture.mdx	고른	2e0121abe506	속도를 고르게 한다(평탄화) 의미로 규칙 예외, 선택 의미 아님	k>대기열이 "입장 속도"를 고른다면, 메시지 큐는 "DB
 blog/2026-09-11-kafka-cluster-replication-consumer-group.mdx	씁니다	173d19eaf1b5	리더에 기록하는 쓰기(write) 의미	**프로듀서**는 리더에게만 씁니다.
 blog/2026-09-11-kafka-cluster-replication-consumer-group.mdx	씁니다	5d03b9f7e1f6	리더 로그를 복제해 기록하는 쓰기(write) 의미	*직접 fetch 해서 따라 씁니다** — 마치 팔로워가 
 blog/2026-09-11-kafka-cluster-replication-consumer-group.mdx	갈림	fb7359a87775	'헷갈림'은 허용 단어(갈리다 아님)	두 가지**이고, 이 둘이 헷갈림의 단골입니다.
@@ -35,7 +34,6 @@ blog/2026-10-28-cdc-change-data-capture-debezium.mdx	줍니다	b72ddb0eed7e	'영
 blog/2026-08-21-hotspot-traffic-isolation.mdx	줍니다	05bb85a7c5ff	"부담을 주다"는 규칙 예외	주는 저장소에 실제로 부담을 줍니다** — 그 채팅방을 담
 blog/2026-08-21-multi-layer-caching.mdx	쓴다	05a623b075c1	"신경 쓰다" 관용구로 사용(use) 의미 아님	수록 정합성 관리는 더 신경 쓴다**입니다.
 blog/2026-09-17-kubernetes-basics-to-gitops.mdx	하나 더	c3a02c3a647d	명령형 지시를 예시로 든 인용("하나 더 띄워라")이며 "덧붙여" 의미 아님	*: "컨테이너를 켜라", "하나 더 띄워라"처럼 **단계
-blog/2026-08-21-scaling-architecture-step-by-step.mdx	두고	95faae49cbce	"자원을 두고 경쟁"은 대상(~을 놓고)을 뜻하는 관용 표현으로 배치 의미 아님	회가 실서비스 쿼리와 자원을 두고 경쟁합니다.
 blog/2026-10-22-spring-domain-events-vs-application-event-publisher.mdx	묶는	43b0b55cb157	트랜잭션 단계에 결합하는 기술적 의미(트랜잭션으로 묶다 예외)	*부터이며, 트랜잭션 단계에 묶는 `@Transaction
 blog/2026-10-22-spring-domain-events-vs-application-event-publisher.mdx	두고	97fd8dbd80bb	"기록하게 두다"는 허용(let) 의미로 배치 의미 아님	트)** 가 스스로 기록하게 두고 싶습니다. Spring 
 blog/2026-10-22-spring-domain-events-vs-application-event-publisher.mdx	로우	0eea9af69684	"자유로우냐"의 일부로 row 표기와 무관한 오탐	에 묶이느냐 호출 시점에 자유로우냐**입니다.
@@ -108,3 +106,5 @@ blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	ea
 blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml
 blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml
 blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml
+blog/2026-08-21-scaling-architecture-step-by-step.mdx	두고	ee9e2cbc6fd1	"자원을 두고 경쟁"은 대상(~을 놓고)을 뜻하는 관용 표현으로 배치 의미 아님	회가 실서비스 쿼리와 자원을 두고 경쟁합니다.
+blog/2026-09-03-ticketing-system-architecture.mdx	고른	35d46703dadc	속도를 고르게 한다(평탄화) 의미로 규칙 예외, 선택 의미 아님	k>대기열이 "입장 속도"를 고른다면, 메시지 큐는 "DB
