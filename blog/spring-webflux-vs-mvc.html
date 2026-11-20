@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.b6c42bb3.css">
-<script src="/assets/js/runtime~main.7e0c4be0.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.69aaf53e.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -109,9 +109,9 @@
 <p>WebFlux의 실무 부담 중 하나가 <strong>디버깅</strong>입니다. 왜 어렵고 어떻게 대처하는지 정리합니다.</p>
 <p><strong>왜 어려운가</strong></p>
 <ul>
-<li><strong>스택 트레이스가 이어지지 않는다</strong>: 로직이 여러 스레드(이벤트 루프)에 걸쳐 콜백으로 실행되므로, 예외가 나도 스택 트레이스에 <strong>내 코드가 거의 안 보이고</strong> Reactor 내부 프레임만 길게 남습니다.</li>
+<li><strong>스택 트레이스가 이어지지 않습니다</strong>: 로직이 여러 스레드(이벤트 루프)에 걸쳐 콜백으로 실행되므로, 예외가 나도 스택 트레이스에 <strong>내 코드가 거의 안 보이고</strong> Reactor 내부 프레임만 길게 남습니다.</li>
 <li><strong>한 요청이 한 스레드가 아니다</strong>: 단계마다 실행 스레드가 바뀔 수 있어, 스레드 이름 기반 로그, <code>ThreadLocal</code>(MDC 등)이 그대로는 안 이어집니다.</li>
-<li><strong>중단점 디버깅이 잘 안 맞는다</strong>: 선언(구성) 시점과 실제 실행(구독) 시점이 달라, 연산자 람다에 브레이크포인트를 걸어도 흐름을 따라가기 어렵습니다.</li>
+<li><strong>중단점 디버깅이 잘 안 맞습니다</strong>: 선언(구성) 시점과 실제 실행(구독) 시점이 달라, 연산자 람다에 브레이크포인트를 걸어도 흐름을 따라가기 어렵습니다.</li>
 </ul>
 <p><strong>대처</strong></p>
 <ul>

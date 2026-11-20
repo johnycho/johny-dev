@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.b6c42bb3.css">
-<script src="/assets/js/runtime~main.7e0c4be0.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.69aaf53e.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -83,8 +83,8 @@
 <ul>
 <li><strong>락 획득 순서를 통일</strong> — 모든 트랜잭션이 행을 항상 같은 순서로 획득하면 순환(데드락)이 안 생깁니다.</li>
 <li><strong>트랜잭션을 짧게</strong> — 락을 보유한 시간이 짧을수록 충돌이 줄어듭니다.</li>
-<li><strong>인덱스로 락 범위를 좁힌다</strong> — 적절한 인덱스가 없으면 넓은 범위를 잠가 충돌이 커집니다.</li>
-<li><strong>필요 이상 높은 격리를 피한다</strong> — SERIALIZABLE 남용 금지. 특정 갱신만 보호하려면 격리 수준을 올리기보다 <code>SELECT ... FOR UPDATE</code>로 그 행만 잠급니다.</li>
+<li><strong>인덱스로 락 범위를 좁힙니다</strong> — 적절한 인덱스가 없으면 넓은 범위를 잠가 충돌이 커집니다.</li>
+<li><strong>필요 이상 높은 격리를 피합니다</strong> — SERIALIZABLE 남용 금지. 특정 갱신만 보호하려면 격리 수준을 올리기보다 <code>SELECT ... FOR UPDATE</code>로 그 행만 잠급니다.</li>
 <li><strong>데드락은 재시도로 대비</strong> — 데드락은 완전히 없앨 수 없으니, 오류(1213)를 처리해 재시도하는 경로를 구성합니다.</li>
 </ul>
 <p>인덱스 구조 때문에 생기는 데드락은 <a href="/blog/index-deadlock">세컨더리 인덱스와 데드락</a>, REPEATABLE READ의 gap 락 데드락은 <a href="/blog/db-isolation-levels">격리 수준 글</a>에서 설명합니다.</p>

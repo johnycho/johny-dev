@@ -1,45 +1,46 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="480" height="468" viewBox="0 0 480 468" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="486" viewBox="0 0 480 486" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
 <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
-<rect x="0" y="0" width="480" height="468" fill="#FFFFFF"/>
+<rect x="0" y="0" width="480" height="486" fill="#FFFFFF"/>
 <text x="240.0" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">② 검수 — 물리명(논리명), 1:N 관계, 라벨=참조 컬럼</text>
 <rect x="140" y="40" width="200" height="40" rx="4" fill="#EEEEEE" stroke="#999999"/>
 <text x="240.0" y="57" font-size="11.5" fill="#555" text-anchor="middle" font-weight="bold">purchase_order</text>
 <text x="240.0" y="72" font-size="10" fill="#777" text-anchor="middle">발주 헤더 (① 다이어그램)</text>
-<rect x="130" y="130" width="220" height="102" rx="4" fill="#FFFFFF" stroke="#4C7FE0"/>
+<rect x="130" y="130" width="220" height="138" rx="4" fill="#FFFFFF" stroke="#4C7FE0"/>
 <path d="M130,170 V134 Q130,130 134,130 H346 Q350,130 350,134 V170 Z" fill="#EEF3FB" stroke="#4C7FE0"/>
 <text x="240.0" y="147" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">inspection_header</text>
-<text x="240.0" y="162" font-size="10" fill="#555" text-anchor="middle">검수 헤더</text>
+<text x="240.0" y="162" font-size="10" fill="#555" text-anchor="middle">검수 헤더 (발주 상품별 검수 카드)</text>
 <text x="140" y="186" font-size="10.5" fill="#333" text-anchor="start">id(검수번호)</text>
 <text x="340" y="186" font-size="9.5" fill="#B07A00" text-anchor="end" font-weight="bold">PK</text>
 <text x="140" y="204" font-size="10.5" fill="#333" text-anchor="start">purchase_order_code(발주참조)</text>
 <text x="340" y="204" font-size="9.5" fill="#9E3A57" text-anchor="end" font-weight="bold">FK</text>
-<text x="140" y="222" font-size="10.5" fill="#333" text-anchor="start">status(상태)</text>
+<text x="140" y="222" font-size="10.5" fill="#333" text-anchor="start">goods_id(상품)</text>
+<text x="340" y="222" font-size="9.5" fill="#9E3A57" text-anchor="end" font-weight="bold">FK</text>
+<text x="140" y="240" font-size="10.5" fill="#333" text-anchor="start">inspection_qty(검수수량)</text>
+<text x="140" y="258" font-size="10.5" fill="#333" text-anchor="start">status(상태)</text>
 <line x1="240" y1="80" x2="240" y2="129" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <text x="246" y="109.0" font-size="10" fill="#26508F" text-anchor="start">purchase_order_code</text>
 <text x="234" y="93" font-size="10" fill="#777" text-anchor="end" font-weight="bold">1</text>
 <text x="234" y="125" font-size="10" fill="#777" text-anchor="end" font-weight="bold">N</text>
-<rect x="16" y="296" width="224" height="156" rx="4" fill="#FFFFFF" stroke="#4C7FE0"/>
-<path d="M16,336 V300 Q16,296 20,296 H236 Q240,296 240,300 V336 Z" fill="#EEF3FB" stroke="#4C7FE0"/>
-<text x="128.0" y="313" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">inspection_line</text>
-<text x="128.0" y="328" font-size="10" fill="#555" text-anchor="middle">검수 라인</text>
-<text x="26" y="352" font-size="10.5" fill="#333" text-anchor="start">id(식별자)</text>
-<text x="230" y="352" font-size="9.5" fill="#B07A00" text-anchor="end" font-weight="bold">PK</text>
-<text x="26" y="370" font-size="10.5" fill="#333" text-anchor="start">inspection_header_id(검수참조)</text>
-<text x="230" y="370" font-size="9.5" fill="#9E3A57" text-anchor="end" font-weight="bold">FK</text>
-<text x="26" y="388" font-size="10.5" fill="#333" text-anchor="start">goods_id(상품)</text>
-<text x="230" y="388" font-size="9.5" fill="#9E3A57" text-anchor="end" font-weight="bold">FK</text>
-<text x="26" y="406" font-size="10.5" fill="#333" text-anchor="start">normal_qty(정상수량)</text>
-<text x="26" y="424" font-size="10.5" fill="#333" text-anchor="start">defect_qty(불량수량)</text>
-<text x="26" y="442" font-size="10.5" fill="#333" text-anchor="start">owner(귀책)</text>
-<rect x="264" y="296" width="200" height="40" rx="4" fill="#EEEEEE" stroke="#999999"/>
-<text x="364.0" y="313" font-size="11.5" fill="#555" text-anchor="middle" font-weight="bold">receiving_transaction</text>
-<text x="364.0" y="328" font-size="10" fill="#777" text-anchor="middle">입고 라인 (③ 다이어그램)</text>
-<line x1="150" y1="232" x2="150" y2="295" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="144" y="268.0" font-size="10" fill="#26508F" text-anchor="end">inspection_header_id</text>
-<text x="156" y="245" font-size="10" fill="#777" text-anchor="start" font-weight="bold">1</text>
-<text x="156" y="291" font-size="10" fill="#777" text-anchor="start" font-weight="bold">N</text>
-<line x1="330" y1="232" x2="330" y2="295" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="336" y="268.0" font-size="10" fill="#26508F" text-anchor="start">inspection_header_id</text>
-<text x="324" y="245" font-size="10" fill="#777" text-anchor="end" font-weight="bold">1</text>
-<text x="324" y="291" font-size="10" fill="#777" text-anchor="end" font-weight="bold">N</text>
+<rect x="16" y="332" width="224" height="138" rx="4" fill="#FFFFFF" stroke="#4C7FE0"/>
+<path d="M16,372 V336 Q16,332 20,332 H236 Q240,332 240,336 V372 Z" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="128.0" y="349" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">inspection_line</text>
+<text x="128.0" y="364" font-size="10" fill="#555" text-anchor="middle">검수 라인 (불량 같은 검수 이슈)</text>
+<text x="26" y="388" font-size="10.5" fill="#333" text-anchor="start">id(식별자)</text>
+<text x="230" y="388" font-size="9.5" fill="#B07A00" text-anchor="end" font-weight="bold">PK</text>
+<text x="26" y="406" font-size="10.5" fill="#333" text-anchor="start">inspection_header_id(검수참조)</text>
+<text x="230" y="406" font-size="9.5" fill="#9E3A57" text-anchor="end" font-weight="bold">FK</text>
+<text x="26" y="424" font-size="10.5" fill="#333" text-anchor="start">issue_type(이슈 유형)</text>
+<text x="26" y="442" font-size="10.5" fill="#333" text-anchor="start">defect_qty(불량수량)</text>
+<text x="26" y="460" font-size="10.5" fill="#333" text-anchor="start">owner(귀책)</text>
+<rect x="264" y="332" width="200" height="40" rx="4" fill="#EEEEEE" stroke="#999999"/>
+<text x="364.0" y="349" font-size="11.5" fill="#555" text-anchor="middle" font-weight="bold">receiving_transaction</text>
+<text x="364.0" y="364" font-size="10" fill="#777" text-anchor="middle">입고 라인 (③ 다이어그램)</text>
+<line x1="150" y1="268" x2="150" y2="331" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="144" y="304.0" font-size="10" fill="#26508F" text-anchor="end">inspection_header_id</text>
+<text x="156" y="281" font-size="10" fill="#777" text-anchor="start" font-weight="bold">1</text>
+<text x="156" y="327" font-size="10" fill="#777" text-anchor="start" font-weight="bold">N</text>
+<line x1="330" y1="268" x2="330" y2="331" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="336" y="304.0" font-size="10" fill="#26508F" text-anchor="start">inspection_header_id</text>
+<text x="324" y="281" font-size="10" fill="#777" text-anchor="end" font-weight="bold">1</text>
+<text x="324" y="327" font-size="10" fill="#777" text-anchor="end" font-weight="bold">N</text>
 </svg>

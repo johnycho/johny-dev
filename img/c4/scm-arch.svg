@@ -5,39 +5,45 @@
 <rect x="140" y="40" width="160" height="46" rx="6" fill="#F7F7F7" stroke="#999999"/>
 <text x="220" y="59" font-size="12" fill="#333" text-anchor="middle" font-weight="bold">공급사</text>
 <text x="220" y="76" font-size="10.5" fill="#555" text-anchor="middle">상품을 납품하는 협력사</text>
-<line x1="220" y1="86" x2="220" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="228" y="112" font-size="10.5" fill="#333" text-anchor="start">발주, 납품</text>
 <rect x="12" y="98" width="416" height="450" rx="8" fill="#FAFAFA" stroke="#999999" stroke-dasharray="4 3"/>
 <text x="24" y="116" font-size="11" fill="#333" text-anchor="start" font-weight="bold">SCM</text>
-<rect x="100" y="140" width="240" height="66" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
-<text x="220.0" y="160" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">구매, 정산 시스템</text>
-<text x="220.0" y="176" font-size="10" fill="#777" text-anchor="middle">[발주, 입고확정, 정산]</text>
-<text x="220.0" y="193" font-size="10.5" fill="#333" text-anchor="middle">공급사와 돈, 계약 담당</text>
-<line x1="180" y1="206" x2="180" y2="285" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="172" y="240" font-size="10.5" fill="#333" text-anchor="end">발주 확정 이벤트</text>
-<text x="172" y="254" font-size="10" fill="#777" text-anchor="end">Kafka (비동기)</text>
-<line x1="260" y1="286" x2="260" y2="207" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="268" y="240" font-size="10.5" fill="#333" text-anchor="start">입고 확정 결과</text>
-<text x="268" y="254" font-size="10" fill="#777" text-anchor="start">Kafka (비동기)</text>
-<rect x="90" y="286" width="260" height="80" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<line x1="170" y1="86" x2="116" y2="139" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="136" y="91" font-size="10.5" fill="#333" text-anchor="end">발주, 입고 예약</text>
+<line x1="324" y1="139" x2="270" y2="87" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="304" y="91" font-size="10.5" fill="#333" text-anchor="start">대금 지급</text>
+<rect x="26" y="140" width="180" height="66" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="116.0" y="160" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">구매 시스템</text>
+<text x="116.0" y="176" font-size="10" fill="#777" text-anchor="middle">[파트너 포털]</text>
+<text x="116.0" y="193" font-size="10.5" fill="#333" text-anchor="middle">발주, 공급사 정보, 입고 예약</text>
+<rect x="234" y="140" width="180" height="66" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="324.0" y="160" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">정산 시스템</text>
+<text x="324.0" y="176" font-size="10" fill="#777" text-anchor="middle">[정산]</text>
+<text x="324.0" y="193" font-size="10.5" fill="#333" text-anchor="middle">받은 수량으로 대금 계산</text>
+<line x1="116" y1="206" x2="116" y2="285" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="108" y="236" font-size="10.5" fill="#333" text-anchor="end">발주,</text>
+<text x="108" y="250" font-size="10.5" fill="#333" text-anchor="end">공급사 정보</text>
+<text x="108" y="264" font-size="10" fill="#777" text-anchor="end">Kafka (비동기)</text>
+<line x1="324" y1="286" x2="324" y2="207" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="332" y="236" font-size="10.5" fill="#333" text-anchor="start">입하 결과,</text>
+<text x="332" y="250" font-size="10.5" fill="#333" text-anchor="start">폐기, 회송 결과</text>
+<text x="332" y="264" font-size="10" fill="#777" text-anchor="start">Kafka (비동기)</text>
+<rect x="60" y="286" width="320" height="132" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
 <text x="220.0" y="306" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">입고 관제 시스템</text>
 <text x="220.0" y="322" font-size="10" fill="#777" text-anchor="middle">[입고 오케스트레이션]</text>
-<text x="220.0" y="339" font-size="10.5" fill="#333" text-anchor="middle">검수, 입고예약(Capacity), 적치지시</text>
+<text x="220.0" y="339" font-size="10.5" fill="#333" text-anchor="middle">입고예약(Capacity), 검수, 적치 요청</text>
 <text x="220.0" y="353" font-size="10.5" fill="#333" text-anchor="middle">= 논리 입고</text>
-<line x1="120" y1="366" x2="120" y2="445" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="128" y="392" font-size="10.5" fill="#333" text-anchor="start">적치 지시,</text>
-<text x="128" y="406" font-size="10.5" fill="#333" text-anchor="start">재고 확인</text>
-<text x="128" y="420" font-size="10" fill="#777" text-anchor="start">REST (동기)</text>
-<line x1="320" y1="366" x2="320" y2="445" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
-<text x="312" y="399" font-size="10.5" fill="#333" text-anchor="end">불량품</text>
-<text x="312" y="413" font-size="10.5" fill="#333" text-anchor="end">반품/회송/폐기</text>
-<rect x="26" y="446" width="190" height="88" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
-<text x="121.0" y="466" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">창고 관리 시스템 (WMS)</text>
-<text x="121.0" y="482" font-size="10" fill="#777" text-anchor="middle">[물리 재고]</text>
-<text x="121.0" y="499" font-size="10.5" fill="#333" text-anchor="middle">실제 창고 칸, 수량, 로트</text>
-<text x="121.0" y="513" font-size="10.5" fill="#333" text-anchor="middle">= 물리 입고</text>
-<rect x="226" y="446" width="190" height="88" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
-<text x="321.0" y="466" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">반품, 정리 시스템</text>
-<text x="321.0" y="482" font-size="10" fill="#777" text-anchor="middle">[반품, 회송, 폐기]</text>
-<text x="321.0" y="499" font-size="10.5" fill="#333" text-anchor="middle">불량품 처리, 재고 실사</text>
+<rect x="74" y="364" width="140" height="42" rx="4" fill="#FFFFFF" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="144.0" y="381" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">반품, 회송, 폐기 모듈</text>
+<text x="144.0" y="397" font-size="10" fill="#555" text-anchor="middle">불량품 처리</text>
+<rect x="226" y="364" width="140" height="42" rx="4" fill="#FFFFFF" stroke="#4C7FE0" stroke-dasharray="4 3"/>
+<text x="296.0" y="381" font-size="10.5" fill="#26508F" text-anchor="middle" font-weight="bold">재고 실사 모듈</text>
+<text x="296.0" y="397" font-size="10" fill="#555" text-anchor="middle">재고 수량 점검</text>
+<line x1="220" y1="418" x2="220" y2="455" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="228" y="434" font-size="10.5" fill="#333" text-anchor="start">적치, 재고 조정 요청</text>
+<text x="228" y="448" font-size="10" fill="#777" text-anchor="start">REST (동기)</text>
+<rect x="110" y="456" width="220" height="80" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="220.0" y="476" font-size="12" fill="#26508F" text-anchor="middle" font-weight="bold">재고 관리 시스템</text>
+<text x="220.0" y="492" font-size="10" fill="#777" text-anchor="middle">[물리 재고]</text>
+<text x="220.0" y="509" font-size="10.5" fill="#333" text-anchor="middle">실제 창고 칸, 수량, 로트</text>
+<text x="220.0" y="523" font-size="10.5" fill="#333" text-anchor="middle">= 물리 입고</text>
 </svg>

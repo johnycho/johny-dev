@@ -14,7 +14,7 @@
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"조니의 개발 블로그","alternateName":["조니 블로그","조니 개발블로그","조니의 개발블로그","조니 개발 블로그","조니 기술블로그","Johny Dev","johny-dev"],"url":"https://johnycho.dev/","inLanguage":"ko","publisher":{"@type":"Person","name":"johnycho","url":"https://johnycho.dev/about"},"potentialAction":{"@type":"SearchAction","target":"https://johnycho.dev/search?q={search_term_string}","query-input":"required name=search_term_string"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"johnycho","url":"https://johnycho.dev/about","image":"https://github.com/johnycho.png","sameAs":["https://github.com/johnycho"],"jobTitle":"백엔드 개발자"}</script>
 <script src="https://johny-dev.disqus.com/count.js" async id="dsq-count-scr"></script><link rel="stylesheet" href="/assets/css/styles.b6c42bb3.css">
-<script src="/assets/js/runtime~main.7e0c4be0.js" defer="defer"></script>
+<script src="/assets/js/runtime~main.69aaf53e.js" defer="defer"></script>
 <script src="/assets/js/main.e7991821.js" defer="defer"></script>
 </head>
 <body class="navigation-with-keyboard">
@@ -158,7 +158,7 @@
 <p><strong>분석</strong> — <code>type=range</code>, <code>key=idx_created_at</code>로 인덱스는 사용했지만 <code>rows≈193만</code>입니다. 범위에 든 행이 테이블의 40%라, 그 190만 건마다 <code>SELECT *</code>로 <strong>더블 룩업</strong>(§3)까지 발생합니다. 매칭 행이 조금만 더 많아지면 옵티마이저는 아예 풀스캔을 선택합니다 — <strong>range라고 다 빠른 게 아니라, <code>rows</code>(실제 읽는 양)를 함께 봐야</strong> 합니다.</p>
 <p>대응은 &quot;읽어야 할 범위 자체를 줄이는&quot; 방향입니다.</p>
 <ul>
-<li><strong>범위를 줄인다</strong> — 화면에 20건만 필요하면 6개월 전체 대신 <code>LIMIT</code> + <strong>키셋 페이지네이션</strong>(마지막 값 기준 <code>created_at &lt; ?</code>)으로 매번 소량만 읽습니다.</li>
+<li><strong>범위를 줄입니다</strong> — 화면에 20건만 필요하면 6개월 전체 대신 <code>LIMIT</code> + <strong>키셋 페이지네이션</strong>(마지막 값 기준 <code>created_at &lt; ?</code>)으로 매번 소량만 읽습니다.</li>
 <li><strong>값이 하나로 정해지는 조건(<code>=</code>)을 인덱스 앞에</strong> — 범위 조건은 대개 <code>=</code> 조건과 함께 옵니다. <code>user_id = ? AND created_at &gt;= ?</code>라면 <code>INDEX(user_id, created_at)</code>로 <strong>먼저 한 유저의 행만 남긴 뒤</strong> 그 안에서 범위를 읽어, 190만 → 수백 건으로 줄입니다(§6).</li>
 <li><strong>커버링으로 더블 룩업 제거</strong> — 넓은 범위가 불가피하면 필요한 컬럼만 뽑아 <code>INDEX(created_at, 필요컬럼)</code>로 리프만 읽습니다(<code>SELECT *</code>를 피함).</li>
 <li><strong>넓은 범위 자체가 목적(집계)이면</strong> 실시간 인덱스 조회 대신 <strong>사전 집계, 요약 테이블</strong>을 만들어 사용합니다.</li>
