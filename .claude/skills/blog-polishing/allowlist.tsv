@@ -108,5 +108,5 @@ blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	ea
 blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml
 blog/2026-08-21-scaling-architecture-step-by-step.mdx	두고	ee9e2cbc6fd1	"자원을 두고 경쟁"은 대상(~을 놓고)을 뜻하는 관용 표현으로 배치 의미 아님	회가 실서비스 쿼리와 자원을 두고 경쟁합니다.
 blog/2026-09-03-ticketing-system-architecture.mdx	고른	35d46703dadc	속도를 고르게 한다(평탄화) 의미로 규칙 예외, 선택 의미 아님	k>대기열이 "입장 속도"를 고른다면, 메시지 큐는 "DB
-blog/2026-09-12-scm-system-explained.mdx	그림형식(→손수 SVG)	5d454a0809ae	SCM 글: 우유 100박스 흐름과 창고 구조를 anatomy 인터랙티브 등각 모형으로 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="scm-milk-flow" title="1층 입차와 검수, 2층 적치, 
-blog/2026-09-12-scm-system-explained.mdx	그림형식(→손수 SVG)	dfaadf6e64f4	SCM 글: 우유 100박스 흐름과 창고 구조를 anatomy 인터랙티브 등각 모형으로 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="scm-warehouse" title="2층 냉동존과 냉장존, 3층 상온
+blog/2026-09-12-scm-system-explained.mdx	그림형식(→손수 SVG)	b94b556eb2b8	SCM 글: 우유 100박스 흐름과 창고 구조를 anatomy 인터랙티브 등각 모형으로 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="scm-milk-flow" title="1층 입차와 검수, 2층 적치, 
+blog/2026-09-12-scm-system-explained.mdx	그림형식(→손수 SVG)	864f80b1e449	SCM 글: 우유 100박스 흐름과 창고 구조를 anatomy 인터랙티브 등각 모형으로 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="scm-warehouse" title="2층 냉장존, 3층 냉동존, 4층
