@@ -5,10 +5,10 @@
 <circle cx="220" cy="44" r="7" fill="#333"/>
 <line x1="220" y1="51" x2="220" y2="59" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="30" y="60" width="380" height="30" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
-<text x="220.0" y="79.0" font-size="11" fill="#333" text-anchor="middle">① 발주 — 공급사에 "우유 100박스" 주문</text>
+<text x="220.0" y="79.0" font-size="11" fill="#333" text-anchor="middle">① 입고 예약 — 공급사가 그날 창고 수용량(Capacity) 예약</text>
 <line x1="220" y1="90" x2="220" y2="105" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="30" y="106" width="380" height="30" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
-<text x="220.0" y="125.0" font-size="11" fill="#333" text-anchor="middle">② 입고 예약 — 그날 창고 수용량(Capacity) 확인, 예약</text>
+<text x="220.0" y="125.0" font-size="11" fill="#333" text-anchor="middle">② 발주 — 예약 정보와 함께 "우유 100박스" 주문</text>
 <line x1="220" y1="136" x2="220" y2="151" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="30" y="152" width="380" height="30" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
 <text x="220.0" y="171.0" font-size="11" fill="#333" text-anchor="middle">③ 도착 — 트럭이 물류센터 도착</text>
@@ -24,10 +24,10 @@
 <polyline points="280,282 330,282 330,335" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <text x="338" y="312" font-size="10.5" fill="#9E3A57" text-anchor="start" font-weight="bold">불량 5박스</text>
 <rect x="22" y="336" width="196" height="30" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
-<text x="120.0" y="355.0" font-size="11" fill="#333" text-anchor="middle">⑤ 적치 지시 (논리 입고)</text>
+<text x="120.0" y="355.0" font-size="11" fill="#333" text-anchor="middle">⑤ 적치 요청 (논리 입고)</text>
 <line x1="120" y1="366" x2="120" y2="381" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="22" y="382" width="196" height="30" rx="6" fill="#E9F2E9" stroke="#8FBF8F"/>
-<text x="120.0" y="401.0" font-size="11" fill="#333" text-anchor="middle">⑥ 창고 물리재고 생성 (WMS)</text>
+<text x="120.0" y="401.0" font-size="11" fill="#333" text-anchor="middle">⑥ 물리재고 생성 (재고 관리)</text>
 <rect x="246" y="336" width="168" height="30" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
 <text x="330.0" y="355.0" font-size="11" fill="#333" text-anchor="middle">반품 / 회송 / 폐기</text>
 <polyline points="120,412 120,438 212,438" fill="none" stroke="#888" stroke-width="1.2"/>
@@ -38,7 +38,7 @@
 <text x="220.0" y="481.0" font-size="11" fill="#333" text-anchor="middle">⑦ 입고 확정 — 실입고 95박스 통보</text>
 <line x1="220" y1="492" x2="220" y2="507" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <rect x="30" y="508" width="380" height="30" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
-<text x="220.0" y="527.0" font-size="11" fill="#333" text-anchor="middle">⑧ 정산 — 실입고금액 − 위약금 − 반품 + 장려금</text>
+<text x="220.0" y="527.0" font-size="11" fill="#333" text-anchor="middle">⑧ 정산 — 실입고금액 + 성장장려금 − 미입고위약금 − 반품</text>
 <line x1="220" y1="538" x2="220" y2="556" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
 <circle cx="220" cy="566" r="9" fill="#FFFFFF" stroke="#333" stroke-width="1.5"/>
 <circle cx="220" cy="566" r="5" fill="#333"/>
