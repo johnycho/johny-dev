@@ -1,5 +1,6 @@
 // 물류센터 입고 흐름: 우유 100박스, 층별 분해 단면 (anatomy Hero)
-// node tools/anatomy/scm-milk-flow/build.mjs [--light]
+// node tools/anatomy/scm-milk-flow/build.mjs [--light] [--warehouse]
+// --warehouse: 같은 센터 모형으로 그림 2(창고 > 존 > 로케이션 > 로트, 유통기한이 이른 로트부터 출고)를 만든다 → static/diagrams/scm-warehouse(-light).html
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
@@ -14,7 +15,8 @@ Object.assign(globalThis, k);
 
 
 // ---- 사람이 읽는 문구 (한 곳에 모음) ----
-const TEXT = {
+const WAREHOUSE = process.argv.includes("--warehouse");
+const TEXT_FLOW = {
   fig: "그림 1",
   title: "물류센터 입고와 출고 흐름",
   hint: "클릭하면 정지, → 다음 단계",
@@ -47,6 +49,8 @@ const TEXT = {
     ["indigo", "냉장존(남색): 2층"],
     ["teal", "냉동존(청록): 3층, 영하 보관"],
     ["kurly", "작업자(보라): 단계마다 일하는 사람"],
+    ["safety", "지게차와 안전선(노랑): 팔레트를 나르는 장비와 보행 구역 구분선"],
+    ["wrap", "랩 팔레트(흰색): 랩으로 감싼 짐, 핸드자키로 옮김"],
     ["truck", "트럭: 흰색은 입고(공급사), 보라는 출고"],
     ["lit", "흰 테두리 막대: 불량만 반품 구역으로 보내는 분기 게이트"],
     ["glow", "빛나는 테두리: 지금 단계의 구역"],
@@ -54,6 +58,52 @@ const TEXT = {
   caption:
     "정산은 주문 수량(100)이 아니라 검수에서 받은 수량(95)을 기준으로 합니다. 출고는 유통기한이 이른 10/22 로트부터 피킹합니다. 층 배치와 수량은 예시입니다.",
 };
+// 그림 2: 그림 1과 같은 센터에서 위치 계층과 먼저 나갈 로트의 출고만 따라간다
+const TEXT_W = {
+  fig: "그림 2",
+  title: "창고 위치 계층",
+  hint: TEXT_FLOW.hint,
+  aria: "창고 위치 계층. 클릭하거나 스페이스를 누르면 멈추고, 오른쪽 화살표로 다음 단계로 넘어갑니다.",
+  svgLabel: "그림 1과 같은 4층 물류센터 모형입니다. 2층은 냉장존, 3층은 냉동존, 4층은 상온존으로 쓰고, 냉장존의 로케이션 A-01에 로트별로 보관합니다. 유통기한이 이른 10/22 로트를 먼저 출고해 1층에서 포장하고 출고 트럭에 실어 내보냅니다.",
+  page: "창고 위치 계층",
+  display: TEXT_FLOW.display,
+  readout: {
+    v_house: "창고 전체, 2층 냉장, 3층 냉동, 4층 상온",
+    v_chill: "2층 냉장존",
+    v_freeze: "3층 냉동존, 영하 보관",
+    v_ambient: "4층 상온존",
+    v_cell: "2층 냉장존, 로케이션 A-01",
+    v_lot: "2층 A-01, 10/22 로트 유통기한 임박",
+    pick: "2층 A-01, 10/22 로트 먼저 출고 (재고 {from} → {stock})",
+    down: "반송기, {order}박스를 1층으로",
+    pack: "1층 포장대, 포장 {n}/{order}",
+    load: "1층 2번 도크, 출고 트럭 상차 {n}/{order}",
+    exit: "1층 정문, 출고 트럭 출차",
+  },
+  keys: [
+    ["indigo", "냉장존(남색): 2층"],
+    ["teal", "냉동존(청록): 3층, 영하 보관"],
+    ["orange", "상온존(주황): 4층"],
+    ["green", "로케이션과 로트(초록): A-01 같은 랙의 칸, 칸 안의 상자가 로트"],
+    ["pink", "먼저 나갈 로트(분홍): 유통기한이 이른 10/22 로트"],
+    ["brown", "출고(갈색): 피킹부터 상차까지의 경로"],
+    ["kurly", "작업자(보라): 운반, 피킹, 포장, 상차"],
+    ["safety", "지게차와 안전선(노랑): 팔레트를 나르는 장비와 보행 구역 구분선"],
+    ["wrap", "랩 팔레트(흰색): 랩으로 감싼 짐, 핸드자키로 옮김"],
+    ["kurlytruck", "출고 트럭(보라): 포장한 상품을 싣고 나감"],
+    ["glow", "빛나는 테두리: 지금 단계의 구역"],
+  ],
+  caption: "로트를 나눠 두어야 유통기한이 이른 상품부터 출고할 수 있습니다. 층 배치와 수량은 예시입니다.",
+  // 계층 표시줄: 꺼진 칸은 일반 이름, 켜진 칸은 지금 가리키는 대상
+  crumbs: {
+    generic: ["창고", "존", "로케이션", "로트"],
+    house: "창고",
+    zone: { chill: "냉장존", freeze: "냉동존", ambient: "상온존" },
+    cell: "로케이션 A-01",
+    lot: "로트 10/22",
+  },
+};
+const TEXT = WAREHOUSE ? TEXT_W : TEXT_FLOW;
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..", "..", "..");
@@ -75,6 +125,7 @@ const HEIGHT = 720;
 
 // ---- 층 (z) ----
 const F = 6; // 1층 바닥 윗면 (도크 높이)
+const FLOOR1 = F;
 const SLAB = 5;
 const GAP = 96;
 const FL2 = F + GAP; // 2층 바닥 윗면
@@ -169,12 +220,22 @@ const PHASES = [
   ["store", 3, [1, 2], ["chill", "return", "lift"]],
   ["settle", 3.5, [4], ["settle"]],
   ["order", 2.5, [4], ["order"]],
-  ["pick", 4, [2], ["pick"]],
+  // 그림 2에서만 쓰는 단계: 창고 → 존 → 로케이션 → 로트 (그림 1에서는 건너뜀)
+  ["v_house", 3, [1, 2, 3, 4], []],
+  ["v_chill", 2.5, [2], ["chill"]],
+  ["v_freeze", 2.5, [3], ["freeze"]],
+  ["v_ambient", 2.5, [4], ["ambient"]],
+  ["v_cell", 2.8, [2], ["cell"]],
+  ["v_lot", 3, [2], ["cell", "lot"]],
+  ["pick", 4, [2], WAREHOUSE ? ["pick", "lot"] : ["pick"]],
   ["down", 3, [1, 2], ["lift"]],
   ["pack", 6.8, [1], ["pack"]],
   ["load", 7, [1], ["outdock"]],
   ["exit", 5, [1], ["gate", "outdock"]],
 ];
+
+// 그림마다 건너뛰는 단계: 그림 1은 위치 계층 단계, 그림 2는 입고부터 주문까지
+const SKIP = PHASES.map((p) => p[0]).filter((n) => (WAREHOUSE ? !n.startsWith("v_") && !["pick", "down", "pack", "load", "exit"].includes(n) : n.startsWith("v_")));
 
 const P = k.fitProjection(
   [...k.boxCorners(PLATE, -15, 0), [-90, 34, 30], [-28, 80, 30], [0, 0, FL4 + 26], [170, 110, FL4 + 20], [196, 31, FL4 + 30], [170, 0, FL4 + 20]],
@@ -190,6 +251,8 @@ const L = (d, style) => k.lineSvg(d, style);
 const D = (points, style) => k.dotsSvg(points, style);
 const C = (color, html) => `<g class="c-${color}">${html}</g>`;
 const Z = (zone, html) => `<g data-zone="${zone}">${html}</g>`;
+// 그림 2에서는 입고 설비(입고 트럭, 하차, 검수, 반품, 정산 계기)를 숨겨 보관 위치와 출고만 남긴다
+const HIDE = (html) => (WAREHOUSE ? `<g data-whide>${html}</g>` : html);
 const FLR = (floors, html) => `<g class="mf-floor" data-floor="${floors}">${html}</g>`;
 const depth = (x, y, z = 0) => k.depthOf([x, y, z], P);
 const byDepth = (list, f) => [...list].sort((a, b) => f(a) - f(b));
@@ -234,15 +297,36 @@ const WORKERS = [
   { id: 4, x: 40, y: 25, z: FL4, face: -Math.PI / 2, hat: "none", sit: true, zone: "settle" },
   { id: 5, x: 130, y: 64, z: FL2, face: -0.75, hat: "hard", zone: "pick" },
   { id: 6, x: 12, y: 23.6, z: F, face: Math.PI / 2, hat: "cap", zone: "pack outdock" },
+  { id: 7, x: 20, y: 104, z: F, face: 0, hat: "hard", zone: "unload" },
+  { id: 8, x: 80, y: 53, z: F, face: -Math.PI / 2, hat: "cap", zone: "inspect" },
+  { id: 9, x: 40, y: 90, z: FL2, face: 0, hat: "hard", zone: "chill" },
+  { id: 10, x: 40, y: 94, z: FL3, face: 0, hat: "hard", zone: "freeze" },
+  { id: 11, x: 150, y: 71, z: FL3, face: -Math.PI / 2, hat: "cap", zone: "freeze" },
+  { id: 12, x: 100, y: 92, z: FL4, face: 0, hat: "cap", zone: "ambient" },
+  { id: 13, x: 58, y: 50, z: FL4, face: Math.PI, hat: "none", zone: "settle" },
+  { id: 14, x: 64, y: 98, z: F, face: 0, hat: "hard", zone: "unload", jack: true },
 ];
 const REST_POSE = { r: [0.12, 0.15], l: [0.12, 0.15], lean: 0 };
-// 걸어 다니는 작업자: 두 지점 사이를 통로 위로 왕복 (pause: 각 지점에서 일하는 시간, carry: 그 구간에 손에 든 상자)
+// 층마다 돌아다니는 지게차: 통로를 따라 돌며 한 지점에서 팔레트를 들어 올리고 다른 지점에 내려놓는다
+// (carry[i]가 있는 구간 = 팔레트를 실은 구간)
+const FLOOR_FORKS = [
+  { part: "fork2", base: FL2, load: "c-indigo", phase: 0, speed: 9, pts: [[34, 60], [98, 60], [90, 71], [42, 73]], pause: [1.8, 1.8, 0, 0], carry: ["indigo", "", "", ""] },
+  { part: "fork3", base: FL3, load: "c-teal", phase: 4.1, speed: 9, pts: [[34, 74], [116, 74], [108, 85], [44, 86]], pause: [1.8, 1.8, 0, 0], carry: ["teal", "", "", ""] },
+];
+// 걸어 다니는 작업자: 여러 지점을 도는 경로 (pause[i]: 그 지점에서 일하는 시간, 0이면 돌아서 지나감 / face[i]: 일할 때 보는 방향 / carry[i]: i 다음 구간에 든 물건)
+const PI = Math.PI;
 const WALKS = {
-  0: { pts: [[-113, 84], [-113, 76]], speed: 4, pause: [3.2, 1.2], face: [0, 0], carry: ["", ""] },
-  2: { pts: [[120, 52], [116, 70]], speed: 8, pause: [1.0, 1.0], face: [-1.6, Math.PI], carry: ["pink", ""] },
-  3: { pts: [[162, 60], [136, 60]], speed: 8, pause: [1.0, 1.3], face: [-0.3, -1.3], carry: ["green", ""] },
-  5: { pts: [[160, 67], [132, 67]], speed: 7, pause: [1.0, 1.4], face: [-0.3, -1.4], carry: ["", "brown"], cart: true },
-  6: { pts: [[12, 23.6], [30, 23.6]], speed: 7, pause: [1.4, 1.0], face: [Math.PI / 2, -1.1], carry: ["", "brown"] },
+  0: { pts: [[-113, 84], [-108, 78], [-116, 74], [-119, 80]], speed: 4, pause: [3.2, 0, 1.2, 0], face: [0, null, 0, null], carry: [] },
+  2: { pts: [[120, 52], [111, 60], [116, 70], [125, 62]], speed: 8, pause: [1.0, 0, 1.0, 0], face: [-1.6, null, PI, null], carry: ["pink", "pink", "", ""] },
+  3: { pts: [[162, 60], [149, 57], [136, 60], [149, 63]], speed: 8, pause: [1.0, 0, 1.3, 0], face: [-0.3, null, -1.3, null], carry: ["green", "green", "", ""] },
+  5: { pts: [[160, 68], [146, 74], [132, 68], [146, 66]], speed: 7, pause: [1.0, 0, 1.4, 0], carry: ["", "", "brown", "brown"], cart: true },
+  6: { pts: [[12, 23.6], [22, 27.5], [30, 23.6], [21, 20.5]], speed: 7, pause: [1.4, 0, 1.0, 0], face: [PI / 2, null, -1.1, null], carry: ["", "", "brown", "brown"] },
+  7: { pts: [[18, 106], [36, 108], [56, 106], [38, 104]], speed: 7, pause: [1.2, 0, 1.0, 0], face: [PI, null, -PI / 2, null], carry: ["plain", "plain", "", ""] },
+  9: { pts: [[36, 90], [74, 98], [112, 90], [74, 86]], speed: 8, pause: [1.4, 0, 1.2, 0], carry: [], cart: true },
+  10: { pts: [[36, 96], [92, 103], [150, 96], [92, 93]], speed: 8, pause: [1.2, 0, 1.6, 0], carry: [], cart: true },
+  12: { pts: [[100, 92], [128, 99], [158, 92], [128, 87]], speed: 7, pause: [1.3, 0, 1.3, 0], face: [-PI / 2, null, -PI / 2, null], carry: ["orange", "orange", "", ""] },
+  13: { pts: [[58, 50], [74, 44], [68, 38], [52, 42]], speed: 5, pause: [2.6, 0, 2.0, 0], face: [PI, null, -PI / 2, null], carry: ["clip", "clip", "", ""] },
+  14: { pts: [[64, 98], [78, 104], [80, 74], [66, 68]], speed: 6, pause: [1.6, 0, 1.6, 0], carry: ["wrap", "wrap", "", ""], cart: true },
 };
 // 작업자 한 명: 귀여운 2.5~3등신 캐릭터 (큰 둥근 머리, 짧고 둥근 몸통과 팔다리)
 function personSvg(w, pose) {
@@ -280,7 +364,7 @@ function personSvg(w, pose) {
     const sh = A(lean * 0.5, side * 1.7, shZ - 0.5);
     let el = add3(sh, dirOf(a1, 0.3, side), 1.5);
     let hand = add3(el, dirOf(a1 + a2, 0.1, side), 1.4);
-    if (pose.cart && pose.grip) {
+    if ((pose.cart || pose.hold) && pose.grip) {
       // 두 손을 카트 손잡이에 고정 (팔꿈치는 어깨와 손잡이 사이에서 살짝 아래, 바깥)
       hand = [w.x + fx * 1.75 + lx * side * 1.05, w.y + fy * 1.75 + ly * side * 1.05, w.z + 3.9];
       el = [(sh[0] + hand[0]) / 2 + lx * side * 0.35, (sh[1] + hand[1]) / 2 + ly * side * 0.35, (sh[2] + hand[2]) / 2 - 0.35];
@@ -334,8 +418,20 @@ function personSvg(w, pose) {
     const ring = [R2(-1.7, -1.4), R2(1.7, -1.4), R2(1.7, 1.4), R2(-1.7, 1.4)];
     const wheels = [[-1.1, -1.1], [1.1, -1.1], [1.1, 1.1], [-1.1, 1.1]].map(([f, l]) => { const q = R2(f, l); return { d: depthOf([q[0], q[1], 0], P), svg: wheelSvg(q[0], q[1], w.z + 0.6, fx, fy, lx, ly, 0.6, 0.4) }; }).sort((a, b) => a.d - b.d);
     const hb = [A(1.75, -1.05, 3.9), A(1.75, 1.05, 3.9)], hp = [A(1.75, -1.05, 1.7), A(1.75, 1.05, 1.7)];
-    cartSvg = '<g class="c-steel">' + wheels.map((x) => x.svg).join("") + solidSvg(extrude(ring, w.z + 1.2, 0.5, P), { tone: "hi", crease: "lo" }) + limb([hp[0], hb[0], hb[1], hp[1]], 0.35, "c-steel") + "</g>";
-    const nLoad = pose.cartLoad === true ? 1 : pose.cartLoad || 0;
+    if (w.jack) {
+      // 핸드자키: 손잡이(티러) → 낮은 포크 두 갈래 → 그 위 팔레트와 랩 감은 짐
+      const J = (f, l, z) => [w.x + fx * f + lx * l, w.y + fy * f + ly * l, w.z + z];
+      const JR = (f0, f1, l0, l1) => [J(f0, l0, 0).slice(0, 2), J(f1, l0, 0).slice(0, 2), J(f1, l1, 0).slice(0, 2), J(f0, l1, 0).slice(0, 2)];
+      let js = limb([J(1.75, 0, 3.9), J(2.9, 0, 1.2)], 0.4, "c-steel") + limb([J(1.75, -0.7, 3.9), J(1.75, 0.7, 3.9)], 0.35, "c-steel");
+      js += '<g class="c-steel">' + solidSvg(extrude(JR(2.6, 3.8, -2.2, 2.2), w.z + 0.2, 1.8, P), { tone: "mid", crease: "lo" }) + "</g>";
+      for (const l of [-2.6, 2.6]) js += '<g class="c-steel">' + solidSvg(extrude(JR(3.8, 15, l - 0.8, l + 0.8), w.z + 0.2, 0.7, P), { tone: "mid", crease: "lo" }) + "</g>";
+      if (pose.cartLoad) {
+        js += '<g class="c-gray">' + solidSvg(extrude(JR(3.6, 15.4, -5.6, 5.6), w.z + 0.9, 1.3, P, { bevel: 0.1 }), { tone: "lo", crease: "lo" }) + "</g>";
+        js += '<g class="c-wrap">' + solidSvg(extrude(JR(4, 15, -5.2, 5.2), w.z + 2.2, 7, P, { bevel: 0.4 }), { tone: "hi", crease: "lo" }) + "</g>";
+      }
+      cartSvg = js;
+    } else cartSvg = '<g class="c-steel">' + wheels.map((x) => x.svg).join("") + solidSvg(extrude(ring, w.z + 1.2, 0.5, P), { tone: "hi", crease: "lo" }) + limb([hp[0], hb[0], hb[1], hp[1]], 0.35, "c-steel") + "</g>";
+    const nLoad = w.jack ? 0 : pose.cartLoad === true ? 1 : pose.cartLoad || 0;
     for (let i = 0; i < Math.min(2, nLoad); i++) cartSvg += '<g class="c-brown">' + solidSvg(slabOf({ x: cc[0] - 1, y: cc[1] - 1, w: 2, d: 2, r: 0.2 }, w.z + 1.7 + i * 1.6, 1.5, P, 2), { tone: "hi", crease: "lo" }) + "</g>";
   }
   const cartFront = fx * tvx + fy * tvy > 0;
@@ -371,9 +467,9 @@ function ground() {
 }
 function floor1Zones() {
   return [
-    Z("return", tint({ x: 84, y: 52, w: 44, d: 56, r: 1 }, F, "pink")),
-    L(k.planOutline({ x: 16, y: 64, w: 42, d: 44, r: 1 }, F, P, 2), { tone: "mid" }),
-    L(SPOTS.map(([x, y]) => k.planOutline(planAt(x, y, 18, 18, 0.6), F, P, 2)).join(""), { tone: "faint" }),
+    HIDE(Z("return", tint({ x: 84, y: 52, w: 44, d: 56, r: 1 }, F, "pink"))),
+    HIDE(L(k.planOutline({ x: 16, y: 64, w: 42, d: 44, r: 1 }, F, P, 2), { tone: "mid" })),
+    HIDE(L(SPOTS.map(([x, y]) => k.planOutline(planAt(x, y, 18, 18, 0.6), F, P, 2)).join(""), { tone: "faint" })),
     hl("gate", "blue", [{ x: -130, y: 56, w: 62, d: 66, r: 3 }], 0.6),
     hl("assign", "blue", [{ x: -128, y: -16, w: 58, d: 12, r: 2 }], 0.6),
     hl("dock", "blue", [{ x: -56, y: 68, w: 54, d: 24, r: 2 }], 0.6),
@@ -387,6 +483,27 @@ function floor1Zones() {
     hl("outdock", "brown", [{ x: 2, y: 38, w: 18, d: 20, r: 1 }], F),
     floorEdge(F),
   ].join("");
+}
+
+// ---- 현장 소품: 노란 안전선, 도크 범퍼, 랩 감은 팔레트 ----
+// 안전선은 단계와 상관없이 늘 노랗게 보인다(z-on 고정)
+const safetyLine = (x0, y0, x1, y1, z) => {
+  const plan = { x: Math.min(x0, x1) - 0.5, y: Math.min(y0, y1) - 0.5, w: Math.abs(x1 - x0) + 1, d: Math.abs(y1 - y0) + 1, r: 0.2 };
+  return S(k.slabOf(plan, z, 0.12, P, 2), { tone: "hi", flat: true, crease: "none" });
+};
+// 1층: 하차장과 핸드자키 통로, 반품 구역을 가르는 선
+const safetyLines = () => `<g class="z-on"><g class="c-safety">${[
+  safetyLine(4, 61, 58, 61, F),
+  safetyLine(60, 62, 60, 108, F),
+  safetyLine(83, 62, 83, 108, F),
+  safetyLine(60, 61, 83, 61, F),
+].join("")}</g></g>`;
+// 도크 문 양옆 고무 범퍼 (트럭이 닿는 자리)
+const bumpers = () => C("rubber", [DOOR1, DOOR2].flatMap(([y0, y1]) => [y0 + 1, y1 - 3]).map((y) => slab({ x: -1.6, y, w: 1.8, d: 2, r: 0.3 }, F - 4.5, 4, { tone: "hi", crease: "lo" }, 0.2, 2)).join(""));
+// 랩 감은 팔레트: 나무 팔레트 위 상자 묶음을 랩으로 감싼 모양
+function wrappedPallet(cx, cy, z, h = 9) {
+  const deck = planAt(cx, cy, 15, 15, 0.4), load = planAt(cx, cy, 14, 14, 0.8);
+  return C("gray", slab(deck, z, 1.6, { tone: "lo" }, 0.2, 2)) + C("wrap", slab(load, z + 1.6, h, { tone: "hi", crease: "lo", inner: L(k.sideSeam(load, z + 1.6 + h * 0.35, P, 3) + k.sideSeam(load, z + 1.6 + h * 0.7, P, 3), { tone: "faint" }) }, 0.6, 3));
 }
 
 // ---- 벽, 기둥, 코어 ----
@@ -408,7 +525,7 @@ function dockLight(y, on) {
   const lamp = (color) => C(color, S(k.cylinder(x, y, 1.4, F + WALL_H + 2, 1.6, P, 16, 0.3), { tone: "hi" }));
   return Z("assign", house + (on ? `<g data-light="off">${lamp("pink")}</g><g data-light="on" style="display:none">${lamp("green")}</g>` : lamp("pink")));
 }
-const leftWall = () => [leftSeg(LEFT_SEGS[0]), lintel(DOOR2), leftSeg(LEFT_SEGS[1]), lintel(DOOR1), dockLight(DOOR2[1] + 3, false), dockLight(DOOR1[0] - 3, true), leftSeg(LEFT_SEGS[2])].join("");
+const leftWall = () => [bumpers(), leftSeg(LEFT_SEGS[0]), lintel(DOOR2), leftSeg(LEFT_SEGS[1]), lintel(DOOR1), dockLight(DOOR2[1] + 3, false), dockLight(DOOR1[0] - 3, true), leftSeg(LEFT_SEGS[2])].join("");
 const column = (x, y, z0, z1) => slab(planAt(x, y, 3, 3, 0.4), z0, z1 - z0, { tone: "mid" }, 0.2, 2);
 function core(z0, z1, roof = false) {
   const plan = { x: 0, y: 0, w: 20, d: 20, r: 0.6 };
@@ -532,8 +649,9 @@ function truckSvg(cx, cy, hx, hy, kind, open) {
     return '<g class="' + p.cls + '">' + solidSvg(extrude(p.ring, p.z, p.h, P, { bevel: 0.4 }), { tone: "hi", crease: "lo" }) + p.extra + "</g>";
   }).join("");
 }
-function forkliftSvg(cx, cy, hx, hy, dpose, fz) {
+function forkliftSvg(cx, cy, hx, hy, dpose, fz, base, loadCls) {
   fz = fz || 0;
+  const F = base === undefined ? FLOOR1 : base;
   const vx = -hy, vy = hx;
   const W = (u, v) => [cx + u * hx + v * vx, cy + u * hy + v * vy];
   const rect = (u0, u1, v0, v1) => [W(u0, v0), W(u1, v0), W(u1, v1), W(u0, v1)];
@@ -542,15 +660,21 @@ function forkliftSvg(cx, cy, hx, hy, dpose, fz) {
   for (const u of [-4.5, 4]) for (const s of [1, -1]) parts.push({ kind: "wheel", c: W(u, s * 5.2), lift: F });
   add(7.2, 18, 1.2, 2.6, F + 0.5 + fz, 0.6, "mid");
   add(7.2, 18, -2.6, -1.2, F + 0.5 + fz, 0.6, "mid");
-  add(-6, 6, -4.5, 4.5, F + 1.5, 5, "hi", "c-blue");
-  add(-8.5, -5.5, -4.5, 4.5, F + 1.5, 6.5, "mid", "c-blue");
+  add(-6, 6, -4.5, 4.5, F + 1.5, 5, "hi", "c-safety");
+  add(-8.5, -5.5, -4.5, 4.5, F + 1.5, 6.5, "mid", "c-safety");
   add(6, 7.2, 2.4, 3.6, F, 18, "mid");
   add(6, 7.2, -3.6, -2.4, F, 18, "mid");
   add(-4, -3, 3, 4, F + 6.5, 8.5, "mid");
   add(-4, -3, -4, -3, F + 6.5, 8.5, "mid");
+  // 포크 위 팔레트 (층 지게차가 나르는 짐)
+  if (loadCls) {
+    add(5, 20, -7.5, 7.5, F + 1.1 + fz, 1.2, "mid");
+    add(5.5, 19.5, -7, 7, F + 2.3 + fz, 5, "hi", loadCls);
+    add(6.5, 18.5, -6, 6, F + 7.3 + fz, 5, "hi", loadCls);
+  }
   const [dx, dy] = W(-1, 0);
   parts.push({ kind: "driver", c: [dx, dy], lift: F + 6.5 });
-  add(-4, 4, -4, 4, F + 15, 0.8, "mid", "c-blue");
+  add(-4, 4, -4, 4, F + 15, 0.8, "mid", "c-safety");
   parts.sort((a, b) => (a.c && b.c ? depthOf([a.c[0], a.c[1], 0], P) - depthOf([b.c[0], b.c[1], 0], P) : 0) || a.lift - b.lift);
   const roof = parts.pop();
   const draw = (p) => {
@@ -745,14 +869,23 @@ function floor2() {
   out.push(core(FL2, FL3 - SLAB));
   out.push(backWallAt(FL2));
   out.push(column(168.5, 1.5, FL2, FL3 - SLAB));
-  out.push(Z("chill", CHILL_ROWS.map((row, i) => rackRow(row, FL2, [FL2 + 3, FL2 + 14], FL2 + 25, "indigo", bayStock("indigo", row, i * 2))).join("")));
-  const stock = (level, z) => RACK_SLOTS.map(([x, y, l], i) => (l === level ? `<g data-rackslot="${i}" style="display:none">${boxSvg(x, y, z, "ok")}</g>` : "")).join("");
+  const chillRow = (i) => Z("chill", rackRow(CHILL_ROWS[i], FL2, [FL2 + 3, FL2 + 14], FL2 + 25, "indigo", bayStock("indigo", CHILL_ROWS[i], i * 2)));
+  out.push(chillRow(0), chillRow(1));
+  // 그림 2: 0번 칸(먼저 피킹되는 칸)이 유통기한이 이른 10/22 로트
+  const stock = (level, z) => RACK_SLOTS.map(([x, y, l], i) => (l === level ? `<g data-rackslot="${i}" style="display:none">${boxSvg(x, y, z, WAREHOUSE && i === 0 ? "pink" : "ok")}</g>` : "")).join("");
   const a = [rackSvg(RACK_A, SHELF_Z, RACK_TOP, stock)];
   const tag = { x: 132, y: 46, w: 14, d: 6, r: 0.5 };
   a.push(slab(tag, RACK_TOP + 1.5, 0.5, { tone: "hi", crease: "none" }, 0, 2));
   a.push(k.faceTextSvg(k.topMatrix([tag.x + 7, tag.y + 4.4], RACK_TOP + 2, P, "x"), TEXT.display.rack, { size: 3.6, tone: "mid", anchor: "middle" }));
-  out.push(Z("chill", C("green", a.join(""))));
-  out.push(worker(3), worker(5));
+  // 그림 2: 로케이션(랙 바닥)과 로트(0번 칸) 강조는 랙보다 먼저 그려 상자를 덮지 않게 한다
+  if (WAREHOUSE) {
+    const [lx, ly, ll] = RACK_SLOTS[0];
+    out.push(hl("cell", "green", [k.insetPlan(RACK_A, -2)], FL2), hl("lot", "pink", [planAt(lx, ly, BOX.w + 4, BOX.d + 4, 1)], SHELF_Z[ll] + 1.5));
+  }
+  out.push(Z(WAREHOUSE ? "chill cell lot" : "chill", C("green", a.join(""))));
+  out.push(Z("chill", '<g class="c-gray" data-part="fork2"></g>'));
+  out.push(Z("chill", wrappedPallet(142, 96, FL2) + wrappedPallet(159, 96, FL2)));
+  out.push(worker(3), worker(5), worker(9));
   return out.join("");
 }
 
@@ -780,7 +913,9 @@ function floor3() {
   const m = k.sideMatrix([unit.x, unit.y + unit.d], FL3 + 10, P, "left");
   fz.push(`<g transform="${m}"><rect class="mf-win" x="4" y="2" width="15" height="6" rx=".5"/><text class="iso-face-text mf-digits" data-tone="hi" x="11.5" y="6.6" font-size="4.2" text-anchor="middle">${TEXT.display.freezer}</text></g>`);
   out.push(Z("freeze", C("teal", fz.join(""))));
-  out.push(Z("freeze", FREEZE_ROWS.map((row, i) => rackRow(row, FL3, [FL3 + 3, FL3 + 14], FL3 + 25, "teal", bayStock("teal", row, i * 3 + 1))).join("")));
+  const freezeRow = (i) => Z("freeze", rackRow(FREEZE_ROWS[i], FL3, [FL3 + 3, FL3 + 14], FL3 + 25, "teal", bayStock("teal", FREEZE_ROWS[i], i * 3 + 1)));
+  out.push(Z("freeze", wrappedPallet(15, 34, FL3) + wrappedPallet(15, 52, FL3)));
+  out.push(freezeRow(0), freezeRow(1), Z("freeze", '<g class="c-gray" data-part="fork3"></g>'), worker(11), worker(10));
   return out.join("");
 }
 
@@ -801,6 +936,7 @@ function floor4() {
   out.push(slabFloor(Z4));
   out.push(Z("settle", tint({ x: 24, y: 3, w: 60, d: 57, r: 1 }, Z4, "orange")));
   out.push(Z("ambient", aisle({ x: 94, y: 23, w: 72, d: 10, r: 1 }, Z4) + aisle({ x: 94, y: 53, w: 72, d: 10, r: 1 }, Z4)));
+  if (WAREHOUSE) out.push(hl("ambient", "orange", [{ x: 92, y: 3, w: 75, d: 80, r: 1 }], Z4));
   out.push(hl("settle", "orange", [{ x: 24, y: 3, w: 60, d: 57, r: 1 }], Z4), hl("order", "brown", [{ x: 26, y: 4, w: 28, d: 30, r: 1 }], Z4), floorEdge(Z4));
   out.push(core(Z4, Z4 + 24, true));
   out.push(backWallAt(Z4));
@@ -827,13 +963,15 @@ function floor4() {
   g.push(S(k.cylinder(x + Math.sin(pinA) * (GAUGE_R - 0.9), y - Math.cos(pinA) * (GAUGE_R - 0.9), 0.8, GAUGE_TOP, 1.6, P, 12), { tone: "hi", crease: "none" }));
   g.push(`<path data-part="needle" class="iso-line" data-tone="hi" data-free="end" d="${needleAt(0)}" style="stroke-width:1.4"/>`);
   g.push(S(k.cylinder(x, y, 1.4, GAUGE_TOP, 0.7, P, 14), { tone: "mid" }));
-  o.push(C("orange", g.join("")));
+  o.push(HIDE(C("orange", g.join(""))));
+  o.push(worker(13));
   const right = { x: 84, y: 3, w: 2, d: 57, r: 0.3 };
   const front = { x: 24, y: 58, w: 60, d: 2, r: 0.3 };
   o.push(slab(right, Z4, 8, { tone: "mid" }, 0.2, 2));
   o.push(slab(front, Z4, 8, { tone: "mid", inner: L(k.sideSeam(front, Z4 + 5, P, 2), { tone: "faint" }) }, 0.2, 2));
   out.push(Z("settle", o.join("")));
-  out.push(Z("ambient", AMB_ROWS.map((row, i) => rackRow(row, Z4, [Z4 + 3, Z4 + 14], Z4 + 25, "orange", bayStock("orange", row, i * 2 + 1))).join("")));
+  const ambRow = (i) => Z("ambient", rackRow(AMB_ROWS[i], Z4, [Z4 + 3, Z4 + 14], Z4 + 25, "orange", bayStock("orange", AMB_ROWS[i], i * 2 + 1)));
+  out.push(ambRow(0), ambRow(1), ambRow(2), Z("ambient", wrappedPallet(40, 96, Z4) + wrappedPallet(58, 96, Z4)), worker(12));
   return out.join("");
 }
 
@@ -864,15 +1002,16 @@ const pool = Array.from({ length: POOL }, (_, i) => `<g data-crate="${i}" style=
 const floor1 = [
   ground(),
   floor1Zones(),
+  safetyLines(),
   core(F, FL2 - SLAB),
   backWallAt(F),
   column(168.5, 1.5, F, FL2 - SLAB),
   outLane(),
-  capBoard(),
+  HIDE(capBoard()),
   booth(),
   gateHousing(),
   worker(0),
-  `<g data-part="yard">${armSvg()}<g data-zone="gate assign dock unload" data-part="truck" class="c-gray"></g><g data-zone="outdock gate" data-part="truck2" class="c-gray"></g></g>`,
+  `<g data-part="yard">${armSvg()}<g data-zone="gate assign dock unload" data-part="truck" class="c-gray"${WAREHOUSE ? " data-whide" : ""}></g><g data-zone="outdock gate" data-part="truck2" class="c-gray"></g></g>`,
   armRest(),
   leftWall(),
   worker(6),
@@ -880,17 +1019,51 @@ const floor1 = [
   loadPool(),
   column(1.5, 108.5, F, FL2 - SLAB),
   leveler(),
-  Z("inspect", stationBack() + gatePost() + C("gray", conveyorBack()) + `<g data-part="paddle">${paddleSvg(0)}</g>` + gateCap() + C("gray", conveyorFront())),
-  binBack(),
-  Z("inspect", C("gray", `<g data-part="train">${pool}</g>`)),
-  binFront(),
-  worker(2),
-  Z("inspect", stationFront()),
-  worker(1),
-  `<g data-zone="unload" class="c-gray" data-part="staging">${SPOTS.map((_, i) => `<g data-pallet="${i}" style="display:none">${palletSvg(FROM_DOCK[0], FROM_DOCK[1], i)}</g>`).join("")}<g data-part="fork"></g></g>`,
+  HIDE(Z("inspect", stationBack() + gatePost() + C("gray", conveyorBack()) + `<g data-part="paddle">${paddleSvg(0)}</g>` + gateCap() + C("gray", conveyorFront()))),
+  HIDE(binBack()),
+  HIDE(Z("inspect", C("gray", `<g data-part="train">${pool}</g>`))),
+  HIDE(binFront()),
+  HIDE(worker(8)),
+  HIDE(worker(2)),
+  HIDE(Z("inspect", stationFront())),
+  HIDE(worker(1)),
+  HIDE(`<g data-zone="unload" class="c-gray" data-part="staging">${SPOTS.map((_, i) => `<g data-pallet="${i}" style="display:none">${palletSvg(FROM_DOCK[0], FROM_DOCK[1], i)}</g>`).join("")}<g data-part="fork"></g></g>`),
+  worker(14),
+  HIDE(worker(7)),
   column(168.5, 108.5, F, FL2 - SLAB),
   mastPart(0, FL2 - SLAB - 1),
 ].join("");
+
+// ---- 그림 2 확대창: A-01 아래 칸을 같은 각도로 크게, 10/22 로트(분홍)와 10/29 로트(초록)가 나란히 ----
+const INSET = { cx: 96, cy: 158, r: 78, k: 2.0 };
+function insetLayer() {
+  const [ax, ay, al] = RACK_SLOTS[0], [bx, by] = RACK_SLOTS[1];
+  const z0 = SHELF_Z[al];
+  const center = [(ax + bx) / 2, ay, z0 + 6];
+  const unit = { ...P, origin: [0, 0], scale: P.scale * INSET.k };
+  const q = k.iso(center, unit);
+  const Q = { ...unit, origin: [INSET.cx - q[0], INSET.cy - q[1] + 6] };
+  const sl = (plan, z, h, tone = "hi") => k.solidSvg(k.slabOf({ r: 0.4, ...plan }, z, h, Q, 3, 0.3), { tone, crease: "lo" });
+  const box = (cx, cy, z) => {
+    const plan = planAt(cx, cy, BOX.w, BOX.d, 0.5);
+    return k.solidSvg(k.slabOf(plan, z, BOX.h, Q, 3, 0.3), { tone: "hi", crease: "lo", inner: k.lineSvg(k.sideSeam(plan, z + 2.2, Q, 3), { tone: "faint" }) }) + k.solidSvg(k.slabOf({ x: cx - BOX.w / 2, y: cy - 1, w: BOX.w, d: 2, r: 0 }, z + BOX.h, 0.2, Q, 2), { tone: "mid", flat: true, crease: "none" });
+  };
+  // 로트 하나 = 같은 날 만든 상자 묶음 (2단)
+  const lot = (cx, cy, cls, extra = "") => `<g class="${cls}"${extra}>${box(cx, cy, z0 + 1.5)}${box(cx, cy, z0 + 1.5 + BOX.h)}</g>`;
+  const up = (x, y) => sl({ x, y, w: 2.5, d: 2.5 }, z0 - 4, BOX.h * 2 + 8, "mid");
+  // 위 선반은 그리지 않는다 (위에서 내려다보는 각도라 로트를 가린다)
+  const out = [
+    C("green", up(RACK_A.x, RACK_A.y) + up(RACK_A.x + RACK_A.w - 2.5, RACK_A.y) + sl(RACK_A, z0, 1.5, "mid")),
+    lot(ax, ay, "c-pink", " data-inset-lot"),
+    lot(bx, by, "c-green"),
+    C("green", up(RACK_A.x, RACK_A.y + RACK_A.d - 2.5) + up(RACK_A.x + RACK_A.w - 2.5, RACK_A.y + RACK_A.d - 2.5)),
+  ];
+  const target = at([ax, ay, z0 + 4]);
+  const dx = target[0] - INSET.cx, dy = target[1] - INSET.cy, n = Math.hypot(dx, dy);
+  const start = [INSET.cx + (dx / n) * INSET.r, INSET.cy + (dy / n) * INSET.r];
+  const lead = `<path class="mf-lead" d="M${start[0].toFixed(1)} ${start[1].toFixed(1)}L${target[0].toFixed(1)} ${target[1].toFixed(1)}"/><circle class="mf-lead-end" cx="${target[0].toFixed(1)}" cy="${target[1].toFixed(1)}" r="2"/>`;
+  return `<g class="mf-inset z-on" data-inset><clipPath id="mf-inset-clip"><circle cx="${INSET.cx}" cy="${INSET.cy}" r="${INSET.r - 0.5}"/></clipPath>${lead}<g clip-path="url(#mf-inset-clip)"><circle class="mf-inset-bg" cx="${INSET.cx}" cy="${INSET.cy}" r="${INSET.r}"/>${out.join("")}</g><circle class="mf-inset-ring" cx="${INSET.cx}" cy="${INSET.cy}" r="${INSET.r}"/></g>`;
+}
 
 const svg = k.figureSvg({
   width: WIDTH,
@@ -902,6 +1075,7 @@ const svg = k.figureSvg({
     FLR("1 2", mastPart(FL2 - SLAB - 1, FL3 - SLAB - 1) + cageSvg() + column(168.5, 108.5, FL2, FL3 - SLAB) + column(1.5, 108.5, FL2, FL3 - SLAB)),
     FLR("3", floor3() + mastPart(FL3 - SLAB - 1, FL4 - SLAB - 1) + column(168.5, 108.5, FL3, FL4 - SLAB) + column(1.5, 108.5, FL3, FL4 - SLAB)),
     FLR("4", floor4() + mastPart(FL4 - SLAB - 1, FL4 + 30)),
+    WAREHOUSE ? insetLayer() : "",
   ],
 });
 
@@ -923,6 +1097,9 @@ const STRONG = {
   pants: { light: ["#566074", "#5E687C", ["#343B49", "#3B4352", "#434B5C", "#4B5466"], "#20252F", "#E6E9EF", "#20252F", "#8A93A6"], dark: ["#5E687E", "#68728A", ["#2C3240", "#323948", "#394050", "#404858"], "#DDE2EC", "#E6E9EF", "#151922", "#7E889C"] },
   hair: { light: ["#4A3426", "#5A4030", ["#2E2017", "#35251B", "#3C2A1F", "#432F23"], "#22170F", "#8A6A55", "#22170F", "#6E5444"], dark: ["#5A4232", "#6A4E3C", ["#36261C", "#3E2C21", "#463226", "#4E382B"], "#C8A890", "#9A7A64", "#20150E", "#7E6452"] },
   indigo: { light: ["#B3B7EE", "#B3B7EE", ["#6D75DA", "#767EDD", "#7F86E0", "#8C92E4"], "#5B63D3", "#F5F6FF", "#5B63D3", "#D9DBF6"], dark: ["#8B92EE", "#8B92EE", ["#3E45A8", "#454CB6", "#4C53C4", "#535AD0"], "#E6E8FF", "#ECEDFF", "#20256E", "#BEC2F8"] },
+  wrap: { light: ["#F7FAFC", "#FFFFFF", ["#D3DCE5", "#DAE2EA", "#E2E8EE", "#E9EEF2"], "#7C8794", "#FFFFFF", "#7C8794", "#E9EEF2"], dark: ["#C9D2DC", "#D6DEE6", ["#7E8894", "#8A94A0", "#96A0AC", "#A2ACB8"], "#F2F6FA", "#FFFFFF", "#353B42", "#B8C2CC"] },
+  safety: { light: ["#FFE27A", "#FFE27A", ["#E3BC2A", "#E9C436", "#EFCC44", "#F3D458"], "#B89400", "#FFFBE6", "#B89400", "#FFF1B8"], dark: ["#E8C440", "#E8C440", ["#8A7000", "#967A00", "#A28400", "#AE8E00"], "#FFF3C4", "#FFF6D6", "#4A3C00", "#F2DA80"] },
+  rubber: { light: ["#4A4D55", "#555861", ["#2C2E33", "#32343A", "#383B41", "#3F4248"], "#1E2024", "#B8BCC4", "#1E2024", "#6A6E76"], dark: ["#3A3D44", "#42454C", ["#1E2024", "#232529", "#282A2F", "#2D3035"], "#B8BCC4", "#C8CCD4", "#0E0F12", "#555860"] },
   teal: { light: ["#9FDBE3", "#9FDBE3", ["#47B4C3", "#51BAC8", "#5BBFCD", "#6BC6D2"], "#1E9AAE", "#F0FBFD", "#1E9AAE", "#CFEDF1"], dark: ["#55BFCE", "#55BFCE", ["#13707E", "#167B8A", "#198696", "#1C91A2"], "#DDFAFF", "#E2FBFE", "#08414B", "#A4E6EF"] },
 };
 // 비활성: 원래 색을 채도 30% 안팎만 남긴 옅은 톤
@@ -969,6 +1146,19 @@ const colorCss = [
 ].join("\n");
 
 const CSS = `
+[data-whide]{display:none!important}
+.mf-inset{opacity:0;transition:opacity .5s ease;pointer-events:none}
+.mf-inset.on{opacity:1}
+.mf-inset-bg{fill:var(--anatomy-paper);stroke:none}
+.mf-inset-ring{fill:none;stroke:#3E9B4F;stroke-width:2px}
+.mf-lead{fill:none;stroke:#3E9B4F;stroke-width:1.4px;stroke-dasharray:4 3}
+.mf-lead-end{fill:#3E9B4F}
+[data-inset-lot]{transition:opacity .4s ease}
+.mf-crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;margin:0 0 8px;font-size:13px;word-break:keep-all}
+.mf-crumb{padding:2px 9px;border:1.5px solid var(--anatomy-faint,#ccc);border-radius:999px;color:var(--anatomy-text);opacity:.4;transition:opacity .3s ease,border-color .3s ease,background .3s ease}
+.mf-crumb.on{opacity:1}
+.mf-crumb.cur{border-color:var(--c);background:color-mix(in srgb,var(--c) 18%,transparent);font-weight:600}
+.mf-crumb-sep{opacity:.5}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 html,body,.iso{background:transparent!important}
@@ -1059,6 +1249,8 @@ const BIN_SLOTS = ${JSON.stringify(BIN_SLOTS)};
 const HINGE = ${JSON.stringify(HINGE)}, PADDLE_LEN = ${PADDLE_LEN};
 const GAUGE = ${JSON.stringify(GAUGE)}, GAUGE_R = ${GAUGE_R}, GAUGE_TOP = ${GAUGE_TOP}, SPAN = ${SPAN}, FROM = ${FROM};
 const PHASES = ${JSON.stringify(PHASES)};
+const SKIP = new Set(${JSON.stringify(SKIP)}), WAREHOUSE = ${WAREHOUSE};
+const CRUMBS = ${JSON.stringify(TEXT.crumbs || null)};
 const LANE_X = ${LANE_X}, GATE_Y = ${GATE_Y}, WAIT = ${JSON.stringify(WAIT)}, DOCK_AT = ${JSON.stringify(DOCK_AT)};
 const SPOTS = ${JSON.stringify(SPOTS)}, FROM_DOCK = ${JSON.stringify(FROM_DOCK)}, FORK = ${FORK};
 const LIFT_TRAVEL = ${LIFT_TRAVEL};
@@ -1072,10 +1264,12 @@ const needleAt = ${needleAt.toString()};
 const LOGO_D = ${JSON.stringify(LOGO_D)};
 const wheelSvg = ${wheelSvg.toString()};
 const truckSvg = ${truckSvg.toString()};
+const FLOOR1 = ${F};
 const forkliftSvg = ${forkliftSvg.toString()};
 const personSvg = ${personSvg.toString()};
 const REST_POSE = ${JSON.stringify(REST_POSE)};
 const WALKS = ${JSON.stringify(WALKS)};
+const FLOOR_FORKS = ${JSON.stringify(FLOOR_FORKS)};
 const isBad = new Set(DEFECTS);
 const DONE_S = ORDERED + (U_END + FADE) / SPACING + 0.2;
 
@@ -1088,6 +1282,7 @@ const yard = q('[data-part="yard"]'), truck = q('[data-part="truck"]'), armG = q
 const staging = q('[data-part="staging"]'), fork = q('[data-part="fork"]');
 const cage = q('[data-part="cage"]'), load = q('[data-part="load"]'), outload = q('[data-part="outload"]');
 const truck2 = q('[data-part="truck2"]');
+const floorForks = FLOOR_FORKS.map((f) => ({ f, el: q('[data-part="' + f.part + '"]'), key: "" }));
 const laneBoxes = [...svg.querySelectorAll("[data-lanebox]")], tableBoxes = [...svg.querySelectorAll("[data-tablebox]")], loadBoxes = [...svg.querySelectorAll("[data-loadbox]")];
 const lanePool = q('[data-part="lanepool"]');
 const IDX = Object.fromEntries(PHASES.map((p, i) => [p[0], i]));
@@ -1211,9 +1406,27 @@ const LOAD_T = { walk: 2.6, open: 2.8, unload: 3.0, close: 5.6, back: 7 };
 let phase = 0, pt = 0, s = 0, rate = 0, paused = false, armAt = 0, clock = 0;
 let frame = 0, last = 0, visible = false, lastTruck = "", lastTruck2 = "", lastFork = "", lastTheta = -1, lastDigits = "", lastPhase = -1;
 
+// 그림 2: 계층 표시줄과 확대창
+const crumbEls = [...document.querySelectorAll(".mf-crumb")], insetEl = svg.querySelector("[data-inset]"), insetLot = svg.querySelector("[data-inset-lot]");
+const CRUMB_COLOR = { house: "#8A8A86", chill: "#5B63D3", freeze: "#1E9AAE", ambient: "#E89400", cell: "#3E9B4F", lot: "#D04F78" };
+function setCrumbs(name) {
+  if (!CRUMBS) return;
+  const zone = name === "v_freeze" ? "freeze" : name === "v_ambient" ? "ambient" : "chill";
+  const depth = name === "v_house" ? 1 : ["v_chill", "v_freeze", "v_ambient"].includes(name) ? 2 : name === "v_cell" ? 3 : 4;
+  const labels = [CRUMBS.house, CRUMBS.zone[zone], CRUMBS.cell, CRUMBS.lot], keys = ["house", zone, "cell", "lot"];
+  crumbEls.forEach((el, i) => {
+    const on = i < depth;
+    el.textContent = on ? labels[i] : CRUMBS.generic[i];
+    el.classList.toggle("on", on);
+    el.classList.toggle("cur", i === depth - 1);
+    el.style.setProperty("--c", CRUMB_COLOR[keys[i]]);
+  });
+  if (insetEl) insetEl.classList.toggle("on", ["v_cell", "v_lot", "pick"].includes(name));
+}
 function setZones() {
   if (phase === lastPhase) return;
   lastPhase = phase;
+  setCrumbs(PHASES[phase][0]);
   const [, , floors, zones] = PHASES[phase];
   floorEls.forEach((el) => el.classList.toggle("f-on", el.dataset.floor.split(" ").some((f) => floors.includes(+f))));
   zoneEls.forEach((el) => {
@@ -1228,8 +1441,10 @@ function setZones() {
 function draw() {
   setZones();
   const tp = truckPose(phase, pt);
-  const key = tp.x.toFixed(2) + "," + tp.y.toFixed(2) + "," + tp.hx.toFixed(3) + "," + tp.hy.toFixed(3);
-  if (key !== lastTruck) { truck.innerHTML = truckSvg(tp.x, tp.y, tp.hx, tp.hy, "in"); lastTruck = key; }
+  // 하차 동안 입고 트럭 뒷문을 연다(마지막 팔레트를 내린 뒤 닫음)
+  const inOpen = phase === IDX.unload && pt < PHASES[IDX.unload][1] - 0.3;
+  const key = tp.x.toFixed(2) + "," + tp.y.toFixed(2) + "," + tp.hx.toFixed(3) + "," + tp.hy.toFixed(3) + (inOpen ? "o" : "");
+  if (key !== lastTruck) { truck.innerHTML = truckSvg(tp.x, tp.y, tp.hx, tp.hy, "in", inOpen); lastTruck = key; }
   truck.style.opacity = tp.o < 1 ? tp.o.toFixed(3) : "";
   const t2 = truck2Pose(phase, pt);
   if (t2) {
@@ -1255,6 +1470,13 @@ function draw() {
   const fz = phase === 3 ? 0 : 0.8 * Math.max(0, Math.sin(clock * 0.7)) ** 2;
   const fkey = fp.x.toFixed(2) + "," + fp.y.toFixed(2) + "," + fp.hx.toFixed(3) + "," + steer.toFixed(2) + "," + fz.toFixed(2) + "," + dpose.look.toFixed(2);
   if (fkey !== lastFork) { fork.innerHTML = forkliftSvg(fp.x, fp.y, fp.hx, fp.hy, dpose, fz); lastFork = fkey; }
+  for (const ff of floorForks) {
+    const st = floorForkAt(ff.f, clock);
+    const st2 = Math.sin(clock * 1.7 + ff.f.phase);
+    const dp = { r: [1.25, 0.45 + 0.2 * st2], l: [1.25, 0.45 - 0.2 * st2], lean: 0.2, look: 0.3 * Math.sin(clock * 0.8 + ff.f.phase) };
+    const fk = [st.x, st.y, st.hx, st.fz, st2, dp.look].map((v) => v.toFixed(2)).join(",") + st.loaded;
+    if (fk !== ff.key) { ff.el.innerHTML = forkliftSvg(st.x, st.y, st.hx, st.hy, dp, st.fz, ff.f.base, st.loaded ? ff.f.load : ""); ff.key = fk; }
+  }
   const c = counts(s);
   const order = [{ el: fork, d: depthOf([fp.x, fp.y, 0], P) }];
   pallets.forEach((g, i) => {
@@ -1295,6 +1517,7 @@ function draw() {
   const theta = paddleAngle(s);
   if (Math.abs(theta - lastTheta) > 1e-4) { paddle.innerHTML = paddleSvg(theta); lastTheta = theta; }
   const picked = phase < IDX.pick ? 0 : phase === IDX.pick ? Math.round(ORDER_N * clamp01((pt - 0.4) / 3)) : ORDER_N;
+  if (insetLot) insetLot.style.opacity = phase === IDX.pick ? (1 - picked / ORDER_N).toFixed(2) : "";
   const stock = c.rack - picked;
   rackSlots.forEach((g, k) => { g.style.display = c.rack > k * PER_SLOT && !(k === 0 && picked >= ORDER_N / 2) ? "" : "none"; });
   // 출고 박스
@@ -1376,23 +1599,64 @@ function draw() {
   if (readout.textContent !== text) readout.textContent = text;
 }
 // 왕복 걷기: 지점 A에서 일하고 → B로 걸어가 일하고 → A로 돌아옴
+// 여러 지점을 도는 경로: pts[i]에서 pause[i]초 일하고(0이면 지나침) 다음 지점으로. 마지막 지점에서 처음으로 돌아온다.
+// carry[i] = i → i+1 구간에 든 물건, face[i] = i에서 일할 때 보는 방향(없으면 다음 구간 방향)
+function loopOf(wk) {
+  const pts = wk.pts, n = pts.length, segs = [];
+  let total = 0;
+  for (let i = 0; i < n; i++) {
+    const a = pts[i], b = pts[(i + 1) % n], len = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    segs.push({ a, b, len, h: Math.atan2(b[1] - a[1], b[0] - a[0]), start: total });
+    total += len;
+  }
+  return { segs, total };
+}
+const turnTo = (from, to, f) => { let dd = to - from; while (dd > Math.PI) dd -= 2 * Math.PI; while (dd < -Math.PI) dd += 2 * Math.PI; return from + dd * f; };
 function walkerAt(wk, t) {
-  const [a, b] = wk.pts, d = Math.hypot(b[0] - a[0], b[1] - a[1]), tr = d / wk.speed;
-  const T = wk.pause[0] + tr + wk.pause[1] + tr;
+  const lp = wk._loop || (wk._loop = loopOf(wk)), n = wk.pts.length;
+  const pause = (i) => (wk.pause && wk.pause[i]) || 0;
+  const dur = lp.segs.map((g) => g.len / wk.speed);
+  let T = 0;
+  for (let i = 0; i < n; i++) T += pause(i) + dur[i];
   let u = ((t % T) + T) % T;
-  const lerp = (f, p, q) => [p[0] + (q[0] - p[0]) * f, p[1] + (q[1] - p[1]) * f];
-  const dir = (p, q) => Math.atan2(q[1] - p[1], q[0] - p[0]);
-  const turn = (from, to, f) => { let dd = to - from; while (dd > Math.PI) dd -= 2 * Math.PI; while (dd < -Math.PI) dd += 2 * Math.PI; return from + dd * f; };
-  // 카트를 미는 사람은 멈춰 있는 동안 카트와 함께 돌아서 다음 방향을 향한다
-  const pauseFace = (i, f) => (wk.cart ? turn(i === 0 ? dir(b, a) : dir(a, b), i === 0 ? dir(a, b) : dir(b, a), ease(clamp01((f - 0.35) / 0.6))) : wk.face[i]);
-  if (u < wk.pause[0]) return { x: a[0], y: a[1], face: pauseFace(0, u / wk.pause[0]), moving: false, load: !!wk.carry[0] && u > wk.pause[0] * 0.5 };
-  u -= wk.pause[0];
-  if (u < tr) { const f = ease(u / tr), [x, y] = lerp(f, a, b); return { x, y, face: dir(a, b), moving: true, dist: f * d, carry: wk.carry[0], load: !!wk.carry[0] }; }
-  u -= tr;
-  if (u < wk.pause[1]) return { x: b[0], y: b[1], face: pauseFace(1, u / wk.pause[1]), moving: false, load: !!wk.carry[1] && u > wk.pause[1] * 0.5 };
-  u -= wk.pause[1];
-  const f = ease(u / tr), [x, y] = lerp(f, b, a);
-  return { x, y, face: dir(b, a), moving: true, dist: f * d, carry: wk.carry[1], load: !!wk.carry[1] };
+  for (let i = 0; i < n; i++) {
+    const g = lp.segs[i], prev = lp.segs[(i - 1 + n) % n];
+    if (u < pause(i)) {
+      // 일하는 동안: 들어온 방향 → 일하는 방향 → 나갈 방향으로 천천히 돌아섬
+      const f = u / pause(i), work = wk.cart || wk.face == null || wk.face[i] == null ? g.h : wk.face[i];
+      const face = f < 0.5 ? turnTo(prev.h, work, ease(clamp01(f / 0.3))) : turnTo(work, g.h, ease(clamp01((f - 0.7) / 0.3)));
+      const carry = wk.carry || [];
+      return { x: g.a[0], y: g.a[1], face, moving: false, load: f < 0.5 ? !!carry[(i - 1 + n) % n] : !!carry[i], pi: i, pf: f };
+    }
+    u -= pause(i);
+    if (u < dur[i]) {
+      // 멈추는 지점 앞뒤로만 가감속, 지나치는 모서리는 일정한 속도로 돌며 지나감
+      let f = u / dur[i];
+      const e0 = pause(i) > 0, e1 = pause((i + 1) % n) > 0;
+      if (e0 && e1) f = ease(f); else if (e0) f = 2 * ease(f / 2); else if (e1) f = 2 * ease(0.5 + f / 2) - 1;
+      const d = f * g.len, x = g.a[0] + (g.b[0] - g.a[0]) * f, y = g.a[1] + (g.b[1] - g.a[1]) * f;
+      let face = g.h;
+      const R = 3.5;
+      if (!e1 && g.len - d < R) face = turnTo(g.h, lp.segs[(i + 1) % n].h, 0.5 * (1 - (g.len - d) / R));
+      if (!e0 && d < R) face = turnTo(prev.h, g.h, 0.5 + 0.5 * d / R);
+      const carry = (wk.carry || [])[i] || "";
+      return { x, y, face, moving: true, dist: g.start + d, carry, load: !!carry };
+    }
+    u -= dur[i];
+  }
+  const g = lp.segs[0];
+  return { x: g.a[0], y: g.a[1], face: g.h, moving: false };
+}
+function floorForkAt(f, t) {
+  const st = walkerAt(f, t + f.phase);
+  let fz = st.load ? 2.2 : 0, loaded = !!st.load;
+  if (!st.moving && st.pi != null) {
+    const n = f.pts.length, picking = !f.carry[(st.pi - 1 + n) % n] && f.carry[st.pi], dropping = f.carry[(st.pi - 1 + n) % n] && !f.carry[st.pi];
+    // 포크를 넣고 들어 올리기 / 내려놓고 포크 빼기
+    if (picking) { loaded = st.pf > 0.25; fz = 2.2 * ease(clamp01((st.pf - 0.25) / 0.4)); }
+    if (dropping) { loaded = st.pf < 0.65; fz = 2.2 * (1 - ease(clamp01((st.pf - 0.2) / 0.4))); }
+  }
+  return { x: st.x, y: st.y, hx: Math.cos(st.face), hy: Math.sin(st.face), fz, loaded };
 }
 function loadedNow() {
   if (phase < IDX.load) return 0;
@@ -1466,6 +1730,20 @@ function poseTarget(id, tp) {
     const p = cyc(3.5), reach = wave(p);
     return { r: [0.9 + 0.6 * reach, 0.6 - 0.4 * reach], l: [0.9 + 0.6 * reach, 0.6 - 0.4 * reach], lean: 0.35 * reach, look: 0.9 * (reach - 0.5), carry: p > 0.3 && p < 0.85 ? "brown" : "" };
   }
+  if (id === 8) {
+    // 검수 보조: 컨베이어 위 박스를 스캐너로 찍고 기록
+    const p = cyc(2.4), scan = wave(p);
+    return { r: [1.2 + 0.3 * scan, 0.5 + 0.3 * scan], l: [0.95, 0.9], lean: 0.35 + 0.2 * scan, look: 0.4 * Math.sin(p * 2 * Math.PI), carry: name === "inspect" && p > 0.5 ? "clip" : "" };
+  }
+  if (id === 11) {
+    // 냉동 랙 보충: 바닥 상자를 들어 선반에 올림
+    const p = cyc(3.0), up = wave(p);
+    return { r: [0.6 + 1.3 * up, 0.5 - 0.3 * up], l: [0.6 + 1.3 * up, 0.5 - 0.3 * up], lean: 0.5 * (1 - up), carry: p > 0.15 && p < 0.6 ? "teal" : "" };
+  }
+  if (id !== 6) {
+    const p = cyc(3.2), w2 = wave(p);
+    return { r: [0.9 + 0.4 * w2, 0.7], l: [0.9 + 0.4 * w2, 0.7], lean: 0.3 * w2, look: 0.4 * Math.sin(p * 2 * Math.PI) };
+  }
   if (name === "pack" || name === "load") return { r: [1.0 + 0.25 * Math.sin(t * 4), 0.9], l: [1.0 + 0.25 * Math.sin(t * 4), 0.9], lean: 0.3 };
   return { r: [1.1, 0.8 + 0.35 * Math.sin(t * 6)], l: [1.0, 0.95 + 0.15 * Math.sin(t * 3)], lean: 0.2 + 0.1 * Math.sin(t * 1.5) };
 }
@@ -1479,8 +1757,9 @@ function wantRate(s) {
 }
 function goTo(next) {
   phase = next % PHASES.length; pt = 0;
+  while (SKIP.has(PHASES[phase][0])) phase = (phase + 1) % PHASES.length;
   if (phase === 0) { s = 0; rate = 0; }
-  if (phase > 4) s = DONE_S;
+  if (phase > 4 || WAREHOUSE) s = DONE_S;
 }
 function step(dt) {
   if (paused) return;
@@ -1547,7 +1826,8 @@ function tick(now) {
 }
 const run = () => { if (!frame && visible) { last = 0; frame = requestAnimationFrame(tick); } };
 const setPaused = (value) => { paused = value; stage.setAttribute("aria-pressed", paused ? "true" : "false"); run(); };
-if (still.matches) { goTo(IDX.settle); pt = PHASES[IDX.settle][1]; }
+goTo(0);
+if (still.matches) { const end = WAREHOUSE ? IDX.v_lot : IDX.settle; goTo(end); pt = PHASES[end][1]; }
 new IntersectionObserver((entries) => { visible = entries[entries.length - 1].isIntersecting; if (visible) run(); }, { rootMargin: "120px 0px" }).observe(stage);
 stage.addEventListener("click", () => setPaused(!paused));
 stage.addEventListener("keydown", (event) => {
@@ -1567,15 +1847,16 @@ const plate = k.plateHtml({
   fig: TEXT.fig,
   title: TEXT.title,
   hint: TEXT.hint,
-  readout: TEXT.readout.entry.replace("{total}", String(ORDERED)),
+  readout: WAREHOUSE ? TEXT.readout.v_house : TEXT.readout.entry.replace("{total}", String(ORDERED)),
   body: `<div class="iso-stage" tabindex="0" role="button" aria-pressed="false" aria-label="${TEXT.aria}">${svg}</div>`,
 });
 const swatch = (c) => (c === "lit" ? "mf-sw-lit" : c === "man" ? "mf-sw-man" : c === "glow" ? "mf-sw-glow" : c === "truck" ? "mf-sw-truck" : `sw-${c}`);
 const legend = `<figcaption class="iso-legend"><span class="mf-keys">${TEXT.keys.map(([c, label]) => `<span class="mf-key"><span class="mf-sw ${swatch(c)}"></span>${label}</span>`).join("")}</span><span class="iso-caption">${TEXT.caption}</span></figcaption>`;
-const body = plate.replace(/<\/figure>$/, `${legend}</figure>`);
+const crumbs = TEXT.crumbs ? `<div class="mf-crumbs" aria-hidden="true">${TEXT.crumbs.generic.map((g, i) => `${i ? '<span class="mf-crumb-sep">›</span>' : ""}<span class="mf-crumb">${g}</span>`).join("")}</div>` : "";
+const body = plate.replace(/<\/figure>$/, `${legend}</figure>`).replace(/^(<figure[^>]*>)/, `$1${crumbs}`);
 
 mkdirSync(OUT, { recursive: true });
-const name = theme === "light" ? "scm-milk-flow-light.html" : "scm-milk-flow.html";
+const name = `${WAREHOUSE ? "scm-warehouse" : "scm-milk-flow"}${theme === "light" ? "-light" : ""}.html`;
 const html = k
   .pageHtml({ title: TEXT.page, theme, body: `<style>${CSS}</style>${body}`, script: kitScript() + live })
   .replace('<html lang="en">', '<html lang="ko">');
