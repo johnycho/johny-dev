@@ -8,17 +8,19 @@ type Props = {
   /** static/diagrams 아래 이름(확장자 제외). 라이트 테마는 `<이름>-light.html`을 쓴다 */
   name: string;
   title: string;
+  /** 그림 페이지에 넘길 쿼리(예: `steps=1-4`). 한 그림을 글의 여러 곳에 나눠 넣을 때 쓴다 */
+  query?: string;
   /** 높이를 재기 전 자리 높이 */
   height?: string;
 };
 
 const MAX_H = 1600; // 오측정에 대한 안전 상한(px)
 
-function Frame({name, title, height = '480px'}: Props) {
+function Frame({name, title, query, height = '480px'}: Props) {
   const {colorMode} = useColorMode();
   const ref = useRef<HTMLIFrameElement>(null);
   const [h, setH] = useState<string>(height);
-  const src = `/diagrams/${name}${colorMode === 'dark' ? '' : '-light'}.html`;
+  const src = `/diagrams/${name}${colorMode === 'dark' ? '' : '-light'}.html${query ? `?${query}` : ''}`;
 
   useEffect(() => {
     const iframe = ref.current;

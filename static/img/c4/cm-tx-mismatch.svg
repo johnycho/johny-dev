@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="400" viewBox="0 0 440 400" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="400" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">트랜잭션 안에서 외부 시스템을 호출할 때의 불일치</text>
+<rect x="8" y="36" width="124" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="70" y="56" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">입고 관제 서버</text>
+<line x1="70" y1="68" x2="70" y2="300" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="148" y="36" width="124" height="32" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="210" y="56" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">입고 관제 DB</text>
+<line x1="210" y1="68" x2="210" y2="300" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3"/>
+<rect x="298" y="36" width="124" height="32" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="360" y="56" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">재고 관리 시스템</text>
+<line x1="360" y1="68" x2="360" y2="300" stroke="#888" stroke-width="1.2" stroke-dasharray="4 3"/>
+<line x1="70" y1="100" x2="209" y2="100" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="140" y="82" font-size="10" fill="#333" text-anchor="middle">트랜잭션 시작,</text>
+<text x="140" y="95" font-size="10" fill="#333" text-anchor="middle">지시를 '출고'로 (커밋 전)</text>
+<circle cx="82" cy="112" r="8" fill="#4C7FE0"/><text x="82" y="115.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">1</text>
+<line x1="70" y1="146" x2="359" y2="146" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="285" y="140" font-size="10" fill="#333" text-anchor="middle">재고 출고 요청</text>
+<circle cx="82" cy="158" r="8" fill="#4C7FE0"/><text x="82" y="161.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">2</text>
+<polyline points="360,176 392,176 392,200 361,200" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="352" y="184" font-size="10" fill="#333" text-anchor="end">즉시 커밋</text>
+<text x="352" y="197" font-size="10" fill="#333" text-anchor="end">재고 40 → 0</text>
+<circle cx="406" cy="188" r="8" fill="#4C7FE0"/><text x="406" y="191.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">3</text>
+<line x1="359" y1="226" x2="71" y2="226" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="285" y="220" font-size="10" fill="#333" text-anchor="middle">성공 응답</text>
+<circle cx="348" cy="238" r="8" fill="#4C7FE0"/><text x="348" y="241.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">4</text>
+<polyline points="70,248 100,248 100,268 71,268" fill="none" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="108" y="262" font-size="10" fill="#9E3A57" text-anchor="start">이어진 처리에서 예외</text>
+<circle cx="56" cy="258" r="8" fill="#4C7FE0"/><text x="56" y="261.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">5</text>
+<line x1="70" y1="292" x2="209" y2="292" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="140" y="286" font-size="10" fill="#333" text-anchor="middle">롤백, 지시는 '배차 중'</text>
+<circle cx="82" cy="304" r="8" fill="#4C7FE0"/><text x="82" y="307.5" font-size="10" fill="#FFFFFF" text-anchor="middle" font-weight="bold">6</text>
+<rect x="16" y="320" width="408" height="64" rx="6" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="220" y="343" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">결과: 지시는 '배차 중'인데 재고는 이미 출고됨</text>
+<text x="220" y="363" font-size="10.5" fill="#333" text-anchor="middle">재고 관리 시스템은 따로 커밋해서 롤백을 모른다</text>
+</svg>

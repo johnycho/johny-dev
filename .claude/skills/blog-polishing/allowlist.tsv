@@ -110,3 +110,8 @@ blog/2026-08-21-scaling-architecture-step-by-step.mdx	두고	ee9e2cbc6fd1	"자�
 blog/2026-09-03-ticketing-system-architecture.mdx	고른	35d46703dadc	속도를 고르게 한다(평탄화) 의미로 규칙 예외, 선택 의미 아님	k>대기열이 "입장 속도"를 고른다면, 메시지 큐는 "DB
 blog/2026-09-12-scm-system-explained.mdx	그림형식(→손수 SVG)	b94b556eb2b8	SCM 글: 우유 100박스 흐름과 창고 구조를 anatomy 인터랙티브 등각 모형으로 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="scm-milk-flow" title="1층 입차와 검수, 2층 적치, 
 blog/2026-09-12-scm-system-explained.mdx	그림형식(→손수 SVG)	864f80b1e449	SCM 글: 우유 100박스 흐름과 창고 구조를 anatomy 인터랙티브 등각 모형으로 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="scm-warehouse" title="2층 냉장존, 3층 냉동존, 4층
+blog/2026-11-23-center-stock-transfer.mdx	그림형식(→손수 SVG)	e2d8719c09eb	센터 간 재고이동 글: 원본 단계 장면을 일반화한 인터랙티브 그림으로 과정 설명을 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="center-move-steps" query="steps=1-4" tit
+blog/2026-11-23-center-stock-transfer.mdx	그림형식(→손수 SVG)	20bc796f4d7f	센터 간 재고이동 글: 원본 단계 장면을 일반화한 인터랙티브 그림으로 과정 설명을 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="center-move-steps" query="steps=5-7" tit
+blog/2026-11-23-center-stock-transfer.mdx	그림형식(→손수 SVG)	864a3ed1b47f	센터 간 재고이동 글: 원본 단계 장면을 일반화한 인터랙티브 그림으로 과정 설명을 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="center-move-steps" query="steps=8-9" tit
+blog/2026-11-23-center-stock-transfer.mdx	그림형식(→손수 SVG)	e80ebea5c2e0	센터 간 재고이동 글: 원본 단계 장면을 일반화한 인터랙티브 그림으로 과정 설명을 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="center-move-steps" query="steps=10-12" t
+blog/2026-11-23-center-stock-transfer.mdx	그림형식(→손수 SVG)	4a8f4dc2baf4	센터 간 재고이동 글: 원본 단계 장면을 일반화한 인터랙티브 그림으로 과정 설명을 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="center-move-steps" query="steps=keys" ti

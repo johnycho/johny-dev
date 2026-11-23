@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>센터 간 재고이동 단계</title>
+<style>
+/* 생성 파일: tools/diagrams/center-move-steps/build.mjs 가 만든다. 직접 고치지 말 것. */
+:root {
+/*TOKENS*/
+  --font-body: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-mono: ui-monospace, Menlo, "Apple SD Gothic Neo", "Noto Sans KR", monospace;
+}
+html { color-scheme: /*SCHEME*/; background: transparent; }
+*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; padding: 4px; background: transparent; color: var(--ink); font-family: var(--font-body); -webkit-text-size-adjust: 100%; }
+.card { background: var(--sheet); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px 12px; max-width: 100%; }
+.tabs { display: flex; flex-wrap: wrap; gap: 4px; margin: 0 0 10px; padding: 0; }
+.tabs[hidden] { display: none; }
+.tabs button {
+  font: 600 14px/1 var(--font-body); color: var(--muted); background: var(--soft); border: 1px solid var(--line);
+  border-radius: 5px; padding: 6px 8px; min-width: 30px; cursor: pointer;
+}
+.tabs button[aria-selected="true"] { color: var(--hot); border-color: var(--hot); background: var(--hot-soft); }
+.tabs button:hover { border-color: var(--hot); }
+button:focus-visible, .nd:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+.stack { display: grid; }
+.stack > * { grid-area: 1 / 1; visibility: hidden; min-width: 0; }
+.stack > .on { visibility: visible; }
+.head { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; row-gap: 4px; margin: 0 0 8px; }
+.head h2 { margin: 0; font: 700 18px/1.3 var(--font-body); }
+.head h2 .n { color: var(--hot); margin-right: 6px; }
+.state { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font: 500 12px/1.4 var(--font-body); color: var(--muted); }
+.state .pill { padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line); background: var(--soft); color: var(--ink); }
+.state .pill.new { border-color: var(--hot); background: var(--hot-soft); color: var(--hot); font-weight: 600; }
+.state .sp { width: 6px; }
+.scene { background: var(--scene); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.sv-host { aspect-ratio: 680 / 410; }
+.sv-host svg { display: block; width: 100%; height: 100%; }
+.bar { height: 3px; background: var(--line); }
+.bar span { display: block; height: 100%; width: 0; background: var(--hot); }
+.caps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding: 0; list-style: none; border: 1px solid var(--line); border-top: none; border-radius: 0 0 6px 6px; }
+.caps li { border-left: 1px solid var(--line); min-width: 0; }
+.caps li:first-child { border-left: none; }
+.caps button {
+  all: unset; box-sizing: border-box; display: block; width: 100%; height: 100%; cursor: pointer;
+  padding: 7px 9px 9px; font: 400 12.5px/1.45 var(--font-body); color: var(--muted); word-break: keep-all; overflow-wrap: anywhere;
+}
+.caps b { display: block; font: 600 11px/1.4 var(--font-mono); margin-bottom: 2px; }
+.caps li.done button { color: var(--ink); }
+.caps li.on button { color: var(--ink); background: var(--soft); }
+.caps li.on b { color: var(--hot); }
+.caps button:focus-visible { outline-offset: -2px; }
+.foot { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 10px; }
+.replay { font: 500 12.5px var(--font-body); color: var(--ink); background: var(--soft); border: 1px solid var(--line); border-radius: 5px; padding: 5px 10px; cursor: pointer; flex: none; }
+.replay:hover { border-color: var(--hot); color: var(--hot); }
+.legend { flex: 1 1 260px; margin: 0; font: 400 11.5px/1.5 var(--font-body); color: var(--muted); }
+.legend .k { white-space: nowrap; margin-right: 8px; }
+.legend .d { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 4px; vertical-align: 0; }
+.d.ctl { background: var(--ctl); } .d.fld { background: var(--fld); } .d.xl { background: var(--xl); } .d.inv { background: var(--inv); }
+@media (max-width: 560px) {
+  .card { padding: 8px 8px 10px; }
+  .head h2 { font-size: 16px; }
+  .caps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .caps li:nth-child(3) { border-left: none; }
+  .caps li:nth-child(n+3) { border-top: 1px solid var(--line); }
+  .caps button { font-size: 12px; padding: 6px 8px 8px; }
+}
+
+/* ---------- scene drawing ---------- */
+.sv text { font-family: var(--font-body); }
+.sv .mono { font-family: var(--font-mono); }
+.sv .ink { fill: var(--ink); } .sv .mut { fill: var(--muted); }
+.ground { stroke: var(--stroke); stroke-width: 1.5; }
+.roadbg { fill: var(--soft); } .road { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 8 6; }
+.wall { fill: var(--wall); stroke: var(--stroke); stroke-width: 1.5; }
+.roof { fill: var(--roof); stroke: var(--stroke); stroke-width: 1.5; stroke-linejoin: round; }
+.bl { font-weight: 700; font-size: 13px; fill: var(--ink); }
+.rack { stroke: var(--muted); stroke-width: 2; stroke-linecap: round; }
+.desk, .stand { stroke: var(--muted); stroke-width: 2; fill: var(--muted); }
+.mon { fill: var(--soft); stroke: var(--stroke); stroke-width: 1.5; }
+.box { fill: var(--box); stroke: var(--box-edge); stroke-width: 1; }
+.tape { stroke: var(--box-edge); stroke-width: 1.2; }
+.hl { fill: none; stroke: var(--hot); stroke-width: 2; }
+.btn { fill: var(--hot); }
+.btn-t { fill: #fff; font-size: 8px; font-weight: 600; }
+.faded { opacity: .4; }
+.srv.ctl { color: var(--ctl); } .srv.fld { color: var(--fld); } .srv.xl { color: var(--xl); } .srv.inv { color: var(--inv); }
+.srv.dim { opacity: .28; }
+.srv-body { fill: var(--wall); stroke: currentColor; stroke-width: 1.6; }
+.slot { stroke: currentColor; stroke-width: 1.4; opacity: .55; }
+.led { fill: currentColor; }
+.srv-t { fill: currentColor; font-size: 11px; font-weight: 700; text-anchor: middle; }
+.halo { fill: none; stroke: currentColor; stroke-width: 3; }
+.none-t { fill: var(--muted); font-size: 9.5px; font-weight: 600; }
+.pkt { stroke: var(--wall); stroke-width: 1.5; }
+.c-ctl { fill: var(--ctl); } .c-fld { fill: var(--fld); } .c-xl { fill: var(--xl); } .c-inv { fill: var(--inv); }
+.cur path { fill: var(--ink); stroke: var(--wall); stroke-width: 1; }
+.rip { fill: none; stroke: var(--hot); stroke-width: 2; }
+.pop { transform-box: fill-box; transform-origin: center; }
+.doc-bg { fill: var(--wall); stroke: var(--stroke); stroke-width: 1.4; }
+.doc-head { fill: var(--stroke); }
+.doc-h { fill: var(--wall); font-size: 10.5px; font-weight: 700; }
+.pill-r { fill: var(--hot-soft); stroke: var(--hot); stroke-width: 1; }
+.pill-t { fill: var(--hot); font-size: 9px; font-weight: 700; }
+.sep { stroke: var(--line); stroke-width: 1; }
+.row-bg { fill: var(--soft); }
+.chip { stroke-width: 1; }
+.chip.init { fill: var(--sheet); stroke: var(--line); } .chip-t.init { fill: var(--muted); }
+.chip.ok { fill: var(--ok-soft); stroke: var(--ok); } .chip-t.ok { fill: var(--ok); }
+.chip.bad { fill: var(--bad-soft); stroke: var(--bad); } .chip-t.bad { fill: var(--bad); }
+.chip.run { fill: var(--run-soft); stroke: var(--run); } .chip-t.run { fill: var(--run); }
+.chip-t { font-size: 8.5px; font-weight: 700; }
+.badge { stroke-width: 1; }
+.badge.key { fill: var(--wall); stroke: var(--inv); } .badge-t.key { fill: var(--inv); }
+.badge.ok { fill: var(--ok-soft); stroke: var(--ok); } .badge-t.ok { fill: var(--ok); }
+.badge-t { font-size: 9px; font-weight: 700; }
+.cnt-t { fill: var(--ctl); font-family: var(--font-mono); font-size: 9px; font-weight: 600; }
+.cnt-b { fill: var(--wall); stroke: var(--ctl); stroke-width: 1; }
+.toarr { fill: none; stroke: var(--hot); stroke-width: 2; stroke-linecap: round; }
+.tohead { fill: var(--hot); }
+.tolbl { fill: var(--hot); font-size: 10.5px; font-weight: 600; }
+.xls { fill: #2E7D4F; } .xls-l { stroke: #fff; stroke-width: 1.2; opacity: .8; }
+.bracket { fill: none; stroke: var(--hot); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.s-lbl { font-size: 9.5px; font-weight: 700; }
+.s-lbl.s1 { fill: var(--hot); } .s-lbl.s0 { fill: var(--muted); }
+.slip-head { fill: var(--ctl); }
+.flash { fill: none; stroke: var(--hot); stroke-width: 2; }
+.plt { fill: var(--box); stroke: var(--box-edge); stroke-width: 1; }
+.plt-t { fill: var(--ink); font-family: var(--font-mono); font-size: 9.5px; font-weight: 600; }
+.bub { fill: var(--hot-soft); stroke: var(--hot); stroke-width: 1; }
+.bub-t { fill: var(--hot); font-size: 9px; font-weight: 700; }
+.cart { fill: none; stroke: var(--stroke); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
+.wheel { fill: var(--stroke); }
+.beam { stroke: var(--bad); stroke-width: 1.6; stroke-dasharray: 4 3; }
+.tail { stroke: var(--stroke); stroke-width: 1.2; stroke-dasharray: 3 3; }
+.pda-frame { fill: var(--stroke); }
+.pda-scr { fill: var(--wall); }
+.pda-t { fill: var(--ink); font-size: 9.5px; font-weight: 700; }
+.pda-s { fill: var(--muted); font-size: 8px; }
+.vest { fill: var(--vest); stroke: var(--stroke); stroke-width: 1.2; }
+.hd { fill: var(--wall); stroke: var(--stroke); stroke-width: 1.4; }
+.leg { stroke: var(--stroke); stroke-width: 3; stroke-linecap: round; }
+.pda { fill: var(--stroke); }
+.pda-glow { fill: var(--hot); }
+.zone { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.zone-t { fill: var(--muted); font-size: 9px; font-weight: 700; }
+.truck { fill: var(--wall); stroke: var(--stroke); stroke-width: 1.5; }
+.cab { fill: var(--ctl); stroke: var(--stroke); stroke-width: 1.5; stroke-linejoin: round; }
+.win { fill: var(--soft); }
+.plate { fill: var(--sheet); stroke: var(--stroke); stroke-width: 1; }
+.plate-t { fill: var(--ink); font-size: 7.5px; font-weight: 700; }
+.kafka-t { fill: var(--xl); font-family: var(--font-mono); font-size: 9px; font-weight: 600; }
+.trk { stroke: var(--line); stroke-width: 3; stroke-linecap: round; }
+.trk-on { stroke: var(--hot); stroke-width: 3; stroke-linecap: round; }
+.nd.go { cursor: pointer; }
+.nd:focus { outline: none; }
+.nd-hit { fill: transparent; }
+.nd-c { fill: var(--sheet); stroke: var(--muted); stroke-width: 1.5; }
+.nd.go:hover .nd-c, .nd.go:focus-visible .nd-c { stroke: var(--hot); stroke-width: 3; }
+.nd.go:hover .nd-l, .nd.go:focus-visible .nd-l { fill: var(--hot); }
+.nd-n { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; font-weight: 700; }
+.nd-on { fill: var(--hot); }
+.nd-on-t { fill: var(--sheet); font-family: var(--font-mono); font-size: 11px; font-weight: 700; }
+.nd-l { fill: var(--ink); font-size: 10.5px; font-weight: 600; }
+.ph { fill: none; stroke: var(--muted); stroke-width: 1.2; }
+.ph-t { fill: var(--ink); font-size: 11px; font-weight: 700; }
+.sd { stroke: var(--wall); stroke-width: 1; }
+.st { fill: var(--soft); stroke: var(--line); stroke-width: 1; }
+.st-t { fill: var(--ink); font-size: 10px; font-weight: 700; }
+.st.arr { fill: var(--run-soft); stroke: var(--run); } .st-t.arr { fill: var(--run); }
+.st-cap { fill: var(--muted); font-size: 10px; font-weight: 600; }
+.frame { fill: none; stroke: var(--line); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.fr-t { fill: var(--ink); font-size: 11px; font-weight: 700; }
+.khead { fill: var(--inv); }
+.k-l { fill: var(--muted); font-size: 9.5px; }
+.k-v { fill: var(--ink); font-family: var(--font-mono); font-size: 11px; font-weight: 700; }
+.k-f { fill: var(--muted); font-size: 8.5px; font-weight: 600; }
+.karr { stroke: var(--muted); stroke-width: 1.6; }
+.khd { fill: var(--muted); }
+.kn { fill: var(--hot); font-size: 10.5px; font-weight: 700; }
+.nolink { stroke: var(--bad); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.xmark { fill: none; stroke: var(--bad); stroke-width: 2.4; stroke-linecap: round; }
+.tok { fill: var(--hot); }
+.tok-t { fill: var(--sheet); font-family: var(--font-mono); font-size: 10px; font-weight: 700; }
+.wr { fill: var(--wall); stroke: var(--line); stroke-width: 1; }
+.wr.ref { stroke: var(--hot); stroke-width: 1.5; }
+.wr-slot { fill: none; stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 3; }
+.wr-t { fill: var(--ink); font-size: 10px; }
+.wr-n { fill: var(--muted); font-size: 10px; }
+.wr-r { fill: var(--hot); font-size: 9.5px; font-weight: 700; }
+.reflink { fill: none; stroke: var(--hot); stroke-width: 1.8; }
+.lnk-t { fill: var(--hot); font-size: 10.5px; font-weight: 700; }
+</style>
+</head>
+<body>
+<div class="card" id="fig">
+  <div class="tabs" id="tabs" role="tablist" aria-label="단계 선택"></div>
+  <div class="stack" id="heads"></div>
+  <div class="scene" id="scene" role="tabpanel"><div class="sv-host" id="host"></div><div class="bar"><span id="bar"></span></div></div>
+  <div class="stack" id="capstack"></div>
+  <div class="foot">
+    <button class="replay" id="replay" type="button">↻ 다시 재생</button>
+    <p class="legend"><span class="k"><i class="d ctl"></i>입고 관제</span><span class="k"><i class="d fld"></i>현장 처리</span><span class="k"><i class="d xl"></i>엑셀 처리</span><span class="k"><i class="d inv"></i>재고 관리</span><br>입고 관제, 현장 처리, 엑셀 처리는 입고 관제 시스템의 서버이고, 재고 관리는 실제 재고를 기록하는 시스템입니다. ⑨의 메시지 처리 서버도 입고 관제 시스템에 속합니다.</p>
+  </div>
+</div>
+<script>
+/*ANIME*/
+</script>
+<script>
+/*SCENES*/
+</script>
+</body></html>
