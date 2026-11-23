@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="370" viewBox="0 0 440 370" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="370" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">배포를 누가 시작하나 — 푸시와 풀</text>
+<rect x="8" y="36" width="424" height="132" rx="8" fill="#FAFAFA" stroke="#DDDDDD"/>
+<text x="20" y="56" font-size="11.5" fill="#7A5200" text-anchor="start" font-weight="bold">푸시 방식: EC2 + CodeDeploy, ECS</text>
+<rect x="20" y="80" width="92" height="44" rx="6" fill="#FFFFFF" stroke="#999"/>
+<text x="66" y="106" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">CI</text>
+<rect x="166" y="80" width="112" height="44" rx="6" fill="#FFF3E0" stroke="#E8C98F"/>
+<text x="222" y="99" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">CodeDeploy</text>
+<text x="222" y="114" font-size="10.5" fill="#7A5200" text-anchor="middle">또는 ECS</text>
+<rect x="332" y="80" width="88" height="44" rx="6" fill="#FFFFFF" stroke="#999"/>
+<text x="376" y="99" font-size="10.5" fill="#333" text-anchor="middle">EC2 서버</text>
+<text x="376" y="114" font-size="10.5" fill="#333" text-anchor="middle">또는 태스크</text>
+<line x1="112" y1="102" x2="164" y2="102" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="138" y="94" font-size="9.5" fill="#555" text-anchor="middle">배포 요청</text>
+<line x1="278" y1="102" x2="330" y2="102" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="304" y="94" font-size="9.5" fill="#555" text-anchor="middle">교체</text>
+<text x="220" y="152" font-size="10.5" fill="#555" text-anchor="middle">CI가 AWS 배포 권한을 갖고 배포를 직접 시작합니다</text>
+<rect x="8" y="180" width="424" height="180" rx="8" fill="#FAFAFA" stroke="#DDDDDD"/>
+<text x="20" y="200" font-size="11.5" fill="#9E3A57" text-anchor="start" font-weight="bold">풀 방식: EKS + Argo CD</text>
+<rect x="20" y="224" width="92" height="44" rx="6" fill="#FFFFFF" stroke="#999"/>
+<text x="66" y="250" font-size="11.5" fill="#333" text-anchor="middle" font-weight="bold">CI</text>
+<rect x="150" y="224" width="100" height="44" rx="6" fill="#FFFFFF" stroke="#999"/>
+<text x="200" y="243" font-size="10.5" fill="#333" text-anchor="middle" font-weight="bold">Git 저장소</text>
+<text x="200" y="258" font-size="10" fill="#333" text-anchor="middle">(매니페스트)</text>
+<line x1="112" y1="246" x2="148" y2="246" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="130" y="238" font-size="9.5" fill="#555" text-anchor="middle">커밋</text>
+<rect x="284" y="212" width="140" height="112" rx="6" fill="#FFFFFF" stroke="#D06A86" stroke-dasharray="4 3"/>
+<text x="354" y="228" font-size="10" fill="#9E3A57" text-anchor="middle">EKS 클러스터</text>
+<rect x="298" y="236" width="112" height="32" rx="5" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="354" y="256" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">Argo CD</text>
+<line x1="298" y1="252" x2="252" y2="252" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="267" y="268" font-size="9.5" fill="#555" text-anchor="middle">읽고</text>
+<text x="267" y="280" font-size="9.5" fill="#555" text-anchor="middle">비교</text>
+<line x1="354" y1="268" x2="354" y2="288" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<rect x="306" y="290" width="96" height="26" rx="5" fill="#FFFFFF" stroke="#999"/>
+<text x="354" y="307" font-size="10.5" fill="#333" text-anchor="middle">파드 교체</text>
+<text x="220" y="346" font-size="10.5" fill="#555" text-anchor="middle">CI는 Git에 커밋만 하고, 클러스터 권한은 Argo CD만 갖습니다</text>
+</svg>

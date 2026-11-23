@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="356" viewBox="0 0 440 356" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="356" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="12.5" fill="#333" text-anchor="middle" font-weight="bold">ECS 롤링 업데이트 — 원하는 개수 4, 최소 100%, 최대 200%</text>
+<text x="16" y="50" font-size="11" fill="#333" text-anchor="start">① 기존 v1 태스크 4개가 실행 중</text>
+<rect x="20" y="60" width="45" height="32" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="42.5" y="80" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">v1</text>
+<rect x="71" y="60" width="45" height="32" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="93.5" y="80" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">v1</text>
+<rect x="122" y="60" width="45" height="32" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="144.5" y="80" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">v1</text>
+<rect x="173" y="60" width="45" height="32" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="195.5" y="80" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">v1</text>
+<text x="16" y="120" font-size="11" fill="#333" text-anchor="start">② v2 태스크 4개를 추가로 기동(최대 200% = 8개)</text>
+<rect x="20" y="130" width="45" height="32" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="42.5" y="150" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">v1</text>
+<rect x="71" y="130" width="45" height="32" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="93.5" y="150" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">v1</text>
+<rect x="122" y="130" width="45" height="32" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="144.5" y="150" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">v1</text>
+<rect x="173" y="130" width="45" height="32" rx="5" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="195.5" y="150" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">v1</text>
+<rect x="224" y="130" width="45" height="32" rx="5" fill="#FFFFFF" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="246.5" y="150" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="275" y="130" width="45" height="32" rx="5" fill="#FFFFFF" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="297.5" y="150" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="326" y="130" width="45" height="32" rx="5" fill="#FFFFFF" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="348.5" y="150" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="377" y="130" width="45" height="32" rx="5" fill="#FFFFFF" stroke="#8FBF8F" stroke-dasharray="4 3"/>
+<text x="399.5" y="150" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<text x="16" y="190" font-size="11" fill="#333" text-anchor="start">③ v2가 헬스 체크를 통과하면 v1 4개를 중지</text>
+<rect x="20" y="200" width="45" height="32" rx="5" fill="#F7F7F7" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<text x="42.5" y="220" font-size="10.5" fill="#999" text-anchor="middle">중지</text>
+<rect x="71" y="200" width="45" height="32" rx="5" fill="#F7F7F7" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<text x="93.5" y="220" font-size="10.5" fill="#999" text-anchor="middle">중지</text>
+<rect x="122" y="200" width="45" height="32" rx="5" fill="#F7F7F7" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<text x="144.5" y="220" font-size="10.5" fill="#999" text-anchor="middle">중지</text>
+<rect x="173" y="200" width="45" height="32" rx="5" fill="#F7F7F7" stroke="#BBBBBB" stroke-dasharray="4 3"/>
+<text x="195.5" y="220" font-size="10.5" fill="#999" text-anchor="middle">중지</text>
+<rect x="224" y="200" width="45" height="32" rx="5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="246.5" y="220" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="275" y="200" width="45" height="32" rx="5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="297.5" y="220" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="326" y="200" width="45" height="32" rx="5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="348.5" y="220" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="377" y="200" width="45" height="32" rx="5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="399.5" y="220" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<text x="16" y="260" font-size="11" fill="#333" text-anchor="start">④ v2 태스크 4개만 남음</text>
+<rect x="20" y="270" width="45" height="32" rx="5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="42.5" y="290" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="71" y="270" width="45" height="32" rx="5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="93.5" y="290" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="122" y="270" width="45" height="32" rx="5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="144.5" y="290" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="173" y="270" width="45" height="32" rx="5" fill="#E9F2E9" stroke="#8FBF8F"/>
+<text x="195.5" y="290" font-size="11" fill="#2E6B2E" text-anchor="middle" font-weight="bold">v2</text>
+<rect x="16" y="324" width="408" height="26" rx="5" fill="#FFFBEA" stroke="#E0A000" stroke-dasharray="4 3"/>
+<text x="220" y="341" font-size="10.5" fill="#5A4300" text-anchor="middle">정상인 태스크가 4개(100%) 아래로 내려가지 않습니다</text>
+</svg>

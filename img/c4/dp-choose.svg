@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="380" viewBox="0 0 440 380" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="380" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">어떤 방식을 선택할까</text>
+<rect x="16" y="44" width="264" height="46" rx="6" fill="#F7F7F7" stroke="#999"/>
+<text x="148" y="64" font-size="11" fill="#333" text-anchor="middle">앱을 컨테이너 이미지로 만들 수 있나?</text>
+<text x="148" y="80" font-size="10" fill="#666" text-anchor="middle">(OS 의존이 크거나 전환 여력이 없으면 N)</text>
+<line x1="280" y1="67" x2="312" y2="67" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="296" y="61" font-size="10.5" fill="#555" text-anchor="middle" font-weight="bold">N</text>
+<rect x="314" y="44" width="112" height="46" rx="6" fill="#FFF3E0" stroke="#E8C98F"/>
+<text x="370.0" y="64" font-size="11" fill="#7A5200" text-anchor="middle" font-weight="bold">EC2 +</text>
+<text x="370.0" y="80" font-size="10" fill="#7A5200" text-anchor="middle">CodeDeploy</text>
+<line x1="148" y1="90" x2="148" y2="126" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="156" y="112" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">Y</text>
+<rect x="16" y="128" width="264" height="46" rx="6" fill="#F7F7F7" stroke="#999"/>
+<text x="148" y="148" font-size="11" fill="#333" text-anchor="middle">쿠버네티스 생태계가 필요한가?</text>
+<text x="148" y="164" font-size="10" fill="#666" text-anchor="middle">(Helm 차트, 오퍼레이터, 멀티 클라우드)</text>
+<line x1="280" y1="151" x2="312" y2="151" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="296" y="145" font-size="10.5" fill="#555" text-anchor="middle" font-weight="bold">Y</text>
+<rect x="314" y="128" width="112" height="46" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="370.0" y="148" font-size="11" fill="#9E3A57" text-anchor="middle" font-weight="bold">EKS +</text>
+<text x="370.0" y="164" font-size="10" fill="#9E3A57" text-anchor="middle">Argo CD</text>
+<line x1="148" y1="174" x2="148" y2="210" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="156" y="196" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">N</text>
+<rect x="16" y="212" width="264" height="46" rx="6" fill="#F7F7F7" stroke="#999"/>
+<text x="148" y="232" font-size="11" fill="#333" text-anchor="middle">서버(OS) 관리를 줄이고 싶은가?</text>
+<text x="148" y="248" font-size="10" fill="#666" text-anchor="middle">(패치, 용량 계획을 AWS에 맡김)</text>
+<line x1="280" y1="235" x2="312" y2="235" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="296" y="229" font-size="10.5" fill="#555" text-anchor="middle" font-weight="bold">Y</text>
+<rect x="314" y="212" width="112" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="370.0" y="232" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">ECS +</text>
+<text x="370.0" y="248" font-size="10" fill="#26508F" text-anchor="middle">Fargate</text>
+<line x1="148" y1="258" x2="148" y2="294" stroke="#888" stroke-width="1.2" marker-end="url(#ah)"/>
+<text x="156" y="280" font-size="10.5" fill="#555" text-anchor="start" font-weight="bold">N</text>
+<rect x="16" y="296" width="264" height="46" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="148.0" y="316" font-size="11" fill="#26508F" text-anchor="middle" font-weight="bold">ECS + EC2</text>
+<text x="148.0" y="332" font-size="10" fill="#26508F" text-anchor="middle">(GPU, 특정 인스턴스 타입이 필요할 때)</text>
+</svg>
