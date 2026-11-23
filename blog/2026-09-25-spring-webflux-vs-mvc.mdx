@@ -482,7 +482,7 @@ WebFlux의 실무 부담 중 하나가 **디버깅**입니다. 왜 어렵고 어
 </details>
 
 <figure style={{textAlign: 'center', margin: '1.5rem 0'}}>
-  <img src="/img/c4/webflux-decision.svg" alt="전 구간 논블로킹 가능 여부, 리액티브 고유 기능 필요 여부, 가상 스레드 사용 가능 여부를 차례로 물어 MVC 유지, WebFlux, 가상 스레드 + MVC 중 하나를 고르는 판단 흐름" style={{width: '100%', maxWidth: '640px'}} />
+  <img src="/img/c4/webflux-decision.svg" alt="전 구간 논블로킹 가능 여부, 리액티브 고유 기능 필요 여부, 가상 스레드 사용 가능 여부를 차례로 물어 MVC 유지, WebFlux, 가상 스레드 + MVC 중 하나를 선택하는 판단 흐름" style={{width: '100%', maxWidth: '640px'}} />
 </figure>
 
 - **도입하면 좋은 경우**: 요청당 I/O 대기가 많고, **DB, 외부 호출까지 전 구간을 논블로킹**(R2DBC, WebClient)으로 만들 수 있으며, **스트리밍, 백프레셔** 같은 리액티브 고유 기능이 필요할 때.

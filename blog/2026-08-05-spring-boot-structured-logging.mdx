@@ -129,7 +129,7 @@ log.atInfo()
    .log("user logged in");
 ```
 
-<mark>요청 전체에 걸쳐 붙일 값이면 MDC, 지금 이 한 줄에만 붙일 값이면 Fluent API</mark> — 이렇게 나눠 쓰면 됩니다. 참고로 분산 추적을 함께 쓰면 요청을 추적하는 traceId도 자연스럽게 항목으로 실리는데, 이 부분은 [Kafka 분산 추적](./kafka-distributed-tracing) 글과 이어집니다.
+<mark>요청 전체에 걸쳐 붙일 값이면 MDC, 지금 이 한 줄에만 붙일 값이면 Fluent API</mark> — 이렇게 나눠 사용하면 됩니다. 참고로 분산 추적을 함께 사용하면 요청을 추적하는 traceId도 자연스럽게 항목으로 실리는데, 이 부분은 [Kafka 분산 추적](./kafka-distributed-tracing) 글과 이어집니다.
 
 ## 항목 이름을 바꾸거나, 형식 전체를 직접 만들기
 

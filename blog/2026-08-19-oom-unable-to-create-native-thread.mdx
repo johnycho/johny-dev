@@ -25,7 +25,7 @@ java.lang.OutOfMemoryError: unable to create native thread:
 
 ## 이 OOM은 "힙 부족"이 아니다
 
-이름은 `OutOfMemoryError`지만, `unable to create native thread`는 **힙이 부족한 게 아니라 스레드를 더 못 만드는 것**입니다. 스레드 하나는 힙 밖 **네이티브 메모리(스레드 스택)** 를 쓰고, OS의 **스레드/프로세스 개수 한도**도 있습니다. <mark>스레드가 계속 쌓여 이 한도에 도달하면 이 예외가 나고, 그 스택들이 컨테이너 메모리를 넘기면 커널이 `OOMKilled`로 종료합니다.</mark> 힙과 별개라 힙 그래프만 봐선 안 보입니다. (힙 밖 메모리 이야기는 [JVM 튜닝 시나리오](./jvm-tuning-scenarios) 상황 4 참고)
+이름은 `OutOfMemoryError`지만, `unable to create native thread`는 **힙이 부족한 게 아니라 스레드를 더 못 만드는 것**입니다. 스레드 하나는 힙 밖 **네이티브 메모리(스레드 스택)** 를 사용하고, OS의 **스레드/프로세스 개수 한도**도 있습니다. <mark>스레드가 계속 쌓여 이 한도에 도달하면 이 예외가 나고, 그 스택들이 컨테이너 메모리를 넘기면 커널이 `OOMKilled`로 종료합니다.</mark> 힙과 별개라 힙 그래프만 봐선 안 보입니다. (힙 밖 메모리 이야기는 [JVM 튜닝 시나리오](./jvm-tuning-scenarios) 상황 4 참고)
 
 ## 무슨 일이 벌어졌나
 

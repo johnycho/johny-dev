@@ -227,7 +227,7 @@ SELECT * FROM account WHERE id = 1;           -- (A가 id=1에 S락)
 COMMIT;  -- S락 해제                           -- 그제서야 진행
 ```
 
-### 케이스 B — 읽고 나서 각자 쓰면 데드락(승격)
+### 케이스 B — 읽고 나서 각자 수정하면 데드락(승격)
 
 <details>
 <summary>SVG 코드</summary>
@@ -344,4 +344,4 @@ public void transfer(Long from, Long to, int amount) { ... }
 - **S락(읽기)은 서로 공존**하지만, **X락(쓰기)은 S, X 모두와 충돌**해 대기합니다.
 - 대기는 한 방향 기다림, **데드락은 서로 기다리는 순환**(InnoDB가 한쪽 롤백).
 - <mark>격리 수준이 락을 변경합니다 — RC는 레코드 락만, RR은 next-key(gap) 락, SERIALIZABLE은 읽기까지 S락.</mark>
-- SERIALIZABLE에서는 **읽기가 쓰기를 막고(대기)**, **읽고 나서 각자 쓰면 데드락**이 납니다. 강한 일관성이 꼭 필요한 곳에만 사용합니다.
+- SERIALIZABLE에서는 **읽기가 쓰기를 막고(대기)**, **읽고 나서 각자 수정하면 데드락**이 납니다. 강한 일관성이 꼭 필요한 곳에만 사용합니다.

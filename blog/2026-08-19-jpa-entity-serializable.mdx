@@ -83,7 +83,7 @@ session.setAttribute("user", user);   // 세션 복제 시점엔 트랜잭션이
 
 ### 3. serialVersionUID 관리 부담과 버전 불일치
 
-`Serializable`을 쓰면 `serialVersionUID`를 신경 써야 합니다. 엔티티는 **필드가 자주 바뀌는데**, 세션과 캐시에 직렬화해 둔 옛 바이트와 바뀐 클래스가 안 맞으면 역직렬화가 `InvalidClassException`으로 실패합니다.
+`Serializable`을 사용하면 `serialVersionUID`를 신경 써야 합니다. 엔티티는 **필드가 자주 바뀌는데**, 세션과 캐시에 직렬화해 둔 옛 바이트와 바뀐 클래스가 안 맞으면 역직렬화가 `InvalidClassException`으로 실패합니다.
 
 ```java
 private static final long serialVersionUID = 1L; // 명시 안 하면 변경마다 자동값이 달라져 역직렬화 실패

@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="290" viewBox="0 0 440 290" font-family="-apple-system, 'Segoe UI', 'Noto Sans KR', sans-serif">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#888"/></marker></defs>
+<rect x="0" y="0" width="440" height="290" fill="#FFFFFF"/>
+<text x="220" y="22" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">같은 앱을 배포하는 세 가지 방식</text>
+<rect x="76" y="40" width="116" height="34" rx="6" fill="#FFF3E0" stroke="#E8C98F"/>
+<text x="134.0" y="62" font-size="11.5" fill="#7A5200" text-anchor="middle" font-weight="bold">EC2 + CodeDeploy</text>
+<rect x="196" y="40" width="116" height="34" rx="6" fill="#EEF3FB" stroke="#4C7FE0"/>
+<text x="254.0" y="62" font-size="11.5" fill="#26508F" text-anchor="middle" font-weight="bold">ECS</text>
+<rect x="316" y="40" width="116" height="34" rx="6" fill="#FCE4EC" stroke="#D06A86"/>
+<text x="374.0" y="62" font-size="11.5" fill="#9E3A57" text-anchor="middle" font-weight="bold">EKS + Argo CD</text>
+<rect x="8" y="82" width="64" height="46" rx="4" fill="#F7F7F7" stroke="#DDDDDD"/>
+<text x="40" y="109" font-size="10.5" fill="#555" text-anchor="middle" font-weight="bold">배포 단위</text>
+<rect x="76" y="82" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#E8C98F"/>
+<text x="134.0" y="102" font-size="10.5" fill="#333" text-anchor="middle">jar와 스크립트</text>
+<text x="134.0" y="117" font-size="10.5" fill="#333" text-anchor="middle">(번들 zip)</text>
+<rect x="196" y="82" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#4C7FE0"/>
+<text x="254.0" y="102" font-size="10.5" fill="#333" text-anchor="middle">컨테이너</text>
+<text x="254.0" y="117" font-size="10.5" fill="#333" text-anchor="middle">이미지</text>
+<rect x="316" y="82" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#D06A86"/>
+<text x="374.0" y="102" font-size="10.5" fill="#333" text-anchor="middle">이미지와</text>
+<text x="374.0" y="117" font-size="10.5" fill="#333" text-anchor="middle">매니페스트</text>
+<rect x="8" y="132" width="64" height="46" rx="4" fill="#F7F7F7" stroke="#DDDDDD"/>
+<text x="40" y="159" font-size="10.5" fill="#555" text-anchor="middle" font-weight="bold">개수 유지</text>
+<rect x="76" y="132" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#E8C98F"/>
+<text x="134.0" y="152" font-size="10.5" fill="#333" text-anchor="middle">Auto Scaling</text>
+<text x="134.0" y="167" font-size="10.5" fill="#333" text-anchor="middle">그룹(서버 수)</text>
+<rect x="196" y="132" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#4C7FE0"/>
+<text x="254.0" y="152" font-size="10.5" fill="#333" text-anchor="middle">ECS 서비스</text>
+<text x="254.0" y="167" font-size="10.5" fill="#333" text-anchor="middle">(태스크 수)</text>
+<rect x="316" y="132" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#D06A86"/>
+<text x="374.0" y="152" font-size="10.5" fill="#333" text-anchor="middle">Deployment</text>
+<text x="374.0" y="167" font-size="10.5" fill="#333" text-anchor="middle">(파드 수)</text>
+<rect x="8" y="182" width="64" height="46" rx="4" fill="#F7F7F7" stroke="#DDDDDD"/>
+<text x="40" y="209" font-size="10.5" fill="#555" text-anchor="middle" font-weight="bold">배포 시작</text>
+<rect x="76" y="182" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#E8C98F"/>
+<text x="134.0" y="202" font-size="10.5" fill="#333" text-anchor="middle">CI가 CodeDeploy</text>
+<text x="134.0" y="217" font-size="10.5" fill="#333" text-anchor="middle">배포를 요청</text>
+<rect x="196" y="182" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#4C7FE0"/>
+<text x="254.0" y="202" font-size="10.5" fill="#333" text-anchor="middle">CI가 서비스</text>
+<text x="254.0" y="217" font-size="10.5" fill="#333" text-anchor="middle">갱신을 요청</text>
+<rect x="316" y="182" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#D06A86"/>
+<text x="374.0" y="202" font-size="10.5" fill="#333" text-anchor="middle">CI는 Git에 커밋</text>
+<text x="374.0" y="217" font-size="10.5" fill="#333" text-anchor="middle">Argo CD가 반영</text>
+<rect x="8" y="232" width="64" height="46" rx="4" fill="#F7F7F7" stroke="#DDDDDD"/>
+<text x="40" y="259" font-size="10.5" fill="#555" text-anchor="middle" font-weight="bold">서버 관리</text>
+<rect x="76" y="232" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#E8C98F"/>
+<text x="134.0" y="252" font-size="10.5" fill="#333" text-anchor="middle">OS, JDK까지</text>
+<text x="134.0" y="267" font-size="10.5" fill="#333" text-anchor="middle">직접 관리</text>
+<rect x="196" y="232" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#4C7FE0"/>
+<text x="254.0" y="252" font-size="10.5" fill="#333" text-anchor="middle">Fargate면</text>
+<text x="254.0" y="267" font-size="10.5" fill="#333" text-anchor="middle">서버 관리 없음</text>
+<rect x="316" y="232" width="116" height="46" rx="4" fill="#FFFFFF" stroke="#D06A86"/>
+<text x="374.0" y="252" font-size="10.5" fill="#333" text-anchor="middle">노드 방식에</text>
+<text x="374.0" y="267" font-size="10.5" fill="#333" text-anchor="middle">따라 다름</text>
+</svg>

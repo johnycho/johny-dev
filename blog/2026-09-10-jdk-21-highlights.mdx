@@ -28,7 +28,7 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 
 ## 2. 패턴 매칭 switch — 타입별 분기 완성 (JEP 441, 정식)
 
-JDK 17에서 preview였던 기능이 정식이 됐습니다. `switch`에서 **타입으로 분기하고 바로 바인딩**합니다. [JDK 17의 `sealed`](/blog/jdk-17-highlights)와 함께 쓰면 **모든 경우를 처리했는지 컴파일러가 검사**합니다(누락 시 컴파일 에러 — `default` 없이도 안전).
+JDK 17에서 preview였던 기능이 정식이 됐습니다. `switch`에서 **타입으로 분기하고 바로 바인딩**합니다. [JDK 17의 `sealed`](/blog/jdk-17-highlights)와 함께 사용하면 **모든 경우를 처리했는지 컴파일러가 검사**합니다(누락 시 컴파일 에러 — `default` 없이도 안전).
 
 ```java
 // Shape는 JDK 17 예시의 sealed 인터페이스 (Circle/Rectangle/Triangle)

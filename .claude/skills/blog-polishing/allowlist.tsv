@@ -11,7 +11,6 @@ blog/2026-10-23-jpa-association-default-fetch-type.mdx	두고	44561b49cb23	'LAZY
 blog/2026-10-23-jpa-association-default-fetch-type.mdx	두면	8f34dcd864e4	'그대로 두다'는 규칙 예외	 해서 to-one을 그대로 두면, 두 가지가 따라옵니다.
 blog/2026-10-23-jpa-association-default-fetch-type.mdx	두는	c7d1e7f6f3bd	'LAZY로 두다'는 규칙 예외	`fetch = LAZY`로 두는 것을 권장**합니다.</
 blog/2026-08-18-kafka-why-fast.mdx	옮기는	8b9faf12be75	디스크 헤드의 물리적 이동이라 규칙 예외	얘기입니다. 헤드를 이리저리 옮기는 랜덤 I/O는 느리지만
-blog/2026-08-18-kafka-why-fast.mdx	쓰는	566b80a17185	순차 쓰기(write) 의미	크의 특성에 맞춰 순차적으로 쓰는" 설계가 Kafka 속도
 blog/2026-08-18-kafka-why-fast.mdx	묶어	6c87fc16fbb1	배치로 묶어 처리하는 기술적 결합(배치 정의)이라 예외	트(배치) | 여러 메시지를 묶어 처리하는 단위 |
 blog/2026-09-06-c4-model-architecture-diagram.mdx	갑니다	f0659b4c0b0f	'선뜻 손이 안 나가다'는 막막하다 행의 권장 표현(관용구)	나?" 싶어 선뜻 손이 안 나갑니다. 개발은 곧잘 하는데 
 blog/2026-09-06-c4-model-architecture-diagram.mdx	나갑니다	f0659b4c0b0f	'선뜻 손이 안 나가다'는 막막하다 행의 권장 표현(관용구)	되나?" 싶어 선뜻 손이 안 나갑니다. 개발은 곧잘 하는데
@@ -107,7 +106,6 @@ blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	ea
 blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml
 blog/2026-09-06-c4-model-architecture-diagram.mdx	그림형식(→손수 SVG)	eab93e9daf02	C4 모델 글: C4-PlantUML로 다이어그램을 코드로 작성하는 방법을 설명하는 예시 코드(렌더하지 않음, 그림은 손수 SVG). 사용자 승인 예외	```plantuml
 blog/2026-08-21-scaling-architecture-step-by-step.mdx	두고	ee9e2cbc6fd1	"자원을 두고 경쟁"은 대상(~을 놓고)을 뜻하는 관용 표현으로 배치 의미 아님	회가 실서비스 쿼리와 자원을 두고 경쟁합니다.
-blog/2026-09-03-ticketing-system-architecture.mdx	고른	35d46703dadc	속도를 고르게 한다(평탄화) 의미로 규칙 예외, 선택 의미 아님	k>대기열이 "입장 속도"를 고른다면, 메시지 큐는 "DB
 blog/2026-09-12-scm-system-explained.mdx	그림형식(→손수 SVG)	b94b556eb2b8	SCM 글: 우유 100박스 흐름과 창고 구조를 anatomy 인터랙티브 등각 모형으로 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="scm-milk-flow" title="1층 입차와 검수, 2층 적치, 
 blog/2026-09-12-scm-system-explained.mdx	그림형식(→손수 SVG)	864f80b1e449	SCM 글: 우유 100박스 흐름과 창고 구조를 anatomy 인터랙티브 등각 모형으로 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="scm-warehouse" title="2층 냉장존, 3층 냉동존, 4층
 blog/2026-11-23-center-stock-transfer.mdx	그림형식(→손수 SVG)	e2d8719c09eb	센터 간 재고이동 글: 원본 단계 장면을 일반화한 인터랙티브 그림으로 과정 설명을 보완(기존 SVG 유지). 사용자 승인 예외	<AnatomyEmbed name="center-move-steps" query="steps=1-4" tit

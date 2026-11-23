@@ -136,7 +136,7 @@ executeWithLock("card:user:" + userId, 3, () -> {
 });
 ```
 
-<mark>이렇게 한곳에 모으면 `GET_LOCK`, `RELEASE_LOCK`이 항상 같은 커넥션을 쓰고, 어떤 경로로 끝나든 `finally`에서 반드시 해제됩니다.</mark> (락을 함수형으로 감싸는 아이디어는 Redis 락에서도 같습니다 — [대규모 결제 분산 락](./large-scale-payment-distributed-lock) 참고.)
+<mark>이렇게 한곳에 모으면 `GET_LOCK`, `RELEASE_LOCK`이 항상 같은 커넥션을 사용하고, 어떤 경로로 끝나든 `finally`에서 반드시 해제됩니다.</mark> (락을 함수형으로 감싸는 아이디어는 Redis 락에서도 같습니다 — [대규모 결제 분산 락](./large-scale-payment-distributed-lock) 참고.)
 
 ## 조심할 점 — 공짜가 아니다
 
